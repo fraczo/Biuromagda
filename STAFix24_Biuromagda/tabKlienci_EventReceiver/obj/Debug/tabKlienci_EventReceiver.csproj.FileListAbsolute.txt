@@ -1,7 +1,0 @@
-C:\temp\STAFix24_Biuromagda\tabKlienci_EventReceiver\bin\Debug\tabKlienci_EventReceiver.dll
-C:\temp\STAFix24_Biuromagda\tabKlienci_EventReceiver\bin\Debug\tabKlienci_EventReceiver.pdb
-C:\temp\STAFix24_Biuromagda\tabKlienci_EventReceiver\obj\Debug\tabKlienci_EventReceiver.dll
-C:\temp\STAFix24_Biuromagda\tabKlienci_EventReceiver\obj\Debug\tabKlienci_EventReceiver.pdb
-C:\temp\STAFix24_Biuromagda\tabKlienci_EventReceiver\obj\Debug\tabKlienci_EventReceiver.csprojResolveAssemblyReference.cache
-C:\temp\STAFix24_Biuromagda\tabKlienci_EventReceiver\bin\Debug\BRMagda.BLL.dll
-C:\temp\STAFix24_Biuromagda\tabKlienci_EventReceiver\bin\Debug\BRMagda.BLL.pdb

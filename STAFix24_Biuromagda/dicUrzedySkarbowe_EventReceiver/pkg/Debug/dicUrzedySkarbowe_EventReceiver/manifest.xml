@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Solution xmlns="http://schemas.microsoft.com/sharepoint/" SolutionId="a2ced032-0de6-448c-a66e-9963375bb724" SharePointProductVersion="14.0">
-  <Assemblies>
-    <Assembly Location="dicUrzedySkarbowe_EventReceiver.dll" DeploymentTarget="GlobalAssemblyCache" />
-  </Assemblies>
-  <FeatureManifests>
-    <FeatureManifest Location="dicUrzedySkarbowe_EventReceiver_Feature1\Feature.xml" />
-  </FeatureManifests>
-</Solution>

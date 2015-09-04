@@ -1,5 +1,0 @@
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\dicUrzedySkarbowe_EventReceiver\bin\Release\dicUrzedySkarbowe_EventReceiver.dll
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\dicUrzedySkarbowe_EventReceiver\bin\Release\dicUrzedySkarbowe_EventReceiver.pdb
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\dicUrzedySkarbowe_EventReceiver\obj\Release\dicUrzedySkarbowe_EventReceiver.dll
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\dicUrzedySkarbowe_EventReceiver\obj\Release\dicUrzedySkarbowe_EventReceiver.pdb
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\dicUrzedySkarbowe_EventReceiver\obj\Release\dicUrzedySkarbowe_EventReceiver.csprojResolveAssemblyReference.cache

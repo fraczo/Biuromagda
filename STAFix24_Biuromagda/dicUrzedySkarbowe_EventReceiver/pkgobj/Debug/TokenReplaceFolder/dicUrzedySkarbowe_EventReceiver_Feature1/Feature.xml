@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Feature xmlns="http://schemas.microsoft.com/sharepoint/" Title="dicUrzedySkarbowe_EventReceiver Feature1" Description="My Event Receiver Feature" Id="082a74f2-ac87-46fd-8a23-2afb1a4c6c7a" Scope="Web">
-  <Properties>
-    <Property Key="GloballyAvailable" Value="true" />
-  </Properties>
-  <ElementManifests>
-    <ElementManifest Location="dicUrzedySkarboweER\Elements.xml" />
-  </ElementManifests>
-</Feature>

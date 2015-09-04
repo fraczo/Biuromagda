@@ -1,1 +1,0 @@
-bin\Release\admProcessRequests_EventReceiver.wsp
