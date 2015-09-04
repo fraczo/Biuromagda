@@ -1,0 +1,45 @@
+C:\Users\Administrator\Desktop\PDF converters\pdfsharp-96133\PDFsharp\code\PdfSharp\bin\Debug\PdfSharp.dll
+C:\Users\Administrator\Desktop\PDF converters\pdfsharp-96133\PDFsharp\code\PdfSharp\bin\Debug\PdfSharp.pdb
+C:\Users\Administrator\Desktop\PDF converters\pdfsharp-96133\PDFsharp\code\PdfSharp\bin\Debug\de\PdfSharp.resources.dll
+C:\Users\Administrator\Desktop\PDF converters\pdfsharp-96133\PDFsharp\code\PdfSharp\obj\Debug\PdfSharp.Forms.PagePreview.resources
+C:\Users\Administrator\Desktop\PDF converters\pdfsharp-96133\PDFsharp\code\PdfSharp\obj\Debug\PdfSharp.Forms.PagePreviewCanvas.resources
+C:\Users\Administrator\Desktop\PDF converters\pdfsharp-96133\PDFsharp\code\PdfSharp\obj\Debug\PdfSharp.Resources.Messages.resources
+C:\Users\Administrator\Desktop\PDF converters\pdfsharp-96133\PDFsharp\code\PdfSharp\obj\Debug\PdfSharp.Resources.Messages.de.resources
+C:\Users\Administrator\Desktop\PDF converters\pdfsharp-96133\PDFsharp\code\PdfSharp\obj\Debug\PdfSharp.csproj.GenerateResource.Cache
+C:\Users\Administrator\Desktop\PDF converters\pdfsharp-96133\PDFsharp\code\PdfSharp\obj\Debug\de\PdfSharp.resources.dll
+C:\Users\Administrator\Desktop\PDF converters\pdfsharp-96133\PDFsharp\code\PdfSharp\obj\Debug\PdfSharp.dll
+C:\Users\Administrator\Desktop\PDF converters\pdfsharp-96133\PDFsharp\code\PdfSharp\obj\Debug\PdfSharp.pdb
+C:\Users\Administrator\Desktop\PDF converters\PDFSharp\pdfsharp-96133\PDFsharp\code\PdfSharp\bin\Debug\PdfSharp.dll
+C:\Users\Administrator\Desktop\PDF converters\PDFSharp\pdfsharp-96133\PDFsharp\code\PdfSharp\bin\Debug\PdfSharp.pdb
+C:\Users\Administrator\Desktop\PDF converters\PDFSharp\pdfsharp-96133\PDFsharp\code\PdfSharp\bin\Debug\de\PdfSharp.resources.dll
+C:\Users\Administrator\Desktop\PDF converters\PDFSharp\pdfsharp-96133\PDFsharp\code\PdfSharp\obj\Debug\PdfSharp.Forms.PagePreview.resources
+C:\Users\Administrator\Desktop\PDF converters\PDFSharp\pdfsharp-96133\PDFsharp\code\PdfSharp\obj\Debug\PdfSharp.Forms.PagePreviewCanvas.resources
+C:\Users\Administrator\Desktop\PDF converters\PDFSharp\pdfsharp-96133\PDFsharp\code\PdfSharp\obj\Debug\PdfSharp.Resources.Messages.resources
+C:\Users\Administrator\Desktop\PDF converters\PDFSharp\pdfsharp-96133\PDFsharp\code\PdfSharp\obj\Debug\PdfSharp.Resources.Messages.de.resources
+C:\Users\Administrator\Desktop\PDF converters\PDFSharp\pdfsharp-96133\PDFsharp\code\PdfSharp\obj\Debug\PdfSharp.csproj.GenerateResource.Cache
+C:\Users\Administrator\Desktop\PDF converters\PDFSharp\pdfsharp-96133\PDFsharp\code\PdfSharp\obj\Debug\de\PdfSharp.resources.dll
+C:\Users\Administrator\Desktop\PDF converters\PDFSharp\pdfsharp-96133\PDFsharp\code\PdfSharp\obj\Debug\PdfSharp.dll
+C:\Users\Administrator\Desktop\PDF converters\PDFSharp\pdfsharp-96133\PDFsharp\code\PdfSharp\obj\Debug\PdfSharp.pdb
+c:\users\administrator\documents\visual studio 2010\Projects\DEMO.DrukiPrzelewow\PDFSharp\bin\Debug\PdfSharp.dll
+c:\users\administrator\documents\visual studio 2010\Projects\DEMO.DrukiPrzelewow\PDFSharp\bin\Debug\PdfSharp.pdb
+c:\users\administrator\documents\visual studio 2010\Projects\DEMO.DrukiPrzelewow\PDFSharp\bin\Debug\de\PdfSharp.resources.dll
+c:\users\administrator\documents\visual studio 2010\Projects\DEMO.DrukiPrzelewow\PDFSharp\obj\Debug\PdfSharp.Forms.PagePreview.resources
+c:\users\administrator\documents\visual studio 2010\Projects\DEMO.DrukiPrzelewow\PDFSharp\obj\Debug\PdfSharp.Forms.PagePreviewCanvas.resources
+c:\users\administrator\documents\visual studio 2010\Projects\DEMO.DrukiPrzelewow\PDFSharp\obj\Debug\PdfSharp.Resources.Messages.resources
+c:\users\administrator\documents\visual studio 2010\Projects\DEMO.DrukiPrzelewow\PDFSharp\obj\Debug\PdfSharp.Resources.Messages.de.resources
+c:\users\administrator\documents\visual studio 2010\Projects\DEMO.DrukiPrzelewow\PDFSharp\obj\Debug\PDFSharp.csproj.GenerateResource.Cache
+c:\users\administrator\documents\visual studio 2010\Projects\DEMO.DrukiPrzelewow\PDFSharp\obj\Debug\de\PdfSharp.resources.dll
+c:\users\administrator\documents\visual studio 2010\Projects\DEMO.DrukiPrzelewow\PDFSharp\obj\Debug\PdfSharp.dll
+c:\users\administrator\documents\visual studio 2010\Projects\DEMO.DrukiPrzelewow\PDFSharp\obj\Debug\PdfSharp.pdb
+C:\temp\STAFix24_Biuromagda\PdfSharp\obj\Debug\PdfSharp.Forms.PagePreview.resources
+C:\temp\STAFix24_Biuromagda\PdfSharp\obj\Debug\PdfSharp.Forms.PagePreviewCanvas.resources
+C:\temp\STAFix24_Biuromagda\PdfSharp\obj\Debug\PdfSharp.Resources.Messages.resources
+C:\temp\STAFix24_Biuromagda\PdfSharp\obj\Debug\PdfSharp.Resources.Messages.de.resources
+C:\temp\STAFix24_Biuromagda\PdfSharp\obj\Debug\PdfSharp.csproj.GenerateResource.Cache
+C:\temp\STAFix24_Biuromagda\PdfSharp\bin\Debug\BRMagda.PdfSharp.dll
+C:\temp\STAFix24_Biuromagda\PdfSharp\bin\Debug\BRMagda.PdfSharp.pdb
+C:\temp\STAFix24_Biuromagda\PdfSharp\bin\Debug\de\BRMagda.PdfSharp.resources.dll
+C:\temp\STAFix24_Biuromagda\PdfSharp\obj\Debug\de\BRMagda.PdfSharp.resources.dll
+C:\temp\STAFix24_Biuromagda\PdfSharp\obj\Debug\BRMagda.PdfSharp.dll
+C:\temp\STAFix24_Biuromagda\PdfSharp\obj\Debug\BRMagda.PdfSharp.pdb
+C:\temp\STAFix24_Biuromagda\PdfSharp\bin\Debug\BRMagda.PdfSharp.xml

@@ -1,0 +1,14 @@
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\obj\Release\BLL.csprojResolveAssemblyReference.cache
+<<<<<<< HEAD
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\obj\Release\STAFix24.Biuromagda.BLL.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\obj\Release\STAFix24.Biuromagda.BLL.pdb
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\bin\Release\STAFix24.Biuromagda.PdfSharp.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\bin\Release\STAFix24.Biuromagda.PdfSharp.pdb
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\bin\Release\STAFix24.Biuromagda.PdfSharp.xml
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\bin\Release\de\STAFix24.Biuromagda.PdfSharp.resources.dll
+=======
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\bin\Release\Biuromagda.BLL.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\bin\Release\Biuromagda.BLL.pdb
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\obj\Release\Biuromagda.BLL.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\obj\Release\Biuromagda.BLL.pdb
+>>>>>>> BR4

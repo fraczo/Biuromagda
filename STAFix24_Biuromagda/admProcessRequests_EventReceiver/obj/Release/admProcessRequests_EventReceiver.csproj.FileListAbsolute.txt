@@ -1,0 +1,5 @@
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\admProcessRequests_EventReceiver\bin\Release\admProcessRequests_EventReceiver.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\admProcessRequests_EventReceiver\bin\Release\admProcessRequests_EventReceiver.pdb
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\admProcessRequests_EventReceiver\obj\Release\admProcessRequests_EventReceiver.csprojResolveAssemblyReference.cache
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\admProcessRequests_EventReceiver\obj\Release\admProcessRequests_EventReceiver.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\admProcessRequests_EventReceiver\obj\Release\admProcessRequests_EventReceiver.pdb

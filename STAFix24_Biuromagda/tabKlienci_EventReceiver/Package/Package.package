@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package dslVersion="1.0.0.0" Id="6b619844-1e30-4277-a8d1-bfb3eb491145" solutionId="6b619844-1e30-4277-a8d1-bfb3eb491145" xmlns="http://schemas.microsoft.com/VisualStudio/2008/SharePointTools/PackageModel" name="tabKlienci_EventReceiver">
+    <features>
+        <featureReference itemId="0a574db6-da24-49f5-9197-3b31b4eb4ea3" />
+    </features>
+</package>

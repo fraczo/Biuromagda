@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Solution xmlns="http://schemas.microsoft.com/sharepoint/" SolutionId="3ffb2b3a-6b0e-4af5-9e31-e7d28ac628f4" SharePointProductVersion="14.0">
+  <Assemblies>
+    <Assembly Location="tabZadania_EventReceiver.dll" DeploymentTarget="GlobalAssemblyCache" />
+  </Assemblies>
+</Solution>

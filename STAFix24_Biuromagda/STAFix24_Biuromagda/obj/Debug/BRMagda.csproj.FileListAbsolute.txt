@@ -1,0 +1,4 @@
+C:\temp\STAFix24_Biuromagda\STAFix24_Biuromagda\bin\Debug\BRMagda.dll
+C:\temp\STAFix24_Biuromagda\STAFix24_Biuromagda\bin\Debug\BRMagda.pdb
+C:\temp\STAFix24_Biuromagda\STAFix24_Biuromagda\obj\Debug\BRMagda.dll
+C:\temp\STAFix24_Biuromagda\STAFix24_Biuromagda\obj\Debug\BRMagda.pdb

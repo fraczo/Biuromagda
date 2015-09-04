@@ -1,0 +1,1 @@
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\tabKlienci_EventReceiver\obj\Release\tabKlienci_EventReceiver.csprojResolveAssemblyReference.cache

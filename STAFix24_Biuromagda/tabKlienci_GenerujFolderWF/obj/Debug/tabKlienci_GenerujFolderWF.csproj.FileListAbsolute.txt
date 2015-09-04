@@ -1,0 +1,7 @@
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\tabKlienci_GenerujFolderWF\bin\Debug\tabKlienci_GenerujFolderWF.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\tabKlienci_GenerujFolderWF\bin\Debug\tabKlienci_GenerujFolderWF.pdb
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\tabKlienci_GenerujFolderWF\obj\Debug\tabKlienci_GenerujFolderWF.csprojResolveAssemblyReference.cache
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\tabKlienci_GenerujFolderWF\obj\Debug\tabKlienci_GenerujFolderWF.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\tabKlienci_GenerujFolderWF\obj\Debug\tabKlienci_GenerujFolderWF.pdb
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\tabKlienci_GenerujFolderWF\bin\Debug\STAFix24.Biuromagda.BLL.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\tabKlienci_GenerujFolderWF\bin\Debug\STAFix24.Biuromagda.BLL.pdb
