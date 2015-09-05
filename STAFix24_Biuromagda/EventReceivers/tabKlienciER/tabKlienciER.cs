@@ -32,7 +32,14 @@ namespace EventReceivers.tabKlienciER
 
                        if (status == "Aktywny" && !String.IsNullOrEmpty(folderName))
                        {
-                           BLL.libDokumenty.Ensure_FolderExist(web, folderName);
+                           int docId = BLL.libDokumenty.Ensure_FolderExist(web, folderName);
+                           int currDocId = item["_DocumentId"]!=null?int.Parse(item["_DocumentId"].ToString()):0;
+
+                           if (docId>0 && currDocId!=docId)
+                           {
+                               item["_DocumentId"] = docId;
+                               item.Update();
+                           }
                        }
                        break;
 

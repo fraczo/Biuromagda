@@ -6,6 +6,7 @@
     <Assembly Location="BRMagda.PdfSharp.dll" DeploymentTarget="GlobalAssemblyCache" />
     <Assembly Location="BRMagda.dll" DeploymentTarget="GlobalAssemblyCache" />
     <Assembly Location="BRMagda.EventReceivers.dll" DeploymentTarget="GlobalAssemblyCache" />
+    <Assembly Location="BRMagda.Workflows.dll" DeploymentTarget="GlobalAssemblyCache" />
   </Assemblies>
   <TemplateFiles>
     <TemplateFile Location="Images\Biuromagda\SETTINGS.GIF" />
@@ -15,5 +16,6 @@
   <FeatureManifests>
     <FeatureManifest Location="BRMagda_EventReceivers\Feature.xml" />
     <FeatureManifest Location="BRMagda_CustomActions\Feature.xml" />
+    <FeatureManifest Location="BRMagda_Feature1\Feature.xml" />
   </FeatureManifests>
 </Solution>

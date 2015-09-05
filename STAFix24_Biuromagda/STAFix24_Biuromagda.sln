@@ -3,6 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BRMagda", "STAFix24_Biuromagda\BRMagda.csproj", "{9E727A47-9AAE-4569-BB73-062766B95E81}"
 	ProjectSection(ProjectDependencies) = postProject
+		{F3947A43-D462-47CC-ABA9-F3AC493957C3} = {F3947A43-D462-47CC-ABA9-F3AC493957C3}
 		{55BA1847-ED27-481D-B213-C6A4C8BCC3ED} = {55BA1847-ED27-481D-B213-C6A4C8BCC3ED}
 		{55BA1847-ED27-481D-B213-C6A4C8BCC3ED} = {55BA1847-ED27-481D-B213-C6A4C8BCC3ED}
 		{55BA1847-ED27-481D-B213-C6A4C8BCC3ED} = {55BA1847-ED27-481D-B213-C6A4C8BCC3ED}
@@ -24,6 +25,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventReceivers", "EventReceivers\EventReceivers.csproj", "{55BA1847-ED27-481D-B213-C6A4C8BCC3ED}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfSharp", "PdfSharp\PdfSharp.csproj", "{24AED8CD-36DE-44BB-8B35-CC671B0E7DC9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workflows", "Workflows\Workflows.csproj", "{F3947A43-D462-47CC-ABA9-F3AC493957C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -103,6 +106,20 @@ Global
 		{24AED8CD-36DE-44BB-8B35-CC671B0E7DC9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{24AED8CD-36DE-44BB-8B35-CC671B0E7DC9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{24AED8CD-36DE-44BB-8B35-CC671B0E7DC9}.Release|x86.ActiveCfg = Release|Any CPU
+		{F3947A43-D462-47CC-ABA9-F3AC493957C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3947A43-D462-47CC-ABA9-F3AC493957C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3947A43-D462-47CC-ABA9-F3AC493957C3}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{F3947A43-D462-47CC-ABA9-F3AC493957C3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F3947A43-D462-47CC-ABA9-F3AC493957C3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F3947A43-D462-47CC-ABA9-F3AC493957C3}.Debug|Mixed Platforms.Deploy.0 = Debug|Any CPU
+		{F3947A43-D462-47CC-ABA9-F3AC493957C3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F3947A43-D462-47CC-ABA9-F3AC493957C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3947A43-D462-47CC-ABA9-F3AC493957C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3947A43-D462-47CC-ABA9-F3AC493957C3}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{F3947A43-D462-47CC-ABA9-F3AC493957C3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{F3947A43-D462-47CC-ABA9-F3AC493957C3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{F3947A43-D462-47CC-ABA9-F3AC493957C3}.Release|Mixed Platforms.Deploy.0 = Release|Any CPU
+		{F3947A43-D462-47CC-ABA9-F3AC493957C3}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -64,6 +64,9 @@
     <None Include="Features\CustomActions\CustomActions.feature">
       <FeatureId>{f2f84811-bb32-4ccd-a7ae-9f62e1338e70}</FeatureId>
     </None>
+    <None Include="Features\Feature1\Feature1.feature">
+      <FeatureId>{d9f38166-637b-47ee-9dd0-3d46980d013c}</FeatureId>
+    </None>
     <None Include="Images\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{17c57b49-c946-4bca-b0d6-724a887a5856}</SharePointProjectItemId>
     </None>
@@ -90,6 +93,9 @@
     </Content>
     <Content Include="Features\CustomActions\CustomActions.Template.xml">
       <DependentUpon>CustomActions.feature</DependentUpon>
+    </Content>
+    <Content Include="Features\Feature1\Feature1.Template.xml">
+      <DependentUpon>Feature1.feature</DependentUpon>
     </Content>
     <Content Include="Images\Biuromagda\SETTINGS.GIF" />
     <Content Include="Images\Biuromagda\SETTINGS16.GIF" />

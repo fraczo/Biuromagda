@@ -47,7 +47,7 @@ namespace BLL
             
             Regex illegalPathChars = new Regex(@"^\.|[\x00-\x1F,\x7B-\x9F,"",#,%,&,*,/,:,<,>,?,\\]+|(\.\.)+|\.$", RegexOptions.Compiled);
             
-            nazwaPliku =illegalPathChars.Replace(nazwaPliku,"_");
+            nazwaPliku =illegalPathChars.Replace(nazwaPliku,"");
 
             return nazwaPliku;
 

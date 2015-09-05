@@ -10,5 +10,6 @@
     <ElementManifest Location="admProcessRequestsER\Elements.xml" />
     <ElementManifest Location="tabZadaniaER\Elements.xml" />
     <ElementManifest Location="dicUrzedySkarboweER\Elements.xml" />
+    <ElementManifest Location="tabWiadomosciER\Elements.xml" />
   </ElementManifests>
 </Feature>
