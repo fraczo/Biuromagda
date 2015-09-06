@@ -8,7 +8,7 @@
               Location="Microsoft.SharePoint.StandardMenu"
               Sequence="500"
               Title="Generuj formatki" >
-    <UrlAction Url="~site/Lists/admProcessRequests/NewForm.aspx?ContentTypeId=0x010012C56DEF8E3B1A45B66E8FB2ED3FFC130100D9F75CB0E72A6447B96BAF68A9580ECC"/>
+    <UrlAction Url="~site/Lists/admProcessRequests/NewForm.aspx?ContentTypeId=0x010012C56DEF8E3B1A45B66E8FB2ED3FFC130100F420C4EF5478E9458D344C3F69613EE9"/>
   </CustomAction>
   
   <CustomAction Description="Generuje formatki rozliczeniowe dla wybranego klienta"
@@ -18,7 +18,7 @@
             Location="Microsoft.SharePoint.StandardMenu"
             Sequence="501"
             Title="Generuj formatki dla klienta" >
-    <UrlAction Url="~site/Lists/admProcessRequests/NewForm.aspx?ContentTypeId=0x010012C56DEF8E3B1A45B66E8FB2ED3FFC1302001819BE7C466B7B42841261AC7DD7B40A"/>
+    <UrlAction Url="~site/Lists/admProcessRequests/NewForm.aspx?ContentTypeId=0x010012C56DEF8E3B1A45B66E8FB2ED3FFC1302002A1C7949E48ADA4D9326D531228D78C1"/>
   </CustomAction>
 
 
@@ -29,7 +29,7 @@
       Location="Microsoft.SharePoint.StandardMenu"
       Sequence="510"
       Title="Import faktur za obsługę" >
-    <UrlAction Url="~site/Lists/admProcessRequests/NewForm.aspx?ContentTypeId=0x010012C56DEF8E3B1A45B66E8FB2ED3FFC1307005E7DF728CA318D44A707F4D9FE8BE66F"/>
+    <UrlAction Url="~site/Lists/admProcessRequests/NewForm.aspx?ContentTypeId=0x010012C56DEF8E3B1A45B66E8FB2ED3FFC130700BF6BE6369EB2604F939F6D5DEF7091A1"/>
   </CustomAction>
   
   <CustomAction Description="Importuje pliki z fakturami do formatek RBR"
@@ -39,7 +39,7 @@
           Location="Microsoft.SharePoint.StandardMenu"
           Sequence="511"
           Title="Import faktur elektronicznych" >
-    <UrlAction Url="~site/Lists/admProcessRequests/NewForm.aspx?ContentTypeId=0x010012C56DEF8E3B1A45B66E8FB2ED3FFC130500398DE4F9C5330F488080A683E39C42A8"/>
+    <UrlAction Url="~site/Lists/admProcessRequests/NewForm.aspx?ContentTypeId=0x010012C56DEF8E3B1A45B66E8FB2ED3FFC130500B80483F07C99C44BB0D517448DC9D740"/>
   </CustomAction>
 
   <CustomAction Description="Przygotowuje informacje o zadłużeniu w buforze wiadomości"
@@ -49,7 +49,7 @@
       Location="Microsoft.SharePoint.StandardMenu"
       Sequence="530"
       Title="Import przeterminowanych należności" >
-    <UrlAction Url="~site/Lists/admProcessRequests/NewForm.aspx?ContentTypeId=0x010012C56DEF8E3B1A45B66E8FB2ED3FFC130600FD5614B39DEDD04FAF03B22461CB73E1"/>
+    <UrlAction Url="~site/Lists/admProcessRequests/NewForm.aspx?ContentTypeId=0x010012C56DEF8E3B1A45B66E8FB2ED3FFC1306006C0A55CB2F6F76458D74866D381AAAC4"/>
   </CustomAction>
 
   <!--<CustomAction Description="Generuje korespondencję seryjną do klientów"
@@ -69,7 +69,7 @@
               Location="Microsoft.SharePoint.StandardMenu"
               Sequence="550"
               Title="Import listy klientów" >
-    <UrlAction Url="~site/Lists/admProcessRequests/NewForm.aspx?ContentTypeId=0x010012C56DEF8E3B1A45B66E8FB2ED3FFC1303004F50F34C32D4234DBFFC68F3E81B55AF"/>
+    <UrlAction Url="~site/Lists/admProcessRequests/NewForm.aspx?ContentTypeId=0x010012C56DEF8E3B1A45B66E8FB2ED3FFC130300FA662D15DFD48A4AACD149B751A021E8"/>
   </CustomAction>
   
 </Elements>

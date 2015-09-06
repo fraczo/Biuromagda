@@ -10,6 +10,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLL", "STAFix24_Biuromagda_BLL\BLL.csproj", "{2C8ECD80-A047-4795-99B3-C0EFC6961A9E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BRMagda", "STAFix24_Biuromagda\BRMagda.csproj", "{9E727A47-9AAE-4569-BB73-062766B95E81}"
+	ProjectSection(ProjectDependencies) = postProject
+		{55BA1847-ED27-481D-B213-C6A4C8BCC3ED} = {55BA1847-ED27-481D-B213-C6A4C8BCC3ED}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneratorDrukow", "GeneratorDrukow\GeneratorDrukow.csproj", "{811788E7-E265-42E7-B3AF-04EFF78717F8}"
 EndProject
