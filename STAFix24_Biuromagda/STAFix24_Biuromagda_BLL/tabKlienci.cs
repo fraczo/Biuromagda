@@ -260,7 +260,7 @@ namespace BLL
             CopyTerminPlatnosciLookupContent(web, item, "_TerminPlatnosci", newItem, "selTerminPlatnosci");
 
             //serwisy ***
-            string[] dodatkoweSerwisy = { "RBR", "RBR", "ADO", "POT", "POW-DOK", "GDW" };
+            string[] dodatkoweSerwisy = { "RBR", "ADO", "POT", "POW-Dok", "GDW" };
             CopySerwisyLookupContent(web, item, "selSewisy", newItem, "selSewisy", dodatkoweSerwisy);
 
             //biuro
@@ -351,7 +351,7 @@ namespace BLL
             CopyBiuroLookupContent(web, item, "_Biuro", newItem, "selBiuro");
 
             //serwisy ***
-            string[] dodatkoweSerwisy = { "AD", "POT", "POW-DOK", "POW-WBank", "GDW", "RBR" };
+            string[] dodatkoweSerwisy = { "AD", "POT", "POW-Dok", "POW-WBank", "GDW", "RBR" };
             CopySerwisyLookupContent(web, item, "selSewisy", newItem, "selSewisy", dodatkoweSerwisy);
 
             //opiekun klienta

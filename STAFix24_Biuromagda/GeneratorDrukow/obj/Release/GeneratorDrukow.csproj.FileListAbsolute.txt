@@ -12,3 +12,11 @@ C:\_GitHub\Biuromagda\STAFix24_Biuromagda\GeneratorDrukow\bin\Release\Biuromagda
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\GeneratorDrukow\obj\Release\Biuromagda.GeneratorDrukow.dll
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\GeneratorDrukow\obj\Release\Biuromagda.GeneratorDrukow.pdb
 >>>>>>> BR4
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\GeneratorDrukow\bin\Release\BRMagda.GeneratorDrukow.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\GeneratorDrukow\bin\Release\BRMagda.GeneratorDrukow.pdb
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\GeneratorDrukow\obj\Release\BRMagda.GeneratorDrukow.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\GeneratorDrukow\obj\Release\BRMagda.GeneratorDrukow.pdb
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\GeneratorDrukow\bin\Release\BRMagda.PdfSharp.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\GeneratorDrukow\bin\Release\BRMagda.PdfSharp.pdb
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\GeneratorDrukow\bin\Release\BRMagda.PdfSharp.xml
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\GeneratorDrukow\bin\Release\de\BRMagda.PdfSharp.resources.dll

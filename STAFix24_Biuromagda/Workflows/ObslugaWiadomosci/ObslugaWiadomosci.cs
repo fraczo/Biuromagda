@@ -14,6 +14,7 @@ using System.Workflow.Activities.Rules;
 using Microsoft.SharePoint;
 using Microsoft.SharePoint.Workflow;
 using Microsoft.SharePoint.WorkflowActions;
+using System.Net.Mail;
 
 namespace Workflows.ObslugaWiadomosci
 {
@@ -57,7 +58,8 @@ namespace Workflows.ObslugaWiadomosci
 
         private void Send_Mail_ExecuteCode(object sender, EventArgs e)
         {
-
+            SPFieldUserValue user = new SPFieldUserValue(item.ParentList.ParentWeb, item["Author"].ToString());
+            SendMailWithAttachment(item, "noreply@stafix24.pl", user.User.Email, "to jest temat", "", true, "", "");
         }
 
         private void Update_Flags_ExecuteCode(object sender, EventArgs e)
@@ -91,7 +93,73 @@ namespace Workflows.ObslugaWiadomosci
             item = workflowProperties.Item;
         }
 
+        private void ErrorHandler_ExecuteCode(object sender, EventArgs e)
+        {
 
+        }
+
+
+        #region Helpers
+
+
+
+        public static void SendMailWithAttachment(SPListItem item, string from, string to, string subject, string body, bool isBodyHtml, string cc, string bcc)
+        {
+
+            SmtpClient client = new SmtpClient();
+            client.Host = item.Web.Site.WebApplication.OutboundMailServiceInstance.Server.Address;
+
+            //nazwa witryny
+            from = item.Web.Title != null ? String.Format(@"{0}<{1}>",
+                item.Web.Title,
+                from) : from;
+
+            MailMessage message = new MailMessage();
+            SPList list = item.ParentList;
+            message.From = new MailAddress(from);
+            message.To.Add(new MailAddress(to));
+            if (!string.IsNullOrEmpty(cc))
+            {
+                message.CC.Add(new MailAddress(cc));
+            }
+            if (!string.IsNullOrEmpty(bcc))
+            {
+                message.Bcc.Add(new MailAddress(bcc));
+            }
+            message.IsBodyHtml = isBodyHtml;
+            message.Body = body;
+            message.Subject = subject;
+
+            for (int attachmentIndex = 0; attachmentIndex < item.Attachments.Count; attachmentIndex++)
+            {
+                string url = item.Attachments.UrlPrefix + item.Attachments[attachmentIndex];
+                SPFile file = list.ParentWeb.GetFile(url);
+                message.Attachments.Add(new Attachment(file.OpenBinaryStream(), file.Name));
+            }
+
+            client.Send(message);
+
+        }
+
+        private void sendEmailToAssignee_MethodInvoking(object sender, EventArgs e)
+        {
+            //SPListItem wfItem = onWorkflowActivated1.WorkflowProperties.Item;
+            //SPFieldUser assignedTo = (SPFieldUser)wfItem.Fields["Assigned To"];
+            //SPFieldUserValue user = (SPFieldUserValue)assignedTo.GetFieldValue(
+            //wfItem["Assigned To"].ToString());
+            //string assigneeEmail = user.User.Email;
+            sendEmailToAssignee.To = new SPFieldUserValue(item.ParentList.ParentWeb, item["Author"].ToString()).User.Email;
+            sendEmailToAssignee.Subject = "New work order has been created.";
+            sendEmailToAssignee.Body = "Work order number " +
+            onWorkflowActivated1.WorkflowProperties.Item.ID +
+            " has just been created and assigned to you.";
+            sendEmailToAssignee.From = "Maszynka<noreply@stafix24.pl>";
+
+            SendMailWithAttachment(item, "noreply@stafix24.pl", sendEmailToAssignee.To,"nowy temat", sendEmailToAssignee.Body, true, string.Empty, string.Empty);
+        }
+
+
+        #endregion
 
 
     }

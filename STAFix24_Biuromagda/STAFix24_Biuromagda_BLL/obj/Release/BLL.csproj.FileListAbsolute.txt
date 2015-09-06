@@ -12,3 +12,7 @@ C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\bin\Release\Bi
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\obj\Release\Biuromagda.BLL.dll
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\obj\Release\Biuromagda.BLL.pdb
 >>>>>>> BR4
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\bin\Release\BRMagda.BLL.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\bin\Release\BRMagda.BLL.pdb
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\obj\Release\BRMagda.BLL.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\obj\Release\BRMagda.BLL.pdb

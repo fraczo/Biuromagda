@@ -64,7 +64,7 @@
     <None Include="Features\CustomActions\CustomActions.feature">
       <FeatureId>{f2f84811-bb32-4ccd-a7ae-9f62e1338e70}</FeatureId>
     </None>
-    <None Include="Features\Feature1\Feature1.feature">
+    <None Include="Features\Workflows\Workflows.feature">
       <FeatureId>{d9f38166-637b-47ee-9dd0-3d46980d013c}</FeatureId>
     </None>
     <None Include="Images\SharePointProjectItem.spdata">
@@ -94,8 +94,8 @@
     <Content Include="Features\CustomActions\CustomActions.Template.xml">
       <DependentUpon>CustomActions.feature</DependentUpon>
     </Content>
-    <Content Include="Features\Feature1\Feature1.Template.xml">
-      <DependentUpon>Feature1.feature</DependentUpon>
+    <Content Include="Features\Workflows\Workflows.Template.xml">
+      <DependentUpon>Workflows.feature</DependentUpon>
     </Content>
     <Content Include="Images\Biuromagda\SETTINGS.GIF" />
     <Content Include="Images\Biuromagda\SETTINGS16.GIF" />
