@@ -24,14 +24,6 @@ Name="[NAME]" ==> Name="MyWorkflow" -->
       <Modification_[UNIQUE GUID]_Name>[NAME OF MODIFICATION TO BE DISPLAYED AS A LINK ON WORKFLOW STATUS PAGE</Modification_[UNIQUE GUID]_Name>
       -->
       <StatusPageUrl>_layouts/WrkStat.aspx</StatusPageUrl>
-      <ExtendedStatusColumnValues>
-        <StatusColumnValue>Anulowana</StatusColumnValue>
-        <StatusColumnValue>Obsługa</StatusColumnValue>
-        <StatusColumnValue>Oczekuje</StatusColumnValue>
-        <StatusColumnValue>Przygotwanie wysyłki</StatusColumnValue>
-        <StatusColumnValue>Wysyłka</StatusColumnValue>
-        <StatusColumnValue>Wysłana</StatusColumnValue> 
-      </ExtendedStatusColumnValues>
     </MetaData>
   </Workflow>
 </Elements>
