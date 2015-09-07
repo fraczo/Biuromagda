@@ -17,18 +17,12 @@ using Microsoft.SharePoint.WorkflowActions;
 
 namespace Workflows.ObslugaZadania
 {
-    public sealed partial class ifRozliczenieRBR : SequentialWorkflowActivity
+    public sealed partial class ObslugaZadania : SequentialWorkflowActivity
     {
-        public ifRozliczenieRBR()
-        {
-            InitializeComponent();
-        }
-
         public Guid workflowId = default(System.Guid);
         public SPWorkflowActivationProperties workflowProperties = new SPWorkflowActivationProperties();
         public string ct;
         public SPListItem item;
-
 
         private void onWorkflowActivated1_Invoked(object sender, ExternalDataEventArgs e)
         {
@@ -77,15 +71,6 @@ namespace Workflows.ObslugaZadania
             e.Result = ct == "Rozliczenie z biurem rachunkowym" ? true : false;
         }
 
-        private void InitializeComponent()
-        {
-            this.CanModifyActivities = true;
-            // 
-            // ifRozliczenieRBR
-            // 
-            this.Name = "ifRozliczenieRBR";
-            this.CanModifyActivities = false;
-
-        }
     }
 }
+

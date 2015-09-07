@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <SharePointSiteUrl>http://spf2010/sites/biuromagda/</SharePointSiteUrl>
-    <ProjectView>ShowAllFiles</ProjectView>
+    <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>
@@ -21,7 +21,7 @@
           <StartOnCreate>false</StartOnCreate>
           <StartOnChange>false</StartOnChange>
         </ProjectItemStore>
-        <ProjectItemStore Id="{a8cc869c-3e67-4cd9-8b96-83211ae949ec}">
+        <ProjectItemStore Id="{57a4d147-a816-490f-99ae-3fa67ed47119}">
           <DisplayName>Obsługa zadania</DisplayName>
           <HistoryList>Workflow History</HistoryList>
           <HistoryListGuid>{be47a895-7c8e-40c2-884f-32b6a1eed32b}</HistoryListGuid>

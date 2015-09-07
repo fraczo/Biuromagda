@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 
 <!-- Customize the text in square brackets. 
 Remove brackets when filling in, e.g.
@@ -10,7 +10,7 @@ Name="[NAME]" ==> Name="MyWorkflow" -->
      Description="My SharePoint Workflow"
      Id="03c917a4-8972-4b54-8904-23e8c8ef0962"
      CodeBesideClass="Workflows.ObslugaZadania.ObslugaZadania"
-     CodeBesideAssembly="$assemblyname$">
+     CodeBesideAssembly="BRMagda.Workflows, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7c2016d13a1c5fef">
     <Categories/>
     <MetaData>
       <AssociationCategories>List</AssociationCategories>
