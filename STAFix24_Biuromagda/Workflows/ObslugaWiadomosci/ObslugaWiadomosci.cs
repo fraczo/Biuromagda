@@ -77,19 +77,19 @@ namespace Workflows.ObslugaWiadomosci
                 mail.Subject = item.Title;
 
                 //Body
-                if (item["colTrescHTML"]!=null)
+                if (item["colTrescHTML"] != null)
                 {
                     string bodyHTML = item["colTrescHTML"].ToString();
                     mail.Body = bodyHTML;
                     mail.IsBodyHtml = true;
                 }
-                else 
+                else
                 {
-                    if (item["colTresc"]!=null)
+                    if (item["colTresc"] != null)
                     {
                         string body = item["colTresc"].ToString();
 
-                        StringBuilder sb = new StringBuilder(BLL.admSetup.GetText(item.Web,"MAIL_TEMPLATE"));
+                        StringBuilder sb = new StringBuilder(BLL.admSetup.GetText(item.Web, "MAIL_TEMPLATE"));
                         sb.Replace(@"___BODY___", body);
                         mail.Body = sb.ToString();
                         mail.IsBodyHtml = true;
@@ -109,6 +109,7 @@ namespace Workflows.ObslugaWiadomosci
 
                 //ustaw flagę wysyłki
                 item["colCzyWyslana"] = true;
+                item["colDataNadania"] = DateTime.Now.ToString();
                 item.Update();
 
             }
@@ -210,6 +211,8 @@ namespace Workflows.ObslugaWiadomosci
             item["colDataNadania"] = DateTime.Now;
             item.Update();
         }
+
+
 
 
 

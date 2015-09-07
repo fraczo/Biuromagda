@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.SharePoint;
+using System.Net.Mail;
+using System.IO;
 
 namespace BLL
 {
@@ -10,8 +12,9 @@ namespace BLL
     {
         const string targetList = "Wiadomości";
 
-        public static void AddNew(SPWeb web, string nadawca, string odbiorca, string kopiaDla, bool KopiaDoNadawcy, bool KopiaDoBiura, string temat, string tresc, string trescHTML, DateTime planowanaDataNadania, int zadanieId)
+        public static void AddNew(SPWeb web, SPListItem item, string nadawca, string odbiorca, string kopiaDla, bool KopiaDoNadawcy, bool KopiaDoBiura, string temat, string tresc, string trescHTML, DateTime planowanaDataNadania, int zadanieId)
         {
+
             SPList list = web.Lists.TryGetList(targetList);
             SPListItem newItem = list.AddItem();
             newItem["Title"] = temat;
@@ -30,10 +33,28 @@ namespace BLL
             }
             newItem["colKopiaDoNadawcy"] = KopiaDoNadawcy;
             newItem["colKopiaDoBiura"] = KopiaDoBiura;
-            if (zadanieId>0)
+            if (zadanieId > 0)
             {
                 newItem["_ZadanieId"] = zadanieId;
             }
+
+            // TODO: obsługa wysyłki załączników
+
+            for (int attachmentIndex = 0; attachmentIndex < item.Attachments.Count; attachmentIndex++)
+            {
+                string url = item.Attachments.UrlPrefix + item.Attachments[attachmentIndex];
+                SPFile file = item.ParentList.ParentWeb.GetFile(url);
+                MemoryStream ms = new MemoryStream();
+                file.SaveBinary(ms);
+                try
+                {
+                    item.Attachments.Add(file.Name, ms.GetBuffer());
+                }
+                catch (Exception)
+                {}
+                
+            }
+
 
             newItem.Update();
         }

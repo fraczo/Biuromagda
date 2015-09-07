@@ -5,25 +5,22 @@ using Microsoft.SharePoint.Security;
 using Microsoft.SharePoint.Utilities;
 using Microsoft.SharePoint.Workflow;
 using BLL;
+using System.Text;
 
 namespace tabZadania_EventReceiver.EventReceiver1
 {
-    /// <summary>
-    /// List Item Events
-    /// </summary>
     public class EventReceiver1 : SPItemEventReceiver
     {
-        /// <summary>
-        /// An item was added.
-        /// </summary>
+
+        const string WYSLIJ_INFORMACJE_DO_KLIENTA = "Wyślij informację do Klienta";
+        const string ZATWIERDZ = "Zatwierdź";
+
+
         public override void ItemAdded(SPItemEventProperties properties)
         {
             Execute(properties);
         }
 
-        /// <summary>
-        /// An item was updated.
-        /// </summary>
         public override void ItemUpdated(SPItemEventProperties properties)
         {
             Execute(properties);
@@ -38,7 +35,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 SPListItem item = properties.ListItem;
                 SPWeb web = item.Web;
 
-                string ct = item["ContentType"].ToString();
+                string ct = item.ContentType.Name;
                 switch (ct)
                 {
                     case "Rozliczenie z biurem rachunkowym":
@@ -123,6 +120,12 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
                 }
 
+                if (item["_ProcesRequest"] != null && (bool)item["_ProcesRequest"] == true)
+                {
+                    //odpalenie procesów obsługi zadań
+                    Manage_Process(item);
+                }
+
             }
             catch (Exception ex)
             {
@@ -136,6 +139,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
             }
 
         }
+
 
         private bool UpdateGBW(SPWeb web, SPListItem item, string ct)
         {
@@ -390,8 +394,6 @@ namespace tabZadania_EventReceiver.EventReceiver1
             return result;
         }
 
-
-
         private static string Get_Nadawca(SPWeb web, string klient, int klientId)
         {
             string pesel = string.Empty;
@@ -528,11 +530,13 @@ namespace tabZadania_EventReceiver.EventReceiver1
         {
             this.EventFiringEnabled = false;
 
-            string ct = properties.AfterProperties["ContentType"].ToString();
-            int klientId = new SPFieldLookupValue(properties.AfterProperties["selKlient"].ToString()).LookupId;
-            int okresId = new SPFieldLookupValue(properties.AfterProperties["selOkres"].ToString()).LookupId;
+            string ct = properties.AfterProperties["ContentType"] != null ? properties.AfterProperties["ContentType"].ToString() : string.Empty;
+            int klientId = properties.AfterProperties["selKlient"] != null ? new SPFieldLookupValue(properties.AfterProperties["selKlient"].ToString()).LookupId : 0;
+            int okresId = properties.AfterProperties["selOkres"] != null ? new SPFieldLookupValue(properties.AfterProperties["selOkres"].ToString()).LookupId : 0;
 
-            if (string.IsNullOrEmpty(ct) || klientId<=0 || okresId <=0)
+            if (!string.IsNullOrEmpty(ct) 
+                && klientId > 0 
+                && okresId > 0)
             {
                 string key = tabZadania.Define_KEY(ct, klientId, okresId);
                 using (SPWeb web = properties.Web)
@@ -544,5 +548,88 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
             this.EventFiringEnabled = true;
         }
+
+        private void Manage_Process(SPListItem item)
+        {
+            string ct = item.ContentType.Name;
+            switch (ct)
+            {
+                case "Zadanie":
+                    Manage_Zadanie(item);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void Manage_Zadanie(SPListItem item)
+        {
+
+            string cmd = GetCommand(item);
+            string notatka = item["colInformacjaDlaKlienta"] != null ? item["colInformacjaDlaKlienta"].ToString() : string.Empty;
+            int klientId = item["selKlient"] != null ? new SPFieldLookupValue(item["selKlient"].ToString()).LookupId : 0;
+
+            if (klientId > 0
+                && cmd == WYSLIJ_INFORMACJE_DO_KLIENTA
+                && !string.IsNullOrEmpty(notatka))
+            {
+                string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
+                string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, klientId);
+                string kopiaDla = string.Empty;
+                bool KopiaDoNadawcy = true;
+                bool KopiaDoBiura = false;
+                string temat = string.Empty;
+                string tresc = string.Empty;
+                string trescHTML = string.Empty;
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "EMAIL_DEFAULT_BODY", out temat, out trescHTML);
+                if (item["selProcedura"] != null)
+                {
+                    temat = string.Format("{0} :{1}",
+                        new SPFieldLookupValue(item["selProcedura"].ToString()).LookupValue,
+                        item.Title);
+                }
+                else
+                {
+                    temat = item.Title;
+                }
+                if (!temat.StartsWith(":"))
+                {
+                    temat = ":" + temat.Trim();
+                }
+
+                temat = string.Format("{0} [sprawa#{1}]", temat, item.ID.ToString());
+                StringBuilder sb = new StringBuilder(trescHTML);
+                sb.Replace("___BODY___", notatka);
+                trescHTML = sb.ToString();
+
+                DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
+
+                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID);
+            }
+
+            ResetCommand(item, true);
+        }
+
+        #region Helpers
+
+
+        private void ResetCommand(SPListItem item, bool clearInformacjaDlaKlienta)
+        {
+            item["cmdFormatka"] = string.Empty;
+            if (clearInformacjaDlaKlienta
+                && item["colInformacjaDlaKlienta"] != null)
+            {
+                item["colInformacjaDlaKlienta"] = string.Empty;
+                item.Update();
+            }
+
+        }
+
+        private string GetCommand(SPListItem item)
+        {
+            return item["cmdFormatka"] != null ? item["cmdFormatka"].ToString() : string.Empty;
+        }
+
+        #endregion
     }
 }
