@@ -528,11 +528,18 @@ namespace tabZadania_EventReceiver.EventReceiver1
         {
             this.EventFiringEnabled = false;
 
-            string key = tabZadania.Define_KEY(properties.AfterProperties);
-            using (SPWeb web = properties.Web)
+            string ct = properties.AfterProperties["ContentType"].ToString();
+            int klientId = new SPFieldLookupValue(properties.AfterProperties["selKlient"].ToString()).LookupId;
+            int okresId = new SPFieldLookupValue(properties.AfterProperties["selOkres"].ToString()).LookupId;
+
+            if (string.IsNullOrEmpty(ct) || klientId<=0 || okresId <=0)
             {
-                properties.Cancel = !tabZadania.Check_KEY_IsAllowed(key, web, properties.ListItemId);
-                properties.ErrorMessage = "Zdublowany klucz zadania";
+                string key = tabZadania.Define_KEY(ct, klientId, okresId);
+                using (SPWeb web = properties.Web)
+                {
+                    properties.Cancel = !tabZadania.Check_KEY_IsAllowed(key, web, properties.ListItemId);
+                    properties.ErrorMessage = "Zdublowany klucz zadania";
+                }
             }
 
             this.EventFiringEnabled = true;

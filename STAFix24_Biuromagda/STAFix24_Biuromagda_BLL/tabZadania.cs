@@ -12,66 +12,36 @@ namespace BLL
     {
         const string lstZadania = "Zadania"; // "tabZadania";
 
-        public static string Define_KEY(SPListItem item)
-        {
-            string result;
-            string ct = item["ContentType"].ToString();
+        //public static string Define_KEY(SPItemEventDataCollection item)
+        //{
+        //    string result;
+        //    string ct = item["ContentType"].ToString();
 
-            if (ct == "Zadanie" || ct == "Element" || ct == "Folder")
-            {
-                return String.Empty;
-            }
+        //    if (ct == "Zadanie" || ct == "Element" || ct == "Folder")
+        //    {
+        //        return String.Empty;
+        //    }
 
-            int klientId = 0;
-            int okresId = 0;
+        //    int klientId = 0;
+        //    int okresId = 0;
 
-            if (item["selKlient"] != null)
-            {
-                klientId = new SPFieldLookupValue(item["selKlient"].ToString()).LookupId;
-            }
+        //    if (item["selKlient"] != null)
+        //    {
+        //        klientId = new SPFieldLookupValue(item["selKlient"].ToString()).LookupId;
+        //    }
 
-            if (item["selOkres"] != null)
-            {
-                okresId = new SPFieldLookupValue(item["selOkres"].ToString()).LookupId;
-            }
+        //    if (item["selOkres"] != null)
+        //    {
+        //        okresId = new SPFieldLookupValue(item["selOkres"].ToString()).LookupId;
+        //    }
 
-            result = String.Format(@"{0}:{1}:{2}",
-                ct.ToString(),
-                klientId.ToString(),
-                okresId.ToString());
+        //    result = String.Format(@"{0}:{1}:{2}",
+        //        ct.ToString(),
+        //        klientId.ToString(),
+        //        okresId.ToString());
 
-            return result;
-        }
-        public static string Define_KEY(SPItemEventDataCollection item)
-        {
-            string result;
-            string ct = item["ContentType"].ToString();
-
-            if (ct == "Zadanie" || ct == "Element" || ct == "Folder")
-            {
-                return String.Empty;
-            }
-
-            int klientId = 0;
-            int okresId = 0;
-
-            if (item["selKlient"] != null)
-            {
-                klientId = new SPFieldLookupValue(item["selKlient"].ToString()).LookupId;
-            }
-
-            if (item["selOkres"] != null)
-            {
-                okresId = new SPFieldLookupValue(item["selOkres"].ToString()).LookupId;
-            }
-
-            result = String.Format(@"{0}:{1}:{2}",
-                ct.ToString(),
-                klientId.ToString(),
-                okresId.ToString());
-
-            return result;
-        }
+        //    return result;
+        //}
         public static string Define_KEY(string ct, int klientId, int okresId)
         {
             string result;
@@ -87,6 +57,31 @@ namespace BLL
                 okresId.ToString());
 
             return result;
+        }
+
+        public static string Define_KEY(SPListItem item)
+        {
+            string ct = item["ContentType"].ToString();
+
+            if (ct == "Zadanie" || ct == "Element" || ct == "Folder")
+            {
+                return String.Empty;
+            }
+
+            int klientId = 0;
+            int okresId = 0;
+
+            if (item["selKlient"] != null)
+            {
+                klientId = new SPFieldLookupValue(item["selKlient"].ToString()).LookupId;
+            }
+
+            if (item["selOkres"] != null)
+            {
+                okresId = new SPFieldLookupValue(item["selOkres"].ToString()).LookupId;
+            }
+
+            return Define_KEY(ct, klientId, okresId);
         }
 
         public static void Update_KEY(SPListItem item, string key)
@@ -529,5 +524,7 @@ namespace BLL
             }
             //}
         }
+
+
     }
 }

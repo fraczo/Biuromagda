@@ -47,6 +47,7 @@ namespace Workflows.ObslugaZadania2
             this.logToHistoryListActivity5 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.logToHistoryListActivity4 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.logToHistoryListActivity3 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
+            this.Manage_Zadanie = new System.Workflow.Activities.CodeActivity();
             this.logToHistoryListActivity2 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Else = new System.Workflow.Activities.IfElseBranchActivity();
             this.ProsbaOWyciagBankowy = new System.Workflow.Activities.IfElseBranchActivity();
@@ -151,6 +152,11 @@ namespace Workflows.ObslugaZadania2
             this.logToHistoryListActivity3.OtherData = "";
             this.logToHistoryListActivity3.UserId = -1;
             // 
+            // Manage_Zadanie
+            // 
+            this.Manage_Zadanie.Name = "Manage_Zadanie";
+            this.Manage_Zadanie.ExecuteCode += new System.EventHandler(this.Manage_Zadanie_ExecuteCode);
+            // 
             // logToHistoryListActivity2
             // 
             this.logToHistoryListActivity2.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
@@ -220,6 +226,7 @@ namespace Workflows.ObslugaZadania2
             // Zadanie
             // 
             this.Zadanie.Activities.Add(this.logToHistoryListActivity2);
+            this.Zadanie.Activities.Add(this.Manage_Zadanie);
             codecondition8.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isZadanie);
             this.Zadanie.Condition = codecondition8;
             this.Zadanie.Name = "Zadanie";
@@ -274,6 +281,8 @@ namespace Workflows.ObslugaZadania2
 
         #endregion
 
+        private CodeActivity Manage_Zadanie;
+
         private CodeActivity Manage_ProsbaOWyciagBankowy;
 
         private CodeActivity Manage_ProsbaODokumenty;
@@ -319,6 +328,7 @@ namespace Workflows.ObslugaZadania2
         private IfElseActivity ifElseActivity1;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
 
 
 
