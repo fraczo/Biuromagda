@@ -77,7 +77,7 @@ namespace Workflows.ObslugaZadania2
 
         private void Manage_ProsbaODokumenty_ExecuteCode(object sender, EventArgs e)
         {
-            string nadawca = new SPFieldUserValue(item.Web, item["ModifiedBy"].ToString()).User.Email;
+            string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
             string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
             string kopiaDla = string.Empty;
             bool KopiaDoNadawcy = false;
@@ -89,7 +89,7 @@ namespace Workflows.ObslugaZadania2
 
             DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
 
-            BLL.tabWiadomosci.AddNew(nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania);
+            BLL.tabWiadomosci.AddNew(item.Web, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania);
         }
 
 

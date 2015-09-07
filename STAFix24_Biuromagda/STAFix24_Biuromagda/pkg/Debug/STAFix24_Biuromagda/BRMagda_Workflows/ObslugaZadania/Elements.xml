@@ -6,10 +6,10 @@ Name="[NAME]" ==> Name="MyWorkflow" -->
 
 <Elements xmlns="http://schemas.microsoft.com/sharepoint/">
   <Workflow
-     Name="Obsługa zadania"
+     Name="Obsługa zadania 2"
      Description="My SharePoint Workflow"
-     Id="03c917a4-8972-4b54-8904-23e8c8ef0962"
-     CodeBesideClass="Workflows.ObslugaZadania.ObslugaZadania"
+     Id="65464ab6-c9d9-4c85-8779-8025fa307094"
+     CodeBesideClass="Workflows.ObslugaZadania2.ObslugaZadania2"
      CodeBesideAssembly="BRMagda.Workflows, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7c2016d13a1c5fef">
     <Categories/>
     <MetaData>
