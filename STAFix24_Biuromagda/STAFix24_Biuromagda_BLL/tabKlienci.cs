@@ -667,5 +667,10 @@ namespace BLL
         }
 
 
+
+        public static string Get_EmailById(int p)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

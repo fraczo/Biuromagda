@@ -63,11 +63,11 @@
     <Compile Include="ObslugaWiadomosci\ObslugaWiadomosci.Designer.cs">
       <DependentUpon>ObslugaWiadomosci.cs</DependentUpon>
     </Compile>
-    <Compile Include="ObslugaZadania\ObslugaZadania.cs">
+    <Compile Include="ObslugaZadania\ObslugaZadania2.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ObslugaZadania\ObslugaZadania.Designer.cs">
-      <DependentUpon>ObslugaZadania.cs</DependentUpon>
+    <Compile Include="ObslugaZadania\ObslugaZadania2.Designer.cs">
+      <DependentUpon>ObslugaZadania2.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -77,7 +77,7 @@
       <SharePointProjectItemId>{d03c6008-5ea7-445d-b8ce-45b9fe070301}</SharePointProjectItemId>
     </None>
     <None Include="ObslugaZadania\SharePointProjectItem.spdata">
-      <SharePointProjectItemId>{57a4d147-a816-490f-99ae-3fa67ed47119}</SharePointProjectItemId>
+      <SharePointProjectItemId>{08e059b2-9a85-4f3d-baee-940dc48a4e49}</SharePointProjectItemId>
     </None>
     <None Include="Package\Package.package">
       <PackageId>{36270ecd-bca4-47c9-b205-7870ccdc6991}</PackageId>

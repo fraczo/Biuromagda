@@ -15,10 +15,15 @@ using Microsoft.SharePoint;
 using Microsoft.SharePoint.Workflow;
 using Microsoft.SharePoint.WorkflowActions;
 
-namespace Workflows.ObslugaZadania
+namespace Workflows.ObslugaZadania2
 {
-    public sealed partial class ObslugaZadania : SequentialWorkflowActivity
+    public sealed partial class ObslugaZadania2 : SequentialWorkflowActivity
     {
+        public ObslugaZadania2()
+        {
+            InitializeComponent();
+        }
+
         public Guid workflowId = default(System.Guid);
         public SPWorkflowActivationProperties workflowProperties = new SPWorkflowActivationProperties();
         public string ct;
@@ -27,9 +32,8 @@ namespace Workflows.ObslugaZadania
         private void onWorkflowActivated1_Invoked(object sender, ExternalDataEventArgs e)
         {
             item = workflowProperties.Item;
-            ct = item.ContentType.ToString();
+            ct = item.ContentType.Name;
         }
-
 
         private void isZadanie(object sender, ConditionalEventArgs e)
         {
@@ -71,6 +75,23 @@ namespace Workflows.ObslugaZadania
             e.Result = ct == "Rozliczenie z biurem rachunkowym" ? true : false;
         }
 
+        private void Manage_ProsbaODokumenty_ExecuteCode(object sender, EventArgs e)
+        {
+            string nadawca = new SPFieldUserValue(item.Web, item["ModifiedBy"].ToString()).User.Email;
+            string odbiorca = BLL.tabKlienci.Get_EmailById(new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
+            string kopiaDla = string.Empty;
+            bool KopiaDoNadawcy = false;
+            bool KopiaDoBiura = false;
+            string temat = string.Empty;
+            string tresc = string.Empty;
+            string trescHTML = string.Empty;
+            BLL.tabSzablonyKomunikacji.Get_TemplateByKod("DOK_TEMPLATE.Include", out temat, out trescHTML);
+
+            DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
+
+            BLL.tabWiadomosci.Add(nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania);
+        }
+
+
     }
 }
-

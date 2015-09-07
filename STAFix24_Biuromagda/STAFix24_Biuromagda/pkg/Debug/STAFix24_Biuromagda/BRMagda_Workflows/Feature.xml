@@ -3,5 +3,6 @@
   <ElementManifests>
     <ElementManifest Location="ObslugaWiadomosci\Elements.xml" />
     <ElementManifest Location="ObslugaZadania\Elements.xml" />
+    <ElementManifest Location="ObslugaZadania2\Elements.xml" />
   </ElementManifests>
 </Feature>
