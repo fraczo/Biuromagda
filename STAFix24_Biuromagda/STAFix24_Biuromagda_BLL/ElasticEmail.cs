@@ -39,15 +39,6 @@ namespace ElasticEmail
         public static string SendMail(string subject, string bodyHtml)
         {
 
-
-            //SPSecurity.RunWithElevatedPrivileges(delegate()
-            //{
-
-
-            //});
-
-
-
             string from = "mailer@stafix24.pl";
             string fromName = "STAFix24 Mailer";
             string to = "jacek.rawiak@hotmail.com";

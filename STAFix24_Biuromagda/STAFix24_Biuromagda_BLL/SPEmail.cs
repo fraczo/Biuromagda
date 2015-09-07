@@ -28,16 +28,24 @@ namespace SPEmail
 
         }
 
-        public static void SendMailWithAttachment(SPListItem item, string from, string to, string subject, string body, bool isBodyHtml, string cc, string bcc)
+        public static void SendMailWithAttachment(SPListItem item, string from, string fromName, string to, string toName, string subject, string body, bool isBodyHtml, string cc, string bcc)
         {
 
-                SmtpClient client = new SmtpClient();
-                client.Host = item.Web.Site.WebApplication.OutboundMailServiceInstance.Server.Address;
+            MailMessage message = new MailMessage();
+            SPList list = item.ParentList;
+            message.From = new MailAddress(from, fromName);
+            message.To.Add(new MailAddress(to, toName));
+            message.CC.Add(new MailAddress(cc));
+            message.Bcc.Add(new MailAddress(bcc));
+            message.IsBodyHtml = isBodyHtml;
+            message.Body = body;
+            message.Subject = subject;
 
-                //nazwa witryny
-                from = item.Web.Title != null ? String.Format(@"{0}<{1}>",
-                    item.Web.Title,
-                    from) : from;
+            SendMailWithAttachment(item, message);
+        }
+
+        public static void SendMailWithAttachment(SPListItem item, string from, string to, string subject, string body, bool isBodyHtml, string cc, string bcc)
+        {
 
                 MailMessage message = new MailMessage();
                 SPList list = item.ParentList;
@@ -49,17 +57,31 @@ namespace SPEmail
                 message.Body = body;
                 message.Subject = subject;
 
-                for (int attachmentIndex = 0; attachmentIndex < item.Attachments.Count; attachmentIndex++)
-                {
-                    string url = item.Attachments.UrlPrefix + item.Attachments[attachmentIndex];
-                    SPFile file = list.ParentWeb.GetFile(url);
-                    message.Attachments.Add(new Attachment(file.OpenBinaryStream(), file.Name));
-                }
-
-                client.Send(message);
-
+                SendMailWithAttachment(item, message);
         }
 
+        public static void SendMailWithAttachment(SPListItem item, MailMessage message)
+        {
+            SmtpClient client = new SmtpClient();
+            client.Host = item.Web.Site.WebApplication.OutboundMailServiceInstance.Server.Address;
+
+            //nazwa witryny
+            if (string.IsNullOrEmpty(message.From.Address))
+            {
+                message.From = new MailAddress(BLL.admSetup.GetValue(item.ParentList.ParentWeb, "EMAIL_BIURA"),
+                  item.Web.Title != null ? item.Web.Title : BLL.admSetup.GetValue(item.ParentList.ParentWeb, "EMAIL_NAZWA_FIRMY"));
+            }
+
+            for (int attachmentIndex = 0; attachmentIndex < item.Attachments.Count; attachmentIndex++)
+            {
+                string url = item.Attachments.UrlPrefix + item.Attachments[attachmentIndex];
+                SPFile file = item.ParentList.ParentWeb.GetFile(url);
+                message.Attachments.Add(new Attachment(file.OpenBinaryStream(), file.Name));
+            }
+
+            client.Send(message);
+        }
+        
         public static void SendProcessEndConfirmationMail(string subject, string bodyHtml, SPWeb web, SPListItem item)
         {
             string from = "STAFix24 Robot<noreply@stafix24.pl>";
@@ -68,5 +90,7 @@ namespace SPEmail
             SendMail(web, from, to, subject, bodyHtml, true, string.Empty, string.Empty);
 
         }
+
+
     }
 }

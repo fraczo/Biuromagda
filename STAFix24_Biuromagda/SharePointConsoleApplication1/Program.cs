@@ -10,7 +10,7 @@ namespace SharePointConsoleApplication1
         static void Main(string[] args)
         {
 
-
+            
             using (SPSite site = new SPSite(@"http://spf2010/sites/BR4/"))
             {
                 using (SPWeb web = site.RootWeb)

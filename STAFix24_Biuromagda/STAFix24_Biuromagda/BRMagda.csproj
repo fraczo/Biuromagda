@@ -52,6 +52,9 @@
     <Reference Include="Microsoft.SharePoint.Security" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Features\ObslugaWiadomosciTJ\ObslugaWiadomosciTJ.EventReceiver.cs">
+      <DependentUpon>ObslugaWiadomosciTJ.feature</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -63,6 +66,9 @@
     </None>
     <None Include="Features\CustomActions\CustomActions.feature">
       <FeatureId>{f2f84811-bb32-4ccd-a7ae-9f62e1338e70}</FeatureId>
+    </None>
+    <None Include="Features\ObslugaWiadomosciTJ\ObslugaWiadomosciTJ.feature">
+      <FeatureId>{af4ac181-c796-4a56-ae57-eff1625fa220}</FeatureId>
     </None>
     <None Include="Features\Workflows\Workflows.feature">
       <FeatureId>{d9f38166-637b-47ee-9dd0-3d46980d013c}</FeatureId>
@@ -93,6 +99,10 @@
     </Content>
     <Content Include="Features\CustomActions\CustomActions.Template.xml">
       <DependentUpon>CustomActions.feature</DependentUpon>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Features\ObslugaWiadomosciTJ\ObslugaWiadomosciTJ.Template.xml">
+      <DependentUpon>ObslugaWiadomosciTJ.feature</DependentUpon>
     </Content>
     <Content Include="Features\Workflows\Workflows.Template.xml">
       <DependentUpon>Workflows.feature</DependentUpon>
@@ -105,6 +115,12 @@
     <Content Include="SiteAssets\Templates\DW-Przelew.pdf" />
     <Content Include="SiteAssets\Templates\DW-ZUS.pdf" />
     <Content Include="SiteAssets\Elements.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TimerJobs\TimerJobs.csproj">
+      <Project>{1C9C88D5-6A79-47DC-A888-138CA7DB8A28}</Project>
+      <Name>TimerJobs</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\SharePointTools\Microsoft.VisualStudio.SharePoint.targets" />

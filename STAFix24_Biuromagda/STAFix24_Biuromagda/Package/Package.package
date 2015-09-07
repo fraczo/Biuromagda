@@ -4,11 +4,13 @@
     <projectOutputAssembly location="BRMagda.BLL.dll" deploymentTarget="GlobalAssemblyCache" projectPath="..\STAFix24_Biuromagda_BLL\BLL.csproj" />
     <projectOutputAssembly location="BRMagda.GeneratorDrukow.dll" deploymentTarget="GlobalAssemblyCache" projectPath="..\GeneratorDrukow\GeneratorDrukow.csproj" />
     <projectOutputAssembly location="BRMagda.PdfSharp.dll" deploymentTarget="GlobalAssemblyCache" projectPath="..\PdfSharp\PdfSharp.csproj" />
+    <projectOutputAssembly location="BRMagda.TimerJobs.dll" deploymentTarget="GlobalAssemblyCache" projectPath="..\TimerJobs\TimerJobs.csproj" />
   </assemblies>
   <features>
     <featureReference itemId="bf8a4528-ff15-4340-aad1-32184e54aacf" />
     <featureReference itemId="f2f84811-bb32-4ccd-a7ae-9f62e1338e70" />
     <featureReference itemId="d9f38166-637b-47ee-9dd0-3d46980d013c" />
+    <featureReference itemId="af4ac181-c796-4a56-ae57-eff1625fa220" />
   </features>
   <projectItems>
     <projectItemReference itemId="18be71cb-4a94-45fb-bd5f-f629f4c15954" />
