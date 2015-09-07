@@ -2,6 +2,5 @@
 <Feature xmlns="http://schemas.microsoft.com/sharepoint/" Title="Biuromagda_Workflows" Id="63d1e625-de85-48f4-ba6e-678013c289d5" Scope="Site">
   <ElementManifests>
     <ElementManifest Location="ObslugaWiadomosci\Elements.xml" />
-    <ElementManifest Location="ObslugaZadania\Elements.xml" />
   </ElementManifests>
 </Feature>

@@ -120,11 +120,11 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
                 }
 
-                if (item["_ProcesRequest"] != null && (bool)item["_ProcesRequest"] == true)
-                {
+                //if (item["_ProcesRequest"] != null && (bool)item["_ProcesRequest"] == true)
+                //{
                     //odpalenie procesów obsługi zadań
                     Manage_Process(item);
-                }
+                //}
 
             }
             catch (Exception ex)
@@ -534,8 +534,8 @@ namespace tabZadania_EventReceiver.EventReceiver1
             int klientId = properties.AfterProperties["selKlient"] != null ? new SPFieldLookupValue(properties.AfterProperties["selKlient"].ToString()).LookupId : 0;
             int okresId = properties.AfterProperties["selOkres"] != null ? new SPFieldLookupValue(properties.AfterProperties["selOkres"].ToString()).LookupId : 0;
 
-            if (!string.IsNullOrEmpty(ct) 
-                && klientId > 0 
+            if (!string.IsNullOrEmpty(ct)
+                && klientId > 0
                 && okresId > 0)
             {
                 string key = tabZadania.Define_KEY(ct, klientId, okresId);
@@ -556,6 +556,12 @@ namespace tabZadania_EventReceiver.EventReceiver1
             {
                 case "Zadanie":
                     Manage_Zadanie(item);
+                    break;
+                case "Prośba o dokumenty":
+                    Manage_ProsbaODokumenty(item);
+                    break;
+                case "Prośba o przesłanie wyciągu bankowego":
+                    Manage_ProsbaOWyciagBankowy(item);
                     break;
                 default:
                     break;
@@ -610,9 +616,56 @@ namespace tabZadania_EventReceiver.EventReceiver1
             ResetCommand(item, true);
         }
 
+        private void Manage_ProsbaODokumenty(SPListItem item)
+        {
+            string cmd = GetCommand(item);
+            int klientId = item["selKlient"] != null ? new SPFieldLookupValue(item["selKlient"].ToString()).LookupId : 0;
+
+            if (klientId > 0
+                && cmd == ZATWIERDZ)
+            {
+
+                string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
+                string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
+                string kopiaDla = string.Empty;
+                bool KopiaDoNadawcy = false;
+                bool KopiaDoBiura = false;
+                string temat = string.Empty;
+                string tresc = string.Empty;
+                string trescHTML = string.Empty;
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "DOK_TEMPLATE.Include", out temat, out trescHTML);
+
+                DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
+
+                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID);
+            }
+        }
+
+        private void Manage_ProsbaOWyciagBankowy(SPListItem item)
+        {
+            string cmd = GetCommand(item);
+            int klientId = item["selKlient"] != null ? new SPFieldLookupValue(item["selKlient"].ToString()).LookupId : 0;
+
+            if (klientId > 0
+                && cmd == ZATWIERDZ)
+            {
+                string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
+                string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
+                string kopiaDla = string.Empty;
+                bool KopiaDoNadawcy = false;
+                bool KopiaDoBiura = false;
+                string temat = string.Empty;
+                string tresc = string.Empty;
+                string trescHTML = string.Empty;
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "WBANK_TEMPLATE.Include", out temat, out trescHTML);
+
+                DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
+
+                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID);
+            }
+        }
+
         #region Helpers
-
-
         private void ResetCommand(SPListItem item, bool clearInformacjaDlaKlienta)
         {
             item["cmdFormatka"] = string.Empty;
@@ -629,7 +682,6 @@ namespace tabZadania_EventReceiver.EventReceiver1
         {
             return item["cmdFormatka"] != null ? item["cmdFormatka"].ToString() : string.Empty;
         }
-
         #endregion
     }
 }

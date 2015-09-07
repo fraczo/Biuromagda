@@ -38,21 +38,24 @@ namespace BLL
                 newItem["_ZadanieId"] = zadanieId;
             }
 
+            newItem.Update();
+
             // TODO: obsługa wysyłki załączników
 
             for (int attachmentIndex = 0; attachmentIndex < item.Attachments.Count; attachmentIndex++)
             {
                 string url = item.Attachments.UrlPrefix + item.Attachments[attachmentIndex];
                 SPFile file = item.ParentList.ParentWeb.GetFile(url);
-                MemoryStream ms = new MemoryStream();
-                file.SaveBinary(ms);
-                try
+
+                if (file.Exists)
                 {
-                    item.Attachments.Add(file.Name, ms.GetBuffer());
+                    int bufferSize = 20480;
+                    byte[] byteBuffer = new byte[bufferSize];
+                    //byteBuffer = File.ReadAllBytes(pdfFilePath);
+                    byteBuffer = file.OpenBinary();
+                    //string targetUrl = newItem.Attachments.UrlPrefix + file.Name;
+                    newItem.Attachments.Add(file.Name, byteBuffer);
                 }
-                catch (Exception)
-                {}
-                
             }
 
 
