@@ -21,6 +21,20 @@
           <StartOnCreate>false</StartOnCreate>
           <StartOnChange>false</StartOnChange>
         </ProjectItemStore>
+        <ProjectItemStore Id="{a8cc869c-3e67-4cd9-8b96-83211ae949ec}">
+          <DisplayName>Obsługa zadania</DisplayName>
+          <HistoryList>Workflow History</HistoryList>
+          <HistoryListGuid>{be47a895-7c8e-40c2-884f-32b6a1eed32b}</HistoryListGuid>
+          <TaskList>Tasks</TaskList>
+          <TaskListGuid>{33dea7f3-7394-40d9-82c0-09c586b26ab7}</TaskListGuid>
+          <AutoAssociate>true</AutoAssociate>
+          <ManualStart>true</ManualStart>
+          <ListURL>http://spf2010/sites/biuromagda/Lists/tabZadania/AllItems.aspx</ListURL>
+          <TargetList>Zadania</TargetList>
+          <TargetListGuid>{5701fe8a-d9ee-488f-9f44-1245afe4be8b}</TargetListGuid>
+          <StartOnCreate>true</StartOnCreate>
+          <StartOnChange>true</StartOnChange>
+        </ProjectItemStore>
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>

@@ -16,19 +16,16 @@ namespace admProcessRequests_EventReceiver
         {
             SPListItem sItem = properties.ListItem;
             int okresId = new SPFieldLookupValue(sItem["selOkres"].ToString()).LookupId;
-            
+
             SPList list = web.Lists.TryGetList(targetList);
 
-            //if (list != null)
-            //{
-                list.Items.Cast<SPListItem>()
-                    .ToList()
-                    .ForEach(item =>
-                    {
-                        Import_DaneOFakturze(web, item, okresId);
-                    });
+            list.Items.Cast<SPListItem>()
+                .ToList()
+                .ForEach(item =>
+                {
+                    Import_DaneOFakturze(web, item, okresId);
+                });
 
-            //}
         }
 
         private static void Import_DaneOFakturze(SPWeb web, SPListItem item, int okresId)
@@ -62,8 +59,8 @@ namespace admProcessRequests_EventReceiver
                 {
                     item["selZadanie"] = zadanieId;
 
-                    string numerFaktury = item["colBR_NumerFaktury"]!=null?item["colBR_NumerFaktury"].ToString():string.Empty;
-                    double wartoscDoZaplaty = item["colBR_WartoscDoZaplaty"]!=null?Double.Parse(item["colBR_WartoscDoZaplaty"].ToString()):0;
+                    string numerFaktury = item["colBR_NumerFaktury"] != null ? item["colBR_NumerFaktury"].ToString() : string.Empty;
+                    double wartoscDoZaplaty = item["colBR_WartoscDoZaplaty"] != null ? Double.Parse(item["colBR_WartoscDoZaplaty"].ToString()) : 0;
 
 
 

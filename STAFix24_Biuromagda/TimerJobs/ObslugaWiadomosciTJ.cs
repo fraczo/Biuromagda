@@ -55,71 +55,14 @@ namespace TimerJobs
         {
             using (var site = new SPSite(SiteUrl))
             {
-                var targetList = site.RootWeb.Lists.TryGetList("Wiadomości");
+                SPList list = site.RootWeb.Lists.TryGetList("admProcessRequests");
 
-                if (targetList != null)
-                {
-                    targetList.Items.Cast<SPListItem>()
-                        .Where(i => (bool)i["colCzyWyslana"] != true)
-                        .Where(i => i["colPlanowanaDataNadania"] == null || (i["colPlanowanaDataNadania"] != null && (DateTime)i["colPlanowanaDataNadania"] <= DateTime.Now))
-                        .ToList()
-                        .ForEach(item =>
-                        {
-                            try
-                            {
-                                StartWorkflow(item, "Obsługa wiadomości");
-
-                                item["_Output"] = "TimerJob: " + DateTime.Now.ToString();
-                                item.Update();
-
-                            }
-                            catch (Exception ex)
-                            {
-                                ElasticEmail.EmailGenerator.ReportError(ex, "BRMagda TimerJob");
-                            }
-                        });
-                }
-
+                SPListItem item = list.AddItem();
+                item["ContentType"] = "Obsługa wiadomości";
+                item.Update();
             }
         }
 
-
-        #region Helpers
-
-        private static void StartWorkflow(SPListItem listItem, string workflowName)
-        {
-            try
-            {
-                SPWorkflowManager manager = listItem.Web.Site.WorkflowManager;
-                SPWorkflowAssociationCollection objWorkflowAssociationCollection = listItem.ParentList.WorkflowAssociations;
-                foreach (SPWorkflowAssociation objWorkflowAssociation in objWorkflowAssociationCollection)
-                {
-                    if (String.Compare(objWorkflowAssociation.Name, workflowName, true) == 0)
-                    {
-
-                        //We found our workflow association that we want to trigger.
-
-                        //Replace the workflow_GUID with the GUID of the workflow feature that you
-                        //have deployed.
-
-                        try
-                        {
-                            manager.StartWorkflow(listItem, objWorkflowAssociation, objWorkflowAssociation.AssociationData, true);
-                            //The above line will start the workflow...
-                        }
-                        catch (Exception)
-                        { }
-
-
-                        break;
-                    }
-                }
-            }
-            catch (Exception)
-            { }
-        }
-
-        #endregion
     }
 }
 

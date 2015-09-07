@@ -63,12 +63,24 @@
     <Compile Include="ObslugaWiadomosci\ObslugaWiadomosci.Designer.cs">
       <DependentUpon>ObslugaWiadomosci.cs</DependentUpon>
     </Compile>
+    <Compile Include="ObslugaZadania\ObslugaZadania.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ObslugaZadania\ObslugaZadania.Designer.cs">
+      <DependentUpon>ObslugaZadania.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Features\Feature1\Feature1.feature">
+      <FeatureId>{5ae811a7-6848-4d7d-b209-d00969c5030d}</FeatureId>
+    </None>
     <None Include="key.snk" />
     <None Include="ObslugaWiadomosci\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{d03c6008-5ea7-445d-b8ce-45b9fe070301}</SharePointProjectItemId>
+    </None>
+    <None Include="ObslugaZadania\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{a8cc869c-3e67-4cd9-8b96-83211ae949ec}</SharePointProjectItemId>
     </None>
     <None Include="Package\Package.package">
       <PackageId>{36270ecd-bca4-47c9-b205-7870ccdc6991}</PackageId>
@@ -77,11 +89,13 @@
       <DependentUpon>Package.package</DependentUpon>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Features\" />
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="Features\Feature1\Feature1.Template.xml">
+      <DependentUpon>Feature1.feature</DependentUpon>
+    </Content>
     <Content Include="ObslugaWiadomosci\Elements.xml" />
+    <Content Include="ObslugaZadania\Elements.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\STAFix24_Biuromagda_BLL\BLL.csproj">

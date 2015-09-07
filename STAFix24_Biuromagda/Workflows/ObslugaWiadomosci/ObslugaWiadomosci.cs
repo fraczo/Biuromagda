@@ -104,7 +104,8 @@ namespace Workflows.ObslugaWiadomosci
         {
             if (isMailReadyToSend)
             {
-                SPEmail.EmailGenerator.SendMailWithAttachment(item, mail);
+                bool testMode = true;
+                SPEmail.EmailGenerator.SendMailFromMessageQueue(item, mail, testMode);
 
                 //ustaw flagę wysyłki
                 item["colCzyWyslana"] = true;

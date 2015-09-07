@@ -81,6 +81,51 @@ namespace SPEmail
 
             client.Send(message);
         }
+
+        /// <summary>
+        /// używany do wysyłki wiadomości z opcją zaślepienia wysyłki w modzie testowym
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="mail"></param>
+        /// <param name="isTestMode"></param>
+        public static void SendMailFromMessageQueue(SPListItem item, MailMessage mail, bool isTestMode)
+        {
+            //wymusza zaślepienie wysyłek
+            isTestMode = true;
+
+            if (isTestMode)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.AppendFormat(@"<li>{0}: {1}</li>", "do", mail.To.ToString());
+                mail.To.Clear();
+                mail.To.Add(new  MailAddress(item["colNadawca"].ToString()));
+
+                if (!string.IsNullOrEmpty(mail.CC.ToString()))
+                {
+                    sb.AppendFormat(@"<li>{0}: {1}</li>", "kopia do", mail.CC.ToString());
+                    mail.CC.Clear();
+                }
+
+                if (!string.IsNullOrEmpty(mail.Bcc.ToString()))
+                {
+                    sb.AppendFormat(@"<li>{0}: {1}</li>", "kopia do", mail.Bcc.ToString());
+                    mail.Bcc.Clear();
+                }
+                
+                //wstawia kontrolny ciąg znaków
+                string body = string.Format(@"{1}<blockquote style='background-color: #FFFFFF'><ul>{0}</ul></blockquote>",
+                    sb.ToString(),
+                    mail.Body);
+
+                mail.Body = body;
+
+                mail.Subject = String.Format(":TEST {0}", mail.Subject);
+            }
+
+            SendMailWithAttachment(item, mail);
+
+
+        }
         
         public static void SendProcessEndConfirmationMail(string subject, string bodyHtml, SPWeb web, SPListItem item)
         {
@@ -91,6 +136,6 @@ namespace SPEmail
 
         }
 
-
+        
     }
 }

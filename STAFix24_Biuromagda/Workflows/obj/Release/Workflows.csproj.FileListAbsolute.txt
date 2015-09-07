@@ -1,4 +1,0 @@
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\bin\Release\BRMagda.Workflows.dll
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\bin\Release\BRMagda.Workflows.pdb
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\obj\Release\BRMagda.Workflows.dll
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\obj\Release\BRMagda.Workflows.pdb

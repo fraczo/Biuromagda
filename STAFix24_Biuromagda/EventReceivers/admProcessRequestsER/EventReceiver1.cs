@@ -6,6 +6,7 @@ using Microsoft.SharePoint.Utilities;
 using Microsoft.SharePoint.Workflow;
 using BLL;
 using ElasticEmail;
+using EventReceivers.admProcessRequestsER;
 
 namespace admProcessRequests_EventReceiver
 {
@@ -35,6 +36,9 @@ namespace admProcessRequests_EventReceiver
         {
             this.EventFiringEnabled = false;
 
+            properties.ListItem["enumStatusZlecenia"] = "Obsługa";
+            properties.ListItem.Update();
+
             try
             {
                 SPSecurity.RunWithElevatedPrivileges(delegate()
@@ -60,7 +64,6 @@ namespace admProcessRequests_EventReceiver
                                     ImportKlientow.Execute(properties, web, out message);
                                     PotwierdzMailemZakonczenieZlecenia(properties, web, ct, message);
                                     break;
-
                                 case "Import bufora wiadomości":
                                     ImportBuforaWiadomosci.Execute(properties, web);
                                     PotwierdzMailemZakonczenieZlecenia(properties, web, ct);
@@ -77,10 +80,13 @@ namespace admProcessRequests_EventReceiver
                                     ImportPrzeterminowanychNaleznosci.Execute(properties, web);
                                     PotwierdzMailemZakonczenieZlecenia(properties, web, ct);
                                     break;
+                                case "Obsługa wiadomości":
+                                    ObslugaWiadomosci.Execute(properties, web);
+                                    break;
 
                                 default:
                                     //properties.ListItem["colStatus"] = "Zakończony";
-                                    properties.ListItem.Update();
+                                    //properties.ListItem.Update();
                                     break;
                             }
 
@@ -91,13 +97,16 @@ namespace admProcessRequests_EventReceiver
             }
             catch (Exception ex)
             {
-
+                properties.ListItem["enumStatusZlecenia"] = "Anulowany";
+                properties.ListItem.Update();
                 var result = ElasticEmail.EmailGenerator.ReportError(ex, properties.WebUrl.ToString());
 
             }
             finally
             {
-                properties.ListItem.Delete();
+                //properties.ListItem.Delete();
+                properties.ListItem["enumStatusZlecenia"] = "Zakończony";
+                properties.ListItem.Update();
                 this.EventFiringEnabled = true;
             }
         }
