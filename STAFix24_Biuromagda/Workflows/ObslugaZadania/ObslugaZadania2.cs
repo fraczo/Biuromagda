@@ -89,7 +89,25 @@ namespace Workflows.ObslugaZadania2
 
             DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
 
-            BLL.tabWiadomosci.AddNew(item.Web, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania);
+            BLL.tabWiadomosci.AddNew(item.Web, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID);
+        }
+
+        private void Manage_ProsbaOWyciagBankowy_ExecuteCode(object sender, EventArgs e)
+        {
+            string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
+            string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
+            string kopiaDla = string.Empty;
+            bool KopiaDoNadawcy = false;
+            bool KopiaDoBiura = false;
+            string temat = string.Empty;
+            string tresc = string.Empty;
+            string trescHTML = string.Empty;
+            BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "WBANK_TEMPLATE.Include", out temat, out trescHTML);
+
+            DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
+
+            BLL.tabWiadomosci.AddNew(item.Web, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID);
+
         }
 
 

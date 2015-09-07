@@ -38,6 +38,7 @@ namespace Workflows.ObslugaZadania2
             System.Workflow.Runtime.CorrelationToken correlationtoken1 = new System.Workflow.Runtime.CorrelationToken();
             System.Workflow.ComponentModel.ActivityBind activitybind1 = new System.Workflow.ComponentModel.ActivityBind();
             this.logToHistoryListActivity10 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
+            this.Manage_ProsbaOWyciagBankowy = new System.Workflow.Activities.CodeActivity();
             this.logToHistoryListActivity9 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Manage_ProsbaODokumenty = new System.Workflow.Activities.CodeActivity();
             this.logToHistoryListActivity8 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
@@ -69,6 +70,11 @@ namespace Workflows.ObslugaZadania2
             this.logToHistoryListActivity10.Name = "logToHistoryListActivity10";
             this.logToHistoryListActivity10.OtherData = "";
             this.logToHistoryListActivity10.UserId = -1;
+            // 
+            // Manage_ProsbaOWyciagBankowy
+            // 
+            this.Manage_ProsbaOWyciagBankowy.Name = "Manage_ProsbaOWyciagBankowy";
+            this.Manage_ProsbaOWyciagBankowy.ExecuteCode += new System.EventHandler(this.Manage_ProsbaOWyciagBankowy_ExecuteCode);
             // 
             // logToHistoryListActivity9
             // 
@@ -163,6 +169,7 @@ namespace Workflows.ObslugaZadania2
             // ProsbaOWyciagBankowy
             // 
             this.ProsbaOWyciagBankowy.Activities.Add(this.logToHistoryListActivity9);
+            this.ProsbaOWyciagBankowy.Activities.Add(this.Manage_ProsbaOWyciagBankowy);
             codecondition1.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isProsbaOWyciagBankowy);
             this.ProsbaOWyciagBankowy.Condition = codecondition1;
             this.ProsbaOWyciagBankowy.Name = "ProsbaOWyciagBankowy";
@@ -267,6 +274,8 @@ namespace Workflows.ObslugaZadania2
 
         #endregion
 
+        private CodeActivity Manage_ProsbaOWyciagBankowy;
+
         private CodeActivity Manage_ProsbaODokumenty;
 
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity1;
@@ -310,6 +319,8 @@ namespace Workflows.ObslugaZadania2
         private IfElseActivity ifElseActivity1;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
+
 
 
 
