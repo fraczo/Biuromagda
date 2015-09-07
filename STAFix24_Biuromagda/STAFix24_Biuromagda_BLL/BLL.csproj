@@ -56,6 +56,7 @@
     <Compile Include="dicOddzialyZUS.cs" />
     <Compile Include="dicOperatorzy.cs" />
     <Compile Include="dicSerwisy.cs" />
+    <Compile Include="dicSzablonyKomunikacji.cs" />
     <Compile Include="dicTerminyPlatnosci.cs" />
     <Compile Include="dicUrzedySkarbowe.cs" />
     <Compile Include="ElasticEmail.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="tabProcedury.cs" />
     <Compile Include="tabSzablonyWiadomosci.cs" />
     <Compile Include="tabUrzedySkarbowe.cs" />
+    <Compile Include="tabWiadomosci.cs" />
     <Compile Include="tabZadania.cs" />
     <Compile Include="WorkflowHelpers.cs" />
     <Compile Include="Workflows.cs" />

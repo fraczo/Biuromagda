@@ -667,10 +667,16 @@ namespace BLL
         }
 
 
-
-        public static string Get_EmailById(int p)
+        public static string Get_EmailById(SPWeb web, int klientId)
         {
-            throw new NotImplementedException();
+            SPList list = web.Lists.TryGetList(listName);
+            SPListItem item = list.GetItemById(klientId);
+            if (item!=null)
+            {
+                return item["colEmail"] != null ? item["colEmail"].ToString() : string.Empty;
+            }
+
+            return string.Empty;
         }
     }
 }
