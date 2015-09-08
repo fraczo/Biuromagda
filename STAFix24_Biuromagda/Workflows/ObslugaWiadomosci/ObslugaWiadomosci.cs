@@ -112,6 +112,11 @@ namespace Workflows.ObslugaWiadomosci
                 item["colDataNadania"] = DateTime.Now.ToString();
                 item.Update();
 
+                int zadanieId = item["_ZadanieId"] != null ? int.Parse(item["_ZadanieId"].ToString()) : 0;
+                if (zadanieId>0)
+                {
+                    BLL.tabZadania.Update_StatusWysylki(item.Web, item, zadanieId, BLL.Models.StatusZadania.Zakończone);
+                }
             }
         }
 

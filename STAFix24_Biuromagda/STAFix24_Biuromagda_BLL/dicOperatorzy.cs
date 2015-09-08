@@ -24,22 +24,22 @@ namespace BLL
 
             //if (list != null)
             //{
-                SPListItem item = list.Items.Cast<SPListItem>()
-                    .Where(i => i.Title == nazwaOperatora)
-                    .ToList()
-                    .FirstOrDefault();
+            SPListItem item = list.Items.Cast<SPListItem>()
+                .Where(i => i.Title == nazwaOperatora)
+                .ToList()
+                .FirstOrDefault();
 
-                if (item != null)
-                {
-                    result = item.ID;
-                }
+            if (item != null)
+            {
+                result = item.ID;
+            }
             //}
 
             if (result == 0 && createIfNotExist)
             {
                 try
                 {
-                     item = list.AddItem();
+                    item = list.AddItem();
                     item["Title"] = nazwaOperatora;
                     item.Update();
                 }
@@ -47,10 +47,10 @@ namespace BLL
                 { }
                 finally
                 {
-                     item = list.Items.Cast<SPListItem>()
-                        .Where(i => i.Title == nazwaOperatora)
-                        .ToList()
-                        .FirstOrDefault();
+                    item = list.Items.Cast<SPListItem>()
+                       .Where(i => i.Title == nazwaOperatora)
+                       .ToList()
+                       .FirstOrDefault();
 
                     result = item.ID;
                 }
@@ -64,14 +64,14 @@ namespace BLL
             SPList list = web.Lists.TryGetList(targetList);
             //if (list!=null)
             //{
-                SPListItem item = list.Items.Cast<SPListItem>()
-                    .Where(i => i.Title == v)
-                    .FirstOrDefault();
+            SPListItem item = list.Items.Cast<SPListItem>()
+                .Where(i => i.Title == v)
+                .FirstOrDefault();
 
-                if (item != null)
-                {
-                    return item.ID;
-                }
+            if (item != null)
+            {
+                return item.ID;
+            }
             //}
 
             SPListItem newItem = list.AddItem();
@@ -81,21 +81,33 @@ namespace BLL
             return newItem.ID;
         }
 
-
         public static int Get_UserIdById(SPWeb web, int operatorId)
         {
             SPList list = web.Lists.TryGetList(targetList);
-            //if (list != null)
-            //{
-                SPListItem item = list.GetItemById(operatorId);
-                if (item!=null && item["colKontoOperatora"]!=null)
-                {
-                    int kontoOperatoraId = new SPFieldUserValue(web, item["colKontoOperatora"].ToString()).LookupId;
 
-                    return kontoOperatoraId;
-                }
-            //}
+            SPListItem item = list.GetItemById(operatorId);
+            if (item != null && item["colKontoOperatora"] != null)
+            {
+                int kontoOperatoraId = new SPFieldUserValue(web, item["colKontoOperatora"].ToString()).LookupId;
 
+                return kontoOperatoraId;
+            }
+
+            return 0;
+        }
+
+        public static int Get_OperatorIdByLoginName(SPWeb web, string loginName)
+        {
+            SPList list = web.Lists.TryGetList(targetList);
+
+            SPListItem item = list.Items.Cast<SPListItem>()
+                .Where(i => i["colKontoOperatora"]!=null)
+                .Where(i => new SPFieldUserValue(web, i["colKontoOperatora"].ToString()).User.LoginName == loginName)
+                .FirstOrDefault();
+            if (item != null)
+            {
+                return item.ID;
+            }
             return 0;
         }
     }

@@ -40,26 +40,35 @@ namespace BLL
 
             newItem.Update();
 
-            // TODO: obsługa wysyłki załączników
-
-            for (int attachmentIndex = 0; attachmentIndex < item.Attachments.Count; attachmentIndex++)
-            {
-                string url = item.Attachments.UrlPrefix + item.Attachments[attachmentIndex];
-                SPFile file = item.ParentList.ParentWeb.GetFile(url);
-
-                if (file.Exists)
+            //obsługa wysyłki załączników jeżeli Item został przekazany w wywołaniu procedury
+            if (item!=null)
+            {    for (int attachmentIndex = 0; attachmentIndex < item.Attachments.Count; attachmentIndex++)
                 {
-                    int bufferSize = 20480;
-                    byte[] byteBuffer = new byte[bufferSize];
-                    //byteBuffer = File.ReadAllBytes(pdfFilePath);
-                    byteBuffer = file.OpenBinary();
-                    //string targetUrl = newItem.Attachments.UrlPrefix + file.Name;
-                    newItem.Attachments.Add(file.Name, byteBuffer);
+                    string url = item.Attachments.UrlPrefix + item.Attachments[attachmentIndex];
+                    SPFile file = item.ParentList.ParentWeb.GetFile(url);
+
+                    if (file.Exists)
+                    {
+                        int bufferSize = 20480;
+                        byte[] byteBuffer = new byte[bufferSize];
+                        //byteBuffer = File.ReadAllBytes(pdfFilePath);
+                        byteBuffer = file.OpenBinary();
+                        //string targetUrl = newItem.Attachments.UrlPrefix + file.Name;
+                        newItem.Attachments.Add(file.Name, byteBuffer);
+                    }
                 }
             }
 
 
             newItem.Update();
+        }
+
+        /// <summary>
+        /// tworzy zlecenie wysyłki wiadomości bez załączników (nie przekazuje item)
+        /// </summary>
+        public static void AddNew(SPWeb sPWeb, string nadawca, string odbiorca, string kopiaDla, bool KopiaDoNadawcy, bool KopiaDoBiura, string temat, string tresc, string trescHTML, DateTime planowanaDataNadania, int zadanieId)
+        {
+            AddNew(sPWeb, null, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, zadanieId);
         }
     }
 }

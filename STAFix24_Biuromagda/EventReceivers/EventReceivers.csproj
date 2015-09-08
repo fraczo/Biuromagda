@@ -76,6 +76,7 @@
     </None>
     <None Include="dicUrzedySkarboweER\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{95c6a07b-c9ed-4adb-bd85-f16c5275766b}</SharePointProjectItemId>
+      <SubType>Designer</SubType>
     </None>
     <None Include="key.snk" />
     <None Include="Package\Package.package">

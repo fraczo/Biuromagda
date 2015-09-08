@@ -526,5 +526,31 @@ namespace BLL
         }
 
 
+        /// <summary>
+        /// Aktualizuje informacje o wysyłce wyników do klienta
+        /// Procedura wywoływana w procesu obsługi wiadomości po poprawnie zakończonej wysyłce
+        /// </summary>
+        public static void Update_StatusWysylki(SPWeb web, SPListItem messageItem, int zadanieId, StatusZadania statusZadania)
+        {
+            SPList list = web.Lists.TryGetList(lstZadania);
+            SPListItem item = list.GetItemById(zadanieId);
+            if (item != null)
+            {
+                string status = item["enumStatusZadania"] != null ? item["enumStatusZadania"].ToString() : string.Empty;
+                if (!string.IsNullOrEmpty(status)
+                    && status == BLL.Models.StatusZadania.Wysyłka.ToString())
+                {
+                    //aktualizuj status i dodaj komentarz
+                    item["enumStatusZadania"] = statusZadania.ToString();
+                    string uwagi = item["colUwagi"] != null ? item["colUwagi"].ToString() : string.Empty;
+                    uwagi = string.Format("{0} \n{1}",
+                        uwagi,
+                        messageItem.Title + " wysłane " + messageItem["Modified"].ToString() + " #" + messageItem.ID.ToString()).Trim();
+                    item["colUwagi"] = uwagi;
+                    item.Update();
+                }
+            }
+
+        }
     }
 }
