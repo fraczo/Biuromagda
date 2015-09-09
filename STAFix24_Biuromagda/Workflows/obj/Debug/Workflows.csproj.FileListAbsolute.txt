@@ -3,3 +3,5 @@ C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\bin\Debug\BRMagda.Workflows.
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\obj\Debug\BRMagda.Workflows.dll
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\obj\Debug\BRMagda.Workflows.pdb
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\obj\Debug\Workflows.csprojResolveAssemblyReference.cache
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\bin\Debug\BRMagda.BLL.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\bin\Debug\BRMagda.BLL.pdb

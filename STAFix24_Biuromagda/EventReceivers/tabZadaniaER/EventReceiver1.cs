@@ -280,7 +280,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                                 if (kwota > 0)
                                 {
                                     BLL.Models.Klient iok = new BLL.Models.Klient(web, klientId);
-                                    konto = iok.NumerRachunkuPIT;
+                                    konto = iok.NumerRachunkuPD;
                                     int urzadId = iok.UrzadSkarbowyId;
 
                                     BLL.Models.UrzadSkarbowy us = new BLL.Models.UrzadSkarbowy(web, urzadId);
@@ -302,7 +302,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                                 if (kwota > 0)
                                 {
                                     BLL.Models.Klient iok = new BLL.Models.Klient(web, klientId);
-                                    konto = iok.NumerRachunkuPIT;
+                                    konto = iok.NumerRachunkuPD;
                                     int urzadId = iok.UrzadSkarbowyId;
 
                                     BLL.Models.UrzadSkarbowy us = new BLL.Models.UrzadSkarbowy(web, urzadId);
@@ -463,7 +463,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
         /// </summary>
         private string Clean_NumerRachunku(SPListItem item, string colName)
         {
-            string numerRachunku = item["colName"] != null ? item["colName"].ToString() : string.Empty;
+            string numerRachunku = item[colName] != null ? item[colName].ToString() : string.Empty;
 
             if (numerRachunku.Length>26)
             {
@@ -799,8 +799,15 @@ namespace tabZadania_EventReceiver.EventReceiver1
                     case "Rozliczenie podatku dochodowego":
                         if (isValidated_PD(item))
                         {
-                            Manage_CMD_WyslijWynik_PD(item);
-                            Update_StatusZadania(item, StatusZadania.Wysyłka);
+                            if (!isAuditRequest(item) || Get_Status(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
+                            {
+                                Manage_CMD_WyslijWynik_PD(item);
+                                Update_StatusZadania(item, StatusZadania.Wysyłka);
+                            }
+                            else
+                            {
+                                Update_StatusZadania(item, StatusZadania.Gotowe);
+                            }
                         }
                         break;
                     case "Rozliczenie podatku dochodowego spółki":
@@ -935,7 +942,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
                 Klient k = new Klient(item.Web, klientId);
 
-                sb.Replace("___colPIT_Konto___", k.NumerRachunkuPIT);
+                sb.Replace("___colPIT_Konto___", k.NumerRachunkuPD);
 
 
                 string info2 = string.Empty;
@@ -1283,7 +1290,33 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
         private bool isValidated_PD(SPListItem item)
         {
-            return true;
+            //oczyść dane w zależności od wybranej Decyzji
+            string ocena = Get_String(item,"colPD_OcenaWyniku");
+            if (string.IsNullOrEmpty(ocena))
+            {
+                return false;
+            }
+
+            switch (ocena)
+            {
+                case "Dochód":
+                    ClearValue(item, "colPD_WartoscStraty");
+
+                    if (GetValue(item, "colPD_WartoscDoZaplaty") >= 0
+                        && GetValue(item, "colPD_WartoscDochodu") >= 0)
+                        if (!string.IsNullOrEmpty(Get_String(item, "colPD_Konto"))) return true;
+                        else Add_Comment(item, "brak numeru konta");
+                    break;
+                case "Strata":
+                    ClearValue(item, "colPD_WartoscDochodu");
+
+                    if (GetValue(item, "colPD_WartoscStraty") >= 0) return true;
+                    break;
+                default:
+                    break;
+            }
+
+            return false;
         }
 
         private bool isValidated_PDS(SPListItem item)

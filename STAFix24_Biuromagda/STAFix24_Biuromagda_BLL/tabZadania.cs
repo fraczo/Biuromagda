@@ -231,17 +231,9 @@ namespace BLL
             item["selProcedura"] = procId;
 
             //numery kont i nazwa urzędu
-            KontaKlienta k = new KontaKlienta(web, klientId);
-            if (tabKlienci.Get_TypKlienta(web, klientId) == tabKlienci.TypKlienta.KSH)
-            {
-                item["colPD_Konto"] = k.KontoCIT;
-            }
-            else
-            {
-                item["colPD_Konto"] = k.KontoPIT;
-            }
 
-            item["selUrzadSkarbowy"] = k.IdUrzeduSkarbowego;
+            item["colPD_Konto"] = iok.NumerRachunkuPD;
+            item["selUrzadSkarbowy"] = iok.UrzadSkarbowyId;
 
             //terminy
             item["colPD_TerminPlatnosciPodatku"] = terminPlatnosci;
