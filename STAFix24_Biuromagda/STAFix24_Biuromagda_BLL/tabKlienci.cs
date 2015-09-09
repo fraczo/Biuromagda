@@ -99,8 +99,6 @@ namespace BLL
         {
             SPList targetList = web.Lists.TryGetList(listName);
 
-            //if (targetList != null)
-            //{
             SPListItem item = targetList.GetItemById(klientId);
             if (item != null)
             {
@@ -117,7 +115,6 @@ namespace BLL
                         break;
                 }
             }
-            //}
 
             return TypKlienta.Klient;
         }

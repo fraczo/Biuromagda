@@ -23,7 +23,6 @@ namespace tabZadania_EventReceiver.EventReceiver1
         const string templateH = @"<table><tr valign='top'><td><div style= 'font-family: Arial, Helvetica, sans-serif; font-size: x-small; color: #808080'><strong>w załączeniu:</strong></div></td><td><ul>{0}</ul></td></tr></table>";
         const string templateR = @"<li style= 'font-family: Arial, Helvetica, sans-serif; font-size: x-small '>{0}</li>";
 
-
         #region EventHandlers
 
         public override void ItemAdding(SPItemEventProperties properties)
@@ -57,16 +56,18 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 SPListItem item = properties.ListItem;
                 SPWeb web = item.Web;
 
-                Update_Title(item);
-                Update_KontoOperatora(item, web);
-
                 string ct = item.ContentType.Name;
                 switch (ct)
                 {
-                    case "Rozliczenie z biurem rachunkowym":
-                    case "Rozliczenie podatku dochodowego":
-                    case "Rozliczenie podatku VAT":
+                    case "Prośba o dokumenty":
+                    case "Prośba o przesłanie wyciągu bankowego":
+                        Update_KEY(item);
+                        break;
                     case "Rozliczenie ZUS":
+                    case "Rozliczenie podatku dochodowego":
+                    case "Rozliczenie podatku dochodowego spółki":
+                    case "Rozliczenie podatku VAT":
+                    case "Rozliczenie z biurem rachunkowym":
                         Update_KEY(item);
                         Update_GBW(web, item, ct);
                         break;
@@ -78,6 +79,12 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 }
 
                 Manage_CT(item);
+
+                //aktualizacja tytułu rekordu
+                Update_Title(item);
+
+                //aktualizacja pola user (_)
+                Update_OperatorUser(item, web);
 
             }
             catch (Exception ex)
@@ -98,7 +105,11 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
         #region Updates
 
-        private static void Update_KontoOperatora(SPListItem item, SPWeb web)
+        /// <summary>
+        /// Jeżeli operator jest przypisany to w zadaniu aktualizuje pole _KontoOperatora, które przechowuje jego login
+        /// dla celów filtrowania zadań w/g bieżącego użytkownika.
+        /// </summary>
+        private static void Update_OperatorUser(SPListItem item, SPWeb web)
         {
             if (item["selOperator"] != null)
             {
@@ -142,37 +153,14 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
         private static void Update_Zadanie(SPListItem item, SPWeb web)
         {
-            int procId = item["selProcedura"] != null ? new SPFieldLookupValue(item["selProcedura"].ToString()).LookupId : 0;
-            if (procId == 0)
-            {
-                procId = BLL.tabProcedury.Update(web, item.Title);
-                item["selProcedura"] = procId;
-                item.Update();
-            }
-            //update termin realizacji
-            if (procId > 0 && (item["colTerminRealizacji"] == null || (DateTime)item["colTerminRealizacji"] != new DateTime()))
-            {
+            //przypisz procedurę na podstawie tematu
+            int procId = Assign_ProceduraBasedOnTitle(item, web);
 
-                int termin = BLL.tabProcedury.Get_TerminRealizacjiOfsetById(web, procId);
-                if (termin > 0)
-                {
-                    item["colTerminRealizacji"] = DateTime.Today.AddDays(termin);
-                    item.Update();
-                }
-            }
+            //update termin realizacji
+            Assign_TerminRealizacjiBasedOnProcedura(item, web, procId);
 
             //update operatora
-            if (procId > 0 && item["selOperator"] == null)
-            {
-                int operatorId = BLL.tabProcedury.Get_OperatorById(web, procId);
-                if (operatorId > 0)
-                {
-
-                    item["selOperator"] = operatorId;
-                    item.Update();
-
-                }
-            }
+            Assign_OperatorBasedOnProcedura(item, web, procId);
         }
 
         private bool Update_GBW(SPWeb web, SPListItem item, string ct)
@@ -560,10 +548,10 @@ namespace tabZadania_EventReceiver.EventReceiver1
             if (status != StatusZadania.Zakończone.ToString()
                 && status != StatusZadania.Anulowane.ToString())
             {
-                //Obsługa poleceń cmdFormatka
+                //Obsługa poleceń cmdFormatka - może zmieniać statusy zadania.
                 Manage_CMD(item);
 
-                if (status == StatusZadania.Nowe.ToString())
+                if (item["enumStatusZadania"].ToString() == StatusZadania.Nowe.ToString())
                 {
                     Update_PrzypiszOperatora(item);
                     Update_StatusZadania(item, StatusZadania.Obsługa);
@@ -625,6 +613,17 @@ namespace tabZadania_EventReceiver.EventReceiver1
             }
         }
 
+
+
+
+
+
+
+
+
+
+        #region Manage CT
+
         private void Manage_CMD_WyslijInfo(SPListItem item)
         {
             string ct = item.ContentType.Name;
@@ -647,46 +646,6 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
             }
         }
-
-        private void Manage_CMD_Zatwierdz(SPListItem item)
-        {
-            string cmd = GetCommand(item);
-            if (cmd==ZATWIERDZ)
-            {
-                string ct = item.ContentType.Name;
-
-                switch (ct)
-                {
-                    case "Zadanie":
-                        break;
-                    case "Prośba o dokumenty":
-                        Manage_CMD_WyslijWynik_ProsbaODokumenty(item);
-                        Update_StatusZadania(item,StatusZadania.Wysyłka);
-                        break;
-                    case "Prośba o przesłanie wyciągu bankowego":
-                        Manage_CMD_WyslijWynik_ProsbaOWyciagBankowy(item);
-                        Update_StatusZadania(item, StatusZadania.Wysyłka);
-                        break;
-                    case "Rozliczenie z biurem rachunkowym":
-                        Manage_CMD_WyslijWynik_RBR(item);
-                        Update_StatusZadania(item, StatusZadania.Wysyłka);
-                        break;
-                    case "Rozliczenie podatku dochodowego":
-                        break;
-                    case "Rozliczenie podatku VAT":
-                        Manage_CMD_WyslijWynik_VAT(item);
-                        Update_StatusZadania(item, StatusZadania.Wysyłka);
-                        break;
-                    case "Rozliczenie ZUS":
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-
-
-        #region Manage CT
 
         private void Manage_CMD_WyslijInfo_Zadanie(SPListItem item)
         {
@@ -786,6 +745,109 @@ namespace tabZadania_EventReceiver.EventReceiver1
             }
         }
 
+        private void Manage_CMD_Zatwierdz(SPListItem item)
+        {
+            string cmd = GetCommand(item);
+            if (cmd == ZATWIERDZ)
+            {
+                string ct = item.ContentType.Name;
+
+                switch (ct)
+                {
+                    case "Zadanie":
+                        break;
+                    case "Prośba o przesłanie wyciągu bankowego":
+                        Manage_CMD_WyslijWynik_ProsbaOWyciagBankowy(item);
+                        Update_StatusZadania(item, StatusZadania.Wysyłka);
+                        break;
+                    case "Prośba o dokumenty":
+                        Manage_CMD_WyslijWynik_ProsbaODokumenty(item);
+                        Update_StatusZadania(item, StatusZadania.Wysyłka);
+                        break;
+                    case "Rozliczenie ZUS":
+                        if (isValidated_ZUS(item))
+                        {
+                            Manage_CMD_WyslijWynik_ZUS(item);
+                            Update_StatusZadania(item, StatusZadania.Wysyłka);
+                        }
+                        break;
+                    case "Rozliczenie podatku dochodowego":
+                        if (isValidated_PD(item))
+                        {
+                            Manage_CMD_WyslijWynik_PD(item);
+                            Update_StatusZadania(item, StatusZadania.Wysyłka);
+                        }
+                        break;
+                    case "Rozliczenie podatku dochodowego spółki":
+                        if (isValidated_PDS(item))
+                        {
+                            Manage_CMD_WyslijWynik_PDS(item);
+                            Update_StatusZadania(item, StatusZadania.Wysyłka);
+                        }
+                        break;
+                    case "Rozliczenie podatku VAT":
+                        if (isValidated_VAT(item))
+                        {
+                            if (!isAuditRequest(item) || Get_Status(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
+                            {
+                                Manage_CMD_WyslijWynik_VAT(item);
+                                Update_StatusZadania(item, StatusZadania.Wysyłka);
+                            }
+                            else
+                            {
+                                Update_StatusZadania(item, StatusZadania.Gotowe);
+                            }
+                        }
+                        break;
+
+                    case "Rozliczenie z biurem rachunkowym":
+                        if (isValidated_RBR(item))
+                        {
+                            Manage_CMD_WyslijWynik_RBR(item);
+                            Update_StatusZadania(item, StatusZadania.Wysyłka);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private string Get_Status(SPListItem item)
+        {
+            return item["enumStatusZadania"] != null ? item["enumStatusZadania"].ToString() : string.Empty;
+        }
+
+        private bool isAuditRequest(SPListItem item)
+        {
+            return item["colAudytDanych"] != null ? (bool)item["colAudytDanych"] : false;
+        }
+
+
+        private void Manage_CMD_WyslijWynik_ProsbaOWyciagBankowy(SPListItem item)
+        {
+            string cmd = GetCommand(item);
+            int klientId = item["selKlient"] != null ? new SPFieldLookupValue(item["selKlient"].ToString()).LookupId : 0;
+
+            if (klientId > 0
+                && cmd == ZATWIERDZ)
+            {
+                string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
+                string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
+                string kopiaDla = string.Empty;
+                bool KopiaDoNadawcy = false;
+                bool KopiaDoBiura = false;
+                string temat = string.Empty;
+                string tresc = string.Empty;
+                string trescHTML = string.Empty;
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "WBANK_TEMPLATE.Include", out temat, out trescHTML);
+
+                DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
+
+                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID);
+            }
+        }
+
         private void Manage_CMD_WyslijWynik_ProsbaODokumenty(SPListItem item)
         {
             string cmd = GetCommand(item);
@@ -811,7 +873,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
             }
         }
 
-        private void Manage_CMD_WyslijWynik_ProsbaOWyciagBankowy(SPListItem item)
+        private void Manage_CMD_WyslijWynik_ZUS(SPListItem item)
         {
             string cmd = GetCommand(item);
             int klientId = item["selKlient"] != null ? new SPFieldLookupValue(item["selKlient"].ToString()).LookupId : 0;
@@ -819,15 +881,148 @@ namespace tabZadania_EventReceiver.EventReceiver1
             if (klientId > 0
                 && cmd == ZATWIERDZ)
             {
+
                 string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
                 string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
                 string kopiaDla = string.Empty;
-                bool KopiaDoNadawcy = false;
-                bool KopiaDoBiura = false;
+                bool KopiaDoNadawcy = true;
+                bool KopiaDoBiura = true;
                 string temat = string.Empty;
                 string tresc = string.Empty;
                 string trescHTML = string.Empty;
-                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "WBANK_TEMPLATE.Include", out temat, out trescHTML);
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "ZUS_TEMPLATE.Include", out temat, out trescHTML);
+
+                //uzupełnia temat kodem klienta i okresu
+                temat = AddSpecyfikacja(item, temat);
+
+                //uzupełnia dane w formatce BR_TEMPLATE
+                StringBuilder sb = new StringBuilder(trescHTML);
+                sb.Replace("___colZUS_SP_Skladka___", item["colZUS_SP_Skladka"] != null ? item["colZUS_SP_Skladka"].ToString() : string.Empty);
+                sb.Replace("___colZUS_SP_Konto___", item["colZUS_SP_Konto"] != null ? item["colZUS_SP_Konto"].ToString() : string.Empty);
+                sb.Replace("___colZUS_TerminPlatnosciSkladek___", item["colZUS_TerminPlatnosciSkladek"] != null ? item["colZUS_TerminPlatnosciSkladek"].ToString() : string.Empty);
+                sb.Replace("___colZUS_ZD_Skladka___", item["colZUS_ZD_Skladka"] != null ? item["colZUS_ZD_Skladka"].ToString() : string.Empty);
+                sb.Replace("___colZUS_ZD_Konto___", item["colZUS_ZD_Konto"] != null ? item["colZUS_ZD_Konto"].ToString() : string.Empty);
+                sb.Replace("___colZUS_FP_Skladka___", item["colZUS_FP_Skladka"] != null ? item["colZUS_FP_Skladka"].ToString() : string.Empty);
+                sb.Replace("___colZUS_FP_Konto___", item["colZUS_FP_Konto"] != null ? item["colZUS_FP_Konto"].ToString() : string.Empty);
+
+                sb.Replace("___colZUS_PIT-4R___", item["colZUS_PIT-4R"] != null ? item["colZUS_PIT-4R"].ToString() : string.Empty);
+                sb.Replace("___colZUS_PIT-8AR___", item["colZUS_PIT-8AR"] != null ? item["colZUS_PIT-8AR"].ToString() : string.Empty);
+                sb.Replace("___colPIT_Konto___", item["colPIT_Konto"] != null ? item["colPIT_Konto"].ToString() : string.Empty);
+
+
+                string info2 = string.Empty;
+                string info = item["colInformacjaDlaKlienta"] != null ? item["colInformacjaDlaKlienta"].ToString() : string.Empty;
+                //dodaj informację o z załącznikach w/g ustawionych flag
+                if (item["colZUS_PIT-4R_Zalaczony"] != null ? (bool)item["colZUS_PIT-4R_Zalaczony"] : false)
+                {
+                    info2 = info2 + string.Format(templateR, "PIT-4R");
+                }
+                if (item["colZUS_PIT-8AR_Zalaczony"] != null ? (bool)item["colZUS_PIT-8AR_Zalaczony"] : false)
+                {
+                    info2 = info2 + string.Format(templateR, "PIT-8AR");
+                }
+                if (item["colZUS_ListaPlac_Zalaczona"] != null ? (bool)item["colZUS_ListaPlac_Zalaczona"] : false)
+                {
+                    info2 = info2 + string.Format(templateR, "Lista płac");
+                }
+                if (item["colZUS_Rachunki_Zalaczone"] != null ? (bool)item["colZUS_Rachunki_Zalaczone"] : false)
+                {
+                    info2 = info2 + string.Format(templateR, "Rachunki");
+                }
+                if (item["colDrukWplaty"] != null ? (bool)item["colDrukWplaty"] : false)
+                {
+                    info2 = info2 + string.Format(templateR, "Druk(i) wpłaty");
+                }
+
+                if (!string.IsNullOrEmpty(info2))
+                {
+                    info2 = string.Format(templateH, info2);
+                    info = info + "<br>" + info2;
+                }
+
+
+                sb.Replace("___colInformacjaDlaKlienta___", info);
+
+                trescHTML = sb.ToString();
+
+                DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
+
+                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID);
+            }
+
+        }
+
+        private void Manage_CMD_WyslijWynik_PD(SPListItem item)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Manage_CMD_WyslijWynik_PDS(SPListItem item)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Manage_CMD_WyslijWynik_VAT(SPListItem item)
+        {
+            string cmd = GetCommand(item);
+            int klientId = item["selKlient"] != null ? new SPFieldLookupValue(item["selKlient"].ToString()).LookupId : 0;
+
+            if (klientId > 0
+                && cmd == ZATWIERDZ)
+            {
+
+                string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
+                string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
+                string kopiaDla = string.Empty;
+                bool KopiaDoNadawcy = true;
+                bool KopiaDoBiura = true;
+                string temat = string.Empty;
+                string tresc = string.Empty;
+                string trescHTML = string.Empty;
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "VAT_TEMPLATE.Include", out temat, out trescHTML);
+
+                //uzupełnia temat kodem klienta i okresu
+                temat = AddSpecyfikacja(item, temat);
+
+                //uzupełnia dane w formatce BR_TEMPLATE
+                StringBuilder sb = new StringBuilder(trescHTML);
+                sb.Replace("___colVAT_Decyzja___", item["colVAT_Decyzja"] != null ? item["colVAT_Decyzja"].ToString() : string.Empty);
+                sb.Replace("___colVAT_TerminZwrotuPodatku___", item["colVAT_TerminZwrotuPodatku"] != null ? item["colVAT_TerminZwrotuPodatku"].ToString() : "?");
+                sb.Replace("___colVAT_WartoscNadwyzkiZaPoprzedniMiesiac___", item["colVAT_WartoscNadwyzkiZaPoprzedniMiesiac"] != null ? item["colVAT_WartoscNadwyzkiZaPoprzedniMiesiac"].ToString() : emptyMarker);
+                sb.Replace("___colVAT_WartoscDoZwrotu___", item["colVAT_WartoscDoZwrotu"] != null ? item["colVAT_WartoscDoZwrotu"].ToString() : emptyMarker);
+                sb.Replace("___colVAT_WartoscDoPrzeniesienia___", item["colVAT_WartoscDoPrzeniesienia"] != null ? item["colVAT_WartoscDoPrzeniesienia"].ToString() : emptyMarker);
+                sb.Replace("___colFormaOpodatkowaniaVAT___", item["colFormaOpodatkowaniaVAT"] != null ? item["colFormaOpodatkowaniaVAT"].ToString() : string.Empty);
+                sb.Replace("___colVAT_WartoscDoZaplaty___", item["colVAT_WartoscDoZaplaty"] != null ? item["colVAT_WartoscDoZaplaty"].ToString() : emptyMarker);
+                sb.Replace("___colVAT_Konto___", item["colVAT_Konto"] != null ? item["colVAT_Konto"].ToString() : string.Empty);
+                sb.Replace("___colVAT_TerminPlatnosciPodatku___", item["colVAT_TerminPlatnosciPodatku"] != null ? DateTime.Parse(item["colVAT_TerminPlatnosciPodatku"].ToString()).ToShortDateString() : string.Empty);
+
+                string info2 = string.Empty;
+                string info = item["colInformacjaDlaKlienta"] != null ? item["colInformacjaDlaKlienta"].ToString() : string.Empty;
+                //dodaj informację o z załącznikach w/g ustawionych flag
+                if (item["colVAT_VAT-UE_Zalaczony"] != null ? (bool)item["colVAT_VAT-UE_Zalaczony"] : false)
+                {
+                    info2 = info2 + string.Format(templateR, "VAT-UE");
+                }
+                if (item["colVAT_VAT_x002d_27_Zalaczony0"] != null ? (bool)item["colVAT_VAT_x002d_27_Zalaczony0"] : false)
+                {
+                    info2 = info2 + string.Format(templateR, "VAT-27");
+                }
+
+                if (item["colDrukWplaty"] != null ? (bool)item["colDrukWplaty"] : false)
+                {
+                    info2 = info2 + string.Format(templateR, "Druk wpłaty");
+                }
+
+                if (!string.IsNullOrEmpty(info2))
+                {
+                    info2 = string.Format(templateH, info2);
+                    info = info + "<br>" + info2;
+                }
+
+
+                sb.Replace("___colInformacjaDlaKlienta___", info);
+
+                trescHTML = sb.ToString();
 
                 DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
 
@@ -863,15 +1058,15 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 sb.Replace("___colBR_WartoscDoZaplaty___", item["colBR_WartoscDoZaplaty"] != null ? item["colBR_WartoscDoZaplaty"].ToString() : string.Empty);
                 sb.Replace("___colBR_Konto___", item["colBR_Konto"] != null ? item["colBR_Konto"].ToString() : string.Empty);
                 sb.Replace("___colBR_TerminPlatnosci___", item["colBR_TerminPlatnosci"] != null ? DateTime.Parse(item["colBR_TerminPlatnosci"].ToString()).ToShortDateString() : string.Empty);
-                
+
                 string info2 = string.Empty;
                 string info = item["colInformacjaDlaKlienta"] != null ? item["colInformacjaDlaKlienta"].ToString() : string.Empty;
                 //dodaj informację o z załącznikach w/g ustawionych flag
-                if (item["colBR_FakturaZalaczona"]!=null?(bool)item["colBR_FakturaZalaczona"]:false)
+                if (item["colBR_FakturaZalaczona"] != null ? (bool)item["colBR_FakturaZalaczona"] : false)
                 {
                     info2 = info2 + string.Format(templateR, "Faktura za obsługę księgową");
                 }
-                if (item["colDrukWplaty"]!=null?(bool)item["colDrukWplaty"]:false)
+                if (item["colDrukWplaty"] != null ? (bool)item["colDrukWplaty"] : false)
                 {
                     info2 = info2 + string.Format(templateR, "Druk wpłaty");
                 }
@@ -881,7 +1076,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                     info2 = string.Format(templateH, info2);
                     info = info + info2;
                 }
-          
+
                 sb.Replace("___colInformacjaDlaKlienta___", info);
 
                 trescHTML = sb.ToString();
@@ -892,78 +1087,184 @@ namespace tabZadania_EventReceiver.EventReceiver1
             }
         }
 
-        private void Manage_CMD_WyslijWynik_VAT(SPListItem item)
+
+        private bool isValidated_ZUS(SPListItem item)
         {
-            string cmd = GetCommand(item);
-            int klientId = item["selKlient"] != null ? new SPFieldLookupValue(item["selKlient"].ToString()).LookupId : 0;
-
-            if (klientId > 0
-                && cmd == ZATWIERDZ)
+            //oczyść dane w zależności od wybranej Decyzji
+            string opcja = item["colZUS_Opcja"] != null ? item["colZUS_Opcja"].ToString() : string.Empty;
+            if (string.IsNullOrEmpty(opcja))
             {
-
-                string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
-                string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
-                string kopiaDla = string.Empty;
-                bool KopiaDoNadawcy = true;
-                bool KopiaDoBiura = true;
-                string temat = string.Empty;
-                string tresc = string.Empty;
-                string trescHTML = string.Empty;
-                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "VAT_TEMPLATE.Include", out temat, out trescHTML);
-
-                //uzupełnia temat kodem klienta i okresu
-                temat = AddSpecyfikacja(item, temat);
-
-                //uzupełnia dane w formatce BR_TEMPLATE
-                StringBuilder sb = new StringBuilder(trescHTML);
-                sb.Replace("___colVAT_Decyzja___", item["colVAT_Decyzja"] != null ? item["colVAT_Decyzja"].ToString() : string.Empty);
-                sb.Replace("___colVAT_TerminZwrotuPodatku___", item["colVAT_TerminZwrotuPodatku"] != null ? item["colVAT_TerminZwrotuPodatku"].ToString() : "?");
-                sb.Replace("___colVAT_WartoscNadwyzkiZaPoprzedniMiesiac___", item["colVAT_WartoscNadwyzkiZaPoprzedniMiesiac"] != null ? item["colVAT_WartoscNadwyzkiZaPoprzedniMiesiac"].ToString() : emptyMarker);
-                sb.Replace("___colVAT_WartoscDoZwrotu___", item["colVAT_WartoscDoZwrotu"] != null ? item["colVAT_WartoscDoZwrotu"].ToString() : emptyMarker);
-                sb.Replace("___colVAT_WartoscDoPrzeniesienia___", item["colVAT_WartoscDoPrzeniesienia"] != null ? item["colVAT_WartoscDoPrzeniesienia"].ToString() : emptyMarker);
-                sb.Replace("___colFormaOpodatkowaniaVAT___", item["colFormaOpodatkowaniaVAT"] != null ? item["colFormaOpodatkowaniaVAT"].ToString() : string.Empty);
-                sb.Replace("___colVAT_WartoscDoZaplaty___", item["colVAT_WartoscDoZaplaty"] != null ? item["colVAT_WartoscDoZaplaty"].ToString(): emptyMarker);
-                sb.Replace("___colVAT_Konto___", item["colVAT_Konto"] != null ? item["colVAT_Konto"].ToString() : string.Empty);
-                sb.Replace("___colVAT_TerminPlatnosciPodatku___", item["colVAT_TerminPlatnosciPodatku"] != null ? DateTime.Parse(item["colVAT_TerminPlatnosciPodatku"].ToString()).ToShortDateString() : string.Empty);
-
-                string info2 = string.Empty;
-                string info = item["colInformacjaDlaKlienta"] != null ? item["colInformacjaDlaKlienta"].ToString() : string.Empty;
-                //dodaj informację o z załącznikach w/g ustawionych flag
-                if (item["colVAT_VAT-UE_Zalaczony"] != null ? (bool)item["colVAT_VAT-UE_Zalaczony"] : false)
-                {
-                    info2 = info2 + string.Format(templateR, "VAT-UE");
-                }
-                if (item["colVAT_VAT_x002d_27_Zalaczony0"] != null ? (bool)item["colVAT_VAT_x002d_27_Zalaczony0"] : false)
-                {
-                    info2 = info2 + string.Format(templateR, "VAT-27");
-                }
-
-                if (item["colDrukWplaty"] != null ? (bool)item["colDrukWplaty"] : false)
-                {
-                    info2 = info2 + string.Format(templateR, "Druk wpłaty");
-                }
-
-                if (!string.IsNullOrEmpty(info2))
-                {
-                    info2 = string.Format(templateH, info2);
-                    info = info +"<br>"+ info2;
-                }
-
-
-                sb.Replace("___colInformacjaDlaKlienta___", info);
-
-                trescHTML = sb.ToString();
-
-                DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
-
-                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID);
+                return false;
             }
+
+            switch (opcja)
+            {
+                case "Tylko zdrowotna":
+                    ClearValue(item, "colZUS_SP_Skladka");
+                    ClearValue(item, "colZUS_FP_Skladka");
+                    if (GetValue(item, "colZUS_ZD_Skladka") > 0)
+                    {
+                        bool foundError = false;
+
+                        if (string.IsNullOrEmpty(Get_String(item, "colZUS_SP_Konto")))
+                        {
+                            Add_Comment(item, "brak numeru konta ZUS SP");
+                            foundError = true;
+                        }
+                        if (string.IsNullOrEmpty(Get_String(item, "colZUS_ZD_Konto")))
+                        {
+                            Add_Comment(item, "brak numeru konta ZUS ZD");
+                            foundError = true;
+                        }
+                        if (string.IsNullOrEmpty(Get_String(item, "colZUS_FP_Konto")))
+                        {
+                            Add_Comment(item, "brak numeru konta ZUS FP");
+                            foundError = true;
+                        }
+
+                        if (foundError) return false;
+
+                        return true;
+                    }
+                    break;
+                default:
+                    if (GetValue(item, "colZUS_SP_Skladka") > 0
+                        && GetValue(item, "colZUS_ZD_Skladka") > 0
+                        && GetValue(item, "colZUS_FP_Skladka") > 0)
+                    {
+                        bool foundError = false;
+
+                        if (string.IsNullOrEmpty(Get_String(item, "colZUS_SP_Konto")))
+                        {
+                            Add_Comment(item, "brak numeru konta ZUS SP");
+                            foundError = true;
+                        }
+                        if (string.IsNullOrEmpty(Get_String(item, "colZUS_ZD_Konto")))
+                        {
+                            Add_Comment(item, "brak numeru konta ZUS ZD");
+                            foundError = true;
+                        }
+                        if (string.IsNullOrEmpty(Get_String(item, "colZUS_FP_Konto")))
+                        {
+                            Add_Comment(item, "brak numeru konta ZUS FP");
+                            foundError = true;
+                        }
+
+                        if (foundError) return false;
+
+                        return true;
+                    }
+                    break;
+            }
+
+            return false;
+        }
+
+        private bool isValidated_PD(SPListItem item)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool isValidated_PDS(SPListItem item)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool isValidated_VAT(SPListItem item)
+        {
+            //oczyść dane w zależności od wybranej Decyzji
+            string decyzja = item["colVAT_Decyzja"] != null ? item["colVAT_Decyzja"].ToString() : string.Empty;
+            if (string.IsNullOrEmpty(decyzja))
+            {
+                return false;
+            }
+
+            switch (decyzja)
+            {
+                case "Do zapłaty":
+                    //ClearValue(item, "colVAT_WartoscDoZaplaty");
+                    ClearValue(item, "colVAT_WartoscDoPrzeniesienia");
+                    ClearValue(item, "colVAT_WartoscDoZwrotu");
+
+                    if (GetValue(item, "colVAT_WartoscDoZaplaty") > 0)
+                        if (!string.IsNullOrEmpty(Get_String(item, "colVAT_Konto"))) return true;
+                        else Add_Comment(item, "brak numeru konta");
+                    break;
+                case "Do przeniesienia":
+                    ClearValue(item, "colVAT_WartoscDoZaplaty");
+                    //ClearValue(item, "colVAT_WartoscDoPrzeniesienia");
+                    ClearValue(item, "colVAT_WartoscDoZwrotu");
+
+                    if (GetValue(item, "colVAT_WartoscDoPrzeniesienia") > 0) return true;
+                    break;
+                case "Do zwrotu":
+                    ClearValue(item, "colVAT_WartoscDoZaplaty");
+                    ClearValue(item, "colVAT_WartoscDoPrzeniesienia");
+                    //ClearValue(item, "colVAT_WartoscDoZwrotu");
+
+                    if (GetValue(item, "colVAT_WartoscDoZwrotu") > 0) return true;
+                    break;
+                case "Do przeniesienia i do zwrotu":
+                    ClearValue(item, "colVAT_WartoscDoZaplaty");
+                    //ClearValue(item, "colVAT_WartoscDoPrzeniesienia");
+                    //ClearValue(item, "colVAT_WartoscDoZwrotu");
+
+                    if (GetValue(item, "colVAT_WartoscDoPrzeniesienia") > 0
+                        && GetValue(item, "colVAT_WartoscDoZwrotu") > 0) return true;
+                    break;
+                default:
+                    break;
+            }
+
+            return false;
+        }
+
+        private void Add_Comment(SPListItem item, string comment)
+        {
+            string uwagi = Get_String(item, "colUwagi");
+            uwagi = uwagi + "\n" + DateTime.Now.ToString() + "\n" + comment;
+            item["colUwagi"] = uwagi.Trim();
+            item.Update();
+        }
+
+        private string Get_String(SPListItem item, string colName)
+        {
+            return item[colName] != null ? item[colName].ToString() : string.Empty;
+        }
+
+        private double GetValue(SPListItem item, string colName)
+        {
+            if (item[colName] != null)
+            {
+                return double.Parse(item[colName].ToString());
+            }
+            else
+            {
+                //jeżeli pusta wartość to wpisz 0
+                item[colName] = 0;
+                item.Update();
+                return 0;
+            }
+        }
+
+        private void ClearValue(SPListItem item, string colName)
+        {
+            if (item[colName] != null)
+            {
+                item[colName] = string.Empty;
+                item.Update();
+            }
+        }
+
+        private bool isValidated_RBR(SPListItem item)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
 
         #region Helpers
-         private string AddSpecyfikacja(SPListItem item, string  temat)
+        private string AddSpecyfikacja(SPListItem item, string temat)
         {
             string okres = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupValue : string.Empty;
             string klient = item["selKlient"] != null ? new SPFieldLookupValue(item["selKlient"].ToString()).LookupValue : string.Empty;
@@ -972,7 +1273,8 @@ namespace tabZadania_EventReceiver.EventReceiver1
             if (!string.IsNullOrEmpty(klient)) temat = temat + " " + klient;
 
             return temat;
-        }       private string AddSygnatura(string temat, SPListItem item)
+        }
+        private string AddSygnatura(string temat, SPListItem item)
         {
             if (item != null)
             {
@@ -1040,7 +1342,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
             if (clearInformacjaDlaKlienta
                 && item["colInformacjaDlaKlienta"] != null)
             {
-                item["colInformacjaDlaKlienta"] = string.Empty;  
+                item["colInformacjaDlaKlienta"] = string.Empty;
             }
             item.Update();
 
@@ -1049,6 +1351,47 @@ namespace tabZadania_EventReceiver.EventReceiver1
         private string GetCommand(SPListItem item)
         {
             return item["cmdFormatka"] != null ? item["cmdFormatka"].ToString() : string.Empty;
+        }
+
+        private static void Assign_OperatorBasedOnProcedura(SPListItem item, SPWeb web, int procId)
+        {
+            if (procId > 0 && item["selOperator"] == null)
+            {
+                int operatorId = BLL.tabProcedury.Get_OperatorById(web, procId);
+                if (operatorId > 0)
+                {
+
+                    item["selOperator"] = operatorId;
+                    item.Update();
+
+                }
+            }
+        }
+
+        private static void Assign_TerminRealizacjiBasedOnProcedura(SPListItem item, SPWeb web, int procId)
+        {
+            if (procId > 0 && (item["colTerminRealizacji"] == null || (DateTime)item["colTerminRealizacji"] != new DateTime()))
+            {
+
+                int termin = BLL.tabProcedury.Get_TerminRealizacjiOfsetById(web, procId);
+                if (termin > 0)
+                {
+                    item["colTerminRealizacji"] = DateTime.Today.AddDays(termin);
+                    item.Update();
+                }
+            }
+        }
+
+        private static int Assign_ProceduraBasedOnTitle(SPListItem item, SPWeb web)
+        {
+            int procId = item["selProcedura"] != null ? new SPFieldLookupValue(item["selProcedura"].ToString()).LookupId : 0;
+            if (procId == 0)
+            {
+                procId = BLL.tabProcedury.Update(web, item.Title);
+                item["selProcedura"] = procId;
+                item.Update();
+            }
+            return procId;
         }
 
         #endregion

@@ -10,4 +10,3 @@ C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\obj\Debug\de\BRMagda.PdfSharp
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\obj\Debug\BRMagda.PdfSharp.dll
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\obj\Debug\BRMagda.PdfSharp.pdb
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\obj\Debug\PdfSharp.csprojResolveAssemblyReference.cache
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\bin\Debug\BRMagda.PdfSharp.xml
