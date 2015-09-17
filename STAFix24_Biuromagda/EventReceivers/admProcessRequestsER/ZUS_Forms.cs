@@ -80,7 +80,6 @@ namespace admProcessRequests_EventReceiver.admProcessRequestsER
                         break;
                     case @"ZUS-PRAC":
                         found = true;
-                        isTylkoZdrowotna = true;
                         tabOkresy.Get_ZUS_PRAC(web, okresId, out terminPlatnosci, out terminPrzekazania);
                         break;
 

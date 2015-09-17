@@ -48,7 +48,8 @@ namespace admProcessRequests_EventReceiver
 
                 DateTime dataWystawienia = item["cDataWystawienia"] != null ? DateTime.Parse(item["cDataWystawienia"].ToString()) : new DateTime();
                 Klient iok = new Klient(web, klientId);
-                DateTime terminPlatnosci = dataWystawienia.AddDays(iok.TerminPlatnosci);
+                DateTime terminPlatnosci = new DateTime();
+                terminPlatnosci = dataWystawienia.AddDays(iok.TerminPlatnosci);
                 item["colBR_TerminPlatnosci"] = terminPlatnosci;
 
                 item.Update();

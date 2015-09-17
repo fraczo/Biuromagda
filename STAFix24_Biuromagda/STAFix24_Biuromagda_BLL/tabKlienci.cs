@@ -69,7 +69,7 @@ namespace BLL
             return result;
         }
 
-        internal static bool IsServiceAssgned(SPWeb web, int klientId, string serwisKod)
+        internal static bool HasServiceAssigned(SPWeb web, int klientId, string serwisKod)
         {
             bool result = false;
             SPList targetList = web.Lists.TryGetList(listName);
@@ -668,7 +668,7 @@ namespace BLL
         {
             SPList list = web.Lists.TryGetList(listName);
             SPListItem item = list.GetItemById(klientId);
-            if (item!=null)
+            if (item != null)
             {
                 return item["colEmail"] != null ? item["colEmail"].ToString() : string.Empty;
             }

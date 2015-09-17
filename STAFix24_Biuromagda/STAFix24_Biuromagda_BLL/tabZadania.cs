@@ -345,9 +345,18 @@ namespace BLL
                 }
             }
 
-            item["colZUS_SP_Skladka"] = skladkaSP;
-            item["colZUS_ZD_Skladka"] = skladkaZD;
-            item["colZUS_FP_Skladka"] = skladkaFP;
+            //jeżeli ZUS-PRAC to nie wypełniaj wysokości składek
+            if (hasKlientMaAktywnySerwis(item, "ZUS-PRAC"))
+            {
+                item["colZatrudniaPracownikow"] = true;
+            }
+            else
+            {
+                item["colZUS_SP_Skladka"] = skladkaSP;
+                item["colZUS_ZD_Skladka"] = skladkaZD;
+                item["colZUS_FP_Skladka"] = skladkaFP;
+            }
+
             item["colZUS_TerminPlatnosciSkladek"] = terminPlatnosci;
 
             KontaZUS konta = admSetup.GetKontaZUS(web);
@@ -544,5 +553,21 @@ namespace BLL
             }
 
         }
+
+        private static bool hasKlientMaAktywnySerwis(SPListItem item, string serviceName)
+        {
+            int klientId;
+
+            if (item["selKlient"]!=null) klientId = new SPFieldLookupValue(item["selKlient"].ToString()).LookupId;
+            else klientId = 0;
+
+            if (klientId > 0)
+	        {
+		         if (BLL.tabKlienci.HasServiceAssigned(item.Web, klientId, serviceName)) return true;
+	        }
+
+            return false;
+        }
+
     }
 }

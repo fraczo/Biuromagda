@@ -16,17 +16,17 @@ namespace BLL.Models
             AudytDanych = false;
 
 
-            if (tabKlienci.IsServiceAssgned(web, klientId, "POT"))
+            if (tabKlienci.HasServiceAssigned(web, klientId, "POT"))
             {
                 PrzypomnienieOTerminiePlatnosci = true;
             }
 
-            if (tabKlienci.IsServiceAssgned(web, klientId, "GBW"))
+            if (tabKlienci.HasServiceAssigned(web, klientId, "GBW"))
             {
                 GenerowanieDrukuWplaty = true;
             }
 
-            if (tabKlienci.IsServiceAssgned(web, klientId, "AD") || tabKlienci.IsServiceAssgned(web, klientId, "ADO"))
+            if (tabKlienci.HasServiceAssigned(web, klientId, "AD") || tabKlienci.HasServiceAssigned(web, klientId, "ADO"))
             {
                 AudytDanych = true;
             }

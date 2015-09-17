@@ -7,5 +7,6 @@
     <projectItemReference itemId="95c6a07b-c9ed-4adb-bd85-f16c5275766b" projectPath="..\EventReceivers\EventReceivers.csproj" />
     <projectItemReference itemId="729bc35d-6d4d-4042-b489-7c02051fe584" projectPath="..\EventReceivers\EventReceivers.csproj" />
     <projectItemReference itemId="e109c7f7-8b03-45c4-bd29-bc61ece9e2c4" projectPath="..\EventReceivers\EventReceivers.csproj" />
+    <projectItemReference itemId="e35d7acd-2753-4101-aa33-f927658a7b2a" projectPath="..\EventReceivers\EventReceivers.csproj" />
   </projectItems>
 </feature>

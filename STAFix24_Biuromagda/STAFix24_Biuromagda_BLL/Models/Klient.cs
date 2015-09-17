@@ -56,11 +56,14 @@ namespace BLL.Models
                 UwagiKadrowe = item["colUwagiKadrowe"] != null ? item["colUwagiKadrowe"].ToString() : string.Empty;
 
 
-                int TerminPlatnosci = 0;
                 if (item["selTerminPlatnosci"] != null)
                 {
                     int terminPlatnosciId = new SPFieldLookupValue(item["selTerminPlatnosci"].ToString()).LookupId;
-                    TerminPlatnosci = dicTerminyPlatnosci.Get_TerminPlatnosci(web, terminPlatnosciId);
+                    this.TerminPlatnosci = dicTerminyPlatnosci.Get_TerminPlatnosci(web, terminPlatnosciId);
+                }
+                else
+                {
+                    this.TerminPlatnosci = 0;
                 }
 
                 int urzadId = item["selUrzadSkarbowy"] != null ? new SPFieldLookupValue(item["selUrzadSkarbowy"].ToString()).LookupId : 0;

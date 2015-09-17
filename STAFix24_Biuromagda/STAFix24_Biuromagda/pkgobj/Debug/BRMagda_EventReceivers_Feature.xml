@@ -11,5 +11,6 @@
     <ElementManifest Location="dicUrzedySkarboweER\Elements.xml" />
     <ElementManifest Location="tabWiadomosciER\Elements.xml" />
     <ElementManifest Location="tabKlienciER\Elements.xml" />
+    <ElementManifest Location="tabProceduryER\Elements.xml" />
   </ElementManifests>
 </Feature>

@@ -545,7 +545,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                     okres);
                 string odbiorca = admSetup.GetValue(web, "BR_NAZWA");
                 string numerFaktury = item["colBR_NumerFaktury"] != null ? item["colBR_NumerFaktury"].ToString() : string.Empty;
-                string tytulem = String.Format("Zapłata za fakturę {0}", numerFaktury);
+                string tytulem = String.Format("Zapłata za FV {0}", numerFaktury);
 
                 result = GeneratorDrukow.DrukWplaty.Attach_DrukWplaty(web, item,
                 fileName,
@@ -638,7 +638,18 @@ namespace tabZadania_EventReceiver.EventReceiver1
         }
 
 
+
+
         #region Manage CT
+
+        private void Manage_CMD_Anuluj(SPListItem item)
+        {
+            string cmd = GetCommand(item);
+            if (cmd == ANULUJ)
+            {
+                Update_StatusZadania(item, StatusZadania.Anulowane);
+            }
+        }
 
         private void Manage_CMD_WyslijInfo(SPListItem item)
         {
@@ -771,6 +782,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 switch (ct)
                 {
                     case "Zadanie":
+                        Update_StatusZadania(item, StatusZadania.Zakończone);
                         break;
                     case "Prośba o przesłanie wyciągu bankowego":
                         Manage_CMD_WyslijWynik_ProsbaOWyciagBankowy(item);
@@ -980,6 +992,8 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
                 DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
 
+                odbiorca = Check_NieWysylacDoKlientaFlag(item, nadawca, odbiorca);
+
                 BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID);
             }
 
@@ -1078,10 +1092,14 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
                 DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
 
+                odbiorca = Check_NieWysylacDoKlientaFlag(item, nadawca, odbiorca);
+
                 BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID);
             }
 
         }
+
+
 
         private void Manage_CMD_WyslijWynik_PDS(SPListItem item)
         {
@@ -1151,6 +1169,8 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 trescHTML = sb.ToString();
 
                 DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
+
+                odbiorca = Check_NieWysylacDoKlientaFlag(item, nadawca, odbiorca);
 
                 BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID);
             }
@@ -1410,12 +1430,50 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
         private bool isValidated_RBR(SPListItem item)
         {
-            throw new NotImplementedException();
+            StringBuilder sb = new StringBuilder();
+
+            bool foundErrors = false;
+            if (string.IsNullOrEmpty(Get_String(item, "colBR_NumerFaktury")))
+            {
+                foundErrors = true;
+                sb.AppendLine(@"brak numeru faktury");
+            }
+
+            if (GetValue(item, "colBR_WartoscDoZaplaty") <= 0)
+            {
+                foundErrors = true;
+                sb.AppendLine(@"nieprawidłowa wartość do zapłaty");
+            }
+            if (item["colBR_FakturaZalaczona"]!=null?(bool)item["colBR_FakturaZalaczona"]:false)
+            {
+                if (item.Attachments.Count==0)
+                {
+                    foundErrors = true;
+                    sb.AppendLine(@"brak załącznika");
+                }
+            }
+
+            if (!foundErrors) return true;
+            else
+            {
+                Add_Comment(item, sb.ToString());
+                return false;
+            }
+
         }
 
         #endregion
 
         #region Helpers
+        private static string Check_NieWysylacDoKlientaFlag(SPListItem item, string nadawca, string odbiorca)
+        {
+            bool czyNieWysylacDoKlienta = item["colNieWysylajDoKlienta"] != null ? (bool)item["colNieWysylajDoKlienta"] : false;
+            if (czyNieWysylacDoKlienta)
+            {
+                odbiorca = nadawca;
+            }
+            return odbiorca;
+        }
         private string AddSpecyfikacja(SPListItem item, string temat)
         {
             string okres = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupValue : string.Empty;
@@ -1490,13 +1548,14 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
         private void ResetCommand(SPListItem item, bool clearInformacjaDlaKlienta)
         {
-            item["cmdFormatka"] = string.Empty;
+            item["cmdFormatka"] = string.Empty; //czyszczenie komendy
+
             if (clearInformacjaDlaKlienta
                 && item["colInformacjaDlaKlienta"] != null)
             {
                 item["colInformacjaDlaKlienta"] = string.Empty;
             }
-            item.Update();
+            item.SystemUpdate();
 
         }
 

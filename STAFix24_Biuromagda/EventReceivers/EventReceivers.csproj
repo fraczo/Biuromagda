@@ -67,6 +67,7 @@
     <Compile Include="dicUrzedySkarboweER\EventReceiver1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="tabKlienciER\tabKlienciER.cs" />
+    <Compile Include="tabProceduryER\tabProceduryER.cs" />
     <Compile Include="tabWiadomosciER\tabWiadomosciER.cs" />
     <Compile Include="tabZadaniaER\EventReceiver1.cs" />
   </ItemGroup>
@@ -87,6 +88,9 @@
     </None>
     <None Include="tabKlienciER\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{e109c7f7-8b03-45c4-bd29-bc61ece9e2c4}</SharePointProjectItemId>
+    </None>
+    <None Include="tabProceduryER\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{e35d7acd-2753-4101-aa33-f927658a7b2a}</SharePointProjectItemId>
     </None>
     <None Include="tabWiadomosciER\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{729bc35d-6d4d-4042-b489-7c02051fe584}</SharePointProjectItemId>
@@ -113,6 +117,7 @@
     <Folder Include="Features\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="tabProceduryER\Elements.xml" />
     <Content Include="tabWiadomosciER\Elements.xml" />
     <None Include="tabZadaniaER\Elements.xml" />
     <None Include="admProcessRequestsER\Elements.xml" />
