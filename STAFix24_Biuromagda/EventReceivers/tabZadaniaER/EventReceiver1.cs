@@ -17,6 +17,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
         const string WYSLIJ_INFORMACJE_DO_KLIENTA = "Wyślij informację do Klienta";
         const string ZATWIERDZ = "Zatwierdź";
+        const string ANULUJ = "Anuluj";
 
         const string emptyMarker = "---";
 
@@ -575,33 +576,33 @@ namespace tabZadania_EventReceiver.EventReceiver1
                     Update_StatusZadania(item, StatusZadania.Obsługa);
                 }
 
-                string ct = item.ContentType.Name;
-                switch (ct)
-                {
-                    case "Zadanie":
-                        //Manage_Zadanie(item);
-                        break;
-                    case "Prośba o dokumenty":
-                        //Manage_ProsbaODokumenty(item);
-                        break;
-                    case "Prośba o przesłanie wyciągu bankowego":
-                        //Manage_ProsbaOWyciagBankowy(item);
-                        break;
-                    case "Rozliczenie z biurem rachunkowym":
-                        //Manage_RBR(item);
-                        break;
-                    case "Rozliczenie podatku dochodowego":
-                        //Manage_PD(item);
-                        break;
-                    case "Rozliczenie podatku VAT":
-                        //Manage_VAT(item);
-                        break;
-                    case "Rozliczenie ZUS":
-                        //Manage_ZUS(item);
-                        break;
-                    default:
-                        break;
-                }
+                //string ct = item.ContentType.Name;
+                //switch (ct)
+                //{
+                //    case "Zadanie":
+                //        //Manage_Zadanie(item);
+                //        break;
+                //    case "Prośba o dokumenty":
+                //        //Manage_ProsbaODokumenty(item);
+                //        break;
+                //    case "Prośba o przesłanie wyciągu bankowego":
+                //        //Manage_ProsbaOWyciagBankowy(item);
+                //        break;
+                //    case "Rozliczenie z biurem rachunkowym":
+                //        //Manage_RBR(item);
+                //        break;
+                //    case "Rozliczenie podatku dochodowego":
+                //        //Manage_PD(item);
+                //        break;
+                //    case "Rozliczenie podatku VAT":
+                //        //Manage_VAT(item);
+                //        break;
+                //    case "Rozliczenie ZUS":
+                //        //Manage_ZUS(item);
+                //        break;
+                //    default:
+                //        break;
+                //}
             }
         }
 
@@ -625,19 +626,16 @@ namespace tabZadania_EventReceiver.EventReceiver1
                     //wyczyść informacje dla klienta po wysyłce
                     ResetCommand(item, true);
                     break;
+                case ANULUJ:
+                    Manage_CMD_Anuluj(item);
+                    //wyczyść informacje dla klienta po wysyłce
+                    ResetCommand(item, false);
+                    break;
                 default:
                     break;
 
             }
         }
-
-
-
-
-
-
-
-
 
 
         #region Manage CT
