@@ -60,6 +60,7 @@
     <Compile Include="dicTerminyPlatnosci.cs" />
     <Compile Include="dicUrzedySkarbowe.cs" />
     <Compile Include="ElasticEmail.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="Models\StatusZadania.cs" />
     <Compile Include="SPEmail.cs" />
     <Compile Include="intBuforWiadomosci.cs" />

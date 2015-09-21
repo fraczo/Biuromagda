@@ -98,7 +98,9 @@ namespace admProcessRequests_EventReceiver
             catch (Exception ex)
             {
                 properties.ListItem["enumStatusZlecenia"] = "Anulowany";
-                properties.ListItem.Update();
+                properties.ListItem.SystemUpdate();
+
+                BLL.Logger.LogEvent(properties.WebUrl, ex.ToString());
                 var result = ElasticEmail.EmailGenerator.ReportError(ex, properties.WebUrl.ToString());
 
             }
@@ -106,7 +108,7 @@ namespace admProcessRequests_EventReceiver
             {
                 //properties.ListItem.Delete();
                 properties.ListItem["enumStatusZlecenia"] = "Zakończony";
-                properties.ListItem.Update();
+                properties.ListItem.SystemUpdate();
                 this.EventFiringEnabled = true;
             }
         }

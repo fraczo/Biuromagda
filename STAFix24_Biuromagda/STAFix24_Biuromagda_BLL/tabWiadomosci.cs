@@ -14,14 +14,11 @@ namespace BLL
 
         public static void AddNew(SPWeb web, SPListItem item, string nadawca, string odbiorca, string kopiaDla, bool KopiaDoNadawcy, bool KopiaDoBiura, string temat, string tresc, string trescHTML, DateTime planowanaDataNadania, int zadanieId)
         {
-
             SPList list = web.Lists.TryGetList(targetList);
             SPListItem newItem = list.AddItem();
             newItem["Title"] = temat;
-            if (string.IsNullOrEmpty(nadawca))
-            {
-                nadawca = BLL.admSetup.GetValue(web, "EMAIL_BIURA");
-            }
+            if (string.IsNullOrEmpty(nadawca)) nadawca = BLL.admSetup.GetValue(web, "EMAIL_BIURA");
+
             newItem["colNadawca"] = nadawca;
             newItem["colOdbiorca"] = odbiorca;
             newItem["colKopiaDla"] = kopiaDla;
@@ -33,16 +30,18 @@ namespace BLL
             }
             newItem["colKopiaDoNadawcy"] = KopiaDoNadawcy;
             newItem["colKopiaDoBiura"] = KopiaDoBiura;
-            if (zadanieId > 0)
-            {
-                newItem["_ZadanieId"] = zadanieId;
-            }
+            if (zadanieId > 0) newItem["_ZadanieId"] = zadanieId;
 
-            newItem.Update();
+            int klientId = item["selKlient"] != null ? new SPFieldLookupValue(item["selKlient"].ToString()).LookupId : 0;
+            if (klientId > 0) newItem["selKlient_NazwaSkrocona"] = klientId;
+
+
+            //newItem.SystemUpdate();
 
             //obsługa wysyłki załączników jeżeli Item został przekazany w wywołaniu procedury
-            if (item!=null)
-            {    for (int attachmentIndex = 0; attachmentIndex < item.Attachments.Count; attachmentIndex++)
+            if (item != null)
+            {
+                for (int attachmentIndex = 0; attachmentIndex < item.Attachments.Count; attachmentIndex++)
                 {
                     string url = item.Attachments.UrlPrefix + item.Attachments[attachmentIndex];
                     SPFile file = item.ParentList.ParentWeb.GetFile(url);
@@ -59,8 +58,7 @@ namespace BLL
                 }
             }
 
-
-            newItem.Update();
+            newItem.SystemUpdate();
         }
 
         /// <summary>

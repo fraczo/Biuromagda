@@ -51,9 +51,11 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
         private void Execute(SPItemEventProperties properties)
         {
+            this.EventFiringEnabled = false;
+
             try
             {
-                this.EventFiringEnabled = false;
+                BLL.Logger.LogEvent(properties.WebUrl, properties.ListItem.Title + ".OnUpdate");
 
                 SPListItem item = properties.ListItem;
                 SPWeb web = item.Web;
@@ -94,6 +96,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
 #if DEBUG
                 throw ex;
 #else
+                BLL.Logger.LogEvent(properties.WebUrl, ex.ToString());
                 var result = ElasticEmail.EmailGenerator.ReportError(ex, properties.WebUrl.ToString());
 #endif
 
@@ -458,7 +461,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
             return result;
         }
 
-        
+
         /// <summary>
         /// jeżeli numer rachunku ma więcej niż 26 znaków usówa wszystkie znaki nie będące cyfrą
         /// </summary>
@@ -466,7 +469,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
         {
             string numerRachunku = item[colName] != null ? item[colName].ToString() : string.Empty;
 
-            if (numerRachunku.Length>26)
+            if (numerRachunku.Length > 26)
             {
                 Regex rgx = new Regex("[^0-9]");
                 numerRachunku = rgx.Replace(numerRachunku, "");
@@ -536,7 +539,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
         private bool ObslugaGBW_RozliczenieZBiuremRachunkowym(SPWeb web, SPListItem item, bool result, string targetFileNameLeading, string klient, string okres, string nadawca)
         {
             double kwota = item["colBR_WartoscDoZaplaty"] != null ? Double.Parse(item["colBR_WartoscDoZaplaty"].ToString()) : 0;
-            string konto =  Clean_NumerRachunku(item, "colBR_Konto");
+            string konto = Clean_NumerRachunku(item, "colBR_Konto");
 
             if (konto.Length == 26 && kwota > 0)
             {
@@ -798,6 +801,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                             if (!isAuditRequest(item) || Get_Status(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
                             {
                                 Manage_CMD_WyslijWynik_ZUS(item);
+                                Update_KartaKlienta_ZUS(item);
                                 Update_StatusZadania(item, StatusZadania.Wysyłka);
                             }
                             else
@@ -812,6 +816,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                             if (!isAuditRequest(item) || Get_Status(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
                             {
                                 Manage_CMD_WyslijWynik_PD(item);
+                                Update_KartaKlienta_PD(item);
                                 Update_StatusZadania(item, StatusZadania.Wysyłka);
                             }
                             else
@@ -824,6 +829,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                         if (isValidated_PDS(item))
                         {
                             Manage_CMD_WyslijWynik_PDS(item);
+                            Update_KartaKlienta_PDS(item);
                             Update_StatusZadania(item, StatusZadania.Wysyłka);
                         }
                         break;
@@ -833,6 +839,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                             if (!isAuditRequest(item) || Get_Status(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
                             {
                                 Manage_CMD_WyslijWynik_VAT(item);
+                                Update_KartaKlienta_VAT(item);
                                 Update_StatusZadania(item, StatusZadania.Wysyłka);
                             }
                             else
@@ -846,6 +853,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                         if (isValidated_RBR(item))
                         {
                             Manage_CMD_WyslijWynik_RBR(item);
+                            Update_KartaKlienta_RBR(item);
                             Update_StatusZadania(item, StatusZadania.Wysyłka);
                         }
                         break;
@@ -854,6 +862,33 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 }
             }
         }
+        #region Aktualizacja KartyKlienta
+
+        private void Update_KartaKlienta_ZUS(SPListItem item)
+        {
+            // TODO:
+        }
+
+        private void Update_KartaKlienta_PD(SPListItem item)
+        {
+            // TODO:
+        }
+
+        private void Update_KartaKlienta_PDS(SPListItem item)
+        {
+            // TODO:
+        }
+
+        private void Update_KartaKlienta_VAT(SPListItem item)
+        {
+            // TODO:
+        }
+        private void Update_KartaKlienta_RBR(SPListItem item)
+        {
+            // TODO:
+        }
+
+        #endregion
 
         private string Get_Status(SPListItem item)
         {
@@ -954,6 +989,10 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
                 sb.Replace("___colPIT_Konto___", k.NumerRachunkuPD);
 
+                int okresId = item["selOkres"]!=null?new SPFieldLookupValue(item["selOkres"].ToString()).LookupId: 0;
+
+                DateTime terminPlatnosciPodatku = BLL.tabOkresy.Get_TerminPlatnosciByOkresId(item.Web, "colPD_TerminPlatnosciPodatku", okresId);
+                sb.Replace("___colZUS_TerminPlatnosciPodatku___", terminPlatnosciPodatku.ToShortDateString());
 
                 string info2 = string.Empty;
                 string info = item["colInformacjaDlaKlienta"] != null ? item["colInformacjaDlaKlienta"].ToString() : string.Empty;
@@ -1045,7 +1084,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 sb.Replace("___colFormaOpodatkowaniaPD___", Get_String(item, "colFormaOpodatkowaniaPD"));
                 sb.Replace("___colPD_WartoscDoZaplaty___", Format_Currency(item, "colPD_WartoscDoZaplaty"));
                 sb.Replace("___colPD_Konto___", Get_String(item, "colPD_Konto"));
-                sb.Replace("___colPD_TerminPlatnosciPodatku___",Format_Date(item, "colPD_TerminPlatnosciPodatku"));
+                sb.Replace("___colPD_TerminPlatnosciPodatku___", Format_Date(item, "colPD_TerminPlatnosciPodatku"));
 
                 string info2 = string.Empty;
                 string info = item["colInformacjaDlaKlienta"] != null ? item["colInformacjaDlaKlienta"].ToString() : string.Empty;
@@ -1077,10 +1116,10 @@ namespace tabZadania_EventReceiver.EventReceiver1
                     case "Strata":
                         sb.Replace("___OpisDochodu_Straty___", "Wielkość straty");
                         sb.Replace("___colPD_WartoscDochodu_Straty___", Format_Currency(item, "colPD_WartoscStraty"));
-                        
+
                         break;
                     default:
-                        
+
                         break;
                 }
                 //czyszczenie parametrów
@@ -1309,7 +1348,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
         private bool isValidated_PD(SPListItem item)
         {
             //oczyść dane w zależności od wybranej Decyzji
-            string ocena = Get_String(item,"colPD_OcenaWyniku");
+            string ocena = Get_String(item, "colPD_OcenaWyniku");
             if (string.IsNullOrEmpty(ocena))
             {
                 return false;
@@ -1444,9 +1483,9 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 foundErrors = true;
                 sb.AppendLine(@"nieprawidłowa wartość do zapłaty");
             }
-            if (item["colBR_FakturaZalaczona"]!=null?(bool)item["colBR_FakturaZalaczona"]:false)
+            if (item["colBR_FakturaZalaczona"] != null ? (bool)item["colBR_FakturaZalaczona"] : false)
             {
-                if (item.Attachments.Count==0)
+                if (item.Attachments.Count == 0)
                 {
                     foundErrors = true;
                     sb.AppendLine(@"brak załącznika");
@@ -1606,5 +1645,6 @@ namespace tabZadania_EventReceiver.EventReceiver1
         }
 
         #endregion
+
     }
 }

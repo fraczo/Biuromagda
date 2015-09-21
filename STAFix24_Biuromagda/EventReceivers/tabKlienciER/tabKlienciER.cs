@@ -7,20 +7,18 @@ using Microsoft.SharePoint.Workflow;
 
 namespace EventReceivers.tabKlienciER
 {
-    /// <summary>
-    /// List Item Events
-    /// </summary>
+
     public class tabKlienciER : SPItemEventReceiver
     {
-        /// <summary>
-        /// An item was updated.
-        /// </summary>
+
         public override void ItemUpdated(SPItemEventProperties properties)
         {
             this.EventFiringEnabled = false;
 
             try
             {
+                BLL.Logger.LogEvent(properties.WebUrl, properties.ListItem.Title + ".OnChange");
+
                 SPListItem item = properties.ListItem;
                 SPWeb web = properties.Web;
 
@@ -30,6 +28,7 @@ namespace EventReceivers.tabKlienciER
             }
             catch (Exception ex)
             {
+                BLL.Logger.LogEvent(properties.WebUrl, ex.ToString());
                 var result = ElasticEmail.EmailGenerator.ReportError(ex, properties.WebUrl.ToString());
             }
             finally

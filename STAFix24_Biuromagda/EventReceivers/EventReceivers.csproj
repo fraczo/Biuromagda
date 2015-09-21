@@ -122,7 +122,9 @@
     <None Include="tabZadaniaER\Elements.xml" />
     <None Include="admProcessRequestsER\Elements.xml" />
     <None Include="dicUrzedySkarboweER\Elements.xml" />
-    <Content Include="tabKlienciER\Elements.xml" />
+    <Content Include="tabKlienciER\Elements.xml">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\SharePointTools\Microsoft.VisualStudio.SharePoint.targets" />

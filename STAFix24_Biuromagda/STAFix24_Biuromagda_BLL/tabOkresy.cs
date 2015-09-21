@@ -270,5 +270,18 @@ namespace BLL
 
         }
 
+
+        public static DateTime Get_TerminPlatnosciByOkresId(SPWeb web, string nazwaKolumny, int okresId)
+        {
+            SPListItem item = Get_ItemById(web, okresId);
+            return item[nazwaKolumny] != null ? DateTime.Parse(item[nazwaKolumny].ToString()) : new DateTime();
+        }
+
+        private static SPListItem Get_ItemById(SPWeb web, int okresId)
+        {
+            SPList list = web.Lists.TryGetList(targetList);
+            SPListItem item = list.GetItemById(okresId);
+            return item;
+        }
     }
 }

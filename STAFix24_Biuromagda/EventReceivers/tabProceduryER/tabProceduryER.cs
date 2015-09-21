@@ -25,6 +25,8 @@ namespace EventReceivers.tabProceduryER
 
             try
             {
+                BLL.Logger.LogEvent(properties.WebUrl, properties.ListItem.Title + ".OnUpdate");
+
                 SPListItem item = properties.ListItem;
 
                 if (item.Title.StartsWith(":"))
@@ -43,6 +45,7 @@ namespace EventReceivers.tabProceduryER
             }
             catch (Exception ex)
             {
+                BLL.Logger.LogEvent(properties.WebUrl, ex.ToString());
                 var result = ElasticEmail.EmailGenerator.ReportError(ex, properties.WebUrl.ToString());
             }
             finally

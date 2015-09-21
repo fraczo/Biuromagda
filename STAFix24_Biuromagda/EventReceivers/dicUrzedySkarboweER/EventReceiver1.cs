@@ -24,6 +24,8 @@ namespace dicUrzedySkarbowe_EventReceiver.EventReceiver1
             this.EventFiringEnabled = false;
             try
             {
+                BLL.Logger.LogEvent(properties.WebUrl, properties.ListItem.Title + ".OnUpdate");
+
                 // aktualizuje pole opisowe _konta
 
                 SPListItem item = properties.ListItem;
@@ -35,6 +37,7 @@ namespace dicUrzedySkarbowe_EventReceiver.EventReceiver1
             }
             catch (Exception ex)
             {
+                BLL.Logger.LogEvent(properties.WebUrl, ex.ToString());
                 var result = ElasticEmail.EmailGenerator.ReportError(ex, properties.WebUrl.ToString());
             }
             finally
