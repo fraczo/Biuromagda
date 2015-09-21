@@ -12,7 +12,7 @@ namespace BLL
     {
         const string targetList = "Wiadomości";
 
-        public static void AddNew(SPWeb web, SPListItem item, string nadawca, string odbiorca, string kopiaDla, bool KopiaDoNadawcy, bool KopiaDoBiura, string temat, string tresc, string trescHTML, DateTime planowanaDataNadania, int zadanieId)
+        public static void AddNew(SPWeb web, SPListItem item, string nadawca, string odbiorca, string kopiaDla, bool KopiaDoNadawcy, bool KopiaDoBiura, string temat, string tresc, string trescHTML, DateTime planowanaDataNadania, int zadanieId, int klientId)
         {
             SPList list = web.Lists.TryGetList(targetList);
             SPListItem newItem = list.AddItem();
@@ -32,7 +32,6 @@ namespace BLL
             newItem["colKopiaDoBiura"] = KopiaDoBiura;
             if (zadanieId > 0) newItem["_ZadanieId"] = zadanieId;
 
-            int klientId = item["selKlient"] != null ? new SPFieldLookupValue(item["selKlient"].ToString()).LookupId : 0;
             if (klientId > 0) newItem["selKlient_NazwaSkrocona"] = klientId;
 
 
@@ -64,9 +63,54 @@ namespace BLL
         /// <summary>
         /// tworzy zlecenie wysyłki wiadomości bez załączników (nie przekazuje item)
         /// </summary>
-        public static void AddNew(SPWeb sPWeb, string nadawca, string odbiorca, string kopiaDla, bool KopiaDoNadawcy, bool KopiaDoBiura, string temat, string tresc, string trescHTML, DateTime planowanaDataNadania, int zadanieId)
+        public static void AddNew(SPWeb web, string nadawca, string odbiorca, string kopiaDla, bool KopiaDoNadawcy, bool KopiaDoBiura, string temat, string tresc, string trescHTML, DateTime planowanaDataNadania, int zadanieId, int klientId)
         {
-            AddNew(sPWeb, null, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, zadanieId);
+            AddNew(web, null, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, zadanieId, klientId);
         }
+
+        public static void Create_PrzypomnienieOTerminiePlatnosci(SPListItem item, DateTime terminPlatnosci, string subject, string body)
+        {
+            //ustaw datę powiadomienia
+            int reminderDateOffset = -1 * int.Parse(BLL.admSetup.GetValue(item.Web, "REMINDER_DATE_OFFSET"));
+            if (reminderDateOffset >= 0) reminderDateOffset = -1;
+            DateTime reminderDate = terminPlatnosci.AddDays(reminderDateOffset);
+
+            //ustaw godzinę wysyłki powiadomienia
+            TimeSpan ts = new TimeSpan(0, 8, 15);
+            string reminderTime = BLL.admSetup.GetValue(item.Web, "REMINDER_TIME");
+            if (reminderTime.Length == 5) TimeSpan.TryParse(reminderTime, out ts);
+            reminderDate = new DateTime(reminderDate.Year, reminderDate.Month, reminderDate.Day, ts.Hours, ts.Minutes, ts.Seconds);
+
+            string bodyHtml = string.Empty;
+            string tmp = string.Empty;
+            if(!string.IsNullOrEmpty(body))
+            {
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "EMAIL_DEFAULT_BODY", out tmp, out bodyHtml);
+                bodyHtml = bodyHtml.Replace("___BODY___", body.ToString());
+            }
+
+            AddNew(item, reminderDate, subject, bodyHtml);
+        }
+
+        private static void AddNew(SPListItem item, DateTime reminderDate, string subject, string bodyHtml)
+        {
+            int klientId = Get_KlientId(item);
+            string nadawca = string.Empty;
+            string odbiorca = Get_String(item, "colEmail");
+            AddNew(item.Web, nadawca, odbiorca, string.Empty, false, false, subject, string.Empty, bodyHtml, reminderDate, item.ID, klientId);
+        }
+
+        private static string Get_String(SPListItem item, string col)
+        {
+            return item[col] != null ? item[col].ToString() : string.Empty;
+        }
+
+        #region Helpers
+        private static int Get_KlientId(SPListItem item)
+        {
+            string col = "selKlient";
+            return item[col] != null ? new SPFieldLookupValue(item[col].ToString()).LookupId : 0;
+        }
+        #endregion
     }
 }

@@ -720,7 +720,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
                 DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
 
-                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID);
+                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
             }
 
             ResetCommand(item, true);
@@ -771,7 +771,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 DateTime planowanaDataNadania = new DateTime(); //wyślij natychmiast
 
                 //nie kopiuj załączników
-                BLL.tabWiadomosci.AddNew(item.Web, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID);
+                BLL.tabWiadomosci.AddNew(item.Web, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
             }
         }
 
@@ -802,6 +802,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                             {
                                 Manage_CMD_WyslijWynik_ZUS(item);
                                 Update_KartaKlienta_ZUS(item);
+                                Manage_Reminders_ZUS(item);
                                 Update_StatusZadania(item, StatusZadania.Wysyłka);
                             }
                             else
@@ -817,6 +818,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                             {
                                 Manage_CMD_WyslijWynik_PD(item);
                                 Update_KartaKlienta_PD(item);
+                                Manage_Reminders_PD(item);
                                 Update_StatusZadania(item, StatusZadania.Wysyłka);
                             }
                             else
@@ -830,6 +832,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                         {
                             Manage_CMD_WyslijWynik_PDS(item);
                             Update_KartaKlienta_PDS(item);
+                            Manage_Reminders_PDS(item);
                             Update_StatusZadania(item, StatusZadania.Wysyłka);
                         }
                         break;
@@ -840,6 +843,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                             {
                                 Manage_CMD_WyslijWynik_VAT(item);
                                 Update_KartaKlienta_VAT(item);
+                                Manage_Reminders_VAT(item);
                                 Update_StatusZadania(item, StatusZadania.Wysyłka);
                             }
                             else
@@ -854,6 +858,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                         {
                             Manage_CMD_WyslijWynik_RBR(item);
                             Update_KartaKlienta_RBR(item);
+                            //Manage_Reminders_RBR(item);
                             Update_StatusZadania(item, StatusZadania.Wysyłka);
                         }
                         break;
@@ -862,8 +867,134 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 }
             }
         }
-        #region Aktualizacja KartyKlienta
 
+        #region Obsługa przypomnień o terminie płatności
+        private void Manage_Reminders_ZUS(SPListItem item)
+        {
+            if (hasPrzypomnienieOTerminiePlatnosci(item))
+            {
+                DateTime terminPlatnosci = Get_Date(item, "colZUS_TerminPlatnosciSkladek");
+
+                //składki zus
+                bool reminderRequest = false;
+                StringBuilder sb = new StringBuilder();
+
+                if (GetValue(item, "colZUS_SP_Skladka") > 0)
+                {
+                    sb.AppendFormat(@"<li>{0}</li>", "Ubezpieczenie Społeczne: " + Format_Currency(item, "colZUS_SP_Skladka"));
+                    reminderRequest = true;
+                }
+
+                if (GetValue(item, "colZUS_ZD_Skladka") > 0)
+                {
+                    sb.AppendFormat(@"<li>{0}</li>", "Ubezpieczenie Zdrowotne: " + Format_Currency(item, "colZUS_ZD_Skladka"));
+                    reminderRequest = true;
+                } 
+                
+                if (GetValue(item, "colZUS_FP_Skladka") > 0)
+                {
+                    sb.AppendFormat(@"<li>{0}</li>", "Fundusz Pracy: " + Format_Currency(item, "colZUS_FP_Skladka"));
+                    reminderRequest = true;
+                }
+
+                if (reminderRequest)
+                {
+                    string subject = string.Format(":: {0} upływa termin platności ZUS",
+                        terminPlatnosci.ToShortDateString());
+                    string body = string.Format(@"<ul>{0}</ul>", sb.ToString().Trim());
+                    BLL.tabWiadomosci.Create_PrzypomnienieOTerminiePlatnosci(item, terminPlatnosci, subject, body);
+                }
+
+                //podatek za pracowników
+
+                int okresId = Get_LookupId(item, "selOkres");
+                terminPlatnosci = BLL.tabOkresy.Get_TerminPlatnosciByOkresId(item.Web, "colPD_TerminPlatnosciPodatku", okresId);
+
+                sb = new StringBuilder();
+                reminderRequest = false;
+
+                if (GetValue(item, "colZUS_PIT-4R") > 0)
+                {
+                    sb.AppendFormat(@"<li>{0}</li>", "PIT-4R: " + Format_Currency(item, "colZUS_PIT-4R"));
+                    reminderRequest = true;
+                }
+
+                if (GetValue(item, "colZUS_PIT-8AR") > 0)
+                {
+                    sb.AppendFormat(@"<li>{0}</li>", "PIT-8AR: " + Format_Currency(item, "colZUS_PIT-8AR"));
+                    reminderRequest = true;
+                }
+
+                if (reminderRequest)
+                {
+                    string subject = string.Format(":: {0} upływa termin platności podatku za pracowników",
+                        terminPlatnosci.ToShortDateString());
+                    string body = string.Format(@"<ul>{0}</ul>", sb.ToString().Trim());
+                    BLL.tabWiadomosci.Create_PrzypomnienieOTerminiePlatnosci(item, terminPlatnosci, subject, body);
+                }
+
+            }
+        }
+
+        private int Get_LookupId(SPListItem item, string col)
+        {
+            return item[col] != null ? new SPFieldLookupValue(item[col].ToString()).LookupId : 0;
+        }
+
+        private void Manage_Reminders_PD(SPListItem item)
+        {
+            if (hasPrzypomnienieOTerminiePlatnosci(item))
+            {
+                DateTime terminPlatnosci = Get_Date(item, "colPD_TerminPlatnosciPodatku");
+
+                if (Get_String(item, "colPD_OcenaWyniku") == "Dochód")
+                {
+                    string wartoscDoZaplaty = Format_Currency(item, "colPD_WartoscDoZaplaty");
+
+                    string subject = string.Format(":: {0} upływa termin platności podatku ({1})",
+                        terminPlatnosci.ToShortDateString(),
+                        wartoscDoZaplaty);
+                    string body = string.Empty;
+                    BLL.tabWiadomosci.Create_PrzypomnienieOTerminiePlatnosci(item, terminPlatnosci, subject, body);
+                }
+            }
+        }
+
+        private void Manage_Reminders_PDS(SPListItem item)
+        {
+            Manage_Reminders_PD(item);
+        }
+
+        private void Manage_Reminders_VAT(SPListItem item)
+        {
+            if (hasPrzypomnienieOTerminiePlatnosci(item))
+            {
+                DateTime terminPlatnosci = Get_Date(item, "colVAT_TerminPlatnosciPodatku");
+
+                if (Get_String(item, "colVAT_Decyzja") == "Do zapłaty")
+                {
+                    string wartoscDoZaplaty = Format_Currency(item, "colVAT_WartoscDoZaplaty");
+
+                    string subject = string.Format(":: {0} upływa termin platności VAT ({1})",
+                        terminPlatnosci.ToShortDateString(),
+                        wartoscDoZaplaty);
+                    string body = string.Empty;
+                    BLL.tabWiadomosci.Create_PrzypomnienieOTerminiePlatnosci(item, terminPlatnosci, subject, body);
+                }
+            }
+        }
+
+
+
+        private bool hasPrzypomnienieOTerminiePlatnosci(SPListItem item)
+        {
+            string col = "colPrzypomnienieOTerminiePlatnos";
+            return item[col] != null ? bool.Parse(item[col].ToString()) : false;
+        }
+
+        #endregion
+
+        #region Aktualizacja KartyKlienta
         private void Update_KartaKlienta_ZUS(SPListItem item)
         {
             // TODO:
@@ -887,7 +1018,6 @@ namespace tabZadania_EventReceiver.EventReceiver1
         {
             // TODO:
         }
-
         #endregion
 
         private string Get_Status(SPListItem item)
@@ -921,7 +1051,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
                 DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
 
-                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID);
+                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
             }
         }
 
@@ -946,7 +1076,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
                 DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
 
-                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID);
+                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
             }
         }
 
@@ -989,7 +1119,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
                 sb.Replace("___colPIT_Konto___", k.NumerRachunkuPD);
 
-                int okresId = item["selOkres"]!=null?new SPFieldLookupValue(item["selOkres"].ToString()).LookupId: 0;
+                int okresId = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupId : 0;
 
                 DateTime terminPlatnosciPodatku = BLL.tabOkresy.Get_TerminPlatnosciByOkresId(item.Web, "colPD_TerminPlatnosciPodatku", okresId);
                 sb.Replace("___colZUS_TerminPlatnosciPodatku___", terminPlatnosciPodatku.ToShortDateString());
@@ -1033,7 +1163,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
                 odbiorca = Check_NieWysylacDoKlientaFlag(item, nadawca, odbiorca);
 
-                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID);
+                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
             }
 
         }
@@ -1133,7 +1263,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
                 odbiorca = Check_NieWysylacDoKlientaFlag(item, nadawca, odbiorca);
 
-                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID);
+                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
             }
 
         }
@@ -1211,7 +1341,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
                 odbiorca = Check_NieWysylacDoKlientaFlag(item, nadawca, odbiorca);
 
-                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID);
+                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
             }
         }
 
@@ -1268,7 +1398,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
                 DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
 
-                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID);
+                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
             }
         }
 
@@ -1504,6 +1634,10 @@ namespace tabZadania_EventReceiver.EventReceiver1
         #endregion
 
         #region Helpers
+        private DateTime Get_Date(SPListItem item, string col)
+        {
+            return item[col] != null ? DateTime.Parse(item[col].ToString()) : new DateTime();
+        }
         private static string Check_NieWysylacDoKlientaFlag(SPListItem item, string nadawca, string odbiorca)
         {
             bool czyNieWysylacDoKlienta = item["colNieWysylajDoKlienta"] != null ? (bool)item["colNieWysylajDoKlienta"] : false;
