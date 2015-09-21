@@ -137,6 +137,9 @@ namespace Workflows.ObslugaWiadomosci
                     string ct = task.ContentType.Name;
                     switch (ct)
                     {
+                        case "Rozliczenie z biurem rachunkowym":
+                            BLL.tabZadania.Update_RBR_DataWysylki(task, date);
+                            break;
                         case "Rozliczenie podatku dochodowego":
                         case "Rozliczenie podatku dochodowego spółki":
                             BLL.tabZadania.Update_PD_DataWysylki(task, date);

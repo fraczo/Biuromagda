@@ -81,7 +81,11 @@ namespace BLL.Models
                     NumerRachunkuPD = string.Empty;
                     UrzadSkarbowyId = 0;
                 }
-                
+
+                //operatorzy
+                this.OperatorId_Audyt = item["selDedykowanyOperator_Audyt"] != null ? new SPFieldLookupValue(item["selDedykowanyOperator_Audyt"].ToString()).LookupId : 0;
+                this.OperatorId_Podatki = item["selDedykowanyOperator_Podatki"] != null ? new SPFieldLookupValue(item["selDedykowanyOperator_Podatki"].ToString()).LookupId : 0;
+                this.OperatorId_Kadry = item["selDedykowanyOperator_Kadry"] != null ? new SPFieldLookupValue(item["selDedykowanyOperator_Kadry"].ToString()).LookupId : 0;
             }
         }
 
@@ -123,5 +127,9 @@ namespace BLL.Models
 
         public object RozliczeniePD { get; set; }
         public object RozliczenieVAT { get; set; }
+
+        public int OperatorId_Audyt { get; set; }
+        public int OperatorId_Podatki { get; set; }
+        public int OperatorId_Kadry { get; set; }
     }
 }

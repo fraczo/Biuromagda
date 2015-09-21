@@ -205,6 +205,9 @@ namespace BLL
 
                 item["Title"] = procName;
 
+                int operatorId = iok.OperatorId_Podatki;
+                if (operatorId > 0) item["selOperator"] = operatorId;
+
                 item.Update();
             }
 
@@ -270,6 +273,10 @@ namespace BLL
             item["colMiejscowosc"] = iok.Miejscowosc;
 
             item["Title"] = procName;
+
+            //przypisz zadanie do domyślnego operatora
+            int operatorId = iok.OperatorId_Podatki;
+            if (operatorId > 0) item["selOperator"] = operatorId;
 
             item.Update();
             //}
@@ -388,12 +395,18 @@ namespace BLL
 
             item["Title"] = procName;
 
+            // przypisz domyślnego operatora
+            int operatorId = iok.OperatorId_Kadry;
+            if (operatorId > 0) item["selOperator"] = operatorId;
+
             item.Update();
             //}
         }
 
         public static void Create_ctBR_Form(SPWeb web, string ct, int klientId, int okresId, string key)
         {
+            Klient iok = new Klient(web, klientId);
+            
             SPList list = web.Lists.TryGetList(lstZadania);
 
             //if (list != null)
@@ -430,6 +443,10 @@ namespace BLL
             item["colDrukWplaty"] = fl.GenerowanieDrukuWplaty;
 
             item["Title"] = procName;
+
+            //domyślny operator
+            int operatorId = iok.OperatorId_Audyt;
+            if (operatorId > 0) item["selOperator"] = operatorId;
 
             item.Update();
             //}
@@ -632,6 +649,13 @@ namespace BLL
         {
             SPListItem item = Get_ZadanieById(task.Web, task.ID);
             item["colZUS_DataWyslaniaInformacji"] = date;
+            item.SystemUpdate();
+        }
+
+        public static void Update_RBR_DataWysylki(SPListItem task, DateTime date)
+        {
+            SPListItem item = Get_ZadanieById(task.Web, task.ID);
+            item["colBR_DataPrzekazania"] = date;
             item.SystemUpdate();
         }
     }
