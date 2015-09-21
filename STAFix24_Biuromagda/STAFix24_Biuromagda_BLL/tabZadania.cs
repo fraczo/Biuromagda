@@ -613,5 +613,26 @@ namespace BLL
             return item!=null?item.ID:0;
         }
 
+
+        public static void Update_PD_DataWysylki(SPListItem task, DateTime date)
+        {
+            SPListItem item = Get_ZadanieById(task.Web, task.ID);
+            item["colPD_DataWylaniaInformacji"] = date;
+            item.SystemUpdate();
+        }
+
+        public static void Update_VAT_DataWysylki(SPListItem task, DateTime date)
+        {
+            SPListItem item = Get_ZadanieById(task.Web, task.ID);
+            item["colVAT_DataWyslaniaInformacji"] = date;
+            item.SystemUpdate();
+        }
+
+        public static void Update_ZUS_DataWysylki(SPListItem task, DateTime date)
+        {
+            SPListItem item = Get_ZadanieById(task.Web, task.ID);
+            item["colZUS_DataWyslaniaInformacji"] = date;
+            item.SystemUpdate();
+        }
     }
 }

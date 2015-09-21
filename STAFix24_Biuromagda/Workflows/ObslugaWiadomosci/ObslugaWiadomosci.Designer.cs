@@ -31,8 +31,7 @@ namespace Workflows.ObslugaWiadomosci
             System.Workflow.Runtime.CorrelationToken correlationtoken1 = new System.Workflow.Runtime.CorrelationToken();
             System.Workflow.ComponentModel.ActivityBind activitybind1 = new System.Workflow.ComponentModel.ActivityBind();
             this.logToHistoryListActivity6 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
-            this.Update_tabKartyKlientów = new System.Workflow.Activities.CodeActivity();
-            this.AktualizacjaPowiązanychKrtotek = new System.Workflow.Activities.SequenceActivity();
+            this.Update_tabKartyKontrolne = new System.Workflow.Activities.CodeActivity();
             this.logToHistoryListActivity5 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Mail_Send = new System.Workflow.Activities.CodeActivity();
             this.logToHistoryListActivity4 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
@@ -56,16 +55,10 @@ namespace Workflows.ObslugaWiadomosci
             this.logToHistoryListActivity6.OtherData = "";
             this.logToHistoryListActivity6.UserId = -1;
             // 
-            // Update_tabKartyKlientów
+            // Update_tabKartyKontrolne
             // 
-            this.Update_tabKartyKlientów.Name = "Update_tabKartyKlientów";
-            this.Update_tabKartyKlientów.ExecuteCode += new System.EventHandler(this.Update_tabKartyKontrolne_ExecuteCode);
-            // 
-            // AktualizacjaPowiązanychKrtotek
-            // 
-            this.AktualizacjaPowiązanychKrtotek.Activities.Add(this.Update_tabKartyKlientów);
-            this.AktualizacjaPowiązanychKrtotek.Activities.Add(this.logToHistoryListActivity6);
-            this.AktualizacjaPowiązanychKrtotek.Name = "AktualizacjaPowiązanychKrtotek";
+            this.Update_tabKartyKontrolne.Name = "Update_tabKartyKontrolne";
+            this.Update_tabKartyKontrolne.ExecuteCode += new System.EventHandler(this.Update_tabKartyKontrolne_ExecuteCode);
             // 
             // logToHistoryListActivity5
             // 
@@ -124,7 +117,8 @@ namespace Workflows.ObslugaWiadomosci
             this.Else.Activities.Add(this.logToHistoryListActivity4);
             this.Else.Activities.Add(this.Mail_Send);
             this.Else.Activities.Add(this.logToHistoryListActivity5);
-            this.Else.Activities.Add(this.AktualizacjaPowiązanychKrtotek);
+            this.Else.Activities.Add(this.Update_tabKartyKontrolne);
+            this.Else.Activities.Add(this.logToHistoryListActivity6);
             this.Else.Name = "Else";
             // 
             // isMailSent
@@ -200,9 +194,7 @@ namespace Workflows.ObslugaWiadomosci
 
         private CancellationHandlerActivity cancellationHandlerActivity1;
 
-        private CodeActivity Update_tabKartyKlientów;
-
-        private SequenceActivity AktualizacjaPowiązanychKrtotek;
+        private CodeActivity Update_tabKartyKontrolne;
 
         private CodeActivity Mail_Send;
 
@@ -211,6 +203,8 @@ namespace Workflows.ObslugaWiadomosci
         private IfElseActivity CzyWiadomośćWysłana;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
+
 
 
 

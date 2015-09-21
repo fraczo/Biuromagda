@@ -122,7 +122,7 @@ namespace Workflows.ObslugaWiadomosci
 
         private void isWiadomoscWyslana(object sender, ConditionalEventArgs e)
         {
-            e.Result = false;
+            e.Result = item["czyWyslana"] != null ? bool.Parse(item["czyWyslana"].ToString()) : false;
         }
 
         private void Update_tabKartyKontrolne_ExecuteCode(object sender, EventArgs e)
@@ -134,17 +134,20 @@ namespace Workflows.ObslugaWiadomosci
                 if (task != null)
                 {
                     DateTime date = DateTime.Parse(item["Modified"].ToString());
-                    string ct = task.ContentType.ToString();
+                    string ct = task.ContentType.Name;
                     switch (ct)
                     {
                         case "Rozliczenie podatku dochodowego":
                         case "Rozliczenie podatku dochodowego spółki":
-                            BLL.tabKartyKontrolne.Update_PD_DataWysylki(task, date );
+                            BLL.tabZadania.Update_PD_DataWysylki(task, date);
+                            BLL.tabKartyKontrolne.Update_PD_DataWysylki(task, date);
                             break;
                         case "Rozliczenie podatku VAT":
+                            BLL.tabZadania.Update_VAT_DataWysylki(task, date);
                             BLL.tabKartyKontrolne.Update_VAT_DataWysylki(task, date);
                             break;
                         case "Rozliczenie ZUS":
+                            BLL.tabZadania.Update_ZUS_DataWysylki(task, date);
                             BLL.tabKartyKontrolne.Update_ZUS_DataWysylki(task, date);
                             break;
                         default:

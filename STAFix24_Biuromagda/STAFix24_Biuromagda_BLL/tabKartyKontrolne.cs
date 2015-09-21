@@ -82,7 +82,7 @@ namespace BLL
             int formId = Get_KartaKontrolnaId(item, KEY);
 
             SPListItem form = Get_KartaKontrolnaById(item.Web, formId);
-            form["colVAT_DataWylaniaInformacji"] = dateTime;
+            form["colVAT_DataWyslaniaInformacji"] = dateTime;
             form.SystemUpdate();
         }
 
@@ -92,7 +92,7 @@ namespace BLL
             int formId = Get_KartaKontrolnaId(item, KEY);
 
             SPListItem form = Get_KartaKontrolnaById(item.Web, formId);
-            form["colZUS_DataWylaniaInformacji"] = dateTime;
+            form["colZUS_DataWyslaniaInformacji"] = dateTime;
             form.SystemUpdate();
         }
 
