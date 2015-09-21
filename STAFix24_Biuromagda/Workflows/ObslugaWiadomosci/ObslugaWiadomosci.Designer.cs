@@ -59,7 +59,7 @@ namespace Workflows.ObslugaWiadomosci
             // Update_tabKartyKlientów
             // 
             this.Update_tabKartyKlientów.Name = "Update_tabKartyKlientów";
-            this.Update_tabKartyKlientów.ExecuteCode += new System.EventHandler(this.Update_tabKartyKlientów_ExecuteCode);
+            this.Update_tabKartyKlientów.ExecuteCode += new System.EventHandler(this.Update_tabKartyKontrolne_ExecuteCode);
             // 
             // AktualizacjaPowiązanychKrtotek
             // 

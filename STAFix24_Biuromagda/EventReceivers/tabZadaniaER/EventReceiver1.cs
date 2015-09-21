@@ -1004,12 +1004,12 @@ namespace tabZadania_EventReceiver.EventReceiver1
         #region Aktualizacja KartyKlienta
         private void Update_KartaKlienta_ZUS(SPListItem item)
         {
-            // TODO:
+            BLL.tabKartyKontrolne.Update_ZUS_Data(item);
         }
 
         private void Update_KartaKlienta_PD(SPListItem item)
         {
-            // TODO:
+            BLL.tabKartyKontrolne.Update_PD_Data(item);
         }
 
         private void Update_KartaKlienta_PDS(SPListItem item)
@@ -1019,7 +1019,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
         private void Update_KartaKlienta_VAT(SPListItem item)
         {
-            // TODO:
+            BLL.tabKartyKontrolne.Update_VAT_Data(item);
         }
         private void Update_KartaKlienta_RBR(SPListItem item)
         {
@@ -1503,6 +1503,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                     break;
                 case "Strata":
                     ClearValue(item, "colPD_WartoscDochodu");
+                    ClearValue(item, "colPD_WartoscDoZaplaty");
 
                     if (GetValue(item, "colPD_WartoscStraty") >= 0) return true;
                     break;
@@ -1597,10 +1598,10 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
         private void ClearValue(SPListItem item, string colName)
         {
-            if (item[colName] != null)
+            if (item[colName] != null )
             {
                 item[colName] = string.Empty;
-                item.Update();
+                item.SystemUpdate();
             }
         }
 

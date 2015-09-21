@@ -583,7 +583,7 @@ namespace BLL
             }
         }
 
-        private static SPListItem Get_ZadanieById(SPWeb web, int taskId)
+        public static SPListItem Get_ZadanieById(SPWeb web, int taskId)
         {
             SPList list = web.Lists.TryGetList(lstZadania);
             return list.GetItemById(taskId);
@@ -612,5 +612,6 @@ namespace BLL
                 .FirstOrDefault();
             return item!=null?item.ID:0;
         }
+
     }
 }

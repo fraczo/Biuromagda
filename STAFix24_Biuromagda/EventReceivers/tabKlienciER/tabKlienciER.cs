@@ -37,6 +37,10 @@ namespace EventReceivers.tabKlienciER
             }
         }
 
+        /// <summary>
+        /// aktualizuje pole _NazwaPrezentowana
+        /// </summary>
+        /// <param name="item"></param>
         private static void Update_LookupRefFields(SPListItem item)
         {
             // aktualizacja odwołań do lookupów
@@ -62,17 +66,21 @@ namespace EventReceivers.tabKlienciER
             {
                 case "KPiR":
                 case "KSH":
-                case "Firma":
                     np = string.Format("{0} NIP:{1}", item.Title, item["colNIP"] != null ? item["colNIP"].ToString() : string.Empty);
                     break;
-                case "Klient":
-                    np = item["colNazwaSkrocona"].ToString();
+                case "Firma":
+                    string nazwa = item["colNazwa"]!=null?item["colNazwa"].ToString():string.Empty;
+                    string nip = item["colNIP"] != null ? item["colNIP"].ToString() : string.Empty;
+                    np = string.Format(@"{2}/{0} NIP:{1}", nazwa, nip, Get_LookupValue(item, "selKlient_NazwaSkrocona") );
                     break;
                 case "Osoba fizyczna":
                     string npNazwsko = item["colNazwisko"] != null ? item["colNazwisko"].ToString().Trim() : string.Empty;
                     string npImie = item["colImie"] != null ? item["colImie"].ToString().Trim() : string.Empty;
                     string npPESEL = item["colPESEL"] != null ? item["colPESEL"].ToString().Trim() : string.Empty;
-                    np = string.Format("{0} {1} PESEL:{2}", npNazwsko, npImie, npPESEL);
+                    np = string.Format(@"{3}/{0} {1} PESEL:{2}", npNazwsko, npImie, npPESEL, Get_LookupValue(item, "selKlient_NazwaSkrocona"));
+                    break;
+                case "Klient":
+                    np = item["colNazwaSkrocona"].ToString();
                     break;
                 default:
                     break;
@@ -80,6 +88,7 @@ namespace EventReceivers.tabKlienciER
             item["_NazwaPrezentowana"] = np;
             item.SystemUpdate();
         }
+
 
         private static void Update_FolderInLibrary(SPListItem item, SPWeb web)
         {
@@ -109,6 +118,11 @@ namespace EventReceivers.tabKlienciER
             }
         }
 
-
+        #region Helpers
+        private static string Get_LookupValue(SPListItem item, string col)
+        {
+            return item[col] != null ? new SPFieldLookupValue(item[col].ToString()).LookupValue : string.Empty;
+        } 
+        #endregion
     }
 }

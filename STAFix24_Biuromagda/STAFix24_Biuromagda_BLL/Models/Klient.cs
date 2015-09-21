@@ -26,6 +26,9 @@ namespace BLL.Models
                 FormaOpodatkowaniaKSH = item["colFormaOpodatkowaniaPD_KSH"] != null ? item["colFormaOpodatkowaniaPD_KSH"].ToString() : string.Empty;
                 FormaOpodatkowaniaVAT = item["colFormaOpodatkowaniaVAT"] != null ? item["colFormaOpodatkowaniaVAT"].ToString() : string.Empty;
 
+                RozliczeniePD = item["enumRozliczeniePD"] != null ? item["enumRozliczeniePD"].ToString() : string.Empty;
+                RozliczenieVAT = item["enumRozliczenieVAT"] != null ? item["enumRozliczenieVAT"].ToString() : string.Empty;
+
 
                 string ct = item["ContentType"].ToString();
                 switch (ct)
@@ -86,7 +89,7 @@ namespace BLL.Models
         public string FormaOpodatkowaniaKPiR { get; set; }
         public string FormaOpodatkowaniaKSH { get; set; }
 
-        public object FormaOpodatkowaniaPD { get; set; }
+        public string FormaOpodatkowaniaPD { get; set; }
 
         public string FormaOpodatkowaniaVAT { get; set; }
         public string OsobaDoKontaktu { get; set; }
@@ -117,5 +120,8 @@ namespace BLL.Models
 
         public int UrzadSkarbowyId { get; set; }
         public string UwagiKadrowe { get; set; }
+
+        public object RozliczeniePD { get; set; }
+        public object RozliczenieVAT { get; set; }
     }
 }

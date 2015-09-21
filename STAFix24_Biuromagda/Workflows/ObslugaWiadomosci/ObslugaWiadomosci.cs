@@ -113,7 +113,7 @@ namespace Workflows.ObslugaWiadomosci
                 item.Update();
 
                 int zadanieId = item["_ZadanieId"] != null ? int.Parse(item["_ZadanieId"].ToString()) : 0;
-                if (zadanieId>0)
+                if (zadanieId > 0)
                 {
                     BLL.tabZadania.Update_StatusWysylki(item.Web, item, zadanieId, BLL.Models.StatusZadania.Zakończone);
                 }
@@ -125,68 +125,33 @@ namespace Workflows.ObslugaWiadomosci
             e.Result = false;
         }
 
-        #region Helpers
-
-        //public static void SendMailWithAttachment(SPListItem item, string from, string to, string subject, string body, bool isBodyHtml, string cc, string bcc)
-        //{
-
-        //    SmtpClient client = new SmtpClient();
-        //    client.Host = item.Web.Site.WebApplication.OutboundMailServiceInstance.Server.Address;
-
-        //    //nazwa witryny
-        //    from = item.Web.Title != null ? String.Format(@"{0}<{1}>",
-        //        item.Web.Title,
-        //        from) : from;
-
-        //    MailMessage message = new MailMessage();
-        //    SPList list = item.ParentList;
-        //    message.From = new MailAddress(from);
-        //    message.To.Add(new MailAddress(to));
-        //    if (!string.IsNullOrEmpty(cc))
-        //    {
-        //        message.CC.Add(new MailAddress(cc));
-        //    }
-        //    if (!string.IsNullOrEmpty(bcc))
-        //    {
-        //        message.Bcc.Add(new MailAddress(bcc));
-        //    }
-        //    message.IsBodyHtml = isBodyHtml;
-        //    message.Body = body;
-        //    message.Subject = subject;
-
-        //    for (int attachmentIndex = 0; attachmentIndex < item.Attachments.Count; attachmentIndex++)
-        //    {
-        //        string url = item.Attachments.UrlPrefix + item.Attachments[attachmentIndex];
-        //        SPFile file = list.ParentWeb.GetFile(url);
-        //        message.Attachments.Add(new Attachment(file.OpenBinaryStream(), file.Name));
-        //    }
-
-        //    client.Send(message);
-
-        //}
-
-        //private void sendEmailToAssignee_MethodInvoking(object sender, EventArgs e)
-        //{
-        //SPListItem wfItem = onWorkflowActivated1.WorkflowProperties.Item;
-        //SPFieldUser assignedTo = (SPFieldUser)wfItem.Fields["Assigned To"];
-        //SPFieldUserValue user = (SPFieldUserValue)assignedTo.GetFieldValue(
-        //wfItem["Assigned To"].ToString());
-        //string assigneeEmail = user.User.Email;
-        //sendEmailToAssignee.To = new SPFieldUserValue(item.ParentList.ParentWeb, item["Author"].ToString()).User.Email;
-        //sendEmailToAssignee.Subject = "New work order has been created.";
-        //sendEmailToAssignee.Body = "Work order number " +
-        //onWorkflowActivated1.WorkflowProperties.Item.ID +
-        //" has just been created and assigned to you.";
-        //sendEmailToAssignee.From = "Maszynka<noreply@stafix24.pl>";
-
-        //SendMailWithAttachment(item, "noreply@stafix24.pl", sendEmailToAssignee.To, "nowy temat", sendEmailToAssignee.Body, true, string.Empty, string.Empty);
-        //}
-
-
-        #endregion
-
-        private void Update_tabKartyKlientów_ExecuteCode(object sender, EventArgs e)
+        private void Update_tabKartyKontrolne_ExecuteCode(object sender, EventArgs e)
         {
+            int zadanieId = item["_ZadanieId"] != null ? int.Parse(item["_ZadanieId"].ToString()) : 0;
+            if (zadanieId > 0)
+            {
+                SPListItem task = BLL.tabZadania.Get_ZadanieById(item.Web, zadanieId);
+                if (task != null)
+                {
+                    DateTime date = DateTime.Parse(item["Modified"].ToString());
+                    string ct = task.ContentType.ToString();
+                    switch (ct)
+                    {
+                        case "Rozliczenie podatku dochodowego":
+                        case "Rozliczenie podatku dochodowego spółki":
+                            BLL.tabKartyKontrolne.Update_PD_DataWysylki(task, date );
+                            break;
+                        case "Rozliczenie podatku VAT":
+                            BLL.tabKartyKontrolne.Update_VAT_DataWysylki(task, date);
+                            break;
+                        case "Rozliczenie ZUS":
+                            BLL.tabKartyKontrolne.Update_ZUS_DataWysylki(task, date);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
 
         }
 
