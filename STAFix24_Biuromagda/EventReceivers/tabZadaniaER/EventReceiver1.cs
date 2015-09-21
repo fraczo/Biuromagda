@@ -69,7 +69,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                         break;
                     case "Rozliczenie ZUS":
                     case "Rozliczenie podatku dochodowego":
-                    case "Rozliczenie podatku dochodowego spółki":
+                    case "Rozliczenie podatku dochodowego spółki":         
                     case "Rozliczenie podatku VAT":
                     case "Rozliczenie z biurem rachunkowym":
                         Update_KEY(item);
@@ -107,6 +107,18 @@ namespace tabZadania_EventReceiver.EventReceiver1
             }
 
         }
+
+        private void Manage_PotwierdzenieOdbioruDokumentow(SPListItem item)
+        {
+            if (Get_FlagValue(item, "colPotwierdzenieOdbioruDokumento" ))
+            {
+                int klientId = Get_LookupId(item, "selKlient");
+                int okresId = Get_LookupId(item, "selOkres");
+                if (klientId > 0 && okresId > 0) BLL.tabZadania.Complte_PrzypomnienieOWysylceDokumentow(item, klientId, okresId);
+            }
+        }
+
+
 
         #region Updates
 
@@ -579,33 +591,28 @@ namespace tabZadania_EventReceiver.EventReceiver1
                     Update_StatusZadania(item, StatusZadania.Obsługa);
                 }
 
-                //string ct = item.ContentType.Name;
-                //switch (ct)
-                //{
-                //    case "Zadanie":
-                //        //Manage_Zadanie(item);
-                //        break;
-                //    case "Prośba o dokumenty":
-                //        //Manage_ProsbaODokumenty(item);
-                //        break;
-                //    case "Prośba o przesłanie wyciągu bankowego":
-                //        //Manage_ProsbaOWyciagBankowy(item);
-                //        break;
-                //    case "Rozliczenie z biurem rachunkowym":
-                //        //Manage_RBR(item);
-                //        break;
-                //    case "Rozliczenie podatku dochodowego":
-                //        //Manage_PD(item);
-                //        break;
-                //    case "Rozliczenie podatku VAT":
-                //        //Manage_VAT(item);
-                //        break;
-                //    case "Rozliczenie ZUS":
-                //        //Manage_ZUS(item);
-                //        break;
-                //    default:
-                //        break;
-                //}
+                string ct = item.ContentType.Name;
+                switch (ct)
+                {
+                    case "Zadanie":
+                        break;
+                    case "Prośba o dokumenty":
+                        break;
+                    case "Prośba o przesłanie wyciągu bankowego":
+                        break;
+                    case "Rozliczenie z biurem rachunkowym":
+                        break;
+                    case "Rozliczenie podatku dochodowego":
+                    case "Rozliczenie podatku dochodowego spółki":
+                        Manage_PotwierdzenieOdbioruDokumentow(item);
+                        break;
+                    case "Rozliczenie podatku VAT":
+                        break;
+                    case "Rozliczenie ZUS":
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
@@ -1634,6 +1641,11 @@ namespace tabZadania_EventReceiver.EventReceiver1
         #endregion
 
         #region Helpers
+        private bool Get_FlagValue(SPListItem item, string col)
+        {
+            return item[col] != null ? bool.Parse(item[col].ToString()) : false;
+        }
+
         private DateTime Get_Date(SPListItem item, string col)
         {
             return item[col] != null ? DateTime.Parse(item[col].ToString()) : new DateTime();

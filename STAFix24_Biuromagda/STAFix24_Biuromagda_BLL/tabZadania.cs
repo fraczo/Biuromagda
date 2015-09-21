@@ -569,5 +569,48 @@ namespace BLL
             return false;
         }
 
+
+        public static void Complte_PrzypomnienieOWysylceDokumentow(SPListItem item, int klientId, int okresId)
+        {
+            string KEY = Define_KEY("Prośba o dokumenty",klientId, okresId);
+            if (!string.IsNullOrEmpty(KEY))
+            {
+                int taskId = Get_ZadanieByKEY(item.Web, KEY);
+                if (taskId>0)
+                {
+                    Set_Status(BLL.tabZadania.Get_ZadanieById(item.Web,taskId), "Zakończone");
+                }
+            }
+        }
+
+        private static SPListItem Get_ZadanieById(SPWeb web, int taskId)
+        {
+            SPList list = web.Lists.TryGetList(lstZadania);
+            return list.GetItemById(taskId);
+        }
+
+        private static string Define_KEY(SPListItem item, string p)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void Set_Status(SPListItem item, string s)
+        {
+            string status = item["enumStatusZadania"]!=null?item["enumStatusZadania"].ToString():string.Empty;
+            if (status!=s)
+            {
+                item["enumStatusZadania"] = s;
+                item.SystemUpdate();
+            }
+        }
+
+        private static int Get_ZadanieByKEY(SPWeb web, string KEY)
+        {
+            SPList list = web.Lists.TryGetList(lstZadania);
+            SPListItem item = list.Items.Cast<SPListItem>()
+                .Where(i => i["KEY"].ToString() == KEY)
+                .FirstOrDefault();
+            return item!=null?item.ID:0;
+        }
     }
 }
