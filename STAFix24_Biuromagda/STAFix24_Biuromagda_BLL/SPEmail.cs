@@ -76,6 +76,9 @@ namespace SPEmail
                 message.From = new MailAddress(message.From.Address, Format_SenderDisplayName(item.Web,message.From.Address));
             }
 
+            //ustaw adres zwrotny
+            message.ReplyTo = message.From;
+
             for (int attachmentIndex = 0; attachmentIndex < item.Attachments.Count; attachmentIndex++)
             {
                 string url = item.Attachments.UrlPrefix + item.Attachments[attachmentIndex];
@@ -95,11 +98,11 @@ namespace SPEmail
             string biuro = BLL.admSetup.GetValue(web, "EMAIL_NAZWA_FIRMY");
             if (string.IsNullOrEmpty(name))
             {
-                return string.Format(@"{0}<{1}>", biuro, email);
+                return string.Format(@"{0}", biuro);
             }
             else
             {
-                return string.Format(@"{0} | {1}<{2}>", name, biuro, email);
+                return string.Format(@"{0} | {1}", name, biuro);
             }
 
 

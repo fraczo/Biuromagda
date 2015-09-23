@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Feature xmlns="http://schemas.microsoft.com/sharepoint/" Title="Biuromagda_EventReceivers" Description="admProcessRequest.OnCreate, tabZadania.OnUpdate" Id="60f40776-08ba-4e8a-b947-3c10eca52833" Scope="Web">
+<Feature xmlns="http://schemas.microsoft.com/sharepoint/" Description="admProcessRequest.OnCreate, tabZadania.OnUpdate" Id="60f40776-08ba-4e8a-b947-3c10eca52833" Scope="Web" Title="Biuromagda_EventReceivers">
   <ElementManifests>
     <ElementManifest Location="SiteAssets\Elements.xml" />
     <ElementFile Location="SiteAssets\Templates\DW-Przelew.pdf" />

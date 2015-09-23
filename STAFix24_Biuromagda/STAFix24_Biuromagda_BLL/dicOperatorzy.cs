@@ -74,15 +74,15 @@ namespace BLL
                 .Where(i => i["colEmail"].ToString() == email)
                 .FirstOrDefault();
 
-            if (item != null) return item["colEmail"].ToString();
+            if (item != null) return item.Title;
             else
             {
                 item = list.Items.Cast<SPListItem>()
-                .Where(i => i["colKontoOperatora"]!=null)
+                .Where(i => i["colKontoOperatora"] != null)
                 .Where(i => new SPFieldUserValue(web, i["colKontoOperatora"].ToString()).User.Email == email)
                 .FirstOrDefault();
-                if (item != null) 
-                    return new SPFieldUserValue(web, item["colKontoOperatora"].ToString()).User.Email;
+                if (item != null)
+                    return item.Title;
             }
 
             return string.Empty;
