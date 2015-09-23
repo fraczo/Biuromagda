@@ -137,14 +137,14 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 if (item["_KontoOperatora"] == null)
                 {
                     item["_KontoOperatora"] = userId;
-                    item.Update();
+                    item.SystemUpdate();
                 }
                 else
                 {
                     if (new SPFieldUserValue(web, item["_KontoOperatora"].ToString()).LookupId != userId)
                     {
                         item["_KontoOperatora"] = userId;
-                        item.Update();
+                        item.SystemUpdate();
                     }
                 }
             }
@@ -153,7 +153,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 if (item["_KontoOperatora"] != null)
                 {
                     item["_KontoOperatora"] = 0;
-                    item.Update();
+                    item.SystemUpdate();
                 }
 
             }
@@ -164,7 +164,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
             if (String.IsNullOrEmpty(item.Title))
             {
                 item["Title"] = item["selProcedura"] != null ? new SPFieldLookupValue(item["selProcedura"].ToString()).LookupValue : "#" + item.ID.ToString();
-                item.Update();
+                item.SystemUpdate();
             }
         }
 
@@ -250,7 +250,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
             {
                 //przypisz operatora do zadania
                 item["selOperator"] = targetOpId;
-                item.Update();
+                item.SystemUpdate();
             }
         }
 
@@ -597,6 +597,8 @@ namespace tabZadania_EventReceiver.EventReceiver1
                     case "Zadanie":
                         break;
                     case "Prośba o dokumenty":
+                        Manage_ProsbaODokumenty_Gotowe(item);
+                        Update_StatusZadania(item, StatusZadania.Wysyłka);
                         break;
                     case "Prośba o przesłanie wyciągu bankowego":
                         break;
@@ -615,6 +617,23 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 }
             }
         }
+
+        private void Manage_ProsbaODokumenty_Gotowe(SPListItem item)
+        {
+            string status = Get_StatusZadania(item);
+
+            if (status==StatusZadania.Gotowe.ToString())
+            {
+                int klientId = item["selKlient"] != null ? new SPFieldLookupValue(item["selKlient"].ToString()).LookupId : 0;
+
+                if (klientId > 0)
+                {
+                    CreateMessage_ProsbaODokumenty(item, klientId);
+
+                }
+            }
+        }
+
 
         private void Manage_CMD(SPListItem item)
         {
@@ -703,7 +722,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 string temat = string.Empty;
                 string tresc = string.Empty;
                 string trescHTML = string.Empty;
-                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "EMAIL_DEFAULT_BODY", out temat, out trescHTML);
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "EMAIL_DEFAULT_BODY", out temat, out trescHTML);
                 if (item["selProcedura"] != null)
                 {
                     temat = string.Format("{0} :{1}",
@@ -723,6 +742,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
                 StringBuilder sb = new StringBuilder(trescHTML);
                 sb.Replace("___BODY___", notatka);
+                sb.Replace("___FOOTER___", string.Empty);
                 trescHTML = sb.ToString();
 
                 DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
@@ -752,7 +772,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 string temat = string.Empty;
                 string tresc = string.Empty;
                 string trescHTML = string.Empty;
-                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "EMAIL_DEFAULT_BODY", out temat, out trescHTML);
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "EMAIL_DEFAULT_BODY", out temat, out trescHTML);
                 //nadpisz temat wiadomości
                 if (item["selProcedura"] != null)
                 {
@@ -773,6 +793,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
                 StringBuilder sb = new StringBuilder(trescHTML);
                 sb.Replace("___BODY___", notatka);
+                sb.Replace("___FOOTER___", string.Empty);
                 trescHTML = sb.ToString();
 
                 DateTime planowanaDataNadania = new DateTime(); //wyślij natychmiast
@@ -805,7 +826,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                     case "Rozliczenie ZUS":
                         if (isValidated_ZUS(item))
                         {
-                            if (!isAuditRequest(item) || Get_Status(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
+                            if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
                             {
                                 Manage_CMD_WyslijWynik_ZUS(item);
                                 Update_KartaKlienta_ZUS(item);
@@ -821,7 +842,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                     case "Rozliczenie podatku dochodowego":
                         if (isValidated_PD(item))
                         {
-                            if (!isAuditRequest(item) || Get_Status(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
+                            if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
                             {
                                 Manage_CMD_WyslijWynik_PD(item);
                                 Update_KartaKlienta_PD(item);
@@ -846,7 +867,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                     case "Rozliczenie podatku VAT":
                         if (isValidated_VAT(item))
                         {
-                            if (!isAuditRequest(item) || Get_Status(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
+                            if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
                             {
                                 Manage_CMD_WyslijWynik_VAT(item);
                                 Update_KartaKlienta_VAT(item);
@@ -1027,7 +1048,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
         }
         #endregion
 
-        private string Get_Status(SPListItem item)
+        private string Get_StatusZadania(SPListItem item)
         {
             return item["enumStatusZadania"] != null ? item["enumStatusZadania"].ToString() : string.Empty;
         }
@@ -1054,7 +1075,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 string temat = string.Empty;
                 string tresc = string.Empty;
                 string trescHTML = string.Empty;
-                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "WBANK_TEMPLATE.Include", out temat, out trescHTML);
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "WBANK_TEMPLATE.Include", out temat, out trescHTML);
 
                 DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
 
@@ -1070,21 +1091,25 @@ namespace tabZadania_EventReceiver.EventReceiver1
             if (klientId > 0
                 && cmd == ZATWIERDZ)
             {
-
-                string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
-                string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
-                string kopiaDla = string.Empty;
-                bool KopiaDoNadawcy = false;
-                bool KopiaDoBiura = false;
-                string temat = string.Empty;
-                string tresc = string.Empty;
-                string trescHTML = string.Empty;
-                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "DOK_TEMPLATE.Include", out temat, out trescHTML);
-
-                DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
-
-                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
+                CreateMessage_ProsbaODokumenty(item, klientId);
             }
+        }
+
+        private static void CreateMessage_ProsbaODokumenty(SPListItem item, int klientId)
+        {
+            string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
+            string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
+            string kopiaDla = string.Empty;
+            bool KopiaDoNadawcy = false;
+            bool KopiaDoBiura = false;
+            string temat = string.Empty;
+            string tresc = string.Empty;
+            string trescHTML = string.Empty;
+            BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "DOK_TEMPLATE.Include", out temat, out trescHTML);
+
+            DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
+
+            BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
         }
 
         private void Manage_CMD_WyslijWynik_ZUS(SPListItem item)
@@ -1104,7 +1129,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 string temat = string.Empty;
                 string tresc = string.Empty;
                 string trescHTML = string.Empty;
-                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "ZUS_TEMPLATE.Include", out temat, out trescHTML);
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_TEMPLATE.Include", out temat, out trescHTML);
 
                 //uzupełnia temat kodem klienta i okresu
                 temat = AddSpecyfikacja(item, temat);
@@ -1207,7 +1232,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 string temat = string.Empty;
                 string tresc = string.Empty;
                 string trescHTML = string.Empty;
-                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "PD_TEMPLATE.Include", out temat, out trescHTML);
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_TEMPLATE.Include", out temat, out trescHTML);
 
                 //uzupełnia temat kodem klienta i okresu
                 temat = AddSpecyfikacja(item, temat);
@@ -1299,7 +1324,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 string temat = string.Empty;
                 string tresc = string.Empty;
                 string trescHTML = string.Empty;
-                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "VAT_TEMPLATE.Include", out temat, out trescHTML);
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_TEMPLATE.Include", out temat, out trescHTML);
 
                 //uzupełnia temat kodem klienta i okresu
                 temat = AddSpecyfikacja(item, temat);
@@ -1369,7 +1394,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 string temat = string.Empty;
                 string tresc = string.Empty;
                 string trescHTML = string.Empty;
-                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "BR_TEMPLATE.Include", out temat, out trescHTML);
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "BR_TEMPLATE.Include", out temat, out trescHTML);
 
                 //uzupełnia temat kodem klienta i okresu
                 temat = AddSpecyfikacja(item, temat);
@@ -1573,7 +1598,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
             string uwagi = Get_String(item, "colUwagi");
             uwagi = uwagi + "\n" + DateTime.Now.ToString() + "\n" + comment;
             item["colUwagi"] = uwagi.Trim();
-            item.Update();
+            item.SystemUpdate();
         }
 
         private string Get_String(SPListItem item, string colName)
@@ -1591,7 +1616,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
             {
                 //jeżeli pusta wartość to wpisz 0
                 item[colName] = 0;
-                item.Update();
+                item.SystemUpdate();
                 return 0;
             }
         }
@@ -1681,7 +1706,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
         private void Update_StatusZadania(SPListItem item, StatusZadania statusZadania)
         {
             item["enumStatusZadania"] = statusZadania.ToString();
-            item.Update();
+            item.SystemUpdate();
         }
         private static void UsunPodobneZalaczniki(SPListItem item, string targetFileNameLeading)
         {
@@ -1704,7 +1729,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                     {
                         item.Attachments.Delete(attName);
                     }
-                    item.Update();
+                    item.SystemUpdate();
                 }
 
             }
@@ -1759,7 +1784,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 {
 
                     item["selOperator"] = operatorId;
-                    item.Update();
+                    item.SystemUpdate();
 
                 }
             }
@@ -1774,7 +1799,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 if (termin > 0)
                 {
                     item["colTerminRealizacji"] = DateTime.Today.AddDays(termin);
-                    item.Update();
+                    item.SystemUpdate();
                 }
             }
         }
@@ -1786,7 +1811,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
             {
                 procId = BLL.tabProcedury.Update(web, item.Title);
                 item["selProcedura"] = procId;
-                item.Update();
+                item.SystemUpdate();
             }
             return procId;
         }

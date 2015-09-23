@@ -66,7 +66,7 @@ namespace admProcessRequests_EventReceiver
                 item["selZadanie"] = 0;
             }
 
-            item.Update();
+            item.SystemUpdate();
         }
 
         private static string Extract_NazwaSkrocona(string fileName)

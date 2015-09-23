@@ -40,7 +40,7 @@ namespace BLL
             SPListItem newItem = list.AddItem();
             newItem["Title"] = String.Format("{0} dni", liczbaDni.ToString());
             newItem["colLiczbaDni"] = liczbaDni;
-            newItem.Update();
+            newItem.SystemUpdate();
 
             return newItem.ID;
 

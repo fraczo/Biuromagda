@@ -94,13 +94,13 @@ namespace BLL
                 if (item["KEY"].ToString() != key)
                 {
                     item["KEY"] = key;
-                    item.Update();
+                    item.SystemUpdate();
                 }
             }
             else
             {
                 item["KEY"] = key;
-                item.Update();
+                item.SystemUpdate();
             }
 
             return;
@@ -208,7 +208,7 @@ namespace BLL
                 int operatorId = iok.OperatorId_Podatki;
                 if (operatorId > 0) item["selOperator"] = operatorId;
 
-                item.Update();
+                item.SystemUpdate();
             }
 
         }
@@ -278,7 +278,7 @@ namespace BLL
             int operatorId = iok.OperatorId_Podatki;
             if (operatorId > 0) item["selOperator"] = operatorId;
 
-            item.Update();
+            item.SystemUpdate();
             //}
         }
 
@@ -288,13 +288,12 @@ namespace BLL
 
             if (operatorId == 0)
             {
-                operatorId = dicOperatorzy.GetID(web, string.Empty, true);
+                // TODO: nie wiem co robi ten kawałek kodu
+                operatorId = dicOperatorzy.GetID(web, "STAFix24 Robot", true);
             }
 
             SPList list = web.Lists.TryGetList(lstZadania);
 
-            //if (list != null)
-            //{
             string procName = ": " + ct.ToString();
             var procId = tabProcedury.GetID(web, procName, true);
 
@@ -312,8 +311,8 @@ namespace BLL
 
             item["Title"] = procName;
 
-            item.Update();
-            //}
+            item.SystemUpdate();
+
         }
 
         public static void Create_ctZUS_Form(SPWeb web, string ct, int klientId, int okresId, string key, bool isTylkoZdrowotna, bool isChorobowa, bool isPracownicy, double skladkaSP, double skladkaZD, double skladkaFP, DateTime terminPlatnosci, DateTime terminPrzekazania, string zus_sp_konto, string zus_zd_konto, string zus_fp_konto, Klient iok)
@@ -399,14 +398,14 @@ namespace BLL
             int operatorId = iok.OperatorId_Kadry;
             if (operatorId > 0) item["selOperator"] = operatorId;
 
-            item.Update();
+            item.SystemUpdate();
             //}
         }
 
         public static void Create_ctBR_Form(SPWeb web, string ct, int klientId, int okresId, string key)
         {
             Klient iok = new Klient(web, klientId);
-            
+
             SPList list = web.Lists.TryGetList(lstZadania);
 
             //if (list != null)
@@ -448,7 +447,7 @@ namespace BLL
             int operatorId = iok.OperatorId_Audyt;
             if (operatorId > 0) item["selOperator"] = operatorId;
 
-            item.Update();
+            item.SystemUpdate();
             //}
         }
 
@@ -514,7 +513,7 @@ namespace BLL
                     //aktualizuj informacje o załączonej fakturze
                     item["colBR_FakturaZalaczona"] = true;
 
-                    item.Update();
+                    item.SystemUpdate();
 
                 }
                 catch (Exception)
@@ -538,7 +537,7 @@ namespace BLL
                 item["colBR_NumerFaktury"] = numerFaktury;
                 item["colBR_WartoscDoZaplaty"] = wartoscDoZaplaty;
                 item["colBR_TerminPlatnosci"] = terminPlatnosci;
-                item.Update();
+                item.SystemUpdate();
             }
             //}
         }
@@ -565,7 +564,7 @@ namespace BLL
                         uwagi,
                         messageItem.Title + " wysłane " + messageItem["Modified"].ToString() + " #" + messageItem.ID.ToString()).Trim();
                     item["colUwagi"] = uwagi;
-                    item.Update();
+                    item.SystemUpdate();
                 }
             }
 
@@ -575,13 +574,13 @@ namespace BLL
         {
             int klientId;
 
-            if (item["selKlient"]!=null) klientId = new SPFieldLookupValue(item["selKlient"].ToString()).LookupId;
+            if (item["selKlient"] != null) klientId = new SPFieldLookupValue(item["selKlient"].ToString()).LookupId;
             else klientId = 0;
 
             if (klientId > 0)
-	        {
-		         if (BLL.tabKlienci.HasServiceAssigned(item.Web, klientId, serviceName)) return true;
-	        }
+            {
+                if (BLL.tabKlienci.HasServiceAssigned(item.Web, klientId, serviceName)) return true;
+            }
 
             return false;
         }
@@ -589,13 +588,13 @@ namespace BLL
 
         public static void Complte_PrzypomnienieOWysylceDokumentow(SPListItem item, int klientId, int okresId)
         {
-            string KEY = Define_KEY("Prośba o dokumenty",klientId, okresId);
+            string KEY = Define_KEY("Prośba o dokumenty", klientId, okresId);
             if (!string.IsNullOrEmpty(KEY))
             {
                 int taskId = Get_ZadanieByKEY(item.Web, KEY);
-                if (taskId>0)
+                if (taskId > 0)
                 {
-                    Set_Status(BLL.tabZadania.Get_ZadanieById(item.Web,taskId), "Zakończone");
+                    Set_Status(BLL.tabZadania.Get_ZadanieById(item.Web, taskId), "Zakończone");
                 }
             }
         }
@@ -613,8 +612,8 @@ namespace BLL
 
         private static void Set_Status(SPListItem item, string s)
         {
-            string status = item["enumStatusZadania"]!=null?item["enumStatusZadania"].ToString():string.Empty;
-            if (status!=s)
+            string status = item["enumStatusZadania"] != null ? item["enumStatusZadania"].ToString() : string.Empty;
+            if (status != s)
             {
                 item["enumStatusZadania"] = s;
                 item.SystemUpdate();
@@ -627,7 +626,7 @@ namespace BLL
             SPListItem item = list.Items.Cast<SPListItem>()
                 .Where(i => i["KEY"].ToString() == KEY)
                 .FirstOrDefault();
-            return item!=null?item.ID:0;
+            return item != null ? item.ID : 0;
         }
 
 
@@ -658,5 +657,25 @@ namespace BLL
             item["colBR_DataPrzekazania"] = date;
             item.SystemUpdate();
         }
+
+        public static List<SPListItem> Get_ActiveTasksByContentType(SPWeb web, string ctName)
+        {
+            SPList list = web.Lists.TryGetList(lstZadania);
+
+            List<SPListItem> results = (from SPListItem item in list.Items
+                                        where item.ContentType.Name == ctName
+                                        && (item["enumStatusZadania"].ToString() == "Nowe"
+                                            || item["enumStatusZadania"].ToString() == "Obsługa")
+                                        //&& Get_LookupValue(item, "selOperator") == "STAFix24 Robot"
+                                        select item).ToList();
+            return results;
+        }
+
+        #region Helpers
+        private static string Get_LookupValue(SPListItem item, string col)
+        {
+            return item[col] != null ? new SPFieldLookupValue(item[col].ToString()).LookupValue : string.Empty;
+        }
+        #endregion
     }
 }

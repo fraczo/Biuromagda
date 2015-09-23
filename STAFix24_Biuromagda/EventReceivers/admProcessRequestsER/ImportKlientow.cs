@@ -70,7 +70,7 @@ namespace admProcessRequests_EventReceiver
                             firmaId = tabKlienci.AddNew_Firma_Klient(web, item, klientId);
 
                             item["selKlient"] = firmaId;
-                            item.Update();
+                            item.SystemUpdate();
                         }
 
                     }
@@ -99,7 +99,7 @@ namespace admProcessRequests_EventReceiver
                             osobaId = tabKlienci.AddNew_OsobaFizyczna_Klient(web, item, klientId);
 
                             item["selKlient"] = osobaId;
-                            item.Update();
+                            item.SystemUpdate();
                         }
                     }
 
@@ -122,7 +122,7 @@ namespace admProcessRequests_EventReceiver
                         {
                             klientId = tabKlienci.AddNew_KSH_Klient(web, nazwaSkrocona, item);
                             item["selKlient"] = klientId;
-                            item.Update();
+                            item.SystemUpdate();
                         }
                     }
                 });
@@ -144,7 +144,7 @@ namespace admProcessRequests_EventReceiver
                         {
                             klientId = tabKlienci.AddNew_KPiR_Klient(web, nazwaSkrocona, item);
                             item["selKlient"] = klientId;
-                            item.Update();
+                            item.SystemUpdate();
                         }
                     }
                 });

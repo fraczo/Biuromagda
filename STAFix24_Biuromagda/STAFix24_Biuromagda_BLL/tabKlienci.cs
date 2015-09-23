@@ -295,7 +295,7 @@ namespace BLL
             CopyEmailContent(item, newItem, "colEmail3");
             CopyContent(item, newItem, "colNotatka3");
 
-            newItem.Update();
+            newItem.SystemUpdate();
 
             return newItem.ID;
             //}
@@ -383,7 +383,7 @@ namespace BLL
             CopyEmailContent(item, newItem, "colEmail3");
             CopyContent(item, newItem, "colNotatka3");
 
-            newItem.Update();
+            newItem.SystemUpdate();
 
             return newItem.ID;
             //}
@@ -436,7 +436,7 @@ namespace BLL
             CopyContent(item, newItem, "colTelefon");
             CopyEmailContent(item, newItem, "colEmail");
 
-            newItem.Update();
+            newItem.SystemUpdate();
 
             return newItem.ID;
             //}
@@ -479,7 +479,7 @@ namespace BLL
 
             CopyContent(item, newItem, "colUwagiKadrowe");
 
-            newItem.Update();
+            newItem.SystemUpdate();
 
             return newItem.ID;
             //}

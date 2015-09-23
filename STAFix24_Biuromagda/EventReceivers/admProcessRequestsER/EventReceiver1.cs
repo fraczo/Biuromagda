@@ -37,7 +37,7 @@ namespace admProcessRequests_EventReceiver
             this.EventFiringEnabled = false;
 
             properties.ListItem["enumStatusZlecenia"] = "Obsługa";
-            properties.ListItem.Update();
+            properties.ListItem.SystemUpdate();
 
             try
             {
@@ -83,10 +83,13 @@ namespace admProcessRequests_EventReceiver
                                 case "Obsługa wiadomości":
                                     ObslugaWiadomosci.Execute(properties, web);
                                     break;
+                                case "Obsługa zadań":
+                                    ObslugaZadan.Execute(properties, web);
+                                    break;
 
                                 default:
                                     //properties.ListItem["colStatus"] = "Zakończony";
-                                    //properties.ListItem.Update();
+                                    //properties.ListItem.SystemUpdate();
                                     break;
                             }
 

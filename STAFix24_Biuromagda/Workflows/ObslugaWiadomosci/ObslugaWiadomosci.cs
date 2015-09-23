@@ -91,6 +91,7 @@ namespace Workflows.ObslugaWiadomosci
 
                         StringBuilder sb = new StringBuilder(BLL.admSetup.GetText(item.Web, "MAIL_TEMPLATE"));
                         sb.Replace(@"___BODY___", body);
+                        sb.Replace(@"___FOOTER___", string.Empty);
                         mail.Body = sb.ToString();
                         mail.IsBodyHtml = true;
                     }
@@ -110,7 +111,7 @@ namespace Workflows.ObslugaWiadomosci
                 //ustaw flagę wysyłki
                 item["colCzyWyslana"] = true;
                 item["colDataNadania"] = DateTime.Now.ToString();
-                item.Update();
+                item.SystemUpdate();
 
                 int zadanieId = item["_ZadanieId"] != null ? int.Parse(item["_ZadanieId"].ToString()) : 0;
                 if (zadanieId > 0)
@@ -185,7 +186,7 @@ namespace Workflows.ObslugaWiadomosci
         {
             item["enumStatusWysylki"] = status;
             item["colDataNadania"] = DateTime.Now;
-            item.Update();
+            item.SystemUpdate();
         }
 
 

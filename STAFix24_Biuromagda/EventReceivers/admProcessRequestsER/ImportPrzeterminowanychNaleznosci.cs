@@ -61,7 +61,7 @@ namespace admProcessRequests_EventReceiver
                         {
                             item["selKlient"] = klientId;
                             item["selWiadomoscWBuforze"] = 0;
-                            item.Update();
+                            item.SystemUpdate();
 
 
                             StringBuilder sbRow = new StringBuilder(rowTemplate);
@@ -106,7 +106,7 @@ namespace admProcessRequests_EventReceiver
                                 item.Delete();
 #else
                                 item["selWiadomoscWBuforze"] = messageId;
-                                item.Update();
+                                item.SystemUpdate();
 #endif
                                 
                             }

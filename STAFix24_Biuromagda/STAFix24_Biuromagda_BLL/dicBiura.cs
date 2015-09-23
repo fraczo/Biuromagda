@@ -24,7 +24,7 @@ namespace BLL
 
             SPListItem newItem = list.AddItem();
             newItem["Title"] = v;
-            newItem.Update();
+            newItem.SystemUpdate();
 
             return newItem.ID;
         }

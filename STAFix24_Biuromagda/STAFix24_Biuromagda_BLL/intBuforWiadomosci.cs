@@ -21,7 +21,7 @@ namespace BLL
                 item["strKomunikat"] = komunikat;
                 item["selSzablonWiadomosci"] = szablonId;
 
-                item.Update();
+                item.SystemUpdate();
 
                 return item.ID;
             }

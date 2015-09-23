@@ -33,7 +33,7 @@ namespace dicUrzedySkarbowe_EventReceiver.EventReceiver1
                     item["colPIT_Konto"] != null ? item["colPIT_Konto"] + " - PIT<br>" : string.Empty,
                     item["colCIT_Konto"] != null ? item["colCIT_Konto"] + " - CIT<br>" : string.Empty,
                     item["colVAT_Konto"] != null ? item["colVAT_Konto"] + " - VAT" : string.Empty);
-                item.Update();
+                item.SystemUpdate();
             }
             catch (Exception ex)
             {

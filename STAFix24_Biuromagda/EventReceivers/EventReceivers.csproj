@@ -60,6 +60,7 @@
     <Compile Include="admProcessRequestsER\ImportKlientow.cs" />
     <Compile Include="admProcessRequestsER\ImportPrzeterminowanychNaleznosci.cs" />
     <Compile Include="admProcessRequestsER\ObslugaWiadomosci.cs" />
+    <Compile Include="admProcessRequestsER\ObslugaZadan.cs" />
     <Compile Include="admProcessRequestsER\PD_Forms.cs" />
     <Compile Include="admProcessRequestsER\Reminder_Forms.cs" />
     <Compile Include="admProcessRequestsER\VAT_Forms.cs" />

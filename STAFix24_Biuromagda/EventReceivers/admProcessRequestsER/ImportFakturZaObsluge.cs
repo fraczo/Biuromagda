@@ -52,7 +52,7 @@ namespace admProcessRequests_EventReceiver
                 terminPlatnosci = dataWystawienia.AddDays(iok.TerminPlatnosci);
                 item["colBR_TerminPlatnosci"] = terminPlatnosci;
 
-                item.Update();
+                item.SystemUpdate();
 
                 int zadanieId = tabZadania.Get_NumerZadaniaBR(item.Web, klientId, okresId);
 
@@ -67,7 +67,7 @@ namespace admProcessRequests_EventReceiver
 
                     tabZadania.Update_InformacjeOWystawionejFakturze(web, zadanieId, numerFaktury, wartoscDoZaplaty, terminPlatnosci);
 
-                    item.Update();
+                    item.SystemUpdate();
                 }
             }
             else
@@ -77,7 +77,7 @@ namespace admProcessRequests_EventReceiver
                 item["selOkres"] = 0;
                 item["selZadanie"] = 0;
 
-                item.Update();
+                item.SystemUpdate();
             }
         }
     }

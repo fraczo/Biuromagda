@@ -168,7 +168,7 @@ namespace GeneratorDrukow
                 document.Save(ms);
 
                 item.Attachments.AddNow(nazwaPliku, ms.GetBuffer());
-                //item.Update();
+                //item.SystemUpdate();
 
                 return true;
             }
@@ -319,7 +319,7 @@ namespace GeneratorDrukow
                 document.Save(ms);
 
                 item.Attachments.AddNow(nazwaPliku, ms.GetBuffer());
-                //item.Update();
+                //item.SystemUpdate();
 
                 return true;
             }
@@ -478,7 +478,7 @@ namespace GeneratorDrukow
                 document.Save(ms);
 
                 item.Attachments.AddNow(nazwaPliku, ms.GetBuffer());
-                //item.Update();
+                //item.SystemUpdate();
 
                 return true;
             }

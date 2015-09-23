@@ -85,7 +85,7 @@ namespace BLL
             string tmp = string.Empty;
             if(!string.IsNullOrEmpty(body))
             {
-                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "EMAIL_DEFAULT_BODY", out tmp, out bodyHtml);
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "EMAIL_DEFAULT_BODY", out tmp, out bodyHtml);
                 bodyHtml = bodyHtml.Replace("___BODY___", body.ToString());
             }
 

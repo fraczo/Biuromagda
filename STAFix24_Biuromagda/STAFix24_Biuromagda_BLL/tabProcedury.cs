@@ -23,7 +23,7 @@ namespace BLL
 
                 try
                 {
-                    item.Update();
+                    item.SystemUpdate();
                 }
                 catch (Exception)
                 { }
@@ -61,7 +61,7 @@ namespace BLL
                 {
                      item = list.AddItem();
                     item["Title"] = nazwaProcedury;
-                    item.Update();
+                    item.SystemUpdate();
                 }
                 catch (Exception)
                 {}
@@ -101,7 +101,7 @@ namespace BLL
                     SPListItem newItem = list.AddItem();
                     newItem["Title"] = procName;
                     newItem["enumStatusProcedury"] = "Nowa";
-                    newItem.Update();
+                    newItem.SystemUpdate();
                 }
                 else
                 {

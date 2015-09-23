@@ -59,7 +59,7 @@ namespace TimerJobs
 
                 SPListItem item = list.AddItem();
                 item["ContentType"] = "Obsługa wiadomości";
-                item.Update();
+                item.SystemUpdate();
             }
         }
 

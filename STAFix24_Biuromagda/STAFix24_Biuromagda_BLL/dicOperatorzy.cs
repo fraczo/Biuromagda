@@ -8,107 +8,62 @@ namespace BLL
 {
     public class dicOperatorzy
     {
-        const string targetList = "Operatorzy"; // "dicOperatorzy";
-        const string nazwaOperatora_Default = @"STAFix24 Robot";
+        const string targetList = "Operatorzy";
 
-        public static int GetID(SPWeb web, string nazwaOperatora, bool createIfNotExist)
+
+        internal static SPListItem GetItemById(Microsoft.SharePoint.SPWeb web, int operatorId)
         {
-            if (string.IsNullOrEmpty(nazwaOperatora))
-            {
-                nazwaOperatora = nazwaOperatora_Default;
-            }
-
-            int result = 0;
-
             SPList list = web.Lists.TryGetList(targetList);
-
-            //if (list != null)
-            //{
-            SPListItem item = list.Items.Cast<SPListItem>()
-                .Where(i => i.Title == nazwaOperatora)
-                .ToList()
-                .FirstOrDefault();
-
-            if (item != null)
-            {
-                result = item.ID;
-            }
-            //}
-
-            if (result == 0 && createIfNotExist)
-            {
-                try
-                {
-                    item = list.AddItem();
-                    item["Title"] = nazwaOperatora;
-                    item.Update();
-                }
-                catch (Exception)
-                { }
-                finally
-                {
-                    item = list.Items.Cast<SPListItem>()
-                       .Where(i => i.Title == nazwaOperatora)
-                       .ToList()
-                       .FirstOrDefault();
-
-                    result = item.ID;
-                }
-            }
-
-            return result;
+            return list.Items.GetItemById(operatorId);
         }
 
-        internal static int Get_IdByName(SPWeb web, string v)
+        internal static int Get_IdByName(SPWeb web, string name)
         {
             SPList list = web.Lists.TryGetList(targetList);
-            //if (list!=null)
-            //{
             SPListItem item = list.Items.Cast<SPListItem>()
-                .Where(i => i.Title == v)
+                .Where(i => i.Title == name)
                 .FirstOrDefault();
+            return item != null ? item.ID : 0;
+        }
 
-            if (item != null)
+        internal static int GetID(SPWeb web, string name, bool createIfNotFound)
+        {
+            int operatorId = Get_IdByName(web, name);
+            if (operatorId > 0) return operatorId;
+            else
             {
-                return item.ID;
+                SPList list = web.Lists.TryGetList(targetList);
+                SPListItem newItem = list.AddItem();
+                newItem["Title"] = name;
+                newItem["colTelefon"] = BLL.admSetup.GetValue(web, "TELEFON_BIURA");
+                newItem["colEmail"] = BLL.admSetup.GetValue(web, "EMAIL_BIURA");
+
+                newItem.SystemUpdate();
+                return newItem.ID;
             }
-            //}
-
-            SPListItem newItem = list.AddItem();
-            newItem["Title"] = v;
-            newItem.Update();
-
-            return newItem.ID;
         }
 
         public static int Get_UserIdById(SPWeb web, int operatorId)
         {
+            SPListItem item = Get_OperatorById(web, operatorId);
+            return item["colKontoOperatora"] != null ? new SPFieldUserValue(item.Web, item["colKontoOperatora"].ToString()).User.ID : 0;
+        }
+
+        private static SPListItem Get_OperatorById(SPWeb web, int operatorId)
+        {
             SPList list = web.Lists.TryGetList(targetList);
-
-            SPListItem item = list.GetItemById(operatorId);
-            if (item != null && item["colKontoOperatora"] != null)
-            {
-                int kontoOperatoraId = new SPFieldUserValue(web, item["colKontoOperatora"].ToString()).LookupId;
-
-                return kontoOperatoraId;
-            }
-
-            return 0;
+            return list.GetItemById(operatorId);
         }
 
         public static int Get_OperatorIdByLoginName(SPWeb web, string loginName)
         {
             SPList list = web.Lists.TryGetList(targetList);
-
             SPListItem item = list.Items.Cast<SPListItem>()
                 .Where(i => i["colKontoOperatora"]!=null)
                 .Where(i => new SPFieldUserValue(web, i["colKontoOperatora"].ToString()).User.LoginName == loginName)
                 .FirstOrDefault();
-            if (item != null)
-            {
-                return item.ID;
-            }
-            return 0;
+            if (item != null) return item.ID;
+            else return 0;
         }
     }
 }
