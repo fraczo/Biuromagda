@@ -89,7 +89,7 @@ namespace Workflows.ObslugaWiadomosci
                     {
                         string body = item["colTresc"].ToString();
 
-                        StringBuilder sb = new StringBuilder(BLL.admSetup.GetText(item.Web, "MAIL_TEMPLATE"));
+                        StringBuilder sb = new StringBuilder(BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item,"EMAIL_DEFAULT_BODY",true));
                         sb.Replace(@"___BODY___", body);
                         sb.Replace(@"___FOOTER___", string.Empty);
                         mail.Body = sb.ToString();

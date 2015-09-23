@@ -55,7 +55,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
             try
             {
-                BLL.Logger.LogEvent(properties.WebUrl, properties.ListItem.Title + ".OnUpdate");
+                //BLL.Logger.LogEvent(properties.WebUrl, properties.ListItem.Title + ".OnUpdate");
 
                 SPListItem item = properties.ListItem;
                 SPWeb web = item.Web;
@@ -742,7 +742,6 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
                 StringBuilder sb = new StringBuilder(trescHTML);
                 sb.Replace("___BODY___", notatka);
-                sb.Replace("___FOOTER___", string.Empty);
                 trescHTML = sb.ToString();
 
                 DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();

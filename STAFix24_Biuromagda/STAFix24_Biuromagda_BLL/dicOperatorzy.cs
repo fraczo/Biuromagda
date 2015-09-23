@@ -65,5 +65,28 @@ namespace BLL
             if (item != null) return item.ID;
             else return 0;
         }
+
+        internal static string Get_OperatorNameByEmail(SPWeb web, string email)
+        {
+            SPList list = web.Lists.TryGetList(targetList);
+            SPListItem item = list.Items.Cast<SPListItem>()
+                .Where(i => i["colEmail"] != null)
+                .Where(i => i["colEmail"].ToString() == email)
+                .FirstOrDefault();
+
+            if (item != null) return item["colEmail"].ToString();
+            else
+            {
+                item = list.Items.Cast<SPListItem>()
+                .Where(i => i["colKontoOperatora"]!=null)
+                .Where(i => new SPFieldUserValue(web, i["colKontoOperatora"].ToString()).User.Email == email)
+                .FirstOrDefault();
+                if (item != null) 
+                    return new SPFieldUserValue(web, item["colKontoOperatora"].ToString()).User.Email;
+            }
+
+            return string.Empty;
+            
+        }
     }
 }
