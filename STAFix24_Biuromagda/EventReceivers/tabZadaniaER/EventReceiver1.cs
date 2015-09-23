@@ -69,7 +69,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                         break;
                     case "Rozliczenie ZUS":
                     case "Rozliczenie podatku dochodowego":
-                    case "Rozliczenie podatku dochodowego spółki":         
+                    case "Rozliczenie podatku dochodowego spółki":
                     case "Rozliczenie podatku VAT":
                     case "Rozliczenie z biurem rachunkowym":
                         Update_KEY(item);
@@ -110,7 +110,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
         private void Manage_PotwierdzenieOdbioruDokumentow(SPListItem item)
         {
-            if (Get_FlagValue(item, "colPotwierdzenieOdbioruDokumento" ))
+            if (Get_FlagValue(item, "colPotwierdzenieOdbioruDokumento"))
             {
                 int klientId = Get_LookupId(item, "selKlient");
                 int okresId = Get_LookupId(item, "selOkres");
@@ -622,7 +622,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
         {
             string status = Get_StatusZadania(item);
 
-            if (status==StatusZadania.Gotowe.ToString())
+            if (status == StatusZadania.Gotowe.ToString())
             {
                 int klientId = item["selKlient"] != null ? new SPFieldLookupValue(item["selKlient"].ToString()).LookupId : 0;
 
@@ -916,8 +916,8 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 {
                     sb.AppendFormat(@"<li>{0}</li>", "Ubezpieczenie Zdrowotne: " + Format_Currency(item, "colZUS_ZD_Skladka"));
                     reminderRequest = true;
-                } 
-                
+                }
+
                 if (GetValue(item, "colZUS_FP_Skladka") > 0)
                 {
                     sb.AppendFormat(@"<li>{0}</li>", "Fundusz Pracy: " + Format_Currency(item, "colZUS_FP_Skladka"));
@@ -1128,7 +1128,45 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 string temat = string.Empty;
                 string tresc = string.Empty;
                 string trescHTML = string.Empty;
-                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_TEMPLATE.Include", out temat, out trescHTML);
+
+                //BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_TEMPLATE.Include", out temat, out trescHTML);
+
+                string zusOpcja = Get_String(item, "colZUS_Opcja");
+
+                if (Get_FlagValue(item, "colZatrudniaPracownikow"))
+                {
+                    if (GetValue(item, "colZUS_PIT-4R") > 0 || GetValue(item, "colZUS_PIT-8AR") > 0)
+                    {
+                        switch (zusOpcja)
+                        {
+                            case "Tylko zdrowotna":
+                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_Z_PIT_TEMPLATE.Include", out temat, out trescHTML);
+                                break;
+                            default:
+                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_PIT_TEMPLATE.Include", out temat, out trescHTML);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        switch (zusOpcja)
+                        {
+                            case "Tylko zdrowotna":
+                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_Z_TEMPLATE.Include", out temat, out trescHTML);
+                                break;
+                            default:
+                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_TEMPLATE.Include", out temat, out trescHTML);
+                                break;
+                        }
+                    }
+                }
+
+                string lt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_LEADING_TEXT", false);
+                string firma = BLL.tabKlienci.Get_NazwaFirmyById(item.Web, klientId);
+                lt = lt.Replace("___FIRMA___", firma);
+                string okres = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupValue : string.Empty;
+                lt = lt.Replace("___OKRES___", okres);
+                trescHTML = trescHTML.Replace("___ZUS_LEADING_TEXT___", lt);
 
                 //uzupełnia temat kodem klienta i okresu
                 temat = AddSpecyfikacja(item, temat);
@@ -1231,7 +1269,32 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 string temat = string.Empty;
                 string tresc = string.Empty;
                 string trescHTML = string.Empty;
-                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_TEMPLATE.Include", out temat, out trescHTML);
+
+                switch (Get_String(item, "colPD_OcenaWyniku"))
+                {
+                    case "Dochód":
+                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_DOCHOD_TEMPLATE.Include", out temat, out trescHTML);
+                        //jeżeli wartość do zapłaty = 0 wtdy zastąp tekst formułką i ukryj tabelkę z płatnościami
+                        if (GetValue(item, "colPD_WartoscDoZaplaty") == 0)
+                            trescHTML = trescHTML.Replace("___NOTIFICATION___", BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_DOCHOD_0_NOTIFICATION", false));
+                        else
+                            trescHTML = trescHTML.Replace("___NOTIFICATION___", "WARTOŚĆ DO ZAPŁATY");
+                        break;
+                    case "Strata":
+                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_STRATA_TEMPLATE.Include", out temat, out trescHTML);
+                        break;
+                    default:
+                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_TEMPLATE.Include", out temat, out trescHTML);
+                        break;
+                }
+
+                string lt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_LEADING_TEXT", false);
+                string firma = BLL.tabKlienci.Get_NazwaFirmyById(item.Web, klientId);
+                lt = lt.Replace("___FIRMA___", firma);
+                string okres = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupValue : string.Empty;
+                lt = lt.Replace("___OKRES___", okres);
+                trescHTML = trescHTML.Replace("___PD_LEADING_TEXT___", lt);
+
 
                 //uzupełnia temat kodem klienta i okresu
                 temat = AddSpecyfikacja(item, temat);
@@ -1240,8 +1303,8 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 StringBuilder sb = new StringBuilder(trescHTML);
 
                 sb.Replace("___colPD_OcenaWyniku___", Get_String(item, "colPD_OcenaWyniku"));
-                //sb.Replace("___colPD_WartoscDochodu___", Format_Currency(item, "colPD_WartoscDochodu"));
-                //sb.Replace("___colPD_WysokoscStraty___", Format_Currency(item, "colPD_WartoscStraty")); //nazwa kolumny rozbieżna
+                sb.Replace("___colPD_WartoscDochodu___", Format_Currency(item, "colPD_WartoscDochodu"));
+                sb.Replace("___colPD_WysokoscStraty___", Format_Currency(item, "colPD_WartoscStraty")); //nazwa kolumny rozbieżna
                 sb.Replace("___colFormaOpodatkowaniaPD___", Get_String(item, "colFormaOpodatkowaniaPD"));
                 sb.Replace("___colPD_WartoscDoZaplaty___", Format_Currency(item, "colPD_WartoscDoZaplaty"));
                 sb.Replace("___colPD_Konto___", Get_String(item, "colPD_Konto"));
@@ -1252,7 +1315,8 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 //dodaj informację o z załącznikach w/g ustawionych flag
 
                 if (Get_String(item, "colPD_OcenaWyniku") == "Dochód"
-                && item["colDrukWplaty"] != null ? (bool)item["colDrukWplaty"] : false)
+                && item["colDrukWplaty"] != null ? (bool)item["colDrukWplaty"] : false
+                && GetValue(item, "colPD_WartoscDoZaplaty") > 0)
                 {
                     info2 = info2 + string.Format(templateR, "Druk wpłaty");
                 }
@@ -1270,13 +1334,10 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 switch (ocena)
                 {
                     case "Dochód":
-                        sb.Replace("___Display_T_Platnosc___", string.Empty);
-                        sb.Replace("___OpisDochodu_Straty___", "Wysokość dochodu");
-                        sb.Replace("___colPD_WartoscDochodu_Straty___", Format_Currency(item, "colPD_WartoscDochodu"));
+                        if (GetValue(item, "colPD_WartoscDoZaplaty") > 0)
+                            sb.Replace("___Display_T_Platnosc___", string.Empty);
                         break;
                     case "Strata":
-                        sb.Replace("___OpisDochodu_Straty___", "Wielkość straty");
-                        sb.Replace("___colPD_WartoscDochodu_Straty___", Format_Currency(item, "colPD_WartoscStraty"));
 
                         break;
                     default:
@@ -1349,7 +1410,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 string okres = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupValue : string.Empty;
                 lt = lt.Replace("___OKRES___", okres);
                 trescHTML = trescHTML.Replace("___VAT_LEADING_TEXT___", lt);
-                
+
 
                 //uzupełnia temat kodem klienta i okresu
                 temat = AddSpecyfikacja(item, temat);
@@ -1358,11 +1419,11 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 StringBuilder sb = new StringBuilder(trescHTML);
                 sb.Replace("___colVAT_Decyzja___", item["colVAT_Decyzja"] != null ? item["colVAT_Decyzja"].ToString() : string.Empty);
                 sb.Replace("___colVAT_TerminZwrotuPodatku___", item["colVAT_TerminZwrotuPodatku"] != null ? item["colVAT_TerminZwrotuPodatku"].ToString() : "?");
-                sb.Replace("___colVAT_WartoscNadwyzkiZaPoprzedniMiesiac___",Format_Currency(item,"colVAT_WartoscNadwyzkiZaPoprzedniMiesiac"));
-                sb.Replace("___colVAT_WartoscDoZwrotu___", Format_Currency(item,"colVAT_WartoscDoZwrotu"));
-                sb.Replace("___colVAT_WartoscDoPrzeniesienia___",Format_Currency(item,"colVAT_WartoscDoPrzeniesienia"));
+                sb.Replace("___colVAT_WartoscNadwyzkiZaPoprzedniMiesiac___", Format_Currency(item, "colVAT_WartoscNadwyzkiZaPoprzedniMiesiac"));
+                sb.Replace("___colVAT_WartoscDoZwrotu___", Format_Currency(item, "colVAT_WartoscDoZwrotu"));
+                sb.Replace("___colVAT_WartoscDoPrzeniesienia___", Format_Currency(item, "colVAT_WartoscDoPrzeniesienia"));
                 sb.Replace("___colFormaOpodatkowaniaVAT___", item["colFormaOpodatkowaniaVAT"] != null ? item["colFormaOpodatkowaniaVAT"].ToString() : string.Empty);
-                sb.Replace("___colVAT_WartoscDoZaplaty___",Format_Currency(item,"colVAT_WartoscDoZaplaty"));
+                sb.Replace("___colVAT_WartoscDoZaplaty___", Format_Currency(item, "colVAT_WartoscDoZaplaty"));
                 sb.Replace("___colVAT_Konto___", item["colVAT_Konto"] != null ? item["colVAT_Konto"].ToString() : string.Empty);
                 sb.Replace("___colVAT_TerminPlatnosciPodatku___", item["colVAT_TerminPlatnosciPodatku"] != null ? DateTime.Parse(item["colVAT_TerminPlatnosciPodatku"].ToString()).ToShortDateString() : string.Empty);
 
@@ -1462,6 +1523,8 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
         private bool isValidated_ZUS(SPListItem item)
         {
+            Set_ValidationFlag(item, false);
+
             //oczyść dane w zależności od wybranej Decyzji
             string opcja = item["colZUS_Opcja"] != null ? item["colZUS_Opcja"].ToString() : string.Empty;
             if (string.IsNullOrEmpty(opcja))
@@ -1494,7 +1557,11 @@ namespace tabZadania_EventReceiver.EventReceiver1
                             foundError = true;
                         }
 
-                        if (foundError) return false;
+                        if (foundError)
+                        {
+                            Set_ValidationFlag(item, true);
+                            return false;
+                        }
 
                         return true;
                     }
@@ -1522,22 +1589,31 @@ namespace tabZadania_EventReceiver.EventReceiver1
                             foundError = true;
                         }
 
-                        if (foundError) return false;
+                        if (foundError)
+                        {
+                            Set_ValidationFlag(item, true);
+                            return false;
+                        }
 
                         return true;
                     }
                     break;
             }
 
+            Set_ValidationFlag(item, true);
             return false;
         }
 
         private bool isValidated_PD(SPListItem item)
         {
+            Set_ValidationFlag(item, false);
+
             //oczyść dane w zależności od wybranej Decyzji
             string ocena = Get_String(item, "colPD_OcenaWyniku");
             if (string.IsNullOrEmpty(ocena))
             {
+                Add_Comment(item, "brak oceny wyniku");
+                Set_ValidationFlag(item, true);
                 return false;
             }
 
@@ -1549,19 +1625,35 @@ namespace tabZadania_EventReceiver.EventReceiver1
                     if (GetValue(item, "colPD_WartoscDoZaplaty") >= 0
                         && GetValue(item, "colPD_WartoscDochodu") >= 0)
                         if (!string.IsNullOrEmpty(Get_String(item, "colPD_Konto"))) return true;
-                        else Add_Comment(item, "brak numeru konta");
+                        else
+                        {
+                            Add_Comment(item, "brak numeru konta");
+                            Set_ValidationFlag(item, true);
+                        }
                     break;
                 case "Strata":
                     ClearValue(item, "colPD_WartoscDochodu");
                     ClearValue(item, "colPD_WartoscDoZaplaty");
 
-                    if (GetValue(item, "colPD_WartoscStraty") >= 0) return true;
+                    if (GetValue(item, "colPD_WartoscStraty") > 0) return true;
+                    else
+                    {
+                        Add_Comment(item, "wartość straty musi być większa niż 0");
+                        Set_ValidationFlag(item, true);
+                    }
                     break;
                 default:
+                    Add_Comment(item, "niedozwolona wartość pola ocena wyniku");
                     break;
             }
 
+            Set_ValidationFlag(item, true);
             return false;
+        }
+
+        private void Set_ValidationFlag(SPListItem item, bool flag)
+        {
+            BLL.tabZadania.Set_ValidationFlag(item, flag);
         }
 
         private bool isValidated_PDS(SPListItem item)
@@ -1571,6 +1663,8 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
         private bool isValidated_VAT(SPListItem item)
         {
+            Set_ValidationFlag(item, false);
+
             //oczyść dane w zależności od wybranej Decyzji
             string decyzja = item["colVAT_Decyzja"] != null ? item["colVAT_Decyzja"].ToString() : string.Empty;
             if (string.IsNullOrEmpty(decyzja))
@@ -1588,6 +1682,10 @@ namespace tabZadania_EventReceiver.EventReceiver1
                     if (GetValue(item, "colVAT_WartoscDoZaplaty") >= 0)
                         if (!string.IsNullOrEmpty(Get_String(item, "colVAT_Konto"))) return true;
                         else Add_Comment(item, "brak numeru konta");
+                    else
+                    {
+                        Add_Comment(item, "Wartość do zapłaty nie może być ujemna");
+                    }
                     break;
                 case "Do przeniesienia":
                     ClearValue(item, "colVAT_WartoscDoZaplaty");
@@ -1595,6 +1693,10 @@ namespace tabZadania_EventReceiver.EventReceiver1
                     ClearValue(item, "colVAT_WartoscDoZwrotu");
 
                     if (GetValue(item, "colVAT_WartoscDoPrzeniesienia") >= 0) return true;
+                    else
+                    {
+                        Add_Comment(item, "Wartość do przeniesienia nie może być ujemna");
+                    }
                     break;
                 case "Do zwrotu":
                     ClearValue(item, "colVAT_WartoscDoZaplaty");
@@ -1602,6 +1704,10 @@ namespace tabZadania_EventReceiver.EventReceiver1
                     //ClearValue(item, "colVAT_WartoscDoZwrotu");
 
                     if (GetValue(item, "colVAT_WartoscDoZwrotu") >= 0) return true;
+                    else
+                    {
+                        Add_Comment(item, "Wartość do zwrotu nie może być ujemna");
+                    }
                     break;
                 case "Do przeniesienia i do zwrotu":
                     ClearValue(item, "colVAT_WartoscDoZaplaty");
@@ -1610,11 +1716,16 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
                     if (GetValue(item, "colVAT_WartoscDoPrzeniesienia") >= 0
                         && GetValue(item, "colVAT_WartoscDoZwrotu") >= 0) return true;
+                    else
+                    {
+                        Add_Comment(item, "Niedozwolone wartości ujemne");
+                    }
                     break;
                 default:
                     break;
             }
 
+            Set_ValidationFlag(item, true);
             return false;
         }
 
@@ -1648,7 +1759,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
         private void ClearValue(SPListItem item, string colName)
         {
-            if (item[colName] != null )
+            if (item[colName] != null)
             {
                 item[colName] = string.Empty;
                 item.SystemUpdate();
@@ -1657,6 +1768,8 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
         private bool isValidated_RBR(SPListItem item)
         {
+            Set_ValidationFlag(item, false);
+
             StringBuilder sb = new StringBuilder();
 
             bool foundErrors = false;
@@ -1684,6 +1797,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
             else
             {
                 Add_Comment(item, sb.ToString());
+                Set_ValidationFlag(item, true);
                 return false;
             }
 

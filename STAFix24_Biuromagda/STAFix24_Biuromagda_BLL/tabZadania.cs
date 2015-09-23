@@ -10,7 +10,7 @@ namespace BLL
 {
     public class tabZadania
     {
-        const string lstZadania = "Zadania"; // "tabZadania";
+        const string targetList = "Zadania"; // "tabZadania";
 
         //public static string Define_KEY(SPItemEventDataCollection item)
         //{
@@ -116,11 +116,11 @@ namespace BLL
         {
             bool result = true;
 
-            var targetList = web.Lists.TryGetList(lstZadania);
+            var list = web.Lists.TryGetList(targetList);
 
             //if (targetList != null)
             //{
-            Array li = targetList.Items.Cast<SPListItem>()
+            Array li = list.Items.Cast<SPListItem>()
                     .Where(i => i.ID != currentId)
                     .Where(i => i["ContentType"].ToString() != "Zadanie" && i["ContentType"].ToString() != "Element" && i["ContentType"].ToString() != "Folder")
                     .Where(i => i["KEY"].ToString() == key)
@@ -145,7 +145,7 @@ namespace BLL
                 return; //nie generuj formatki
             }
 
-            SPList list = web.Lists.TryGetList(lstZadania);
+            SPList list = web.Lists.TryGetList(targetList);
 
             if (list != null)
             {
@@ -217,7 +217,7 @@ namespace BLL
         {
             Klient iok = new Klient(web, klientId);
 
-            SPList list = web.Lists.TryGetList(lstZadania);
+            SPList list = web.Lists.TryGetList(targetList);
 
             //if (list != null)
             //{
@@ -292,7 +292,7 @@ namespace BLL
                 operatorId = dicOperatorzy.GetID(web, "STAFix24 Robot", true);
             }
 
-            SPList list = web.Lists.TryGetList(lstZadania);
+            SPList list = web.Lists.TryGetList(targetList);
 
             string procName = ": " + ct.ToString();
             var procId = tabProcedury.GetID(web, procName, true);
@@ -317,7 +317,7 @@ namespace BLL
 
         public static void Create_ctZUS_Form(SPWeb web, string ct, int klientId, int okresId, string key, bool isTylkoZdrowotna, bool isChorobowa, bool isPracownicy, double skladkaSP, double skladkaZD, double skladkaFP, DateTime terminPlatnosci, DateTime terminPrzekazania, string zus_sp_konto, string zus_zd_konto, string zus_fp_konto, Klient iok)
         {
-            SPList list = web.Lists.TryGetList(lstZadania);
+            SPList list = web.Lists.TryGetList(targetList);
 
             //if (list != null)
             //{
@@ -406,7 +406,7 @@ namespace BLL
         {
             Klient iok = new Klient(web, klientId);
 
-            SPList list = web.Lists.TryGetList(lstZadania);
+            SPList list = web.Lists.TryGetList(targetList);
 
             //if (list != null)
             //{
@@ -455,7 +455,7 @@ namespace BLL
         {
             int result = 0;
 
-            SPList list = web.Lists.TryGetList(lstZadania);
+            SPList list = web.Lists.TryGetList(targetList);
             //if (list!=null)
             //{
             SPListItem item = list.Items.Cast<SPListItem>()
@@ -479,7 +479,7 @@ namespace BLL
             bool result = false;
             string srcUrl = file.ServerRelativeUrl;
 
-            SPList list = web.Lists.TryGetList(lstZadania);
+            SPList list = web.Lists.TryGetList(targetList);
 
 
             SPListItem item = list.GetItemById(zadanieId);
@@ -528,7 +528,7 @@ namespace BLL
 
         public static void Update_InformacjeOWystawionejFakturze(SPWeb web, int zadanieId, string numerFaktury, double wartoscDoZaplaty, DateTime terminPlatnosci)
         {
-            SPList list = web.Lists.TryGetList(lstZadania);
+            SPList list = web.Lists.TryGetList(targetList);
             //if (list != null)
             //{
             SPListItem item = list.GetItemById(zadanieId);
@@ -549,7 +549,7 @@ namespace BLL
         /// </summary>
         public static void Update_StatusWysylki(SPWeb web, SPListItem messageItem, int zadanieId, StatusZadania statusZadania)
         {
-            SPList list = web.Lists.TryGetList(lstZadania);
+            SPList list = web.Lists.TryGetList(targetList);
             SPListItem item = list.GetItemById(zadanieId);
             if (item != null)
             {
@@ -601,7 +601,7 @@ namespace BLL
 
         public static SPListItem Get_ZadanieById(SPWeb web, int taskId)
         {
-            SPList list = web.Lists.TryGetList(lstZadania);
+            SPList list = web.Lists.TryGetList(targetList);
             return list.GetItemById(taskId);
         }
 
@@ -622,7 +622,7 @@ namespace BLL
 
         private static int Get_ZadanieByKEY(SPWeb web, string KEY)
         {
-            SPList list = web.Lists.TryGetList(lstZadania);
+            SPList list = web.Lists.TryGetList(targetList);
             SPListItem item = list.Items.Cast<SPListItem>()
                 .Where(i => i["KEY"].ToString() == KEY)
                 .FirstOrDefault();
@@ -660,7 +660,7 @@ namespace BLL
 
         public static List<SPListItem> Get_ActiveTasksByContentType(SPWeb web, string ctName)
         {
-            SPList list = web.Lists.TryGetList(lstZadania);
+            SPList list = web.Lists.TryGetList(targetList);
 
             List<SPListItem> results = (from SPListItem item in list.Items
                                         where item.ContentType.Name == ctName
@@ -677,5 +677,30 @@ namespace BLL
             return item[col] != null ? new SPFieldLookupValue(item[col].ToString()).LookupValue : string.Empty;
         }
         #endregion
+
+        public static void Set_ValidationFlag(SPListItem item, bool flag)
+        {
+            string targetColName = "_Validation";
+            bool colFound = false;
+
+            SPList list = item.Web.Lists.TryGetList(targetList);
+            foreach (SPField col in list.Fields)
+            {
+                if (col.InternalName == targetColName)
+                {
+                    colFound = true;
+                    break;
+                }
+            }
+
+            if (!colFound)
+            {
+                //dodj kolumnę
+                list.Fields.Add(targetColName, SPFieldType.Boolean, false);
+                list.Update();
+            }
+
+            item[targetColName] = flag;
+        }
     }
 }
