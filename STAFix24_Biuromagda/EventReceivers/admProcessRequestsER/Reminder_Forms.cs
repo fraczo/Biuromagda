@@ -54,23 +54,49 @@ namespace admProcessRequests_EventReceiver
 
         private static void Create_POW_DOK_Form(SPWeb web, int klientId, int okresId)
         {
-            string key = tabZadania.Define_KEY(ctPOW_DOK, klientId, okresId);
-            if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
+            try
             {
-                //To do..
-                //uzupełnij dodatkowymi parametrami zasilającymi formatkę
-                tabZadania.Create_Form(web, ctPOW_DOK, klientId, okresId, key, 0);
+                string key = tabZadania.Define_KEY(ctPOW_DOK, klientId, okresId);
+                if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
+                {
+                    //To do..
+                    //uzupełnij dodatkowymi parametrami zasilającymi formatkę
+                    tabZadania.Create_Form(web, ctPOW_DOK, klientId, okresId, key, 0);
+                }
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                throw ex;
+#else
+                BLL.Logger.LogEvent(web.Url, ex.ToString() + " KlientId= " + klientId.ToString());
+                var result = ElasticEmail.EmailGenerator.ReportError(ex, web.Url, "KlientId=" + klientId.ToString());
+#endif
+
             }
         }
 
         private static void Create_POW_WBANK_Form(SPWeb web, int klientId, int okresId)
         {
-            string key = tabZadania.Define_KEY(ctPOW_WBANK, klientId, okresId);
-            if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
+            try
             {
-                //To do..
-                //uzupełnij dodatkowymi parametrami zasilającymi formatkę
-                tabZadania.Create_Form(web, ctPOW_WBANK, klientId, okresId, key, 0);
+                string key = tabZadania.Define_KEY(ctPOW_WBANK, klientId, okresId);
+                if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
+                {
+                    //To do..
+                    //uzupełnij dodatkowymi parametrami zasilającymi formatkę
+                    tabZadania.Create_Form(web, ctPOW_WBANK, klientId, okresId, key, 0);
+                }
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                throw ex;
+#else
+                BLL.Logger.LogEvent(web.Url, ex.ToString() + " KlientId= " + klientId.ToString());
+                var result = ElasticEmail.EmailGenerator.ReportError(ex, web.Url, "KlientId=" + klientId.ToString());
+#endif
+
             }
         }
 

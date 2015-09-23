@@ -65,30 +65,57 @@ namespace admProcessRequests_EventReceiver
         /// <param name="okresId"></param>
         private static void Create_VAT_KW_Form(SPWeb web, int klientId, int okresId)
         {
-            string key = tabZadania.Define_KEY(ctVAT, klientId, okresId);
-            if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
+            try
             {
-                DateTime terminPlatnosci;
-                DateTime terminPrzekazania;
+                string key = tabZadania.Define_KEY(ctVAT, klientId, okresId);
+                if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
+                {
+                    DateTime terminPlatnosci;
+                    DateTime terminPrzekazania;
 
-                tabOkresy.Get_VAT_KW(web, okresId, out terminPlatnosci, out terminPrzekazania);
+                    tabOkresy.Get_VAT_KW(web, okresId, out terminPlatnosci, out terminPrzekazania);
 
-                tabZadania.Create_ctVAT_Form(web, ctVAT, klientId, okresId, key, terminPlatnosci, terminPrzekazania, true);
+                    tabZadania.Create_ctVAT_Form(web, ctVAT, klientId, okresId, key, terminPlatnosci, terminPrzekazania, true);
+                }
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                throw ex;
+#else
+                BLL.Logger.LogEvent(web.Url, ex.ToString() + " KlientId= " + klientId.ToString());
+                var result = ElasticEmail.EmailGenerator.ReportError(ex, web.Url, "KlientId=" + klientId.ToString());
+#endif
+
             }
         }
 
         //formatka rozliczenia miesięcznego VAT
         private static void Create_VAT_M_Form(SPWeb web, int klientId, int okresId)
         {
-            string key = tabZadania.Define_KEY(ctVAT, klientId, okresId);
-            if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
+
+            try
             {
-                DateTime terminPlatnosci;
-                DateTime terminPrzekazania;
+                string key = tabZadania.Define_KEY(ctVAT, klientId, okresId);
+                if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
+                {
+                    DateTime terminPlatnosci;
+                    DateTime terminPrzekazania;
 
-                tabOkresy.Get_VAT_M(web, okresId, out terminPlatnosci, out terminPrzekazania);
+                    tabOkresy.Get_VAT_M(web, okresId, out terminPlatnosci, out terminPrzekazania);
 
-                tabZadania.Create_ctVAT_Form(web, ctVAT, klientId, okresId, key, terminPlatnosci, terminPrzekazania, false);
+                    tabZadania.Create_ctVAT_Form(web, ctVAT, klientId, okresId, key, terminPlatnosci, terminPrzekazania, false);
+                }
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                throw ex;
+#else
+                BLL.Logger.LogEvent(web.Url, ex.ToString() + " KlientId= " + klientId.ToString());
+                var result = ElasticEmail.EmailGenerator.ReportError(ex, web.Url, "KlientId=" + klientId.ToString());
+#endif
+
             }
         }
     }

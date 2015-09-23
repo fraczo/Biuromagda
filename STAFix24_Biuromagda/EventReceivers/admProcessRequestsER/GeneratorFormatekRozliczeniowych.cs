@@ -59,11 +59,11 @@ namespace admProcessRequests_EventReceiver
                         case "KSH":
 
                             Array klienci = tabKlienci.Get_AktywniKlienci_Serwis(web, typKlienta);
-                            Reminder_Forms.Create(web, klienci, okresId);
                             ZUS_Forms.Create(web, klienci, okresId);
                             PD_Forms.Create(web, klienci, okresId);
                             VAT_Forms.Create(web, klienci, okresId);
                             BR_Forms.Create(web, klienci, okresId);
+                            Reminder_Forms.Create(web, klienci, okresId);
 
                             break;
 

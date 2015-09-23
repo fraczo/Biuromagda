@@ -1323,20 +1323,46 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 string temat = string.Empty;
                 string tresc = string.Empty;
                 string trescHTML = string.Empty;
-                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_TEMPLATE.Include", out temat, out trescHTML);
+
+                switch (item["colVAT_Decyzja"] != null ? item["colVAT_Decyzja"].ToString() : string.Empty)
+                {
+                    case "Do zapłaty":
+                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_DO_ZAPLATY_TEMPLATE.Include", out temat, out trescHTML);
+                        break;
+                    case "Do przeniesienia":
+                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_DO_PRZENIESIENIA_TEMPLATE.Include", out temat, out trescHTML);
+                        break;
+                    case "Do zwrotu":
+                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_DO_ZWROTU_TEMPLATE.Include", out temat, out trescHTML);
+                        break;
+                    case "Do przeniesienia i do zwrotu":
+                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_DO_PRZENIESIENIA_ZWROTU_TEMPLATE.Include", out temat, out trescHTML);
+                        break;
+                    default:
+                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_TEMPLATE.Include", out temat, out trescHTML);
+                        break;
+                }
+
+                string lt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_LEADING_TEXT", false);
+                string firma = BLL.tabKlienci.Get_NazwaFirmyById(item.Web, klientId);
+                lt = lt.Replace("___FIRMA___", firma);
+                string okres = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupValue : string.Empty;
+                lt = lt.Replace("___OKRES___", okres);
+                trescHTML = trescHTML.Replace("___VAT_LEADING_TEXT___", lt);
+                
 
                 //uzupełnia temat kodem klienta i okresu
                 temat = AddSpecyfikacja(item, temat);
 
-                //uzupełnia dane w formatce BR_TEMPLATE
+                //uzupełnia dane w formatce VAT_TEMPLATE 
                 StringBuilder sb = new StringBuilder(trescHTML);
                 sb.Replace("___colVAT_Decyzja___", item["colVAT_Decyzja"] != null ? item["colVAT_Decyzja"].ToString() : string.Empty);
                 sb.Replace("___colVAT_TerminZwrotuPodatku___", item["colVAT_TerminZwrotuPodatku"] != null ? item["colVAT_TerminZwrotuPodatku"].ToString() : "?");
-                sb.Replace("___colVAT_WartoscNadwyzkiZaPoprzedniMiesiac___", item["colVAT_WartoscNadwyzkiZaPoprzedniMiesiac"] != null ? item["colVAT_WartoscNadwyzkiZaPoprzedniMiesiac"].ToString() : emptyMarker);
-                sb.Replace("___colVAT_WartoscDoZwrotu___", item["colVAT_WartoscDoZwrotu"] != null ? item["colVAT_WartoscDoZwrotu"].ToString() : emptyMarker);
-                sb.Replace("___colVAT_WartoscDoPrzeniesienia___", item["colVAT_WartoscDoPrzeniesienia"] != null ? item["colVAT_WartoscDoPrzeniesienia"].ToString() : emptyMarker);
+                sb.Replace("___colVAT_WartoscNadwyzkiZaPoprzedniMiesiac___",Format_Currency(item,"colVAT_WartoscNadwyzkiZaPoprzedniMiesiac"));
+                sb.Replace("___colVAT_WartoscDoZwrotu___", Format_Currency(item,"colVAT_WartoscDoZwrotu"));
+                sb.Replace("___colVAT_WartoscDoPrzeniesienia___",Format_Currency(item,"colVAT_WartoscDoPrzeniesienia"));
                 sb.Replace("___colFormaOpodatkowaniaVAT___", item["colFormaOpodatkowaniaVAT"] != null ? item["colFormaOpodatkowaniaVAT"].ToString() : string.Empty);
-                sb.Replace("___colVAT_WartoscDoZaplaty___", item["colVAT_WartoscDoZaplaty"] != null ? item["colVAT_WartoscDoZaplaty"].ToString() : emptyMarker);
+                sb.Replace("___colVAT_WartoscDoZaplaty___",Format_Currency(item,"colVAT_WartoscDoZaplaty"));
                 sb.Replace("___colVAT_Konto___", item["colVAT_Konto"] != null ? item["colVAT_Konto"].ToString() : string.Empty);
                 sb.Replace("___colVAT_TerminPlatnosciPodatku___", item["colVAT_TerminPlatnosciPodatku"] != null ? DateTime.Parse(item["colVAT_TerminPlatnosciPodatku"].ToString()).ToShortDateString() : string.Empty);
 

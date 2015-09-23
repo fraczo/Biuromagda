@@ -13,6 +13,7 @@ namespace BLL.Models
 
         public Klient(Microsoft.SharePoint.SPWeb web, int klientId)
         {
+
             this.web = web;
             this.klientId = klientId;
 
@@ -31,6 +32,7 @@ namespace BLL.Models
 
 
                 string ct = item["ContentType"].ToString();
+                //Forma opodatkowania
                 switch (ct)
                 {
                     case "KPiR":
@@ -43,6 +45,28 @@ namespace BLL.Models
                         break;
                     default:
                         FormaOpodatkowaniaPD = string.Empty;
+                        break;
+                }
+
+                //Pełna nazwa firmy
+                switch (ct)
+                {
+                    case "KPiR":
+                    case "KSH":
+                        this.PelnaNazwaFirmy = item.Title;
+                        break;
+                    case "Osoba fizyczna":
+
+                        this.PelnaNazwaFirmy = string.Format("{0} {1} {2}",
+                            item["colImie"] != null ? item["colImie"].ToString() : string.Empty,
+                            item["colNazwisko"] != null ? item["colNazwisko"].ToString() : string.Empty,
+                            item["colPESEL"] != null ? "pesel: " + item["colPESEL"].ToString() : string.Empty).Trim();
+                        break;
+                    case "Firma":
+                        this.PelnaNazwaFirmy = item["colNazwa"] != null ? item["colNazwa"].ToString() : string.Empty;
+                        break;
+                    default:
+                        this.PelnaNazwaFirmy = string.Empty;
                         break;
                 }
 
@@ -69,24 +93,38 @@ namespace BLL.Models
                     this.TerminPlatnosci = 0;
                 }
 
-                int urzadId = item["selUrzadSkarbowy"] != null ? new SPFieldLookupValue(item["selUrzadSkarbowy"].ToString()).LookupId : 0;
-                if (urzadId>0)
-                {
-                    NumerRachunkuPD = tabUrzedySkarbowe.Get_NumerRachunkuPITById(web, urzadId);
-                    NazwaUrzeduSkarbowego = tabUrzedySkarbowe.Get_NazwaUrzeduById(web, urzadId);
-                    UrzadSkarbowyId = urzadId;
-                }
-                else
-                {
-                    NumerRachunkuPD = string.Empty;
-                    UrzadSkarbowyId = 0;
-                }
-
                 //operatorzy
                 this.OperatorId_Audyt = item["selDedykowanyOperator_Audyt"] != null ? new SPFieldLookupValue(item["selDedykowanyOperator_Audyt"].ToString()).LookupId : 0;
                 this.OperatorId_Podatki = item["selDedykowanyOperator_Podatki"] != null ? new SPFieldLookupValue(item["selDedykowanyOperator_Podatki"].ToString()).LookupId : 0;
                 this.OperatorId_Kadry = item["selDedykowanyOperator_Kadry"] != null ? new SPFieldLookupValue(item["selDedykowanyOperator_Kadry"].ToString()).LookupId : 0;
+
+                try
+                {
+                    int urzadId = item["selUrzadSkarbowy"] != null ? new SPFieldLookupValue(item["selUrzadSkarbowy"].ToString()).LookupId : 0;
+                    if (urzadId > 0)
+                    {
+                        NumerRachunkuPD = tabUrzedySkarbowe.Get_NumerRachunkuPITById(web, urzadId);
+                        NazwaUrzeduSkarbowego = tabUrzedySkarbowe.Get_NazwaUrzeduById(web, urzadId);
+                        UrzadSkarbowyId = urzadId;
+                    }
+                    else
+                    {
+                        NumerRachunkuPD = string.Empty;
+                        UrzadSkarbowyId = 0;
+                    }
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                throw ex;
+#else
+                    BLL.Logger.LogEvent(web.Url, ex.ToString() + " KlientId= " + klientId.ToString());
+                    var result = ElasticEmail.EmailGenerator.ReportError(ex, web.Url, BLL.Tools.Get_ItemInfo(item));
+#endif
+
+                }
             }
+
         }
 
         public string FormaOpodatkowaniaZUS { get; set; }
@@ -116,7 +154,7 @@ namespace BLL.Models
 
         public string Get_NazwaNadawcyPrzelewu()
         {
-            string s=  NazwaFirmy + " " + Adres + " " + KodPocztowy+ " " + Miejscowosc;
+            string s = NazwaFirmy + " " + Adres + " " + KodPocztowy + " " + Miejscowosc;
             s = s.Replace("  ", " ").Replace("  ", " ").Replace("  ", " ").Trim();
             return s;
 
@@ -131,5 +169,7 @@ namespace BLL.Models
         public int OperatorId_Audyt { get; set; }
         public int OperatorId_Podatki { get; set; }
         public int OperatorId_Kadry { get; set; }
+
+        public string PelnaNazwaFirmy { get; set; }
     }
 }

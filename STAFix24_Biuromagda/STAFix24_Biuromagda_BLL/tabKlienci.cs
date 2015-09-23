@@ -675,5 +675,12 @@ namespace BLL
 
             return string.Empty;
         }
+
+        public static string Get_NazwaFirmyById(SPWeb web, int klientId)
+        {
+            BLL.Models.Klient k = new Models.Klient(web, klientId);
+            return k.PelnaNazwaFirmy;
+
+        }
     }
 }

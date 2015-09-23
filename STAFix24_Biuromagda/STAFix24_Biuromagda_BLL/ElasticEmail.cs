@@ -18,7 +18,7 @@ namespace ElasticEmail
         const string USERNAME = "e9b604ee-e197-44a3-a0fa-6b23cf9ec0bb";
         const string API_KEY = "e9b604ee-e197-44a3-a0fa-6b23cf9ec0bb";
 
-        public static string ReportError(Exception ex, string webUrl)
+        public static string ReportError(Exception ex, string webUrl, string extraInfo)
         {
             string subject = string.Format(":: ERR :: {0}", webUrl);
             StringBuilder sb = new StringBuilder();
@@ -31,9 +31,18 @@ namespace ElasticEmail
             sb.AppendFormat(@"<tr valign='top'><td>{0}</td><td>{1}</td></tr>", "HelpLink", ex.HelpLink);
             sb.Append(@"</table>");
 
+            if (!string.IsNullOrEmpty(extraInfo))
+            {
+                sb.AppendFormat(@"<div>{0}</div>", extraInfo);
+            }
 
             return ElasticEmail.EmailGenerator.SendMail(subject, sb.ToString());
 
+        }
+
+        public static string ReportError(Exception ex, string webUrl)
+        {
+            return ReportError(ex, webUrl, string.Empty);
         }
         
         public static string SendMail(string subject, string bodyHtml)
@@ -84,5 +93,7 @@ namespace ElasticEmail
             byte[] response = client.UploadValues("https://api.elasticemail.com/mailer/send", values);
 
         }
+
+
     }
 }

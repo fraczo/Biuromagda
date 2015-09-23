@@ -53,10 +53,23 @@ namespace admProcessRequests_EventReceiver.admProcessRequestsER
 
         private static void Create_BR_Form(SPWeb web, int klientId, int okresId)
         {
-            string key = tabZadania.Define_KEY(ctBR, klientId, okresId);
-            if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
+            try
             {
-                tabZadania.Create_ctBR_Form(web, ctBR, klientId, okresId, key);
+                string key = tabZadania.Define_KEY(ctBR, klientId, okresId);
+                if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
+                {
+                    tabZadania.Create_ctBR_Form(web, ctBR, klientId, okresId, key);
+                }
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                throw ex;
+#else
+                BLL.Logger.LogEvent(web.Url, ex.ToString() + " KlientId= " + klientId.ToString());
+                var result = ElasticEmail.EmailGenerator.ReportError(ex, web.Url, "KlientId=" + klientId.ToString());
+#endif
+
             }
         }
     }

@@ -97,16 +97,29 @@ namespace admProcessRequests_EventReceiver.admProcessRequestsER
 
         private static void Create_ZUS_Form(SPWeb web, int klientId, int okresId,bool isTylkoZdrowotna, bool isChorobowa, bool isPracownicy, double skladkaSP, double skladkaZD, double skladkaFP, DateTime terminPlatnosci, DateTime terminPrzekazania)
         {
-            string key = tabZadania.Define_KEY(ctZUS, klientId, okresId);
-            if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
+            try
             {
-                string zus_sp_konto = admSetup.GetValue(web,"ZUS_SP_KONTO");
-                string zus_zd_konto = admSetup.GetValue(web, "ZUS_ZD_KONTO");
-                string zus_fp_konto = admSetup.GetValue(web, "ZUS_FP_KONTO");
+                string key = tabZadania.Define_KEY(ctZUS, klientId, okresId);
+                if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
+                {
+                    string zus_sp_konto = admSetup.GetValue(web, "ZUS_SP_KONTO");
+                    string zus_zd_konto = admSetup.GetValue(web, "ZUS_ZD_KONTO");
+                    string zus_fp_konto = admSetup.GetValue(web, "ZUS_FP_KONTO");
 
-                Klient iok = new Klient(web, klientId);
+                    Klient iok = new Klient(web, klientId);
 
-                tabZadania.Create_ctZUS_Form( web, ctZUS, klientId,  okresId, key, isTylkoZdrowotna, isChorobowa,  isPracownicy,  skladkaSP,  skladkaZD,  skladkaFP,  terminPlatnosci,  terminPrzekazania, zus_sp_konto, zus_zd_konto, zus_fp_konto, iok);
+                    tabZadania.Create_ctZUS_Form(web, ctZUS, klientId, okresId, key, isTylkoZdrowotna, isChorobowa, isPracownicy, skladkaSP, skladkaZD, skladkaFP, terminPlatnosci, terminPrzekazania, zus_sp_konto, zus_zd_konto, zus_fp_konto, iok);
+                }
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                throw ex;
+#else
+                BLL.Logger.LogEvent(web.Url, ex.ToString() + " KlientId= " + klientId.ToString());
+                var result = ElasticEmail.EmailGenerator.ReportError(ex, web.Url, "KlientId=" + klientId.ToString());
+#endif
+
             }
         }
 

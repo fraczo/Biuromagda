@@ -30,14 +30,12 @@ namespace BLL
             string result = string.Empty;
 
             SPList list = web.Lists.TryGetList(targetList);
-            //if (list != null)
-            //{
+
             SPListItem item = list.GetItemById(urzadId);
             if (item != null)
             {
                 result = item["colVAT_Konto"] != null ? item["colVAT_Konto"].ToString() : string.Empty; ;
             }
-            //}
 
             return result;
         }
