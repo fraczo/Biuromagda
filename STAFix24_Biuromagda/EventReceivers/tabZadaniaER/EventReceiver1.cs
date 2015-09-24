@@ -1076,6 +1076,9 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 string trescHTML = string.Empty;
                 BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "WBANK_TEMPLATE.Include", out temat, out trescHTML);
 
+                string info = item["colInformacjaDlaKlienta"] != null ? item["colInformacjaDlaKlienta"].ToString() : string.Empty;
+                trescHTML = trescHTML.Replace("___colInformacjaDlaKlienta___", info);
+
                 DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
 
                 BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
@@ -1106,10 +1109,14 @@ namespace tabZadania_EventReceiver.EventReceiver1
             string trescHTML = string.Empty;
             BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "DOK_TEMPLATE.Include", out temat, out trescHTML);
 
+            string info = item["colInformacjaDlaKlienta"] != null ? item["colInformacjaDlaKlienta"].ToString() : string.Empty;
+            trescHTML = trescHTML.Replace("___colInformacjaDlaKlienta___", info);
+
             DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
 
             BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
         }
+
 
         private void Manage_CMD_WyslijWynik_ZUS(SPListItem item)
         {
@@ -1315,10 +1322,12 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 //dodaj informację o z załącznikach w/g ustawionych flag
 
                 if (Get_String(item, "colPD_OcenaWyniku") == "Dochód"
-                && item["colDrukWplaty"] != null ? (bool)item["colDrukWplaty"] : false
-                && GetValue(item, "colPD_WartoscDoZaplaty") > 0)
+                && item["colDrukWplaty"] != null ? (bool)item["colDrukWplaty"] : false)
                 {
-                    info2 = info2 + string.Format(templateR, "Druk wpłaty");
+                    if (GetValue(item, "colPD_WartoscDoZaplaty") > 0)
+                    {
+                        info2 = info2 + string.Format(templateR, "Druk wpłaty");
+                    }
                 }
 
                 if (!string.IsNullOrEmpty(info2))
@@ -1364,7 +1373,8 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
         private void Manage_CMD_WyslijWynik_PDS(SPListItem item)
         {
-            throw new NotImplementedException();
+            //obsługa wysyłki informacji identyczna jak w przypadku PD
+            Manage_CMD_WyslijWynik_PD(item);
         }
 
         private void Manage_CMD_WyslijWynik_VAT(SPListItem item)
@@ -1480,7 +1490,15 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 string temat = string.Empty;
                 string tresc = string.Empty;
                 string trescHTML = string.Empty;
-                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "BR_TEMPLATE.Include", out temat, out trescHTML);
+
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "RBR_TEMPLATE.Include", out temat, out trescHTML);
+
+                string lt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "RBR_LEADING_TEXT", false);
+                string firma = BLL.tabKlienci.Get_NazwaFirmyById(item.Web, klientId);
+                lt = lt.Replace("___FIRMA___", firma);
+                string okres = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupValue : string.Empty;
+                lt = lt.Replace("___OKRES___", okres);
+                trescHTML = trescHTML.Replace("___RBR_LEADING_TEXT___", lt);
 
                 //uzupełnia temat kodem klienta i okresu
                 temat = AddSpecyfikacja(item, temat);
@@ -1658,7 +1676,8 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
         private bool isValidated_PDS(SPListItem item)
         {
-            throw new NotImplementedException();
+            //wszystkie warunki dla PD powinny być spełnione dla PDS
+            return isValidated_PD(item);
         }
 
         private bool isValidated_VAT(SPListItem item)
