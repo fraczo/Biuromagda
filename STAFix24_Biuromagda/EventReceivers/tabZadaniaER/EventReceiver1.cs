@@ -205,6 +205,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                         result = ObslugaGBW_RozliczeniePodatkuVAT(web, item, result, targetFileNameLeading, klient, okres, klientId);
                         break;
                     case "Rozliczenie podatku dochodowego":
+                    case "Rozliczenie podatku dochodowego spółki":
                         result = ObslugaGBW_RozliczeniePodatkuDochodowego(web, item, result, targetFileNameLeading, klient, okres, klientId);
                         break;
                     case "Rozliczenie ZUS":
@@ -269,6 +270,54 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 string konto;
                 string fileName;
 
+                if (Get_FlagValue(item, "colZatrudniaPracownikow"))
+                {
+
+                    //PIT 8AR  
+                    if (Get_FlagValue(item, "colZUS_PIT-8AR_Zalaczony"))
+                    {
+                        kwota = item["colZUS_PIT-8AR"] != null ? Double.Parse(item["colZUS_PIT-8AR"].ToString()) : 0;
+                        if (kwota > 0)
+                        {
+                            BLL.Models.Klient iok = new BLL.Models.Klient(web, klientId);
+                            konto = iok.NumerRachunkuPD;
+                            int urzadId = iok.UrzadSkarbowyId;
+
+                            BLL.Models.UrzadSkarbowy us = new BLL.Models.UrzadSkarbowy(web, urzadId);
+                            string odbiorca = us.Get_NazwaOdbiorcyPrzelewu();
+                            fileName = String.Format(@"{0}PIT-8AR_{1}.pdf",
+                                       targetFileNameLeading,
+                                       okres);
+
+                            string numerDeklaracji = okres.Substring(2, 2) + "M" + okres.Substring(5, 2); //TODO: obsługa kwartalnych deklaracji
+
+                            result = Generuj_DrukPD_FromZUS(web, item, klientId, okres, kwota, konto, fileName, odbiorca, numerDeklaracji, "PIT8AR", "ZRYCZ.POD.DOCH.UM.Z", iok);
+                        }
+                    }
+                    //PIT 4R
+                    if (Get_FlagValue(item, "colZUS_PIT-4R_Zalaczony"))
+                    {
+                        kwota = item["colZUS_PIT-4R"] != null ? Double.Parse(item["colZUS_PIT-4R"].ToString()) : 0;
+                        if (kwota > 0)
+                        {
+                            BLL.Models.Klient iok = new BLL.Models.Klient(web, klientId);
+                            konto = iok.NumerRachunkuPD;
+                            int urzadId = iok.UrzadSkarbowyId;
+
+                            BLL.Models.UrzadSkarbowy us = new BLL.Models.UrzadSkarbowy(web, urzadId);
+                            string odbiorca = us.Get_NazwaOdbiorcyPrzelewu();
+                            fileName = String.Format(@"{0}PIT-4R_{1}.pdf",
+                               targetFileNameLeading,
+                               okres);
+
+                            string numerDeklaracji = okres.Substring(2, 2) + "M" + okres.Substring(5, 2); //TODO: obsługa kwartalnych deklaracji
+
+                            result = Generuj_DrukPD_FromZUS(web, item, klientId, okres, kwota, konto, fileName, odbiorca, numerDeklaracji, "PIT4R", "POD.DOCH.ZA PRAC.", iok);
+                        }
+                    }
+                }
+
+
                 switch (opcja)
                 {
                     case "Tylko zdrowotna":
@@ -283,57 +332,6 @@ namespace tabZadania_EventReceiver.EventReceiver1
                         break;
                     default:
 
-                        bool zatrudniaPracownikow = item["colZatrudniaPracownikow"] != null ? (bool)item["colZatrudniaPracownikow"] == true : false;
-
-                        if (zatrudniaPracownikow)
-                        {
-
-                            //PIT 8AR  
-                            bool pit8ARZalaczony = item["colZUS_PIT-8AR_Zalaczony"] != null ? (bool)item["colZUS_PIT-8AR_Zalaczony"] == true : false;
-                            if (pit8ARZalaczony)
-                            {
-                                kwota = item["colZUS_PIT-8AR"] != null ? Double.Parse(item["colZUS_PIT-8AR"].ToString()) : 0;
-                                if (kwota > 0)
-                                {
-                                    BLL.Models.Klient iok = new BLL.Models.Klient(web, klientId);
-                                    konto = iok.NumerRachunkuPD;
-                                    int urzadId = iok.UrzadSkarbowyId;
-
-                                    BLL.Models.UrzadSkarbowy us = new BLL.Models.UrzadSkarbowy(web, urzadId);
-                                    string odbiorca = us.Get_NazwaOdbiorcyPrzelewu();
-                                    fileName = String.Format(@"{0}PIT-8AR_{1}.pdf",
-                                               targetFileNameLeading,
-                                               okres);
-
-                                    string numerDeklaracji = okres.Substring(2, 2) + "M" + okres.Substring(5, 2); //TODO: obsługa kwartalnych deklaracji
-
-                                    result = Generuj_DrukPD_FromZUS(web, item, klientId, okres, kwota, konto, fileName, odbiorca, numerDeklaracji, "PIT8AR", "ZRYCZ.POD.DOCH.UM.Z", iok);
-                                }
-                            }
-                            //PIT 4R
-                            bool pit4RZalaczony = item["colZUS_PIT-4R_Zalaczony"] != null ? (bool)item["colZUS_PIT-4R_Zalaczony"] == true : false;
-                            if (pit4RZalaczony)
-                            {
-                                kwota = item["colZUS_PIT-4R"] != null ? Double.Parse(item["colZUS_PIT-4R"].ToString()) : 0;
-                                if (kwota > 0)
-                                {
-                                    BLL.Models.Klient iok = new BLL.Models.Klient(web, klientId);
-                                    konto = iok.NumerRachunkuPD;
-                                    int urzadId = iok.UrzadSkarbowyId;
-
-                                    BLL.Models.UrzadSkarbowy us = new BLL.Models.UrzadSkarbowy(web, urzadId);
-                                    string odbiorca = us.Get_NazwaOdbiorcyPrzelewu();
-                                    fileName = String.Format(@"{0}PIT-4R_{1}.pdf",
-                                       targetFileNameLeading,
-                                       okres);
-
-                                    string numerDeklaracji = okres.Substring(2, 2) + "M" + okres.Substring(5, 2); //TODO: obsługa kwartalnych deklaracji
-
-                                    result = Generuj_DrukPD_FromZUS(web, item, klientId, okres, kwota, konto, fileName, odbiorca, numerDeklaracji, "PIT4R", "POD.DOCH.ZA PRAC.", iok);
-                                }
-                            }
-
-                        }
 
                         //fundusz pracy
                         kwota = item["colZUS_FP_Skladka"] != null ? Double.Parse(item["colZUS_FP_Skladka"].ToString()) : 0;
@@ -364,6 +362,8 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
                         break;
                 }
+
+
             }
 
             return result;
@@ -372,6 +372,8 @@ namespace tabZadania_EventReceiver.EventReceiver1
         private bool Generuj_DrukPD_FromZUS(SPWeb web, SPListItem item, int klientId, string okres, double kwota, string konto, string fileName, string odbiorca, string numerDeklaracji, string symbolFormularza, string identyfikatorZobowiazania, BLL.Models.Klient iok)
         {
             bool result = false;
+
+            konto = Clean_NumerRachunku(konto);
 
             string nadawca = iok.NazwaFirmy + " " + iok.Adres + " " + iok.KodPocztowy + " " + iok.Miejscowosc;
             nadawca = nadawca.ToUpper();
@@ -396,8 +398,12 @@ namespace tabZadania_EventReceiver.EventReceiver1
             return result;
         }
 
+
+
         private static bool Generuj_DrukZUS(SPWeb web, SPListItem item, bool result, string okres, int klientId, double kwota, string konto, string fileName)
         {
+            konto = Clean_NumerRachunku(konto);
+
             if (konto.Length == 26 && kwota > 0 && !string.IsNullOrEmpty(fileName))
             {
 
@@ -481,12 +487,18 @@ namespace tabZadania_EventReceiver.EventReceiver1
         {
             string numerRachunku = item[colName] != null ? item[colName].ToString() : string.Empty;
 
+            numerRachunku = Clean_NumerRachunku(numerRachunku);
+
+            return numerRachunku;
+        }
+
+        private static string Clean_NumerRachunku(string numerRachunku)
+        {
             if (numerRachunku.Length > 26)
             {
                 Regex rgx = new Regex("[^0-9]");
                 numerRachunku = rgx.Replace(numerRachunku, "");
             }
-
             return numerRachunku;
         }
 
@@ -597,7 +609,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                     case "Zadanie":
                         break;
                     case "Prośba o dokumenty":
-                        Manage_ProsbaODokumenty_Gotowe(item);
+                        Manage_ProsbaODokumenty_Gotowe(item); //chyba ta procedura nie jest potrzebna
                         Update_StatusZadania(item, StatusZadania.Wysyłka);
                         break;
                     case "Prośba o przesłanie wyciągu bankowego":
@@ -857,10 +869,17 @@ namespace tabZadania_EventReceiver.EventReceiver1
                     case "Rozliczenie podatku dochodowego spółki":
                         if (isValidated_PDS(item))
                         {
-                            Manage_CMD_WyslijWynik_PDS(item);
-                            Update_KartaKlienta_PDS(item);
-                            Manage_Reminders_PDS(item);
-                            Update_StatusZadania(item, StatusZadania.Wysyłka);
+                            if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
+                            {
+                                Manage_CMD_WyslijWynik_PDS(item);
+                                Update_KartaKlienta_PDS(item);
+                                Manage_Reminders_PDS(item);
+                                Update_StatusZadania(item, StatusZadania.Wysyłka);
+                            }
+                            else
+                            {
+                                Update_StatusZadania(item, StatusZadania.Gotowe);
+                            }
                         }
                         break;
                     case "Rozliczenie podatku VAT":
@@ -1066,7 +1085,8 @@ namespace tabZadania_EventReceiver.EventReceiver1
             if (klientId > 0
                 && cmd == ZATWIERDZ)
             {
-                string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
+                //string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
+                string nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
                 string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
                 string kopiaDla = string.Empty;
                 bool KopiaDoNadawcy = false;
@@ -1074,7 +1094,8 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 string temat = string.Empty;
                 string tresc = string.Empty;
                 string trescHTML = string.Empty;
-                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "WBANK_TEMPLATE.Include", out temat, out trescHTML);
+                //BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "WBANK_TEMPLATE.Include", out temat, out trescHTML);
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "WBANK_TEMPLATE.Include", out temat, out trescHTML, false);
 
                 string info = item["colInformacjaDlaKlienta"] != null ? item["colInformacjaDlaKlienta"].ToString() : string.Empty;
                 trescHTML = trescHTML.Replace("___colInformacjaDlaKlienta___", info);
@@ -1099,7 +1120,8 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
         private static void CreateMessage_ProsbaODokumenty(SPListItem item, int klientId)
         {
-            string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
+            //string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
+            string nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
             string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
             string kopiaDla = string.Empty;
             bool KopiaDoNadawcy = false;
@@ -1107,7 +1129,9 @@ namespace tabZadania_EventReceiver.EventReceiver1
             string temat = string.Empty;
             string tresc = string.Empty;
             string trescHTML = string.Empty;
-            BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "DOK_TEMPLATE.Include", out temat, out trescHTML);
+
+            //BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "DOK_TEMPLATE.Include", out temat, out trescHTML);
+            BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "DOK_TEMPLATE.Include", out temat, out trescHTML, false);
 
             string info = item["colInformacjaDlaKlienta"] != null ? item["colInformacjaDlaKlienta"].ToString() : string.Empty;
             trescHTML = trescHTML.Replace("___colInformacjaDlaKlienta___", info);
@@ -1240,6 +1264,43 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 odbiorca = Check_NieWysylacDoKlientaFlag(item, nadawca, odbiorca);
 
                 BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
+
+
+                //reminders
+                if (hasPrzypomnienieOTerminiePlatnosci(item))
+                {
+                    //składki zus
+                    DateTime terminPlatnosci = Get_Date(item, "colZUS_TerminPlatnosciSkladek");
+
+                    if (GetValue(item, "colZUS_SP_Skladka") > 0
+                        || GetValue(item, "colZUS_ZD_Skladka") > 0
+                        || GetValue(item, "colZUS_FP_Skladka") > 0)
+                    {
+                        //ustaw reminder
+                        temat = Calc_ReminderSubject(item, "ZUS_REMINDER_TITLE", terminPlatnosci);
+                        planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
+                        nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+
+                        BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
+                    }
+
+                    //podatek za pracowników
+
+                    terminPlatnosci = BLL.tabOkresy.Get_TerminPlatnosciByOkresId(item.Web, "colPD_TerminPlatnosciPodatku", okresId);
+
+                    if (GetValue(item, "colZUS_PIT-4R") > 0
+                        || GetValue(item, "colZUS_PIT-8AR") > 0)
+                    {
+                        //ustaw reminder
+                        temat = Calc_ReminderSubject(item, "ZUS_PIT_REMINDER_TITLE", terminPlatnosci);
+                        planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
+                        nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+
+                        BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
+                    }
+                }
+
+
             }
 
         }
@@ -1365,11 +1426,51 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 odbiorca = Check_NieWysylacDoKlientaFlag(item, nadawca, odbiorca);
 
                 BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
+
+                //obsługa remindera
+                if (hasPrzypomnienieOTerminiePlatnosci(item))
+                {
+                    DateTime terminPlatnosci = Get_Date(item, "colPD_TerminPlatnosciPodatku");
+
+                    if (Get_String(item, "colPD_OcenaWyniku") == "Dochód")
+                    {
+                        if (GetValue(item, "colPD_WartoscDoZaplaty") > 0)
+                        {
+                            //ustaw reminder
+                            temat = Calc_ReminderSubject(item, "PD_REMINDER_TITLE", terminPlatnosci);
+                            planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
+                            nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+
+                            BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
+                        }
+                    }
+                }
+
             }
 
         }
 
+        private static string Calc_ReminderSubject(SPListItem item, string kodFormatki, DateTime terminPlatnosci)
+        {
+            string result = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, kodFormatki, false);
+            result = result.Replace("___DATA___", terminPlatnosci.ToShortDateString());
+            return result;
+        }
 
+        private static DateTime Calc_ReminderTime(SPListItem item, DateTime terminPlatnosci)
+        {
+            //ustaw datę powiadomienia
+            int reminderDateOffset = -1 * int.Parse(BLL.admSetup.GetValue(item.Web, "REMINDER_DATE_OFFSET"));
+            if (reminderDateOffset >= 0) reminderDateOffset = -1;
+            DateTime reminderDate = terminPlatnosci.AddDays(reminderDateOffset);
+
+            //ustaw godzinę wysyłki powiadomienia
+            TimeSpan ts = new TimeSpan(0, 8, 15);
+            string reminderTime = BLL.admSetup.GetValue(item.Web, "REMINDER_TIME");
+            if (reminderTime.Length == 5) TimeSpan.TryParse(reminderTime, out ts);
+            reminderDate = new DateTime(reminderDate.Year, reminderDate.Month, reminderDate.Day, ts.Hours, ts.Minutes, ts.Seconds);
+            return reminderDate;
+        }
 
         private void Manage_CMD_WyslijWynik_PDS(SPListItem item)
         {
@@ -1470,6 +1571,25 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 odbiorca = Check_NieWysylacDoKlientaFlag(item, nadawca, odbiorca);
 
                 BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
+
+                //obsługa remindera
+                if (hasPrzypomnienieOTerminiePlatnosci(item))
+                {
+                    DateTime terminPlatnosci = Get_Date(item, "colVAT_TerminPlatnosciPodatku");
+
+                    if (Get_String(item, "colVAT_Decyzja") == "Do zapłaty")
+                    {
+                        if (GetValue(item, "colVAT_WartoscDoZaplaty") > 0)
+                        {
+                            //ustaw reminder
+                            temat = Calc_ReminderSubject(item, "VAT_REMINDER_TITLE", terminPlatnosci);
+                            planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
+                            nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+
+                            BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
+                        }
+                    }
+                }
             }
         }
 

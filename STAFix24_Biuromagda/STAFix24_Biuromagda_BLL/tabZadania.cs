@@ -219,8 +219,6 @@ namespace BLL
 
             SPList list = web.Lists.TryGetList(targetList);
 
-            //if (list != null)
-            //{
             SPListItem item = list.AddItem();
             item["ContentType"] = ct;
             item["selKlient"] = klientId;
@@ -279,8 +277,14 @@ namespace BLL
             if (operatorId > 0) item["selOperator"] = operatorId;
 
             item.SystemUpdate();
-            //}
+
         }
+
+        public static void Create_ctPDS_Form(SPWeb web, string ct, int klientId, int okresId, string key, DateTime terminPlatnosci, DateTime terminPrzekazania, bool isKwartalnie)
+        {
+            Create_ctPD_Form(web, ct, klientId, okresId, key, terminPlatnosci, terminPrzekazania, isKwartalnie);
+        }
+ 
 
         public static void Create_Form(SPWeb web, string ct, int klientId, int okresId, string key, int operatorId)
         {
@@ -702,5 +706,6 @@ namespace BLL
 
             item[targetColName] = flag;
         }
+
     }
 }

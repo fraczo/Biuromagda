@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="admProcessRequestsER\BR_Forms.cs" />
+    <Compile Include="admProcessRequestsER\PDS_Forms.cs" />
     <Compile Include="admProcessRequestsER\EventReceiver1.cs" />
     <Compile Include="admProcessRequestsER\GeneratorFormatekRozliczeniowych.cs" />
     <Compile Include="admProcessRequestsER\ImportBuforaWiadomosci.cs" />

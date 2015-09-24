@@ -53,14 +53,21 @@ namespace admProcessRequests_EventReceiver
                 if (okresId > 0)
                 {
                     string typKlienta = wt[i];
+
+                    Array klienci = tabKlienci.Get_AktywniKlienci_Serwis(web, typKlienta);
+
                     switch (typKlienta)
                     {
                         case "KPiR":
-                        case "KSH":
-
-                            Array klienci = tabKlienci.Get_AktywniKlienci_Serwis(web, typKlienta);
                             ZUS_Forms.Create(web, klienci, okresId);
                             PD_Forms.Create(web, klienci, okresId);
+                            VAT_Forms.Create(web, klienci, okresId);
+                            BR_Forms.Create(web, klienci, okresId);
+                            Reminder_Forms.Create(web, klienci, okresId);
+                            break;
+                        case "KSH":
+                            ZUS_Forms.Create(web, klienci, okresId);
+                            PDS_Forms.Create(web, klienci, okresId);
                             VAT_Forms.Create(web, klienci, okresId);
                             BR_Forms.Create(web, klienci, okresId);
                             Reminder_Forms.Create(web, klienci, okresId);
