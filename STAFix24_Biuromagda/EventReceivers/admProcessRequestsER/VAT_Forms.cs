@@ -16,7 +16,19 @@ namespace admProcessRequests_EventReceiver
         {
             foreach (SPListItem item in aKlienci)
             {
-                SPFieldLookupValueCollection kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
+                SPFieldLookupValueCollection kody;
+
+                switch (item.ContentType.Name)
+                {
+                    case "Osoba fizyczna":
+                    case "Firma":
+                        kody = new SPFieldLookupValueCollection(item["selSerwisyWspolnicy"].ToString());
+                        break;
+                    default:
+                        kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
+                        break;
+                }
+
                 foreach (SPFieldLookupValue kod in kody)
                 {
                     switch (kod.LookupValue)
@@ -39,7 +51,19 @@ namespace admProcessRequests_EventReceiver
 
             if (item != null)
             {
-                SPFieldLookupValueCollection kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
+                SPFieldLookupValueCollection kody;
+
+                switch (item.ContentType.Name)
+                {
+                    case "Osoba fizyczna":
+                    case "Firma":
+                        kody = new SPFieldLookupValueCollection(item["selSerwisyWspolnicy"].ToString());
+                        break;
+                    default:
+                        kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
+                        break;
+                }
+
                 foreach (SPFieldLookupValue kod in kody)
                 {
                     switch (kod.LookupValue)

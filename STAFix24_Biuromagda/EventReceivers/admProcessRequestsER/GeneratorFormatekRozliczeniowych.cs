@@ -25,11 +25,34 @@ namespace admProcessRequests_EventReceiver
                 SPListItem klient = tabKlienci.Get_KlientById(web, klientId);
                 if (klient != null && klient["enumStatus"] != null && klient["enumStatus"].ToString() == "Aktywny")
                 {
-                    Reminder_Forms.Create(web, klientId, okresId);
-                    ZUS_Forms.Create(web, klientId, okresId);
-                    PD_Forms.Create(web, klientId, okresId);
-                    VAT_Forms.Create(web, klientId, okresId);
-                    BR_Forms.Create(web, klientId, okresId);
+                    switch (klient.ContentType.Name)
+                    {
+                        case "KPiR":
+                            ZUS_Forms.Create(web, klientId, okresId);
+                            PD_Forms.Create(web, klientId, okresId);
+                            VAT_Forms.Create(web, klientId, okresId);
+                            BR_Forms.Create(web, klientId, okresId);
+                            Reminder_Forms.Create(web, klientId, okresId);
+                            break;
+                        case "KSH":
+                            ZUS_Forms.Create(web, klientId, okresId);
+                            PDS_Forms.Create(web, klientId, okresId);
+                            VAT_Forms.Create(web, klientId, okresId);
+                            BR_Forms.Create(web, klientId, okresId);
+                            Reminder_Forms.Create(web, klientId, okresId);
+                            break;
+                        case "Firma":
+                            PDS_Forms.Create(web, klientId, okresId);
+                            break;
+                        case "Osoba fizyczna":
+                            ZUS_Forms.Create(web, klientId, okresId);
+                            PD_Forms.Create(web, klientId, okresId);
+                            VAT_Forms.Create(web, klientId, okresId);
+                            break;
+
+                        default:
+                            break;
+                    }
                 }
             }
 
@@ -59,7 +82,6 @@ namespace admProcessRequests_EventReceiver
                     switch (typKlienta)
                     {
                         case "KPiR":
-                        case "Osoba fizyczna":
                             ZUS_Forms.Create(web, klienci, okresId);
                             PD_Forms.Create(web, klienci, okresId);
                             VAT_Forms.Create(web, klienci, okresId);
@@ -67,13 +89,19 @@ namespace admProcessRequests_EventReceiver
                             Reminder_Forms.Create(web, klienci, okresId);
                             break;
                         case "KSH":
-                        case "Firma":
                             ZUS_Forms.Create(web, klienci, okresId);
                             PDS_Forms.Create(web, klienci, okresId);
                             VAT_Forms.Create(web, klienci, okresId);
                             BR_Forms.Create(web, klienci, okresId);
                             Reminder_Forms.Create(web, klienci, okresId);
-
+                            break;
+                        case "Firma":
+                            PDS_Forms.Create(web, klienci, okresId);
+                            break;
+                        case "Osoba fizyczna":
+                            ZUS_Forms.Create(web, klienci, okresId);
+                            PD_Forms.Create(web, klienci, okresId);
+                            VAT_Forms.Create(web, klienci, okresId);
                             break;
 
                         default:

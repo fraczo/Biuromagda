@@ -40,7 +40,20 @@ namespace admProcessRequests_EventReceiver.admProcessRequestsER
 		        isPracownicy =(bool)item["colZatrudniaPracownikow0"];
 	        }
 
-            SPFieldLookupValueCollection kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
+
+            SPFieldLookupValueCollection kody;
+
+            switch (item.ContentType.Name)
+            {
+                case "Osoba fizyczna":
+                case "Firma":
+                    kody = new SPFieldLookupValueCollection(item["selSerwisyWspolnicy"].ToString());
+                    break;
+                default:
+                    kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
+                    break;
+            }
+
             foreach (SPFieldLookupValue kod in kody)
             {
                 double skladkaSP = 0;
