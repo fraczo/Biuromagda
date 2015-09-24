@@ -19,12 +19,12 @@ namespace BLL.Models
             this.klientId = klientId;
 
             SPList list = web.Lists.TryGetList(targetList);
-            if (list!=null)
+            if (list != null)
             {
                 int urzadId = 0;
 
                 SPListItem item = list.GetItemById(klientId);
-                if (item!=null)
+                if (item != null)
                 {
 
                     if (item["selUrzadSkarbowy"] != null)
@@ -38,18 +38,23 @@ namespace BLL.Models
                         KontoPIT = dicUrzedySkarbowe.Get_KontoPIT(web, urzadId);
                         KontoCIT = dicUrzedySkarbowe.Get_KontoCIT(web, urzadId);
                         KontoVAT = dicUrzedySkarbowe.Get_KontoVAT(web, urzadId);
-                    } 
+                    }
 
-                    if (item["selUrzadSkarbowyVAT"]!=null) // czy jest dedykowany urząd skarbowy do rozliczeń VAT
-	                {
-                        urzadId = new SPFieldLookupValue(item["selUrzadSkarbowyVAT"].ToString()).LookupId;
-                        NazwaUrzeduSkarbowegoVAT = new SPFieldLookupValue(item["selUrzadSkarbowyVAT"].ToString()).LookupValue;
-                        KontoVAT = dicUrzedySkarbowe.Get_KontoVAT(web, urzadId);
-                        IdUrzeduSkarbowego = urzadId;
+                    //!!! DOTYCZY TYLKO KPIR
 
-                        KontoVAT = dicUrzedySkarbowe.Get_KontoVAT(web, urzadId);
-                        
-	                }
+                    if (item.ContentType.Name == "KPiR")
+                    {
+                        if (item["selUrzadSkarbowyVAT"] != null) // czy jest dedykowany urząd skarbowy do rozliczeń VAT
+                        {
+                            urzadId = new SPFieldLookupValue(item["selUrzadSkarbowyVAT"].ToString()).LookupId;
+                            NazwaUrzeduSkarbowegoVAT = new SPFieldLookupValue(item["selUrzadSkarbowyVAT"].ToString()).LookupValue;
+                            KontoVAT = dicUrzedySkarbowe.Get_KontoVAT(web, urzadId);
+                            IdUrzeduSkarbowego = urzadId;
+
+                            KontoVAT = dicUrzedySkarbowe.Get_KontoVAT(web, urzadId);
+
+                        }
+                    }
                 }
             }
         }
