@@ -34,7 +34,8 @@ namespace BLL
             result = targetList.Items.Cast<SPListItem>()
                 .Where(i => i["enumStatus"].ToString() == "Aktywny")
                 .Where(i => i["ContentType"].ToString() == typKlienta)
-                .Where(i => new SPFieldLookupValueCollection(i["selSewisy"].ToString()).Count > 0)
+                .Where(i => new SPFieldLookupValueCollection(i["selSewisy"].ToString()).Count > 0
+                || new SPFieldLookupValueCollection(i["selSerwisyWspolnicy"].ToString()).Count > 0)
                 .ToArray();
 
             return result;
@@ -47,7 +48,8 @@ namespace BLL
 
             result = targetList.Items.Cast<SPListItem>()
                 .Where(i => i["enumStatus"].ToString() == "Aktywny")
-                .Where(i => new SPFieldLookupValueCollection(i["selSewisy"].ToString()).Count > 0)
+                .Where(i => new SPFieldLookupValueCollection(i["selSewisy"].ToString()).Count > 0
+                || new SPFieldLookupValueCollection(i["selSerwisyWspolnicy"].ToString()).Count > 0)
                 .ToArray();
 
             return result;
@@ -59,12 +61,7 @@ namespace BLL
             SPList targetList = web.Lists.TryGetList(listName);
             SPListItem result = null;
 
-            //if (targetList != null)
-            //{
-            result = targetList.Items.Cast<SPListItem>()
-                .Where(i => i.ID == klientId)
-                .ToList().First();
-            //}
+            result = targetList.GetItemById(klientId);
 
             return result;
         }
@@ -88,6 +85,16 @@ namespace BLL
                         break;
                     }
                 }
+
+                kody = new SPFieldLookupValueCollection(item["selSerwisyWspolnicy"].ToString());
+                foreach (SPFieldLookupValue kod in kody)
+                {
+                    if (kod.LookupValue == serwisKod)
+                    {
+                        result = true;
+                        break;
+                    }
+                }
             }
             //}
 
@@ -95,37 +102,15 @@ namespace BLL
 
         }
 
-        internal static TypKlienta Get_TypKlienta(SPWeb web, int klientId)
+        internal static string Get_TypKlienta(SPWeb web, int klientId)
         {
             SPList targetList = web.Lists.TryGetList(listName);
 
             SPListItem item = targetList.GetItemById(klientId);
-            if (item != null)
-            {
-                string ctName = item["ContentType"].ToString();
-                switch (ctName)
-                {
-                    case "KPiR":
-                        return TypKlienta.KPiR;
 
-                    case "KSH":
-                        return TypKlienta.KSH;
-
-                    default:
-                        break;
-                }
-            }
-
-            return TypKlienta.Klient;
+            return item.ContentType.Name;
+            
         }
-
-        public enum TypKlienta
-        {
-            Klient,
-            KPiR,
-            KSH
-        }
-
 
         public static int Get_KlientId(SPWeb web, string nazwaSkrocona)
         {

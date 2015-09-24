@@ -59,6 +59,7 @@ namespace admProcessRequests_EventReceiver
                     switch (typKlienta)
                     {
                         case "KPiR":
+                        case "Osoba fizyczna":
                             ZUS_Forms.Create(web, klienci, okresId);
                             PD_Forms.Create(web, klienci, okresId);
                             VAT_Forms.Create(web, klienci, okresId);
@@ -66,6 +67,7 @@ namespace admProcessRequests_EventReceiver
                             Reminder_Forms.Create(web, klienci, okresId);
                             break;
                         case "KSH":
+                        case "Firma":
                             ZUS_Forms.Create(web, klienci, okresId);
                             PDS_Forms.Create(web, klienci, okresId);
                             VAT_Forms.Create(web, klienci, okresId);

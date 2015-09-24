@@ -158,10 +158,9 @@ namespace BLL
 
                 //procedura
 
-                string procName = ": " + ct.ToString();
-                var procId = tabProcedury.GetID(web, procName, true);
-
-                item["selProcedura"] = procId;
+                string procName = string.Format(": {0}", ct);
+                item["selProcedura"] = tabProcedury.Ensure(web, procName);
+                item["Title"] = procName;
 
                 //numery kont i nazwa urzędu
 
@@ -203,8 +202,6 @@ namespace BLL
                 item["colKodPocztowy"] = iok.KodPocztowy;
                 item["colMiejscowosc"] = iok.Miejscowosc;
 
-                item["Title"] = procName;
-
                 int operatorId = iok.OperatorId_Podatki;
                 if (operatorId > 0) item["selOperator"] = operatorId;
 
@@ -226,10 +223,9 @@ namespace BLL
             item["KEY"] = key;
             //procedura
 
-            string procName = ": " + ct.ToString();
-            var procId = tabProcedury.GetID(web, procName, true);
-
-            item["selProcedura"] = procId;
+            string procName = string.Format(": {0}", ct);
+            item["selProcedura"] = tabProcedury.Ensure(web, procName);
+            item["Title"] = procName;
 
             //numery kont i nazwa urzędu
 
@@ -270,7 +266,6 @@ namespace BLL
             item["colKodPocztowy"] = iok.KodPocztowy;
             item["colMiejscowosc"] = iok.Miejscowosc;
 
-            item["Title"] = procName;
 
             //przypisz zadanie do domyślnego operatora
             int operatorId = iok.OperatorId_Podatki;
@@ -298,22 +293,34 @@ namespace BLL
 
             SPList list = web.Lists.TryGetList(targetList);
 
-            string procName = ": " + ct.ToString();
-            var procId = tabProcedury.GetID(web, procName, true);
-
             SPListItem item = list.AddItem();
             item["ContentType"] = ct;
             item["selKlient"] = klientId;
             item["selOkres"] = okresId;
             item["KEY"] = key;
-            item["selProcedura"] = procId;
+
+            string procName = string.Format(": {0}", ct);
+            item["selProcedura"] = tabProcedury.Ensure(web, procName);
+            item["Title"] = procName;
+
             item["selOperator"] = operatorId;
 
             item["colOsobaDoKontaktu"] = iok.OsobaDoKontaktu;
             item["colTelefon"] = iok.Telefon;
             item["colEmail"] = iok.Email;
 
-            item["Title"] = procName;
+            //ustaw terminy realizacji
+            switch (ct)
+            {
+                case "Prośba o dokumenty":
+                    item["colTerminRealizacji"] = BLL.tabOkresy.Get_TerminRealizacji(web, okresId, "DOK_REMINDER_DOM");
+                    break;
+                case "Prośba o przesłanie wyciągu bankowego":
+                    item["colTerminRealizacji"] = BLL.tabOkresy.Get_TerminRealizacji(web, okresId, "WBANK_REMINDER_DOM");
+                    break;
+                default:
+                    break;
+            }
 
             item.SystemUpdate();
 
@@ -323,13 +330,6 @@ namespace BLL
         {
             SPList list = web.Lists.TryGetList(targetList);
 
-            //if (list != null)
-            //{
-            string procName = ": " + ct.ToString();
-            var procId = tabProcedury.GetID(web, procName, true);
-
-
-
             Flagi fl = new Flagi(web, klientId);
 
             SPListItem item = list.AddItem();
@@ -337,7 +337,11 @@ namespace BLL
             item["selKlient"] = klientId;
             item["selOkres"] = okresId;
             item["KEY"] = key;
-            item["selProcedura"] = procId;
+            
+            //procedura
+            string procName = string.Format(": {0}", ct);
+            item["selProcedura"] = tabProcedury.Ensure(web, procName);
+            item["Title"] = procName;
 
             if (isTylkoZdrowotna)
             {
@@ -396,8 +400,6 @@ namespace BLL
             item["colKodPocztowy"] = iok.KodPocztowy;
             item["colMiejscowosc"] = iok.Miejscowosc;
 
-            item["Title"] = procName;
-
             // przypisz domyślnego operatora
             int operatorId = iok.OperatorId_Kadry;
             if (operatorId > 0) item["selOperator"] = operatorId;
@@ -412,9 +414,6 @@ namespace BLL
 
             SPList list = web.Lists.TryGetList(targetList);
 
-            //if (list != null)
-            //{
-
             SPListItem item = list.AddItem();
             item["ContentType"] = ct;
             item["selKlient"] = klientId;
@@ -423,10 +422,9 @@ namespace BLL
 
             //procedura
 
-            string procName = ": " + ct.ToString();
-            var procId = tabProcedury.GetID(web, procName, true);
-
-            item["selProcedura"] = procId;
+            string procName = string.Format(": {0}", ct);
+            item["selProcedura"] = tabProcedury.Ensure(web, procName);
+            item["Title"] = procName;
 
             //numer konta biura
 
@@ -445,14 +443,13 @@ namespace BLL
             item["colPrzypomnienieOTerminiePlatnos"] = fl.PrzypomnienieOTerminiePlatnosci;
             item["colDrukWplaty"] = fl.GenerowanieDrukuWplaty;
 
-            item["Title"] = procName;
+
 
             //domyślny operator
             int operatorId = iok.OperatorId_Audyt;
             if (operatorId > 0) item["selOperator"] = operatorId;
 
             item.SystemUpdate();
-            //}
         }
 
         public static int Get_NumerZadaniaBR(SPWeb web, int klientId, int okresId)

@@ -68,29 +68,6 @@ namespace BLL
             AddNew(web, null, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, zadanieId, klientId);
         }
 
-        public static void Create_PrzypomnienieOTerminiePlatnosci(SPListItem item, DateTime terminPlatnosci, string subject, string body)
-        {
-            //ustaw datę powiadomienia
-            int reminderDateOffset = -1 * int.Parse(BLL.admSetup.GetValue(item.Web, "REMINDER_DATE_OFFSET"));
-            if (reminderDateOffset >= 0) reminderDateOffset = -1;
-            DateTime reminderDate = terminPlatnosci.AddDays(reminderDateOffset);
-
-            //ustaw godzinę wysyłki powiadomienia
-            TimeSpan ts = new TimeSpan(0, 8, 15);
-            string reminderTime = BLL.admSetup.GetValue(item.Web, "REMINDER_TIME");
-            if (reminderTime.Length == 5) TimeSpan.TryParse(reminderTime, out ts);
-            reminderDate = new DateTime(reminderDate.Year, reminderDate.Month, reminderDate.Day, ts.Hours, ts.Minutes, ts.Seconds);
-
-            string bodyHtml = string.Empty;
-            string tmp = string.Empty;
-            if(!string.IsNullOrEmpty(body))
-            {
-                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "EMAIL_DEFAULT_BODY", out tmp, out bodyHtml);
-                bodyHtml = bodyHtml.Replace("___BODY___", body.ToString());
-            }
-
-            AddNew(item, reminderDate, subject, bodyHtml);
-        }
 
         private static void AddNew(SPListItem item, DateTime reminderDate, string subject, string bodyHtml)
         {

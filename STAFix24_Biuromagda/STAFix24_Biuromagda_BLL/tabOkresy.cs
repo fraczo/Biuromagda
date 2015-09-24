@@ -200,22 +200,22 @@ namespace BLL
                 int ofset = 0;
 
 
-                tabKlienci.TypKlienta typKlienta = tabKlienci.Get_TypKlienta(web, klientId);
+                string typKlienta = tabKlienci.Get_TypKlienta(web, klientId);
 
-                switch (typKlienta.ToString())
+                switch (typKlienta)
                 {
                     case "KPiR":
                     case "Osoba fizyczna":
 
                         terminPlatnosci = DateTime.Parse(item["colPD_TerminPlatnosciPodatku"].ToString());
-                    ofset = int.Parse(item["colPD_TerminPrzekazaniaWynikow_O"].ToString());
+                        ofset = int.Parse(item["colPD_TerminPrzekazaniaWynikow_O"].ToString());
                         break;
 
                     case "KSH":
                     case "Firma":
 
                         terminPlatnosci = DateTime.Parse(item["colCIT_TerminPlatnosciPodatku"].ToString());
-                    ofset = int.Parse(item["colCIT_TerminPrzekazaniaWynikow_"].ToString());
+                        ofset = int.Parse(item["colCIT_TerminPrzekazaniaWynikow_"].ToString());
                         break;
 
                     default:
@@ -243,22 +243,22 @@ namespace BLL
             {
                 int ofset = 0;
 
-                tabKlienci.TypKlienta typKlienta = tabKlienci.Get_TypKlienta(web, klientId);
+                string typKlienta = tabKlienci.Get_TypKlienta(web, klientId);
 
-                switch (typKlienta.ToString())
+                switch (typKlienta)
                 {
                     case "KPiR":
                     case "Osoba fizyczna":
 
                         terminPlatnosci = DateTime.Parse(item["colPD_TerminPlatnosciPodatkuKW"].ToString());
-                    ofset = int.Parse(item["colPD_TerminPrzekazaniaWynikow_O"].ToString());
+                        ofset = int.Parse(item["colPD_TerminPrzekazaniaWynikow_O"].ToString());
                         break;
 
                     case "KSH":
                     case "Firma":
 
                         terminPlatnosci = DateTime.Parse(item["colCIT_TerminPlatnosciPodatkuKW"].ToString());
-                    ofset = int.Parse(item["colCIT_TerminPrzekazaniaWynikow_"].ToString());
+                        ofset = int.Parse(item["colCIT_TerminPrzekazaniaWynikow_"].ToString());
                         break;
 
                     default:
@@ -282,6 +282,33 @@ namespace BLL
             SPList list = web.Lists.TryGetList(targetList);
             SPListItem item = list.GetItemById(okresId);
             return item;
+        }
+
+        internal static DateTime Get_TerminRealizacji(SPWeb web, int okresId, string key)
+        {
+            SPListItem item = Get_ItemById(web, okresId);
+            DateTime startDate = Get_Date(item, "colDataZakonczenia").AddDays(1);
+            DateTime targetDate = startDate;
+            int offset = int.Parse(BLL.admSetup.GetValue(web, key));
+            if (offset > 0)
+            {
+                targetDate = targetDate.AddDays(offset - 1);
+            }
+            while (targetDate.DayOfWeek == DayOfWeek.Saturday || targetDate.DayOfWeek == DayOfWeek.Sunday)
+            {
+                targetDate = targetDate.AddDays(1);
+            }
+
+            //set time of day
+
+            TimeSpan ts = TimeSpan.Parse(BLL.admSetup.GetValue(web, "REMINDER_TIME").ToString());
+
+            return targetDate.Add(ts);
+        }
+
+        private static DateTime Get_Date(SPListItem item, string col)
+        {
+            return item[col] != null ? DateTime.Parse(item[col].ToString()) : new DateTime();
         }
     }
 }
