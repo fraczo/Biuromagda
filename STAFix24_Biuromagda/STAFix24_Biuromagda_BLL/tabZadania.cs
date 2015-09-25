@@ -286,7 +286,7 @@ namespace BLL
 
         private static void Set_KontoOperatora(SPListItem item, int operatorId)
         {
-            if (item["_KontoOperatora"] != null) item["_KontoOperatora"] = BLL.dicOperatorzy.Get_UserIdById(item.Web, operatorId);
+            item["_KontoOperatora"] = BLL.dicOperatorzy.Get_UserIdById(item.Web, operatorId);
         }
 
         public static void Create_ctPDS_Form(SPWeb web, string ct, int klientId, int okresId, string key, DateTime terminPlatnosci, DateTime terminPrzekazania, bool isKwartalnie)
