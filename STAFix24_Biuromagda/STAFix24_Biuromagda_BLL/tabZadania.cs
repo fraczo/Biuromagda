@@ -203,7 +203,11 @@ namespace BLL
                 item["colMiejscowosc"] = iok.Miejscowosc;
 
                 int operatorId = iok.OperatorId_Podatki;
-                if (operatorId > 0) item["selOperator"] = operatorId;
+                if (operatorId > 0)
+                {
+                    item["selOperator"] = operatorId;
+                    Set_KontoOperatora(item, operatorId);
+                }
 
                 item.SystemUpdate();
             }
@@ -269,10 +273,20 @@ namespace BLL
 
             //przypisz zadanie do domyślnego operatora
             int operatorId = iok.OperatorId_Podatki;
-            if (operatorId > 0) item["selOperator"] = operatorId;
+            if (operatorId > 0)
+            {
+                item["selOperator"] = operatorId;
+                Set_KontoOperatora(item, operatorId);
+            }
+            
 
             item.SystemUpdate();
 
+        }
+
+        private static void Set_KontoOperatora(SPListItem item, int operatorId)
+        {
+            if (item["_KontoOperatora"] != null) item["_KontoOperatora"] = BLL.dicOperatorzy.Get_UserIdById(item.Web, operatorId);
         }
 
         public static void Create_ctPDS_Form(SPWeb web, string ct, int klientId, int okresId, string key, DateTime terminPlatnosci, DateTime terminPrzekazania, bool isKwartalnie)
@@ -304,6 +318,11 @@ namespace BLL
             item["Title"] = procName;
 
             item["selOperator"] = operatorId;
+            if (operatorId > 0)
+            {
+                item["selOperator"] = operatorId;
+                Set_KontoOperatora(item, operatorId);
+            }
 
             item["colOsobaDoKontaktu"] = iok.OsobaDoKontaktu;
             item["colTelefon"] = iok.Telefon;
@@ -402,7 +421,11 @@ namespace BLL
 
             // przypisz domyślnego operatora
             int operatorId = iok.OperatorId_Kadry;
-            if (operatorId > 0) item["selOperator"] = operatorId;
+            if (operatorId > 0)
+            {
+                item["selOperator"] = operatorId;
+                Set_KontoOperatora(item, operatorId);
+            }
 
             item.SystemUpdate();
             //}
@@ -447,7 +470,11 @@ namespace BLL
 
             //domyślny operator
             int operatorId = iok.OperatorId_Audyt;
-            if (operatorId > 0) item["selOperator"] = operatorId;
+            if (operatorId > 0)
+            {
+                item["selOperator"] = operatorId;
+                Set_KontoOperatora(item, operatorId);
+            }
 
             item.SystemUpdate();
         }
