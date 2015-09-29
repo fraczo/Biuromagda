@@ -9,6 +9,7 @@ namespace BLL
     public class tabKartyKontrolne
     {
         const string targetList = "Karty kontrolne";
+        const string colPOTWIERDZENIE_ODBIORU_DOKUMENTOW = "colPotwierdzenieOdbioruDokumento";
 
         public static void Create_KartaKontrolna(SPWeb web, int klientId, int okresId)
         {
@@ -265,5 +266,15 @@ namespace BLL
 
         #endregion
 
+
+        public static void Set_PotwierdzenieOdbioruDokumentow(SPWeb web, int klientId, int okresId)
+        {
+            string KEY = Create_KEY(klientId, okresId);
+            int kkId = Get_KartaKontrolnaId(web, klientId, okresId, KEY);
+            SPListItem item = Get_KartaKontrolnaById(web, kkId);
+            item[colPOTWIERDZENIE_ODBIORU_DOKUMENTOW] = true;
+            item.SystemUpdate();
+
+        }
     }
 }

@@ -114,10 +114,12 @@ namespace tabZadania_EventReceiver.EventReceiver1
             {
                 int klientId = Get_LookupId(item, "selKlient");
                 int okresId = Get_LookupId(item, "selOkres");
+                
                 if (klientId > 0 && okresId > 0) BLL.tabZadania.Complte_PrzypomnienieOWysylceDokumentow(item, klientId, okresId);
+                
+                if (Get_Flag(item, "colPotwierdzenieOdbioruDokumento")) BLL.tabKartyKontrolne.Set_PotwierdzenieOdbioruDokumentow(item.Web, klientId, okresId);
             }
         }
-
 
 
         #region Updates
@@ -609,8 +611,6 @@ namespace tabZadania_EventReceiver.EventReceiver1
                     case "Zadanie":
                         break;
                     case "Prośba o dokumenty":
-                        Manage_ProsbaODokumenty_Gotowe(item); //chyba ta procedura nie jest potrzebna
-                        Update_StatusZadania(item, StatusZadania.Wysyłka);
                         break;
                     case "Prośba o przesłanie wyciągu bankowego":
                         break;
@@ -626,22 +626,6 @@ namespace tabZadania_EventReceiver.EventReceiver1
                         break;
                     default:
                         break;
-                }
-            }
-        }
-
-        private void Manage_ProsbaODokumenty_Gotowe(SPListItem item)
-        {
-            string status = Get_StatusZadania(item);
-
-            if (status == StatusZadania.Gotowe.ToString())
-            {
-                int klientId = item["selKlient"] != null ? new SPFieldLookupValue(item["selKlient"].ToString()).LookupId : 0;
-
-                if (klientId > 0)
-                {
-                    CreateMessage_ProsbaODokumenty(item, klientId);
-
                 }
             }
         }
@@ -677,9 +661,6 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
             }
         }
-
-
-
 
         #region Manage CT
 
@@ -1981,6 +1962,11 @@ namespace tabZadania_EventReceiver.EventReceiver1
             }
             return procId;
         }
+        private bool Get_Flag(SPListItem item, string col)
+        {
+            return item[col] != null ? bool.Parse(item[col].ToString()) : false;
+        }
+
 
         #endregion
 
