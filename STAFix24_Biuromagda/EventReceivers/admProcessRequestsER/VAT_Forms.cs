@@ -12,7 +12,7 @@ namespace admProcessRequests_EventReceiver
     {
         const string ctVAT = "Rozliczenie podatku VAT";
 
-        public static void Create(SPWeb web, Array aKlienci, int okresId)
+        public static void Create(SPWeb web, Array aKlienci, int okresId, bool createKK)
         {
             foreach (SPListItem item in aKlienci)
             {
@@ -34,9 +34,13 @@ namespace admProcessRequests_EventReceiver
                     switch (kod.LookupValue)
                     {
                         case @"VAT-M":
+                            if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
+
                             Create_VAT_M_Form(web, item.ID, okresId);
                             break;
                         case @"VAT-KW":
+                            if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
+
                             Create_VAT_KW_Form(web, item.ID, okresId);
                             break;
                         default:

@@ -6,6 +6,7 @@ using Microsoft.SharePoint;
 using BLL;
 using admProcessRequests_EventReceiver;
 using admProcessRequests_EventReceiver.admProcessRequestsER;
+using EventReceivers.admProcessRequestsER;
 
 namespace admProcessRequests_EventReceiver
 {
@@ -17,8 +18,10 @@ namespace admProcessRequests_EventReceiver
         /// <param name="properties"></param>
         internal static void Execute_GenFormRozlK(SPItemEventProperties properties, SPWeb web)
         {
-            int okresId = new SPFieldLookupValue(properties.ListItem["selOkres"].ToString()).LookupId;
-            int klientId = new SPFieldLookupValue(properties.ListItem["selKlient"].ToString()).LookupId;
+            SPListItem item = properties.ListItem;
+
+            int okresId = new SPFieldLookupValue(item["selOkres"].ToString()).LookupId;
+            int klientId = new SPFieldLookupValue(item["selKlient"].ToString()).LookupId;
 
             if (okresId > 0 && klientId > 0)
             {
@@ -70,6 +73,7 @@ namespace admProcessRequests_EventReceiver
             //sprawdź parametry wywołania
             SPFieldMultiChoiceValue wt = new SPFieldMultiChoiceValue(properties.ListItem["enumTypKlienta"].ToString());
             int okresId = new SPFieldLookupValue(properties.ListItem["selOkres"].ToString()).LookupId;
+            SPListItem item = properties.ListItem;
 
             for (int i = 0; i < wt.Count; i++)
             {
@@ -79,29 +83,31 @@ namespace admProcessRequests_EventReceiver
 
                     Array klienci = tabKlienci.Get_AktywniKlienci_Serwis(web, typKlienta);
 
+                    bool createKK = Get_Flag(item, "colDodajKartyKontrolne");
+
                     switch (typKlienta)
                     {
                         case "KPiR":
-                            ZUS_Forms.Create(web, klienci, okresId);
-                            PD_Forms.Create(web, klienci, okresId);
-                            VAT_Forms.Create(web, klienci, okresId);
+                            ZUS_Forms.Create(web, klienci, okresId, createKK);
+                            PD_Forms.Create(web, klienci, okresId, createKK );
+                            VAT_Forms.Create(web, klienci, okresId, createKK);
                             BR_Forms.Create(web, klienci, okresId);
                             Reminder_Forms.Create(web, klienci, okresId);
                             break;
                         case "KSH":
-                            ZUS_Forms.Create(web, klienci, okresId);
-                            PDS_Forms.Create(web, klienci, okresId);
-                            VAT_Forms.Create(web, klienci, okresId);
+                            ZUS_Forms.Create(web, klienci, okresId,createKK);
+                            PDS_Forms.Create(web, klienci, okresId, createKK);
+                            VAT_Forms.Create(web, klienci, okresId,createKK);
                             BR_Forms.Create(web, klienci, okresId);
                             Reminder_Forms.Create(web, klienci, okresId);
                             break;
                         case "Firma":
-                            PDS_Forms.Create(web, klienci, okresId);
+                            PDS_Forms.Create(web, klienci, okresId, false);
                             break;
                         case "Osoba fizyczna":
-                            ZUS_Forms.Create(web, klienci, okresId);
-                            PD_Forms.Create(web, klienci, okresId);
-                            VAT_Forms.Create(web, klienci, okresId);
+                            ZUS_Forms.Create(web, klienci, okresId, false);
+                            PD_Forms.Create(web, klienci, okresId, false);
+                            VAT_Forms.Create(web, klienci, okresId, false);
                             break;
 
                         default:
@@ -112,6 +118,13 @@ namespace admProcessRequests_EventReceiver
                 }
             }
         }
+
+        #region Helpers
+        private static bool Get_Flag(SPListItem item, string col)
+        {
+            return item[col] != null ? bool.Parse(item[col].ToString()) : false;
+        }
+        #endregion
 
     }
 }

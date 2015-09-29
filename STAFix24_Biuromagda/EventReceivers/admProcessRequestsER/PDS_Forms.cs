@@ -12,7 +12,7 @@ namespace admProcessRequests_EventReceiver
 
         const string ctPDS = @"Rozliczenie podatku dochodowego spółki";
 
-        internal static void Create(SPWeb web, Array aKlienci, int okresId)
+        internal static void Create(SPWeb web, Array aKlienci, int okresId, bool createKK)
         {
             foreach (SPListItem item in aKlienci)
             {
@@ -34,9 +34,13 @@ namespace admProcessRequests_EventReceiver
                     switch (kod.LookupValue)
                     {
                         case @"PDS-M":
+                            if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
+
                             Create_PDS_M_Form(web, item.ID, okresId);
                             break;
                         case @"PDS-KW":
+                            if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
+
                             Create_PDS_KW_Form(web, item.ID, okresId);
                             break;
                         default:

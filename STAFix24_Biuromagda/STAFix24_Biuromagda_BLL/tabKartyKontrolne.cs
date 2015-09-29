@@ -10,6 +10,12 @@ namespace BLL
     {
         const string targetList = "Karty kontrolne";
 
+        public static void Create_KartaKontrolna(SPWeb web, int klientId, int okresId)
+        {
+            string KEY = Create_KEY(klientId, okresId);
+            int formId = Get_KartaKontrolnaId(web,klientId, okresId, KEY);
+        }
+
         public static void Update_PD_Data(Microsoft.SharePoint.SPListItem item)
         {
             string KEY = Create_KEY(item);
@@ -184,11 +190,51 @@ namespace BLL
 
         }
 
+        private static int Get_KartaKontrolnaId(SPWeb web, int klientId, int okresId, string KEY)
+        {
+            SPList list = web.Lists.TryGetList(targetList);
+            SPListItem item = list.Items.Cast<SPListItem>()
+                .Where(i => i["KEY"].ToString() == KEY)
+                .FirstOrDefault();
+            if (item != null)
+            {
+                return item.ID;
+            }
+            else
+            {
+                SPListItem newItem = list.AddItem();
+                newItem["KEY"] = KEY;
+                newItem["selKlient"] = klientId;
+                newItem["selOkres"] = okresId;
+
+                BLL.Models.Klient k = new Models.Klient(web, klientId);
+
+                newItem["enumRozliczeniePD"] = k.RozliczeniePD;
+                newItem["enumRozliczenieVAT"] = k.RozliczenieVAT;
+                newItem["colFormaOpodatkowaniaPD"] = k.FormaOpodatkowaniaPD;
+                newItem["colFormaOpodatkowaniaVAT"] = k.FormaOpodatkowaniaVAT;
+                newItem["colFormaOpodakowania_ZUS"] = k.FormaOpodatkowaniaZUS;
+
+                //ustaw CT
+                if (k.TypKlienta == "KSH") newItem["ContentType"] = "Karta kontrolna KSH";
+                else newItem["ContentType"] = "Karta kontrolna KPiR";
+
+                newItem.SystemUpdate();
+
+                return newItem.ID;
+            }
+        }
+
         #region Helpers
         private static string Create_KEY(Microsoft.SharePoint.SPListItem item)
         {
             int klientId = Get_LookupId(item, "selKlient");
             int okresId = Get_LookupId(item, "selOkres");
+            return Create_KEY(klientId, okresId);
+        }
+
+        private static string Create_KEY(int klientId, int okresId)
+        {
             return string.Format(@"{0}::{1}", klientId.ToString(), okresId.ToString());
         }
 
@@ -218,8 +264,6 @@ namespace BLL
         }
 
         #endregion
-
-
 
     }
 }

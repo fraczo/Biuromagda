@@ -12,10 +12,12 @@ namespace admProcessRequests_EventReceiver.admProcessRequestsER
     {
         const string ctZUS = @"Rozliczenie ZUS";
 
-        public static void Create(SPWeb web, Array aKlienci, int okresId)
+        public static void Create(SPWeb web, Array aKlienci, int okresId, bool createKK)
         {
             foreach (SPListItem item in aKlienci)
             {
+                if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
+
                 Create_ZUS_Forms(web, okresId, item);
             }
         }
