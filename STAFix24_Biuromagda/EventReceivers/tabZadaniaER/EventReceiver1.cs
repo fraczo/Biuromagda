@@ -115,7 +115,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 int klientId = Get_LookupId(item, "selKlient");
                 int okresId = Get_LookupId(item, "selOkres");
                 
-                if (klientId > 0 && okresId > 0) BLL.tabZadania.Complte_PrzypomnienieOWysylceDokumentow(item, klientId, okresId);
+                if (klientId > 0 && okresId > 0) BLL.tabZadania.Complete_PrzypomnienieOWysylceDokumentow(item, klientId, okresId);
                 
                 if (Get_Flag(item, "colPotwierdzenieOdbioruDokumento")) BLL.tabKartyKontrolne.Set_PotwierdzenieOdbioruDokumentow(item.Web, klientId, okresId);
             }

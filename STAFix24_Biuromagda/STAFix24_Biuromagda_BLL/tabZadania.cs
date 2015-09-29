@@ -614,7 +614,7 @@ namespace BLL
         }
 
 
-        public static void Complte_PrzypomnienieOWysylceDokumentow(SPListItem item, int klientId, int okresId)
+        public static void Complete_PrzypomnienieOWysylceDokumentow(SPListItem item, int klientId, int okresId)
         {
             string KEY = Define_KEY("Prośba o dokumenty", klientId, okresId);
             if (!string.IsNullOrEmpty(KEY))
