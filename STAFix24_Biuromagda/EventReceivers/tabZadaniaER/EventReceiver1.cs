@@ -941,7 +941,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
         private void Update_KartaKlienta_PDS(SPListItem item)
         {
-            // TODO:
+            BLL.tabKartyKontrolne.Update_PDS_Data(item);
         }
 
         private void Update_KartaKlienta_VAT(SPListItem item)

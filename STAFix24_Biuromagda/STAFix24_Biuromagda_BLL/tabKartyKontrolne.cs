@@ -16,6 +16,12 @@ namespace BLL
             int formId = Get_KartaKontrolnaId(item, KEY);
 
             SPListItem form = Get_KartaKontrolnaById(item.Web, formId);
+            Copy_PDFields(item, form);
+            form.SystemUpdate();
+        }
+
+        private static void Copy_PDFields(Microsoft.SharePoint.SPListItem item, SPListItem form)
+        {
             Copy_Field(item, form, "colPotwierdzenieOdbioruDokumento");
             Copy_Field(item, form, "colFormaOpodatkowaniaPD");
             Copy_Field(item, form, "enumRozliczeniePD");
@@ -23,6 +29,35 @@ namespace BLL
             Copy_Field(item, form, "colPD_WartoscDochodu");
             Copy_Field(item, form, "colPD_WartoscDoZaplaty");
             Copy_Field(item, form, "colPD_WartoscStraty");
+
+            Copy_Field(item, "colNieWysylajDoKlienta", form, "_NieWysylajDoKlienta_PD");
+
+            Copy_Id(item, form, "_ZadanieID_PD");
+        }
+
+        public static void Update_PDS_Data(SPListItem item)
+        {
+            string KEY = Create_KEY(item);
+            int formId = Get_KartaKontrolnaId(item, KEY);
+
+            SPListItem form = Get_KartaKontrolnaById(item.Web, formId);
+            Copy_PDFields(item, form);
+            Copy_Field(item, form, "colIloscDokWBPKN");
+            Copy_Field(item, form, "colIloscFaktur");
+            Copy_Field(item, form, "colKosztyNKUP");
+            Copy_Field(item, form, "colKosztyNKUP_WynWyl");
+            Copy_Field(item, form, "colKosztyNKUP_ZUSPlatWyl");
+            Copy_Field(item, form, "colKosztyNKUP_FakWyl");
+            Copy_Field(item, form, "colKosztyNKUP_PozostaleKoszty");
+            Copy_Field(item, form, "colKosztyWS");
+            Copy_Field(item, form, "colKosztyWS_WynWlaczone");
+            Copy_Field(item, form, "colKosztyWS_ZUSPlatWlaczone");
+            Copy_Field(item, form, "colKosztyWS_FakWlaczone");
+            Copy_Field(item, form, "colPrzychodyNP");
+            Copy_Field(item, form, "colPrzychodyZwolnione");
+            Copy_Field(item, form, "colWplaconaSZ");
+            Copy_Field(item, form, "colZyskStrataNetto");
+
             form.SystemUpdate();
         }
 
@@ -42,6 +77,11 @@ namespace BLL
             Copy_Field(item, form, "colVAT_eDeklaracja");
             Copy_Field(item, form, "colVAT_VAT-UE_Zalaczony");
             Copy_Field(item, form, "colVAT_VAT-27_Zalaczony");
+
+            Copy_Field(item, "colNieWysylajDoKlienta", form, "_NieWysylajDoKlienta_VAT");
+
+            Copy_Id(item, form, "_ZadanieID_VAT");
+            
             form.SystemUpdate();
         }
 
@@ -63,6 +103,11 @@ namespace BLL
             Copy_Field(item, form, "colZUS_PIT-8AR");
             Copy_Field(item, form, "colZUS_ListaPlac_Zalaczona");
             Copy_Field(item, form, "colZUS_Rachunki_Zalaczone");
+
+            Copy_Field(item, "colNieWysylajDoKlienta", form, "_NieWysylajDoKlienta_ZUS");
+
+            Copy_Id(item, form, "_ZadanieID_ZUS");
+
             form.SystemUpdate();
         }
 
@@ -96,11 +141,6 @@ namespace BLL
             form.SystemUpdate();
         }
 
-
-        private static void Copy_Field(SPListItem item, SPListItem form, string col)
-        {
-            form[col] = item[col];
-        }
 
         private static SPListItem Get_KartaKontrolnaById(SPWeb web, int formId)
         {
@@ -161,8 +201,23 @@ namespace BLL
         {
             return item[col] != null ? new SPFieldLookupValue(item[col].ToString()).LookupId : 0;
         }
-        #endregion
 
+        private static void Copy_Field(SPListItem item, string col0, SPListItem form, string col1)
+        {
+            form[col1] = item[col0];
+        }
+
+        private static void Copy_Field(SPListItem item, SPListItem form, string col)
+        {
+            form[col] = item[col];
+        }
+
+        private static void Copy_Id(SPListItem item, SPListItem form, string col)
+        {
+            form[col] = item.ID;
+        }
+
+        #endregion
 
 
 
