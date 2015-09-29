@@ -133,6 +133,10 @@ namespace BLL
                 newItem["colFormaOpodatkowaniaVAT"] = k.FormaOpodatkowaniaVAT;
                 newItem["colFormaOpodakowania_ZUS"] = k.FormaOpodatkowaniaZUS;
 
+                //ustaw CT
+                if (k.TypKlienta == "KSH") newItem["ContentType"] = "Karta kontrolna KSH";
+                else newItem["ContentType"] = "Karta kontrolna KPiR";
+
                 newItem.SystemUpdate();
 
                 return newItem.ID;

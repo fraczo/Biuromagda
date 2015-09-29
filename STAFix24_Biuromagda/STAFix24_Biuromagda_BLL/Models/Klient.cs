@@ -21,6 +21,7 @@ namespace BLL.Models
 
             if (item != null)
             {
+                this.TypKlienta = item.ContentType.Name;
                 OddzialZUSId = item["selOddzialZUS"] != null ? new SPFieldLookupValue(item["selOddzialZUS"].ToString()).LookupId : 0;
                 FormaOpodatkowaniaZUS = item["colFormaOpodakowania_ZUS"] != null ? item["colFormaOpodakowania_ZUS"].ToString() : string.Empty;
                 FormaOpodatkowaniaKPiR = item["colFormaOpodatkowaniaPD_KPiR"] != null ? item["colFormaOpodatkowaniaPD_KPiR"].ToString() : string.Empty;
@@ -171,5 +172,7 @@ namespace BLL.Models
         public int OperatorId_Kadry { get; set; }
 
         public string PelnaNazwaFirmy { get; set; }
+
+        public string TypKlienta { get; set; }
     }
 }
