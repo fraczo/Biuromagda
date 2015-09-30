@@ -29,30 +29,59 @@ namespace BLL.Models
 
                     if (item["selUrzadSkarbowy"] != null)
                     {
-                        urzadId = new SPFieldLookupValue(item["selUrzadSkarbowy"].ToString()).LookupId;
-                        NazwaUrzeduSkarbowego = new SPFieldLookupValue(item["selUrzadSkarbowy"].ToString()).LookupValue;
-                        NazwaUrzeduSkarbowegoVAT = NazwaUrzeduSkarbowego;
-                        IdUrzeduSkarbowego = urzadId;
-                        IdUrzeduSkarbowegoVAT = urzadId;
+                        try
+                        {
+                            urzadId = new SPFieldLookupValue(item["selUrzadSkarbowy"].ToString()).LookupId;
+                            this.NazwaUrzeduSkarbowego = new SPFieldLookupValue(item["selUrzadSkarbowy"].ToString()).LookupValue;
+                            this.NazwaUrzeduSkarbowegoVAT = NazwaUrzeduSkarbowego;
+                            this.IdUrzeduSkarbowego = urzadId;
+                            this.IdUrzeduSkarbowegoVAT = urzadId;
 
-                        KontoPIT = dicUrzedySkarbowe.Get_KontoPIT(web, urzadId);
-                        KontoCIT = dicUrzedySkarbowe.Get_KontoCIT(web, urzadId);
-                        KontoVAT = dicUrzedySkarbowe.Get_KontoVAT(web, urzadId);
+                            this.KontoPIT = dicUrzedySkarbowe.Get_KontoPIT(web, urzadId);
+                            this.KontoCIT = dicUrzedySkarbowe.Get_KontoCIT(web, urzadId);
+                            this.KontoVAT = dicUrzedySkarbowe.Get_KontoVAT(web, urzadId);
+
+                        }
+                        catch (Exception ex)
+                        {
+#if DEBUG
+                throw ex;
+#else
+                            BLL.Logger.LogEvent(web.Url, ex.ToString() + " KlientId= " + klientId.ToString());
+                            var result = ElasticEmail.EmailGenerator.ReportError(ex, web.Url, BLL.Tools.Get_ItemInfo(item));
+#endif
+
+                        }
                     }
 
-                    //!!! DOTYCZY TYLKO KPIR
+                    //!!! DOTYCZY TYLKO KPiR
 
                     if (item.ContentType.Name == "KPiR")
                     {
                         if (item["selUrzadSkarbowyVAT"] != null) // czy jest dedykowany urząd skarbowy do rozliczeń VAT
                         {
-                            urzadId = new SPFieldLookupValue(item["selUrzadSkarbowyVAT"].ToString()).LookupId;
-                            NazwaUrzeduSkarbowegoVAT = new SPFieldLookupValue(item["selUrzadSkarbowyVAT"].ToString()).LookupValue;
-                            KontoVAT = dicUrzedySkarbowe.Get_KontoVAT(web, urzadId);
-                            IdUrzeduSkarbowego = urzadId;
+                            try
+                            {
+                                urzadId = new SPFieldLookupValue(item["selUrzadSkarbowyVAT"].ToString()).LookupId;
+                                this.NazwaUrzeduSkarbowegoVAT = new SPFieldLookupValue(item["selUrzadSkarbowyVAT"].ToString()).LookupValue;
 
-                            KontoVAT = dicUrzedySkarbowe.Get_KontoVAT(web, urzadId);
+                                string konto = dicUrzedySkarbowe.Get_KontoVAT(web, urzadId);
+                                if (!string.IsNullOrEmpty(konto))
+                                {
+                                    this.KontoVAT = konto;
+                                    this.IdUrzeduSkarbowego = urzadId;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+#if DEBUG
+                throw ex;
+#else
+                                BLL.Logger.LogEvent(web.Url, ex.ToString() + " KlientId= " + klientId.ToString());
+                                var result = ElasticEmail.EmailGenerator.ReportError(ex, web.Url, BLL.Tools.Get_ItemInfo(item));
+#endif
 
+                            }
                         }
                     }
                 }
