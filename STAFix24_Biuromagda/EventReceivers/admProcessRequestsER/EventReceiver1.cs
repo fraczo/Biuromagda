@@ -86,7 +86,9 @@ namespace admProcessRequests_EventReceiver
                                 case "Obsługa zadań":
                                     ObslugaZadan.Execute(properties, web);
                                     break;
-
+                                case "Obsługa ADO":
+                                    ObslugaADO.Execute(properties, web);
+                                    break;
                                 default:
                                     //properties.ListItem["colStatus"] = "Zakończony";
                                     //properties.ListItem.SystemUpdate();

@@ -738,5 +738,17 @@ namespace BLL
             item[targetColName] = flag;
         }
 
+
+        public static Array Get_GotoweTasksByProceduraId(SPWeb web, int proceduraId)
+        {
+            SPList list = web.Lists.TryGetList(targetList);
+            Array result = list.Items.Cast<SPListItem>()
+                .Where(i => i["enumStatusZadania"].ToString() == "Gotowe")
+                .Where(i => i["selProcedura"] != null)
+                .Where(i => new SPFieldLookupValue(i["selProcedura"].ToString()).LookupId == proceduraId)
+                .ToArray();
+
+            return result;
+        }
     }
 }

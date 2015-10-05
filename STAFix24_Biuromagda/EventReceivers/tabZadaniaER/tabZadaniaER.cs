@@ -10,9 +10,9 @@ using BLL.Models;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace tabZadania_EventReceiver.EventReceiver1
+namespace EventReceivers.tabZadaniaER
 {
-    public class EventReceiver1 : SPItemEventReceiver
+    public class tabZadaniaER : SPItemEventReceiver
     {
 
         const string WYSLIJ_INFORMACJE_DO_KLIENTA = "Wyślij informację do Klienta";
@@ -47,9 +47,14 @@ namespace tabZadania_EventReceiver.EventReceiver1
             Execute(properties);
         }
 
+        private void Execute(SPItemEventProperties properties)
+        {
+            this.Execute(properties.ListItem);
+        }
+
         #endregion
 
-        private void Execute(SPItemEventProperties properties)
+        public void Execute(SPListItem item)
         {
             this.EventFiringEnabled = false;
 
@@ -57,7 +62,6 @@ namespace tabZadania_EventReceiver.EventReceiver1
             {
                 //BLL.Logger.LogEvent(properties.WebUrl, properties.ListItem.Title + ".OnUpdate");
 
-                SPListItem item = properties.ListItem;
                 SPWeb web = item.Web;
 
                 string ct = item.ContentType.Name;
@@ -96,8 +100,8 @@ namespace tabZadania_EventReceiver.EventReceiver1
 #if DEBUG
                 throw ex;
 #else
-                BLL.Logger.LogEvent(properties.WebUrl, ex.ToString());
-                var result = ElasticEmail.EmailGenerator.ReportError(ex, properties.WebUrl.ToString());
+                BLL.Logger.LogEvent(item.Web.ToString(), ex.ToString());
+                var result = ElasticEmail.EmailGenerator.ReportError(ex, item.Web.ToString());
 #endif
 
             }
@@ -466,7 +470,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 string nip = iok.NIP;
                 string typIdentyfikatora = "N";
 
-                string symbolFormularza = "PPL";
+                string symbolFormularza = Get_SymbolFormularzaPD(item);
                 string opis = "ZAL.POD.DOCH.";
 
 
@@ -478,6 +482,34 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 nadawca,
                 nip, typIdentyfikatora, numerDeklaracji, symbolFormularza, opis);
             }
+            return result;
+        }
+
+        private string Get_SymbolFormularzaPD(SPListItem item)
+        {
+            string result = string.Empty;
+            string formaOpodatkowaniaPD = item["colFormaOpodatkowaniaPD"] != null ? item["colFormaOpodatkowaniaPD"].ToString() : string.Empty;
+            switch (formaOpodatkowaniaPD)
+            {
+                case "CIT":
+                    result = "CIT-8";
+                    break;
+                case "Zasady ogólne":
+                    result = "PIT-5";
+                    break;
+                case "Podatek liniowy":
+                    result = "PPL";
+                    break;
+                case "Karta podatkowa":
+                    result = "KP";
+                    break;
+                case "Ryczałt":
+                    result = "PPE";
+                    break;
+                default:
+                    break;
+            }
+
             return result;
         }
 
@@ -1054,7 +1086,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 string kopiaDla = Get_KopiaDlaEdytora(item, nadawca);
 
                 string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
- 
+
                 bool KopiaDoNadawcy = true;
                 bool KopiaDoBiura = true;
                 string temat = string.Empty;
@@ -1366,7 +1398,7 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 result = BLL.dicOperatorzy.Get_EmailById(item.Web, operatorId);
             }
 
-            if (!string.IsNullOrEmpty(result))
+            if (string.IsNullOrEmpty(result))
             {
                 result = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
             }
@@ -1595,32 +1627,38 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
 
                     if (GetValue(item, "colBR_WartoscDoZaplaty") > 0)
-                        {
-                            //ustaw reminder
-                            temat = Calc_ReminderSubject(item, "RBR_REMINDER_TITLE", terminPlatnosci);
-                            planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
-                            nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+                    {
+                        //ustaw reminder
+                        temat = Calc_ReminderSubject(item, "RBR_REMINDER_TITLE", terminPlatnosci);
+                        planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
+                        nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
 
-                            BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
-                        }
-        
+                        BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
+                    }
+
                 }
             }
         }
 
         private static string Get_KopiaDlaEdytora(SPListItem item, string nadawca)
         {
+            string result = string.Empty;
+
             SPUser user = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User;
             //sprawdź przypisanie adresu na liście operatorów
             int operatorId = BLL.dicOperatorzy.Get_OperatorIdByLoginName(item.Web, user.LoginName);
-            string result = BLL.dicOperatorzy.Get_EmailById(item.Web, operatorId);
-            if (!string.IsNullOrEmpty(result) && result != nadawca)
+            if (operatorId > 0)
             {
-                //jeżeli operator nie ma przypisanego adresu mailowego lub pokrywa się z adresem nadawcy
-                return result;
+                result = BLL.dicOperatorzy.Get_EmailById(item.Web, operatorId);
             }
 
-            return string.Empty;
+            if (result == nadawca)
+            {
+                //jeżeli operator nie ma przypisanego adresu mailowego lub pokrywa się z adresem nadawcy
+                return string.Empty;
+            }
+
+            return result;
         }
 
 

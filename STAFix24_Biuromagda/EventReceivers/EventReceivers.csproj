@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="admProcessRequestsER\BR_Forms.cs" />
+    <Compile Include="admProcessRequestsER\ObslugaADO.cs" />
     <Compile Include="admProcessRequestsER\PDS_Forms.cs" />
     <Compile Include="admProcessRequestsER\EventReceiver1.cs" />
     <Compile Include="admProcessRequestsER\GeneratorFormatekRozliczeniowych.cs" />
@@ -74,7 +75,7 @@
     <Compile Include="tabProceduryER\tabProceduryER.cs" />
     <Compile Include="tabStratyZLatUbieglych\tabStratyZLatUbieglych.cs" />
     <Compile Include="tabWiadomosciER\tabWiadomosciER.cs" />
-    <Compile Include="tabZadaniaER\EventReceiver1.cs" />
+    <Compile Include="tabZadaniaER\tabZadaniaER.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="admProcessRequestsER\SharePointProjectItem.spdata">

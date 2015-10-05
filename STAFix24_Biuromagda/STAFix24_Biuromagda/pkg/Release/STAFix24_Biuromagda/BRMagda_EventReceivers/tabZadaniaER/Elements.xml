@@ -5,28 +5,28 @@
       <Name>tabZadaniaERItemAdded</Name>
       <Type>ItemAdded</Type>
       <Assembly>BRMagda.EventReceivers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d98099de718d7615</Assembly>
-      <Class>tabZadania_EventReceiver.EventReceiver1.EventReceiver1</Class>
+      <Class>EventReceivers.tabZadaniaER.tabZadaniaER</Class>
       <SequenceNumber>1000</SequenceNumber>
     </Receiver>
     <Receiver>
       <Name>tabZadaniaERItemAdding</Name>
       <Type>ItemAdding</Type>
       <Assembly>BRMagda.EventReceivers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d98099de718d7615</Assembly>
-      <Class>tabZadania_EventReceiver.EventReceiver1.EventReceiver1</Class>
+      <Class>EventReceivers.tabZadaniaER.tabZadaniaER</Class>
       <SequenceNumber>1000</SequenceNumber>
     </Receiver>
     <Receiver>
       <Name>tabZadaniaERItemUpdated</Name>
       <Type>ItemUpdated</Type>
       <Assembly>BRMagda.EventReceivers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d98099de718d7615</Assembly>
-      <Class>tabZadania_EventReceiver.EventReceiver1.EventReceiver1</Class>
+      <Class>EventReceivers.tabZadaniaER.tabZadaniaER</Class>
       <SequenceNumber>1000</SequenceNumber>
     </Receiver>
     <Receiver>
       <Name>tabZadaniaERItemUpdating</Name>
       <Type>ItemUpdating</Type>
       <Assembly>BRMagda.EventReceivers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d98099de718d7615</Assembly>
-      <Class>tabZadania_EventReceiver.EventReceiver1.EventReceiver1</Class>
+      <Class>EventReceivers.tabZadaniaER.tabZadaniaER</Class>
       <SequenceNumber>1000</SequenceNumber>
     </Receiver>
   </Receivers>

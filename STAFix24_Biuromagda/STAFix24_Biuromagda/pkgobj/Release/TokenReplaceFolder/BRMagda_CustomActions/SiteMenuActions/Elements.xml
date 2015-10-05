@@ -30,6 +30,17 @@
           Title="Wyślij oczekujące wiadomości" >
     <UrlAction Url="~site/Lists/admProcessRequests/NewForm.aspx?ContentTypeId=0x010012C56DEF8E3B1A45B66E8FB2ED3FFC13004A6B5687CE018340ACD25ADD6680C511008473491BA4FEA645B1AE28ECD30A52FE"/>
   </CustomAction>
+  
+  <CustomAction Description="Uruchamia proces akceptacji zadań audytora"
+          Id="STAFIX.MANAGEADO"
+          GroupId="SiteActions"
+          ImageUrl="/_layouts/images/Settings.gif"
+          Location="Microsoft.SharePoint.StandardMenu"
+          Sequence="506"
+          Title="Akceptacja zadań audytora" >
+    <UrlAction Url="~site/Lists/admProcessRequests/NewForm.aspx?ContentTypeId=0x010012C56DEF8E3B1A45B66E8FB2ED3FFC1300AA205DBEB9AD9A4DB207D7B6F0CCD47D0033AB3EB3599C754F98C5CE4AA4D6BA4E"/>
+  </CustomAction>
+
 
 
   <CustomAction Description="Importuje informacje o wystawionych fakturach"

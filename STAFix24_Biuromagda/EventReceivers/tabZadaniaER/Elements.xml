@@ -5,28 +5,28 @@
       <Name>tabZadaniaERItemAdded</Name>
       <Type>ItemAdded</Type>
       <Assembly>$SharePoint.Project.AssemblyFullName$</Assembly>
-      <Class>tabZadania_EventReceiver.EventReceiver1.EventReceiver1</Class>
+      <Class>EventReceivers.tabZadaniaER.tabZadaniaER</Class>
       <SequenceNumber>1000</SequenceNumber>
     </Receiver>
     <Receiver>
       <Name>tabZadaniaERItemAdding</Name>
       <Type>ItemAdding</Type>
       <Assembly>$SharePoint.Project.AssemblyFullName$</Assembly>
-      <Class>tabZadania_EventReceiver.EventReceiver1.EventReceiver1</Class>
+      <Class>EventReceivers.tabZadaniaER.tabZadaniaER</Class>
       <SequenceNumber>1000</SequenceNumber>
     </Receiver>
     <Receiver>
       <Name>tabZadaniaERItemUpdated</Name>
       <Type>ItemUpdated</Type>
       <Assembly>$SharePoint.Project.AssemblyFullName$</Assembly>
-      <Class>tabZadania_EventReceiver.EventReceiver1.EventReceiver1</Class>
+      <Class>EventReceivers.tabZadaniaER.tabZadaniaER</Class>
       <SequenceNumber>1000</SequenceNumber>
     </Receiver>
     <Receiver>
       <Name>tabZadaniaERItemUpdating</Name>
       <Type>ItemUpdating</Type>
       <Assembly>$SharePoint.Project.AssemblyFullName$</Assembly>
-      <Class>tabZadania_EventReceiver.EventReceiver1.EventReceiver1</Class>
+      <Class>EventReceivers.tabZadaniaER.tabZadaniaER</Class>
       <SequenceNumber>1000</SequenceNumber>
     </Receiver>
   </Receivers>
