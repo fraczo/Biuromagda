@@ -986,7 +986,7 @@ namespace EventReceivers.tabZadaniaER
         }
         private void Update_KartaKlienta_RBR(SPListItem item)
         {
-            // TODO:
+            BLL.tabKartyKontrolne.Update_RBR_Data(item);
         }
         #endregion
 

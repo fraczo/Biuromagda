@@ -140,6 +140,7 @@ namespace Workflows.ObslugaWiadomosci
                     {
                         case "Rozliczenie z biurem rachunkowym":
                             BLL.tabZadania.Update_RBR_DataWysylki(task, date);
+                            BLL.tabKartyKontrolne.Update_RBR_DataWysylki(task, date);
                             break;
                         case "Rozliczenie podatku dochodowego":
                         case "Rozliczenie podatku dochodowego spółki":

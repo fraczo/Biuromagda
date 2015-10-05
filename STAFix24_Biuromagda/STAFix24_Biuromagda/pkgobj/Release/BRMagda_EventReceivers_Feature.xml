@@ -13,5 +13,7 @@
     <ElementManifest Location="tabKlienciER\Elements.xml" />
     <ElementManifest Location="tabProceduryER\Elements.xml" />
     <ElementManifest Location="tabStratyZLatUbieglych\Elements.xml" />
+    <ElementManifest Location="tabDochodyWspolnikow\Elements.xml" />
+    <ElementManifest Location="tabDochodyZInnychSpolek\Elements.xml" />
   </ElementManifests>
 </Feature>

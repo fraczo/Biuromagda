@@ -35,7 +35,8 @@ namespace BLL
             Copy_Field(item, form, "colPD_OcenaWyniku");
             Copy_Field(item, form, "colPD_WartoscDochodu");
             Copy_Field(item, form, "colPD_WartoscDoZaplaty");
-            Copy_Field(item, form, "colPD_WartoscStraty");
+            //Copy_Field(item, form, "colPD_WartoscStraty");
+            Copy_Field(item, form, "colPD_WartoscStraty", -1);
 
             Copy_Field(item, "colNieWysylajDoKlienta", form, "_NieWysylajDoKlienta_PD");
 
@@ -118,6 +119,22 @@ namespace BLL
             form.SystemUpdate();
         }
 
+        public static void Update_RBR_Data(SPListItem item)
+        {
+            string KEY = Create_KEY(item);
+            int formId = Get_KartaKontrolnaId(item, KEY);
+
+            SPListItem form = Get_KartaKontrolnaById(item.Web, formId);
+            Copy_Field(item, form, "colBR_NumerFaktury");
+            Copy_Field(item, form, "colBR_WartoscDoZaplaty");
+            Copy_Field(item, form, "colBR_TerminPlatnosci");
+            Copy_Field(item, form, "colBR_FakturaZalaczona");
+
+            Copy_Id(item, form, "_ZadanieID_RBR");
+
+            form.SystemUpdate();
+        }
+
         public static void Update_PD_DataWysylki(SPListItem item, DateTime dateTime)
         {
             string KEY = Create_KEY(item);
@@ -145,6 +162,16 @@ namespace BLL
 
             SPListItem form = Get_KartaKontrolnaById(item.Web, formId);
             form["colZUS_DataWyslaniaInformacji"] = dateTime;
+            form.SystemUpdate();
+        }
+
+        public static void Update_RBR_DataWysylki(SPListItem item, DateTime dateTime)
+        {
+            string KEY = Create_KEY(item);
+            int formId = Get_KartaKontrolnaId(item, KEY);
+
+            SPListItem form = Get_KartaKontrolnaById(item.Web, formId);
+            form["colBR_DataPrzekazania"] = dateTime;
             form.SystemUpdate();
         }
 
@@ -259,6 +286,11 @@ namespace BLL
             form[col] = item[col];
         }
 
+        private static void Copy_Field(SPListItem item, SPListItem form, string col, int mnoznik)
+        {
+            form[col] = double.Parse(item[col].ToString()) * mnoznik;
+        }
+
         private static void Copy_Id(SPListItem item, SPListItem form, string col)
         {
             form[col] = item.ID;
@@ -276,5 +308,9 @@ namespace BLL
             item.SystemUpdate();
 
         }
+
+
+
+
     }
 }
