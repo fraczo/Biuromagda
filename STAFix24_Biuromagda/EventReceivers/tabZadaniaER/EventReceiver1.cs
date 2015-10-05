@@ -709,7 +709,9 @@ namespace tabZadania_EventReceiver.EventReceiver1
             {
                 string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
                 string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, klientId);
-                string kopiaDla = string.Empty;
+
+                string kopiaDla = Get_KopiaDlaOperatora(item);
+
                 bool KopiaDoNadawcy = true;
                 bool KopiaDoBiura = false;
                 string temat = string.Empty;
@@ -746,6 +748,22 @@ namespace tabZadania_EventReceiver.EventReceiver1
             ResetCommand(item, true);
         }
 
+        /// <summary>
+        /// jeżeli Editor nie jest aktualnym właścicielem zadania dodaj kopię do właściciela
+        /// </summary>
+        private string Get_KopiaDlaOperatora(SPListItem item)
+        {
+            int operatorId = Get_LookupId(item, "selOperator");
+            string editorLoginName = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.LoginName;
+            int editorId = BLL.dicOperatorzy.Get_OperatorIdByLoginName(item.Web, editorLoginName);
+            if (operatorId > 0 && editorId != operatorId)
+            {
+                return BLL.dicOperatorzy.Get_EmailById(item.Web, operatorId);
+            }
+
+            return string.Empty;
+        }
+
 
 
         private void Manage_CMD_WyslijInfo_NoAtt(SPListItem item)
@@ -761,7 +779,9 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
                 string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
                 string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
-                string kopiaDla = string.Empty;
+
+                string kopiaDla = Get_KopiaDlaOperatora(item);
+
                 bool KopiaDoNadawcy = true; //wyślij kopię do nadawcy
                 bool KopiaDoBiura = false;
                 string temat = string.Empty;
@@ -958,9 +978,12 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 && cmd == ZATWIERDZ)
             {
                 //string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
+
                 string nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+                string kopiaDla = Get_KopiaDlaEdytora(item, nadawca);
+
                 string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
-                string kopiaDla = string.Empty;
+
                 bool KopiaDoNadawcy = false;
                 bool KopiaDoBiura = false;
                 string temat = string.Empty;
@@ -994,8 +1017,10 @@ namespace tabZadania_EventReceiver.EventReceiver1
         {
             //string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
             string nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+            string kopiaDla = Get_KopiaDlaEdytora(item, nadawca);
+
             string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
-            string kopiaDla = string.Empty;
+
             bool KopiaDoNadawcy = false;
             bool KopiaDoBiura = false;
             string temat = string.Empty;
@@ -1023,9 +1048,13 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 && cmd == ZATWIERDZ)
             {
 
-                string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
+                //string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
+
+                string nadawca = Get_NadawcaWiadomosciZWynikami(item);
+                string kopiaDla = Get_KopiaDlaEdytora(item, nadawca);
+
                 string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
-                string kopiaDla = string.Empty;
+ 
                 bool KopiaDoNadawcy = true;
                 bool KopiaDoBiura = true;
                 string temat = string.Empty;
@@ -1200,10 +1229,13 @@ namespace tabZadania_EventReceiver.EventReceiver1
             if (klientId > 0
                 && cmd == ZATWIERDZ)
             {
+                //string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
 
-                string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
+                string nadawca = Get_NadawcaWiadomosciZWynikami(item);
+                string kopiaDla = Get_KopiaDlaEdytora(item, nadawca);
+
                 string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
-                string kopiaDla = string.Empty;
+
                 bool KopiaDoNadawcy = true;
                 bool KopiaDoBiura = true;
                 string temat = string.Empty;
@@ -1322,6 +1354,27 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
         }
 
+        /// <summary>
+        /// domyślnym nadawcą wiadomości jest bieżący operator a jeżeli go nie ma to biuro
+        /// </summary>
+        private string Get_NadawcaWiadomosciZWynikami(SPListItem item)
+        {
+            string result = string.Empty;
+            int operatorId = Get_LookupId(item, "selOperator");
+            if (operatorId > 0)
+            {
+                result = BLL.dicOperatorzy.Get_EmailById(item.Web, operatorId);
+            }
+
+            if (!string.IsNullOrEmpty(result))
+            {
+                result = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+            }
+
+            return result;
+
+        }
+
         private static string Calc_ReminderSubject(SPListItem item, string kodFormatki, DateTime terminPlatnosci)
         {
             string result = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, kodFormatki, false);
@@ -1359,9 +1412,12 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 && cmd == ZATWIERDZ)
             {
 
-                string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
+                //string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
+
+                string nadawca = Get_NadawcaWiadomosciZWynikami(item);
+                string kopiaDla = Get_KopiaDlaEdytora(item, nadawca);
+
                 string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
-                string kopiaDla = string.Empty;
                 bool KopiaDoNadawcy = true;
                 bool KopiaDoBiura = true;
                 string temat = string.Empty;
@@ -1413,14 +1469,14 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 string info2 = string.Empty;
                 string info = item["colInformacjaDlaKlienta"] != null ? item["colInformacjaDlaKlienta"].ToString() : string.Empty;
                 //dodaj informację o z załącznikach w/g ustawionych flag
-                if (item["colVAT_VAT-UE_Zalaczony"] != null ? (bool)item["colVAT_VAT-UE_Zalaczony"] : false)
-                {
-                    info2 = info2 + string.Format(templateR, "VAT-UE");
-                }
-                if (item["colVAT_VAT_x002d_27_Zalaczony0"] != null ? (bool)item["colVAT_VAT_x002d_27_Zalaczony0"] : false)
-                {
-                    info2 = info2 + string.Format(templateR, "VAT-27");
-                }
+                //if (item["colVAT_VAT-UE_Zalaczony"] != null ? (bool)item["colVAT_VAT-UE_Zalaczony"] : false)
+                //{
+                //    info2 = info2 + string.Format(templateR, "VAT-UE");
+                //}
+                //if (item["colVAT_VAT_x002d_27_Zalaczony0"] != null ? (bool)item["colVAT_VAT_x002d_27_Zalaczony0"] : false)
+                //{
+                //    info2 = info2 + string.Format(templateR, "VAT-27");
+                //}
 
                 if (item["colDrukWplaty"] != null ? (bool)item["colDrukWplaty"] : false)
                 {
@@ -1474,9 +1530,13 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 && cmd == ZATWIERDZ)
             {
 
-                string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
+                //string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
+                string nadawca = Get_NadawcaWiadomosciZWynikami(item);
+                string kopiaDla = Get_KopiaDlaEdytora(item, nadawca);
+
                 string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
-                string kopiaDla = string.Empty;
+
+
                 bool KopiaDoNadawcy = false;
                 bool KopiaDoBiura = true;
                 string temat = string.Empty;
@@ -1527,7 +1587,40 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
 
                 BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
+
+                //obsługa remindera
+                if (hasPrzypomnienieOTerminiePlatnosci(item))
+                {
+                    DateTime terminPlatnosci = Get_Date(item, "colBR_TerminPlatnosci");
+
+
+                    if (GetValue(item, "colBR_WartoscDoZaplaty") > 0)
+                        {
+                            //ustaw reminder
+                            temat = Calc_ReminderSubject(item, "RBR_REMINDER_TITLE", terminPlatnosci);
+                            planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
+                            nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+
+                            BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
+                        }
+        
+                }
             }
+        }
+
+        private static string Get_KopiaDlaEdytora(SPListItem item, string nadawca)
+        {
+            SPUser user = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User;
+            //sprawdź przypisanie adresu na liście operatorów
+            int operatorId = BLL.dicOperatorzy.Get_OperatorIdByLoginName(item.Web, user.LoginName);
+            string result = BLL.dicOperatorzy.Get_EmailById(item.Web, operatorId);
+            if (!string.IsNullOrEmpty(result) && result != nadawca)
+            {
+                //jeżeli operator nie ma przypisanego adresu mailowego lub pokrywa się z adresem nadawcy
+                return result;
+            }
+
+            return string.Empty;
         }
 
 
@@ -1857,11 +1950,14 @@ namespace tabZadania_EventReceiver.EventReceiver1
         {
             if (item != null)
             {
-                int klientId = Get_LookupId(item, "selKlient");
-                if (klientId > 0)
+                if (item.ContentType.Name == "KPiR" || item.ContentType.Name == "KSH")
                 {
-                    BLL.Models.Klient k = new Klient(item.Web, klientId);
-                    return string.Format("{0} {1}", temat, k.PelnaNazwaFirmy);
+                    int klientId = Get_LookupId(item, "selKlient");
+                    if (klientId > 0)
+                    {
+                        BLL.Models.Klient k = new Klient(item.Web, klientId);
+                        return string.Format("{0} {1}", temat, k.PelnaNazwaFirmy);
+                    }
                 }
             }
             return temat;

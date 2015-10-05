@@ -9,5 +9,12 @@
         <SequenceNumber>10000</SequenceNumber>
       </Receiver>
 
-  </Receivers>
+  <Receiver>
+<Name>tabKlienciERItemAdded</Name>
+<Type>ItemAdded</Type>
+<Assembly>$SharePoint.Project.AssemblyFullName$</Assembly>
+<Class>EventReceivers.tabKlienciER.tabKlienciER</Class>
+<SequenceNumber>1000</SequenceNumber>
+</Receiver>
+</Receivers>
 </Elements>

@@ -190,6 +190,9 @@ namespace BLL
                     item["enumRozliczenieVAT"] = "Miesięcznie";
                 }
 
+                //uwagi 
+                item["colUwagi"] = iok.Uwagi;
+
                 //termin realizacji
 
                 item["colTerminRealizacji"] = terminPrzekazania;
@@ -270,6 +273,8 @@ namespace BLL
             item["colKodPocztowy"] = iok.KodPocztowy;
             item["colMiejscowosc"] = iok.Miejscowosc;
 
+            //uwagi 
+            item["colUwagi"] = iok.Uwagi;
 
             //przypisz zadanie do domyślnego operatora
             int operatorId = iok.OperatorId_Podatki;
@@ -404,8 +409,9 @@ namespace BLL
             item["colDrukWplaty"] = fl.GenerowanieDrukuWplaty;
             item["colAudytDanych"] = fl.AudytDanych;
 
-            //uwagi kadrowe
+            //uwagi 
             item["colUwagiKadrowe"] = iok.UwagiKadrowe;
+            item["colUwagi"] = iok.Uwagi;
 
             //termin realizacji
             item["colTerminRealizacji"] = item["colZUS_TerminPrzekazaniaWynikow"];
@@ -466,7 +472,8 @@ namespace BLL
             item["colPrzypomnienieOTerminiePlatnos"] = fl.PrzypomnienieOTerminiePlatnosci;
             item["colDrukWplaty"] = fl.GenerowanieDrukuWplaty;
 
-
+            //uwagi 
+            item["colUwagi"] = iok.Uwagi;
 
             //domyślny operator
             int operatorId = iok.OperatorId_Audyt;

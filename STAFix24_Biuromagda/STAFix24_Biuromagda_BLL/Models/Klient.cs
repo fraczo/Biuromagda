@@ -81,7 +81,8 @@ namespace BLL.Models
                 NazwaFirmy = item.Title;
                 Regon = item["colRegon"] != null ? item["colRegon"].ToString() : string.Empty;
 
-                UwagiKadrowe = item["colUwagiKadrowe"] != null ? item["colUwagiKadrowe"].ToString() : string.Empty;
+                this.UwagiKadrowe = item["colUwagiKadrowe"] != null ? item["colUwagiKadrowe"].ToString() : string.Empty;
+                this.Uwagi = item["colUwagi"] != null ? item["colUwagi"].ToString() : string.Empty;
 
 
                 if (item["selTerminPlatnosci"] != null)
@@ -174,5 +175,7 @@ namespace BLL.Models
         public string PelnaNazwaFirmy { get; set; }
 
         public string TypKlienta { get; set; }
+
+        public object Uwagi { get; set; }
     }
 }

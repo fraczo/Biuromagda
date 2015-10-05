@@ -70,7 +70,7 @@ namespace Workflows.ObslugaWiadomosci
                 bool isKopiaDoBiura = item["colKopiaDoBiura"] != null ? (bool)item["colKopiaDoBiura"] : false;
                 if (isKopiaDoBiura)
                 {
-                    mail.Bcc.Add(new MailAddress(BLL.admSetup.GetValue(item.ParentList.ParentWeb, "EMAIL_BIURA")));
+                    mail.Bcc.Add(new MailAddress(BLL.admSetup.GetValue(item.ParentList.ParentWeb, "EMAIL_BIURA_ARCH")));
                 }
 
                 //Subject

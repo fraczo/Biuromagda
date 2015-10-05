@@ -88,5 +88,12 @@ namespace BLL
             return string.Empty;
             
         }
+
+        public static string Get_EmailById(SPWeb web, int operatorId)
+        {
+            SPList list = web.Lists.TryGetList(targetList);
+            SPListItem item = list.GetItemById(operatorId);
+            return item["colEmail"] != null ? item["colEmail"].ToString() : string.Empty;
+        }
     }
 }

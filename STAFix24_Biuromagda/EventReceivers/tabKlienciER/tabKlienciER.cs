@@ -10,8 +10,17 @@ namespace EventReceivers.tabKlienciER
 
     public class tabKlienciER : SPItemEventReceiver
     {
+        public override void ItemAdded(SPItemEventProperties properties)
+        {
+            Execute(properties);
+        }
 
         public override void ItemUpdated(SPItemEventProperties properties)
+        {
+            Execute(properties);
+        }
+
+        private void Execute(SPItemEventProperties properties)
         {
             this.EventFiringEnabled = false;
 
@@ -66,7 +75,9 @@ namespace EventReceivers.tabKlienciER
             {
                 case "KPiR":
                 case "KSH":
-                    np = string.Format("{0} NIP:{1}", item.Title, item["colNIP"] != null ? item["colNIP"].ToString() : string.Empty);
+                    np = string.Format("{0} NIP:{1}",
+                        item["colNazwaSkrocona"]!=null?item["colNazwaSkrocona"].ToString(): item.Title,
+                        item["colNIP"] != null ? item["colNIP"].ToString() : string.Empty);
                     break;
                 case "Firma":
                     string nazwa = item["colNazwa"]!=null?item["colNazwa"].ToString():string.Empty;
@@ -124,5 +135,7 @@ namespace EventReceivers.tabKlienciER
             return item[col] != null ? new SPFieldLookupValue(item[col].ToString()).LookupValue : string.Empty;
         } 
         #endregion
+
+
     }
 }
