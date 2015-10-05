@@ -114,9 +114,9 @@ namespace tabZadania_EventReceiver.EventReceiver1
             {
                 int klientId = Get_LookupId(item, "selKlient");
                 int okresId = Get_LookupId(item, "selOkres");
-                
+
                 if (klientId > 0 && okresId > 0) BLL.tabZadania.Complete_PrzypomnienieOWysylceDokumentow(item, klientId, okresId);
-                
+
                 if (Get_Flag(item, "colPotwierdzenieOdbioruDokumento")) BLL.tabKartyKontrolne.Set_PotwierdzenieOdbioruDokumentow(item.Web, klientId, okresId);
             }
         }
@@ -728,10 +728,11 @@ namespace tabZadania_EventReceiver.EventReceiver1
                 }
                 if (!temat.StartsWith(":"))
                 {
-                    temat = ":" + temat.Trim();
+                    temat = ": " + temat.Trim();
                 }
 
                 temat = AddSygnatura(temat, item);
+                temat = AddCompanyName(temat, item);
 
                 StringBuilder sb = new StringBuilder(trescHTML);
                 sb.Replace("___BODY___", notatka);
@@ -744,6 +745,8 @@ namespace tabZadania_EventReceiver.EventReceiver1
 
             ResetCommand(item, true);
         }
+
+
 
         private void Manage_CMD_WyslijInfo_NoAtt(SPListItem item)
         {
@@ -1847,6 +1850,19 @@ namespace tabZadania_EventReceiver.EventReceiver1
             if (item != null)
             {
                 return string.Format("{0} [#{1}]", temat, item.ID.ToString());
+            }
+            return temat;
+        }
+        private string AddCompanyName(string temat, SPListItem item)
+        {
+            if (item != null)
+            {
+                int klientId = Get_LookupId(item, "selKlient");
+                if (klientId > 0)
+                {
+                    BLL.Models.Klient k = new Klient(item.Web, klientId);
+                    return string.Format("{0} {1}", temat, k.PelnaNazwaFirmy);
+                }
             }
             return temat;
         }
