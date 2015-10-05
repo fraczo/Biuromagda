@@ -21,6 +21,16 @@
     <UrlAction Url="~site/Lists/admProcessRequests/NewForm.aspx?ContentTypeId=0x010012C56DEF8E3B1A45B66E8FB2ED3FFC1302002A1C7949E48ADA4D9326D531228D78C1"/>
   </CustomAction>-->
 
+  <CustomAction Description="Uruchamia proces obsługi wiadomości oczekujących w buforze"
+          Id="STAFIX.SNDMAIL"
+          GroupId="SiteActions"
+          ImageUrl="/_layouts/images/Settings.gif"
+          Location="Microsoft.SharePoint.StandardMenu"
+          Sequence="505"
+          Title="Wyślij oczekujące wiadomości" >
+    <UrlAction Url="~site/Lists/admProcessRequests/NewForm.aspx?ContentTypeId=0x010012C56DEF8E3B1A45B66E8FB2ED3FFC13004A6B5687CE018340ACD25ADD6680C511008473491BA4FEA645B1AE28ECD30A52FE"/>
+  </CustomAction>
+
 
   <CustomAction Description="Importuje informacje o wystawionych fakturach"
       Id="STAFIX.IFZO"

@@ -12,5 +12,6 @@
     <ElementManifest Location="tabWiadomosciER\Elements.xml" />
     <ElementManifest Location="tabKlienciER\Elements.xml" />
     <ElementManifest Location="tabProceduryER\Elements.xml" />
+    <ElementManifest Location="tabStratyZLatUbieglych\Elements.xml" />
   </ElementManifests>
 </Feature>

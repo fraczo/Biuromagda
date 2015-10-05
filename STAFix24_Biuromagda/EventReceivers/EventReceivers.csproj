@@ -68,8 +68,11 @@
     <Compile Include="admProcessRequestsER\ZUS_Forms.cs" />
     <Compile Include="dicUrzedySkarboweER\EventReceiver1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="tabDochodyWspolnikow\tabDochodyWspolnikow.cs" />
+    <Compile Include="tabDochodyZInnychSpolek\tabDochodyZInnychSpolek.cs" />
     <Compile Include="tabKlienciER\tabKlienciER.cs" />
     <Compile Include="tabProceduryER\tabProceduryER.cs" />
+    <Compile Include="tabStratyZLatUbieglych\tabStratyZLatUbieglych.cs" />
     <Compile Include="tabWiadomosciER\tabWiadomosciER.cs" />
     <Compile Include="tabZadaniaER\EventReceiver1.cs" />
   </ItemGroup>
@@ -81,6 +84,9 @@
       <SharePointProjectItemId>{95c6a07b-c9ed-4adb-bd85-f16c5275766b}</SharePointProjectItemId>
       <SubType>Designer</SubType>
     </None>
+    <None Include="Features\Feature1\Feature1.feature">
+      <FeatureId>{9ef4bdb3-406d-484c-9183-f61e2a90a978}</FeatureId>
+    </None>
     <None Include="key.snk" />
     <None Include="Package\Package.package">
       <PackageId>{3994201a-04b5-4281-8ce8-582b6b7a7bd3}</PackageId>
@@ -88,11 +94,20 @@
     <None Include="Package\Package.Template.xml">
       <DependentUpon>Package.package</DependentUpon>
     </None>
+    <None Include="tabDochodyWspolnikow\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{120820b4-d51d-493d-b5b0-26974eb70190}</SharePointProjectItemId>
+    </None>
+    <None Include="tabDochodyZInnychSpolek\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{01988e7b-cd65-42ff-b731-7b5e1cb575f6}</SharePointProjectItemId>
+    </None>
     <None Include="tabKlienciER\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{e109c7f7-8b03-45c4-bd29-bc61ece9e2c4}</SharePointProjectItemId>
     </None>
     <None Include="tabProceduryER\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{e35d7acd-2753-4101-aa33-f927658a7b2a}</SharePointProjectItemId>
+    </None>
+    <None Include="tabStratyZLatUbieglych\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{1757ec00-a6d1-4d85-b415-093e804743d1}</SharePointProjectItemId>
     </None>
     <None Include="tabWiadomosciER\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{729bc35d-6d4d-4042-b489-7c02051fe584}</SharePointProjectItemId>
@@ -115,11 +130,15 @@
       <Name>BLL</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Features\" />
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="Features\Feature1\Feature1.Template.xml">
+      <DependentUpon>Feature1.feature</DependentUpon>
+    </Content>
+    <Content Include="tabDochodyWspolnikow\Elements.xml" />
+    <Content Include="tabDochodyZInnychSpolek\Elements.xml" />
     <Content Include="tabProceduryER\Elements.xml" />
+    <Content Include="tabStratyZLatUbieglych\Elements.xml" />
     <Content Include="tabWiadomosciER\Elements.xml" />
     <None Include="tabZadaniaER\Elements.xml" />
     <None Include="admProcessRequestsER\Elements.xml" />
