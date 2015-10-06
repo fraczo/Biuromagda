@@ -12,6 +12,11 @@ namespace BLL
 
         public static void Get_TemplateByKod(SPListItem item, string kod, out string temat, out string trescHTML)
         {
+            Get_TemplateByKod(item, kod, out temat, out trescHTML, string.Empty);
+        }
+
+        public static void Get_TemplateByKod(SPListItem item, string kod, out string temat, out string trescHTML, string nadawcaEmail)
+        {
             switch (item.ParentList.Title)
             {
                 case "Zadania":
@@ -21,27 +26,21 @@ namespace BLL
                     string footerTR = string.Empty;
                     Get_TemplateByKod(item.Web, "EMAIL_FOOTER_TR", out temp, out footerTR, false);
 
-                    int operatorId = Get_LookupId(item, "selOperator");
-                    if (operatorId > 0)
+                    if (string.IsNullOrEmpty(nadawcaEmail))
                     {
-                        //użyj stopki konkretnego operatora
-                        BLL.Models.Operator op = new Models.Operator(item.Web, operatorId);
-
-                        footerTR = footerTR.Replace("___NAME___", op.Name);
-                        footerTR = footerTR.Replace("___CONTACT___", string.Format(@"email: {0}<br>tel.: {1}", op.Email, op.Telefon));
+                        int operatorId = Get_LookupId(item, "selOperator");
+                        footerTR = Format_FooterTR(item, footerTR, operatorId);
                     }
                     else
                     {
-                        //użyj stopki biura
-                        string name = BLL.admSetup.GetValue(item.Web, "NAZWA_BIURA");
-                        string email = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
-                        string tel = BLL.admSetup.GetValue(item.Web, "TELEFON_BIURA");
-
-                        footerTR = footerTR.Replace("___NAME___", name);
-                        footerTR = footerTR.Replace("___CONTACT___", string.Format(@"email: {0}<br>tel.: {1}", email, tel));
+                        int operatorId = BLL.dicOperatorzy.Get_OperatorIdByEmail(item.Web, nadawcaEmail);
+                        footerTR = Format_FooterTR(item, footerTR, operatorId);
                     }
+
                     Get_TemplateByKod(item.Web, kod, out temat, out trescHTML, true);
                     trescHTML = trescHTML.Replace("___FOOTER___", footerTR);
+
+
                     break;
 
                 default:
@@ -51,6 +50,29 @@ namespace BLL
 
 
 
+        }
+
+        private static string Format_FooterTR(SPListItem item, string footerTR, int operatorId)
+        {
+            if (operatorId > 0)
+            {
+                //użyj stopki konkretnego operatora
+                BLL.Models.Operator op = new Models.Operator(item.Web, operatorId);
+
+                footerTR = footerTR.Replace("___NAME___", op.Name);
+                footerTR = footerTR.Replace("___CONTACT___", string.Format(@"email: {0}<br>tel.: {1}", op.Email, op.Telefon));
+            }
+            else
+            {
+                //użyj stopki biura
+                string name = BLL.admSetup.GetValue(item.Web, "NAZWA_BIURA");
+                string email = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+                string tel = BLL.admSetup.GetValue(item.Web, "TELEFON_BIURA");
+
+                footerTR = footerTR.Replace("___NAME___", name);
+                footerTR = footerTR.Replace("___CONTACT___", string.Format(@"email: {0}<br>tel.: {1}", email, tel));
+            }
+            return footerTR;
         }
 
         /// <summary>

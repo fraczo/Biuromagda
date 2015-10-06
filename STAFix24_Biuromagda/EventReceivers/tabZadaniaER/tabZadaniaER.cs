@@ -749,7 +749,7 @@ namespace EventReceivers.tabZadaniaER
                 string temat = string.Empty;
                 string tresc = string.Empty;
                 string trescHTML = string.Empty;
-                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "EMAIL_DEFAULT_BODY", out temat, out trescHTML);
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "EMAIL_DEFAULT_BODY", out temat, out trescHTML, nadawca);
                 if (item["selProcedura"] != null)
                 {
                     temat = string.Format("{0} :{1}",
@@ -819,7 +819,7 @@ namespace EventReceivers.tabZadaniaER
                 string temat = string.Empty;
                 string tresc = string.Empty;
                 string trescHTML = string.Empty;
-                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "EMAIL_DEFAULT_BODY", out temat, out trescHTML);
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "EMAIL_DEFAULT_BODY", out temat, out trescHTML, nadawca);
                 //nadpisz temat wiadomości
                 if (item["selProcedura"] != null)
                 {

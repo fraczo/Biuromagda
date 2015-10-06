@@ -95,5 +95,27 @@ namespace BLL
             SPListItem item = list.GetItemById(operatorId);
             return item["colEmail"] != null ? item["colEmail"].ToString() : string.Empty;
         }
+
+        internal static int Get_OperatorIdByEmail(SPWeb web, string email)
+        {
+            SPList list = web.Lists.TryGetList(targetList);
+            SPListItem item = list.Items.Cast<SPListItem>()
+                .Where(i => i["colEmail"] != null)
+                .Where(i => i["colEmail"].ToString() == email)
+                .FirstOrDefault();
+
+            if (item != null) return item.ID;
+            //else
+            //{
+            //    item = list.Items.Cast<SPListItem>()
+            //    .Where(i => i["colKontoOperatora"] != null)
+            //    .Where(i => new SPFieldUserValue(web, i["colKontoOperatora"].ToString()).User.Email == email)
+            //    .FirstOrDefault();
+            //    if (item != null)
+            //        return item.ID;
+            //}
+
+            return 0;
+        }
     }
 }
