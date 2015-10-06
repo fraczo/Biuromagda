@@ -766,7 +766,7 @@ namespace EventReceivers.tabZadaniaER
                 }
 
                 temat = AddSygnatura(temat, item);
-                temat = AddCompanyName(temat, item);
+                temat = BLL.Tools.AddCompanyName(temat, item);
 
                 StringBuilder sb = new StringBuilder(trescHTML);
                 sb.Replace("___BODY___", notatka);
@@ -837,6 +837,7 @@ namespace EventReceivers.tabZadaniaER
                 temat = string.Format("{0} - informacja uzupełniająca", temat, item.ID.ToString());
 
                 temat = AddSygnatura(temat, item);
+                temat = BLL.Tools.AddCompanyName(temat, item);
 
                 StringBuilder sb = new StringBuilder(trescHTML);
                 sb.Replace("___BODY___", notatka);
@@ -953,9 +954,6 @@ namespace EventReceivers.tabZadaniaER
             return item[col] != null ? new SPFieldLookupValue(item[col].ToString()).LookupId : 0;
         }
 
-
-
-
         private bool hasPrzypomnienieOTerminiePlatnosci(SPListItem item)
         {
             string col = "colPrzypomnienieOTerminiePlatnos";
@@ -1059,8 +1057,11 @@ namespace EventReceivers.tabZadaniaER
             string tresc = string.Empty;
             string trescHTML = string.Empty;
 
-            //BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "DOK_TEMPLATE.Include", out temat, out trescHTML);
+            //weź szablon bez stopki
             BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "DOK_TEMPLATE.Include", out temat, out trescHTML, false);
+
+            //dodaj nazwę firmy w tytule wiadomości
+            temat = BLL.Tools.AddCompanyName(temat, item);
 
             string info = item["colInformacjaDlaKlienta"] != null ? item["colInformacjaDlaKlienta"].ToString() : string.Empty;
             trescHTML = trescHTML.Replace("___colInformacjaDlaKlienta___", info);
@@ -1134,6 +1135,7 @@ namespace EventReceivers.tabZadaniaER
 
                 //uzupełnia temat kodem klienta i okresu
                 temat = AddSpecyfikacja(item, temat);
+                temat = BLL.Tools.AddCompanyName(temat, item);
 
                 //uzupełnia dane w formatce BR_TEMPLATE
                 StringBuilder sb = new StringBuilder(trescHTML);
@@ -1211,6 +1213,8 @@ namespace EventReceivers.tabZadaniaER
                     {
                         //ustaw reminder
                         temat = Calc_ReminderSubject(item, "ZUS_REMINDER_TITLE", terminPlatnosci);
+                        temat = BLL.Tools.AddCompanyName(temat, item);
+
                         planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
                         nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
 
@@ -1302,6 +1306,7 @@ namespace EventReceivers.tabZadaniaER
 
                 //uzupełnia temat kodem klienta i okresu
                 temat = AddSpecyfikacja(item, temat);
+                temat = BLL.Tools.AddCompanyName(temat, item);
 
                 //uzupełnia dane w formatce PD_TEMPLATE
                 StringBuilder sb = new StringBuilder(trescHTML);
@@ -1374,6 +1379,8 @@ namespace EventReceivers.tabZadaniaER
                         {
                             //ustaw reminder
                             temat = Calc_ReminderSubject(item, "PD_REMINDER_TITLE", terminPlatnosci);
+                            temat = BLL.Tools.AddCompanyName(temat, item);
+
                             planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
                             nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
 
@@ -1485,6 +1492,7 @@ namespace EventReceivers.tabZadaniaER
 
                 //uzupełnia temat kodem klienta i okresu
                 temat = AddSpecyfikacja(item, temat);
+                temat = BLL.Tools.AddCompanyName(temat, item);
 
                 //uzupełnia dane w formatce VAT_TEMPLATE 
                 StringBuilder sb = new StringBuilder(trescHTML);
@@ -1543,6 +1551,8 @@ namespace EventReceivers.tabZadaniaER
                         {
                             //ustaw reminder
                             temat = Calc_ReminderSubject(item, "VAT_REMINDER_TITLE", terminPlatnosci);
+                            temat = BLL.Tools.AddCompanyName(temat, item);
+
                             planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
                             nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
 
@@ -1586,6 +1596,7 @@ namespace EventReceivers.tabZadaniaER
 
                 //uzupełnia temat kodem klienta i okresu
                 temat = AddSpecyfikacja(item, temat);
+                temat = BLL.Tools.AddCompanyName(temat, item);
 
                 //uzupełnia dane w formatce BR_TEMPLATE
                 StringBuilder sb = new StringBuilder(trescHTML);
@@ -1630,6 +1641,8 @@ namespace EventReceivers.tabZadaniaER
                     {
                         //ustaw reminder
                         temat = Calc_ReminderSubject(item, "RBR_REMINDER_TITLE", terminPlatnosci);
+                        temat = BLL.Tools.AddCompanyName(temat, item);
+
                         planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
                         nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
 
@@ -1984,22 +1997,7 @@ namespace EventReceivers.tabZadaniaER
             }
             return temat;
         }
-        private string AddCompanyName(string temat, SPListItem item)
-        {
-            if (item != null)
-            {
-                if (item.ContentType.Name == "KPiR" || item.ContentType.Name == "KSH")
-                {
-                    int klientId = Get_LookupId(item, "selKlient");
-                    if (klientId > 0)
-                    {
-                        BLL.Models.Klient k = new Klient(item.Web, klientId);
-                        return string.Format("{0} {1}", temat, k.PelnaNazwaFirmy);
-                    }
-                }
-            }
-            return temat;
-        }
+
         private void Update_StatusZadania(SPListItem item, StatusZadania statusZadania)
         {
             item["enumStatusZadania"] = statusZadania.ToString();

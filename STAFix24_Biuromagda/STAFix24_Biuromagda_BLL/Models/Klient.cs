@@ -88,6 +88,8 @@ namespace BLL.Models
                 this.UwagiKadrowe = item["colUwagiKadrowe"] != null ? item["colUwagiKadrowe"].ToString() : string.Empty;
                 this.Uwagi = item["colUwagi"] != null ? item["colUwagi"].ToString() : string.Empty;
 
+                this.ZatrudniaPracownikow = item["colZatrudniaPracownikow"] != null ? bool.Parse(item["colZatrudniaPracownikow"].ToString()) : false ;
+
 
                 if (item["selTerminPlatnosci"] != null)
                 {
@@ -188,5 +190,7 @@ namespace BLL.Models
         public object DataRozpoczeciaDzialalnosci { get; set; }
 
         public object FormaPrawna { get; set; }
+
+        public object ZatrudniaPracownikow { get; set; }
     }
 }

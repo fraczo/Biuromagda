@@ -361,6 +361,7 @@ namespace BLL
             item["selKlient"] = klientId;
             item["selOkres"] = okresId;
             item["KEY"] = key;
+            item["colZatrudniaPracownikow"] = iok.ZatrudniaPracownikow;
             
             //procedura
             string procName = string.Format(": {0}", ct);

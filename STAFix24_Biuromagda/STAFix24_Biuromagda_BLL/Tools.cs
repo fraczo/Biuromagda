@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.SharePoint;
+using BLL.Models;
 
 namespace BLL
 {
@@ -59,5 +60,42 @@ namespace BLL
             list.Update();
         }
 
+        public static string AddCompanyName(string temat, SPListItem item)
+        {
+            if (item != null)
+            {
+                if (item.ContentType.Name == "KPiR" || item.ContentType.Name == "KSH")
+                {
+                    int klientId = Get_LookupId(item, "selKlient");
+                    if (klientId > 0)
+                    {
+                        BLL.Models.Klient k = new Klient(item.Web, klientId);
+                        return string.Format("{0} {1}", temat, k.PelnaNazwaFirmy);
+                    }
+                }
+
+                if (item.ContentType.Name == "Prośba o dokumenty"
+                    || item.ContentType.Name == "Prośba o przesłanie wyciągu bankowego"
+                    || item.ContentType.Name == "Rozliczenie podatku dochodowego"
+                    || item.ContentType.Name == "Rozliczenie podatku dochodowego spółki"
+                    || item.ContentType.Name == "Rozliczenie podatku VAT"
+                    || item.ContentType.Name == "Rozliczenie z biurem rachunkowym"
+                    || item.ContentType.Name == "Rozliczenie ZUS")
+                {
+                    int klientId = Get_LookupId(item, "selKlient");
+                    if (klientId > 0)
+                    {
+                        BLL.Models.Klient k = new Klient(item.Web, klientId);
+                        return string.Format("{0} {1}", temat, k.PelnaNazwaFirmy);
+                    }
+                }
+            }
+            return temat;
+        }
+
+        private static int Get_LookupId(SPListItem item, string col)
+        {
+            return item[col] != null ? new SPFieldLookupValue(item[col].ToString()).LookupId : 0;
+        }
     }
 }
