@@ -65,13 +65,17 @@ namespace BLL
             else
             {
                 //użyj stopki biura
-                string name = BLL.admSetup.GetValue(item.Web, "NAZWA_BIURA");
-                string email = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
-                string tel = BLL.admSetup.GetValue(item.Web, "TELEFON_BIURA");
+                //string name = BLL.admSetup.GetValue(item.Web, "EMAIL_NAZWA_FIRMY");
+                //string email = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+                //string tel = BLL.admSetup.GetValue(item.Web, "TELEFON_BIURA");
 
-                footerTR = footerTR.Replace("___NAME___", name);
-                footerTR = footerTR.Replace("___CONTACT___", string.Format(@"email: {0}<br>tel.: {1}", email, tel));
+                //footerTR = footerTR.Replace("___NAME___", name);
+                //footerTR = footerTR.Replace("___CONTACT___", string.Format(@"email: {0}<br>tel.: {1}", email, tel));
+
+                //wyczyść stopkę
+                footerTR = string.Empty;
             }
+
             return footerTR;
         }
 

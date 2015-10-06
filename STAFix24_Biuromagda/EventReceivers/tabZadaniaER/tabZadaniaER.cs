@@ -749,7 +749,7 @@ namespace EventReceivers.tabZadaniaER
                 string temat = string.Empty;
                 string tresc = string.Empty;
                 string trescHTML = string.Empty;
-                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "EMAIL_DEFAULT_BODY", out temat, out trescHTML, nadawca);
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "EMAIL_DEFAULT_BODY.Include", out temat, out trescHTML, nadawca);
                 if (item["selProcedura"] != null)
                 {
                     temat = string.Format("{0} :{1}",
@@ -819,7 +819,7 @@ namespace EventReceivers.tabZadaniaER
                 string temat = string.Empty;
                 string tresc = string.Empty;
                 string trescHTML = string.Empty;
-                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "EMAIL_DEFAULT_BODY", out temat, out trescHTML, nadawca);
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "EMAIL_DEFAULT_BODY.Include", out temat, out trescHTML, nadawca);
                 //nadpisz temat wiadomości
                 if (item["selProcedura"] != null)
                 {
@@ -1164,11 +1164,17 @@ namespace EventReceivers.tabZadaniaER
                 //dodaj informację o z załącznikach w/g ustawionych flag
                 if (item["colZUS_PIT-4R_Zalaczony"] != null ? (bool)item["colZUS_PIT-4R_Zalaczony"] : false)
                 {
-                    info2 = info2 + string.Format(templateR, "PIT-4R");
+                    if (Get_Flag(item, "colDrukWplaty"))
+                    {
+                        info2 = info2 + string.Format(templateR, "Druk wpłaty PIT-4R"); 
+                    }
                 }
                 if (item["colZUS_PIT-8AR_Zalaczony"] != null ? (bool)item["colZUS_PIT-8AR_Zalaczony"] : false)
                 {
-                    info2 = info2 + string.Format(templateR, "PIT-8AR");
+                    if (Get_Flag(item, "colDrukWplaty"))
+                    {
+                        info2 = info2 + string.Format(templateR, "Druk wpłaty PIT-8AR"); 
+                    }
                 }
                 if (item["colZUS_ListaPlac_Zalaczona"] != null ? (bool)item["colZUS_ListaPlac_Zalaczona"] : false)
                 {
@@ -1180,7 +1186,7 @@ namespace EventReceivers.tabZadaniaER
                 }
                 if (item["colDrukWplaty"] != null ? (bool)item["colDrukWplaty"] : false)
                 {
-                    info2 = info2 + string.Format(templateR, "Druk(i) wpłaty");
+                    info2 = info2 + string.Format(templateR, "Druk(i) wpłaty ZUS");
                 }
 
                 if (!string.IsNullOrEmpty(info2))
