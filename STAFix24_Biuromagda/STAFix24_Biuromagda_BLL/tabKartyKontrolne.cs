@@ -38,6 +38,9 @@ namespace BLL
             //Copy_Field(item, form, "colPD_WartoscStraty");
             Copy_Field(item, form, "colPD_WartoscStraty", -1);
 
+            Copy_Field(item, "selOperator", form, "selOperator_PD");
+            Copy_Field(item, "colUwagi", form, "Uwagi_PD");
+
             Copy_Field(item, "colNieWysylajDoKlienta", form, "_NieWysylajDoKlienta_PD");
 
             Copy_Id(item, form, "_ZadanieID_PD");
@@ -62,9 +65,21 @@ namespace BLL
             Copy_Field(item, form, "colKosztyWS_ZUSPlatWlaczone");
             Copy_Field(item, form, "colKosztyWS_FakWlaczone");
             Copy_Field(item, form, "colPrzychodyNP");
+            Copy_Field(item, form, "colPrzychodyNP_DywidendySpO");
+            Copy_Field(item, form, "colPrzychodyNP_Inne");
             Copy_Field(item, form, "colPrzychodyZwolnione");
             Copy_Field(item, form, "colWplaconaSZ");
             Copy_Field(item, form, "colZyskStrataNetto");
+
+            Copy_Field(item, form, "colStrataDoOdliczenia");
+            Copy_Field(item, form, "colStronaWn");
+            Copy_Field(item, form, "colStronaMa");
+            Copy_Field(item, form, "colStronaWn-StronaMa");
+            Copy_Field(item, form, "colWplaconeZaliczkiOdPoczatkuRoku");
+            Copy_Field(item, form, "colIleDoDoplaty");
+
+            BLL.Models.Klient k = new Models.Klient(item.Web, Get_LookupId(item, "selKlient"));
+            form["enumFormaPrawna"] = k.FormaPrawna;
 
             form.SystemUpdate();
         }
@@ -85,6 +100,9 @@ namespace BLL
             Copy_Field(item, form, "colVAT_eDeklaracja");
             Copy_Field(item, form, "colVAT_VAT-UE_Zalaczony");
             Copy_Field(item, form, "colVAT_VAT-27_Zalaczony");
+
+            Copy_Field(item, "selOperator", form, "selOperator_VAT");
+            Copy_Field(item, "colUwagi", form, "Uwagi_VAT");
 
             Copy_Field(item, "colNieWysylajDoKlienta", form, "_NieWysylajDoKlienta_VAT");
 
@@ -112,6 +130,14 @@ namespace BLL
             Copy_Field(item, form, "colZUS_ListaPlac_Zalaczona");
             Copy_Field(item, form, "colZUS_Rachunki_Zalaczone");
 
+            Copy_Field(item, "selOperator", form, "selOperator_ZUS");
+            Copy_Field(item, "colUwagi", form, "Uwagi_ZUS");
+            Copy_Field(item, form, "colZUS_Rachunki_Zalaczone");
+            Copy_Field(item, form, "colUwagiKadrowe");
+
+            BLL.Models.Klient k = new Models.Klient(item.Web, Get_LookupId(item, "selKlient"));
+            form["colDataRozpoczeciaDzialalnosci"] = k.DataRozpoczeciaDzialalnosci;
+
             Copy_Field(item, "colNieWysylajDoKlienta", form, "_NieWysylajDoKlienta_ZUS");
 
             Copy_Id(item, form, "_ZadanieID_ZUS");
@@ -125,6 +151,7 @@ namespace BLL
             int formId = Get_KartaKontrolnaId(item, KEY);
 
             SPListItem form = Get_KartaKontrolnaById(item.Web, formId);
+            Copy_Field(item, form, "colBR_DataWystawieniaFaktury");
             Copy_Field(item, form, "colBR_NumerFaktury");
             Copy_Field(item, form, "colBR_WartoscDoZaplaty");
             Copy_Field(item, form, "colBR_TerminPlatnosci");

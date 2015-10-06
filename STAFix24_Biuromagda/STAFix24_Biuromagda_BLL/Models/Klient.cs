@@ -53,8 +53,12 @@ namespace BLL.Models
                 switch (ct)
                 {
                     case "KPiR":
+                        this.FormaPrawna = item["enumFormaPrawna_KPiR"] != null ? item["enumFormaPrawna_KPiR"].ToString() : string.Empty;
+                        this.PelnaNazwaFirmy = item.Title;
+                        break;
                     case "KSH":
                         this.PelnaNazwaFirmy = item.Title;
+                        this.FormaPrawna = item["enumFormaPrawna"] != null ? item["enumFormaPrawna"].ToString() : string.Empty;
                         break;
                     case "Osoba fizyczna":
 
@@ -99,6 +103,9 @@ namespace BLL.Models
                 this.OperatorId_Audyt = item["selDedykowanyOperator_Audyt"] != null ? new SPFieldLookupValue(item["selDedykowanyOperator_Audyt"].ToString()).LookupId : 0;
                 this.OperatorId_Podatki = item["selDedykowanyOperator_Podatki"] != null ? new SPFieldLookupValue(item["selDedykowanyOperator_Podatki"].ToString()).LookupId : 0;
                 this.OperatorId_Kadry = item["selDedykowanyOperator_Kadry"] != null ? new SPFieldLookupValue(item["selDedykowanyOperator_Kadry"].ToString()).LookupId : 0;
+
+                //Daty
+                this.DataRozpoczeciaDzialalnosci = item["colDataRozpoczeciaDzialalnosci"] != null ? item["colDataRozpoczeciaDzialalnosci"] : new DateTime();
 
                 try
                 {
@@ -177,5 +184,9 @@ namespace BLL.Models
         public string TypKlienta { get; set; }
 
         public object Uwagi { get; set; }
+
+        public object DataRozpoczeciaDzialalnosci { get; set; }
+
+        public object FormaPrawna { get; set; }
     }
 }
