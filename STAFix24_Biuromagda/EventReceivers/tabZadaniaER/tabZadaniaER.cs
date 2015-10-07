@@ -1135,7 +1135,6 @@ namespace EventReceivers.tabZadaniaER
 
                 //uzupełnia temat kodem klienta i okresu
                 temat = AddSpecyfikacja(item, temat);
-                temat = BLL.Tools.AddCompanyName(temat, item);
 
                 //uzupełnia dane w formatce BR_TEMPLATE
                 StringBuilder sb = new StringBuilder(trescHTML);
@@ -1312,7 +1311,7 @@ namespace EventReceivers.tabZadaniaER
 
                 //uzupełnia temat kodem klienta i okresu
                 temat = AddSpecyfikacja(item, temat);
-                temat = BLL.Tools.AddCompanyName(temat, item);
+                
 
                 //uzupełnia dane w formatce PD_TEMPLATE
                 StringBuilder sb = new StringBuilder(trescHTML);
@@ -1498,7 +1497,6 @@ namespace EventReceivers.tabZadaniaER
 
                 //uzupełnia temat kodem klienta i okresu
                 temat = AddSpecyfikacja(item, temat);
-                temat = BLL.Tools.AddCompanyName(temat, item);
 
                 //uzupełnia dane w formatce VAT_TEMPLATE 
                 StringBuilder sb = new StringBuilder(trescHTML);
@@ -1602,7 +1600,6 @@ namespace EventReceivers.tabZadaniaER
 
                 //uzupełnia temat kodem klienta i okresu
                 temat = AddSpecyfikacja(item, temat);
-                temat = BLL.Tools.AddCompanyName(temat, item);
 
                 //uzupełnia dane w formatce BR_TEMPLATE
                 StringBuilder sb = new StringBuilder(trescHTML);
