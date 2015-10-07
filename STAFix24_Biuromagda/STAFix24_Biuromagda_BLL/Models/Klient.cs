@@ -114,7 +114,11 @@ namespace BLL.Models
                     int urzadId = item["selUrzadSkarbowy"] != null ? new SPFieldLookupValue(item["selUrzadSkarbowy"].ToString()).LookupId : 0;
                     if (urzadId > 0)
                     {
-                        NumerRachunkuPD = tabUrzedySkarbowe.Get_NumerRachunkuPITById(web, urzadId);
+                        if (this.FormaOpodatkowaniaPD=="CIT")
+                            NumerRachunkuPD = tabUrzedySkarbowe.Get_NumerRachunkuCITById(web, urzadId);
+                        else
+                            NumerRachunkuPD = tabUrzedySkarbowe.Get_NumerRachunkuPITById(web, urzadId);
+
                         NazwaUrzeduSkarbowego = tabUrzedySkarbowe.Get_NazwaUrzeduById(web, urzadId);
                         UrzadSkarbowyId = urzadId;
                     }

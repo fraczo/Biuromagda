@@ -459,7 +459,46 @@ namespace EventReceivers.tabZadaniaER
                 BLL.Models.UrzadSkarbowy us = new BLL.Models.UrzadSkarbowy(web, urzadId);
                 string odbiorca = us.Get_NazwaOdbiorcyPrzelewu();
 
-                string numerDeklaracji = okres.Substring(2, 2) + "M" + okres.Substring(5, 2); // TODO:skorygować typ deklaracji
+                //jeżeli rozliczenie kwartalne
+
+                string numerDeklaracji = string.Empty;
+
+                string rozliczenie = item["enumRozliczeniePD"] != null ? item["enumRozliczeniePD"].ToString() : string.Empty;
+                if (rozliczenie == "Kwartalnie")
+                {
+                    numerDeklaracji = okres.Substring(2, 2) + "K";
+
+                    string m = okres.Substring(5, 2); //oznaczenie miesiąca
+                    switch (m)
+                    {
+                        case "01":
+                        case "02":
+                        case "03":
+                            numerDeklaracji = numerDeklaracji + "01";
+                            break;
+                        case "04":
+                        case "05":
+                        case "06":
+                            numerDeklaracji = numerDeklaracji + "02";
+                            break;
+                        case "07":
+                        case "08":
+                        case "09":
+                            numerDeklaracji = numerDeklaracji + "03";
+                            break;
+                        case "10":
+                        case "11":
+                        case "12":
+                            numerDeklaracji = numerDeklaracji + "04";
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else
+                {
+                    numerDeklaracji = okres.Substring(2, 2) + "M" + okres.Substring(5, 2); 
+                }
 
                 BLL.Models.Klient iok = new BLL.Models.Klient(web, klientId);
 
@@ -1094,7 +1133,7 @@ namespace EventReceivers.tabZadaniaER
                 string tresc = string.Empty;
                 string trescHTML = string.Empty;
 
-                //BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_TEMPLATE.Include", out temat, out trescHTML);
+                //wybór szablonu wiadomości
 
                 string zusOpcja = Get_String(item, "colZUS_Opcja");
 
@@ -1123,6 +1162,18 @@ namespace EventReceivers.tabZadaniaER
                                 BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_TEMPLATE.Include", out temat, out trescHTML);
                                 break;
                         }
+                    }
+                }
+                else
+                {
+                    switch (zusOpcja)
+                    {
+                        case "Tylko zdrowotna":
+                            BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_Z_TEMPLATE.Include", out temat, out trescHTML);
+                            break;
+                        default:
+                            BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_TEMPLATE.Include", out temat, out trescHTML);
+                            break;
                     }
                 }
 
@@ -1165,14 +1216,14 @@ namespace EventReceivers.tabZadaniaER
                 {
                     if (Get_Flag(item, "colDrukWplaty"))
                     {
-                        info2 = info2 + string.Format(templateR, "Druk wpłaty PIT-4R"); 
+                        info2 = info2 + string.Format(templateR, "Druk wpłaty PIT-4R");
                     }
                 }
                 if (item["colZUS_PIT-8AR_Zalaczony"] != null ? (bool)item["colZUS_PIT-8AR_Zalaczony"] : false)
                 {
                     if (Get_Flag(item, "colDrukWplaty"))
                     {
-                        info2 = info2 + string.Format(templateR, "Druk wpłaty PIT-8AR"); 
+                        info2 = info2 + string.Format(templateR, "Druk wpłaty PIT-8AR");
                     }
                 }
                 if (item["colZUS_ListaPlac_Zalaczona"] != null ? (bool)item["colZUS_ListaPlac_Zalaczona"] : false)
@@ -1217,8 +1268,44 @@ namespace EventReceivers.tabZadaniaER
                         || GetValue(item, "colZUS_FP_Skladka") > 0)
                     {
                         //ustaw reminder
-                        temat = Calc_ReminderSubject(item, "ZUS_REMINDER_TITLE", terminPlatnosci);
+
+                        switch (zusOpcja)
+                        {
+                            case "Tylko zdrowotna":
+                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_Z_REMINDER_TEMPLATE.Include", out temat, out trescHTML);
+                                break;
+                            default:
+                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_REMINDER_TEMPLATE.Include", out temat, out trescHTML);
+                                break;
+                        }
+                            
+
+                        temat = Update_Data(temat, terminPlatnosci);
                         temat = BLL.Tools.AddCompanyName(temat, item);
+
+                        //leading reminder text
+                        string lrt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_LEADING_REMINDER_TEXT", false);
+                        lrt = lrt.Replace("___FIRMA___", firma);
+                        lrt = lrt.Replace("___OKRES___", okres);
+                        trescHTML = trescHTML.Replace("___ZUS_LEADING_REMINDER_TEXT___", lrt);
+
+                        //trailing reminder text
+                        string trt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_TRAILING_REMINDER_TEXT", false);
+                        trt = trt.Replace("___DATA___", DateTime.Now.ToShortDateString()); //zakłada że wysyłka oryginalnej wiadomości wyjdzie w dniu zlecenia
+                        trescHTML = trescHTML.Replace("___ZUS_TRAILING_REMINDER_TEXT___", trt);
+
+                        //aktualizacja danych z tabelki
+                        sb = new StringBuilder(trescHTML);
+                        sb.Replace("___colZUS_SP_Skladka___", Format_Currency(item, "colZUS_SP_Skladka"));
+                        sb.Replace("___colZUS_SP_Konto___", item["colZUS_SP_Konto"] != null ? item["colZUS_SP_Konto"].ToString() : string.Empty);
+                        sb.Replace("___colZUS_TerminPlatnosciSkladek___", Format_Date(item, "colZUS_TerminPlatnosciSkladek"));
+                        sb.Replace("___colZUS_ZD_Skladka___", Format_Currency(item, "colZUS_ZD_Skladka"));
+                        sb.Replace("___colZUS_ZD_Konto___", item["colZUS_ZD_Konto"] != null ? item["colZUS_ZD_Konto"].ToString() : string.Empty);
+                        sb.Replace("___colZUS_FP_Skladka___", Format_Currency(item, "colZUS_FP_Skladka"));
+                        sb.Replace("___colZUS_FP_Konto___", item["colZUS_FP_Konto"] != null ? item["colZUS_FP_Konto"].ToString() : string.Empty);
+
+                        trescHTML = sb.ToString();
+                        
 
                         planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
                         nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
@@ -1234,7 +1321,32 @@ namespace EventReceivers.tabZadaniaER
                         || GetValue(item, "colZUS_PIT-8AR") > 0)
                     {
                         //ustaw reminder
-                        temat = Calc_ReminderSubject(item, "ZUS_PIT_REMINDER_TITLE", terminPlatnosci);
+
+                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_PIT_REMINDER_TEMPLATE.Include", out temat, out trescHTML);
+
+                        temat = Update_Data(temat, terminPlatnosci);
+                        temat = BLL.Tools.AddCompanyName(temat, item);
+
+                        //leading reminder text
+                        string lrt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_PIT_LEADING_REMINDER_TEXT", false);
+                        lrt = lrt.Replace("___FIRMA___", firma);
+                        lrt = lrt.Replace("___OKRES___", okres);
+                        trescHTML = trescHTML.Replace("___ZUS_PIT_LEADING_REMINDER_TEXT___", lrt);
+
+                        //trailing reminder text
+                        string trt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_PIT_TRAILING_REMINDER_TEXT", false);
+                        trt = trt.Replace("___DATA___", DateTime.Now.ToShortDateString()); //zakłada że wysyłka oryginalnej wiadomości wyjdzie w dniu zlecenia
+                        trescHTML = trescHTML.Replace("___ZUS_PIT_TRAILING_REMINDER_TEXT___", trt);
+
+                        //aktualizacja danych z tabelki
+                        sb = new StringBuilder(trescHTML);
+                        sb.Replace("___colPIT_Konto___", k.NumerRachunkuPD);
+                        sb.Replace("___colZUS_PIT-4R___", Format_Currency(item, "colZUS_PIT-4R"));
+                        sb.Replace("___colZUS_PIT-8AR___", Format_Currency(item, "colZUS_PIT-8AR"));
+                        sb.Replace("___colZUS_TerminPlatnosciPodatku___", terminPlatnosciPodatku.ToShortDateString());
+                        
+                        trescHTML = sb.ToString();
+
                         planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
                         nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
 
@@ -1311,7 +1423,7 @@ namespace EventReceivers.tabZadaniaER
 
                 //uzupełnia temat kodem klienta i okresu
                 temat = AddSpecyfikacja(item, temat);
-                
+
 
                 //uzupełnia dane w formatce PD_TEMPLATE
                 StringBuilder sb = new StringBuilder(trescHTML);
@@ -1383,8 +1495,29 @@ namespace EventReceivers.tabZadaniaER
                         if (GetValue(item, "colPD_WartoscDoZaplaty") > 0)
                         {
                             //ustaw reminder
-                            temat = Calc_ReminderSubject(item, "PD_REMINDER_TITLE", terminPlatnosci);
+                            BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_DOCHOD_REMINDER_TEMPLATE.Include", out temat, out trescHTML);
+                            temat = Update_Data(temat, terminPlatnosci);
                             temat = BLL.Tools.AddCompanyName(temat, item);
+
+                            //leading reminder text
+                            string lrt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_LEADING_REMINDER_TEXT", false);
+                            lrt = lrt.Replace("___FIRMA___", firma);
+                            lrt = lrt.Replace("___OKRES___", okres);
+                            trescHTML = trescHTML.Replace("___PD_LEADING_REMINDER_TEXT___", lrt);
+
+                            //trailing reminder text
+                            string trt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_TRAILING_REMINDER_TEXT", false);
+                            trt = trt.Replace("___DATA___", DateTime.Now.ToShortDateString()); //zakłada że wysyłka oryginalnej wiadomości wyjdzie w dniu zlecenia
+                            trescHTML = trescHTML.Replace("___PD_TRAILING_REMINDER_TEXT___", trt);
+
+                            //aktualizacja danych z tabelki
+                            sb = new StringBuilder(trescHTML);
+                            sb.Replace("___colFormaOpodatkowaniaPD___", Get_String(item, "colFormaOpodatkowaniaPD"));
+                            sb.Replace("___colPD_WartoscDoZaplaty___", Format_Currency(item, "colPD_WartoscDoZaplaty"));
+                            sb.Replace("___colPD_Konto___", Get_String(item, "colPD_Konto"));
+                            sb.Replace("___colPD_TerminPlatnosciPodatku___", Format_Date(item, "colPD_TerminPlatnosciPodatku"));
+
+                            trescHTML = sb.ToString();
 
                             planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
                             nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
@@ -1396,6 +1529,11 @@ namespace EventReceivers.tabZadaniaER
 
             }
 
+        }
+
+        private string Update_Data(string temat, DateTime terminPlatnosci)
+        {
+            return temat.Replace("___DATA___", terminPlatnosci.ToShortDateString());
         }
 
         /// <summary>
@@ -1554,8 +1692,29 @@ namespace EventReceivers.tabZadaniaER
                         if (GetValue(item, "colVAT_WartoscDoZaplaty") > 0)
                         {
                             //ustaw reminder
-                            temat = Calc_ReminderSubject(item, "VAT_REMINDER_TITLE", terminPlatnosci);
+                            BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_DO_ZAPLATY_REMINDER_TEMPLATE.Include", out temat, out trescHTML);
+                            temat = Update_Data(temat, terminPlatnosci);
                             temat = BLL.Tools.AddCompanyName(temat, item);
+
+                            //leading reminder text
+                            string lrt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_LEADING_REMINDER_TEXT", false);
+                            lrt = lrt.Replace("___FIRMA___", firma);
+                            lrt = lrt.Replace("___OKRES___", okres);
+                            trescHTML = trescHTML.Replace("___VAT_LEADING_REMINDER_TEXT___", lrt);
+
+                            //trailing reminder text
+                            string trt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_TRAILING_REMINDER_TEXT", false);
+                            trt = trt.Replace("___DATA___", DateTime.Now.ToShortDateString()); //zakłada że wysyłka oryginalnej wiadomości wyjdzie w dniu zlecenia
+                            trescHTML = trescHTML.Replace("___VAT_TRAILING_REMINDER_TEXT___", trt);
+
+                            //aktualizacja danych z tabelki
+                            sb = new StringBuilder(trescHTML);
+                            sb.Replace("___colFormaOpodatkowaniaVAT___", item["colFormaOpodatkowaniaVAT"] != null ? item["colFormaOpodatkowaniaVAT"].ToString() : string.Empty);
+                            sb.Replace("___colVAT_WartoscDoZaplaty___", Format_Currency(item, "colVAT_WartoscDoZaplaty"));
+                            sb.Replace("___colVAT_Konto___", item["colVAT_Konto"] != null ? item["colVAT_Konto"].ToString() : string.Empty);
+                            sb.Replace("___colVAT_TerminPlatnosciPodatku___", item["colVAT_TerminPlatnosciPodatku"] != null ? DateTime.Parse(item["colVAT_TerminPlatnosciPodatku"].ToString()).ToShortDateString() : string.Empty);
+
+                            trescHTML = sb.ToString();
 
                             planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
                             nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
@@ -1604,9 +1763,10 @@ namespace EventReceivers.tabZadaniaER
                 //uzupełnia dane w formatce BR_TEMPLATE
                 StringBuilder sb = new StringBuilder(trescHTML);
                 sb.Replace("___colBR_NumerFaktury___", item["colBR_NumerFaktury"] != null ? item["colBR_NumerFaktury"].ToString() : string.Empty);
+                sb.Replace("___colBR_DataWystawienia___", Format_Date(item, "colBR_DataWystawieniaFaktury"));
                 sb.Replace("___colBR_WartoscDoZaplaty___", item["colBR_WartoscDoZaplaty"] != null ? item["colBR_WartoscDoZaplaty"].ToString() : string.Empty);
                 sb.Replace("___colBR_Konto___", item["colBR_Konto"] != null ? item["colBR_Konto"].ToString() : string.Empty);
-                sb.Replace("___colBR_TerminPlatnosci___", item["colBR_TerminPlatnosci"] != null ? DateTime.Parse(item["colBR_TerminPlatnosci"].ToString()).ToShortDateString() : string.Empty);
+                sb.Replace("___colBR_TerminPlatnosci___", Format_Date(item, "colBR_TerminPlatnosci"));
 
                 string info2 = string.Empty;
                 string info = item["colInformacjaDlaKlienta"] != null ? item["colInformacjaDlaKlienta"].ToString() : string.Empty;
@@ -1643,8 +1803,30 @@ namespace EventReceivers.tabZadaniaER
                     if (GetValue(item, "colBR_WartoscDoZaplaty") > 0)
                     {
                         //ustaw reminder
-                        temat = Calc_ReminderSubject(item, "RBR_REMINDER_TITLE", terminPlatnosci);
+                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "RBR_REMINDER_TEMPLATE.Include", out temat, out trescHTML);
+                        temat = Update_Data(temat, terminPlatnosci);
                         temat = BLL.Tools.AddCompanyName(temat, item);
+
+                        //leading reminder text
+                        string lrt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "RBR_LEADING_REMINDER_TEXT", false);
+                        lrt = lrt.Replace("___FIRMA___", firma);
+                        lrt = lrt.Replace("___OKRES___", okres);
+                        trescHTML = trescHTML.Replace("___RBR_LEADING_REMINDER_TEXT___", lrt);
+
+                        //trailing reminder text
+                        string trt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "RBR_TRAILING_REMINDER_TEXT", false);
+                        trt = trt.Replace("___DATA___", DateTime.Now.ToShortDateString()); //zakłada że wysyłka oryginalnej wiadomości wyjdzie w dniu zlecenia
+                        trescHTML = trescHTML.Replace("___RBR_TRAILING_REMINDER_TEXT___", trt);
+
+                        //aktualizacja danych z tabelki
+                        sb = new StringBuilder(trescHTML);
+                        sb.Replace("___colBR_NumerFaktury___", item["colBR_NumerFaktury"] != null ? item["colBR_NumerFaktury"].ToString() : string.Empty);
+                        sb.Replace("___colBR_DataWystawienia___", Format_Date(item, "colBR_DataWystawieniaFaktury"));
+                        sb.Replace("___colBR_WartoscDoZaplaty___", item["colBR_WartoscDoZaplaty"] != null ? item["colBR_WartoscDoZaplaty"].ToString() : string.Empty);
+                        sb.Replace("___colBR_Konto___", item["colBR_Konto"] != null ? item["colBR_Konto"].ToString() : string.Empty);
+                        sb.Replace("___colBR_TerminPlatnosci___", Format_Date(item, "colBR_TerminPlatnosci"));
+
+                        trescHTML = sb.ToString();
 
                         planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
                         nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");

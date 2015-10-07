@@ -236,7 +236,7 @@ namespace BLL
 
             //numery kont i nazwa urzędu
 
-            item["colPD_Konto"] = iok.NumerRachunkuPD;
+            item["colPD_Konto"] = iok.NumerRachunkuPD;  
             item["selUrzadSkarbowy"] = iok.UrzadSkarbowyId;
 
             //terminy
@@ -250,7 +250,7 @@ namespace BLL
             item["colPrzypomnienieOTerminiePlatnos"] = fl.PrzypomnienieOTerminiePlatnosci;
             item["colDrukWplaty"] = fl.GenerowanieDrukuWplaty;
             item["colAudytDanych"] = fl.AudytDanych;
-
+            
             //rozliczenie
             if (isKwartalnie)
             {
@@ -562,20 +562,18 @@ namespace BLL
             return result;
         }
 
-        public static void Update_InformacjeOWystawionejFakturze(SPWeb web, int zadanieId, string numerFaktury, double wartoscDoZaplaty, DateTime terminPlatnosci)
+        public static void Update_InformacjeOWystawionejFakturze(SPWeb web, int zadanieId, string numerFaktury, double wartoscDoZaplaty, DateTime terminPlatnosci, DateTime dataWystawienia)
         {
             SPList list = web.Lists.TryGetList(targetList);
-            //if (list != null)
-            //{
             SPListItem item = list.GetItemById(zadanieId);
             if (item != null)
             {
                 item["colBR_NumerFaktury"] = numerFaktury;
                 item["colBR_WartoscDoZaplaty"] = wartoscDoZaplaty;
                 item["colBR_TerminPlatnosci"] = terminPlatnosci;
+                item["colBR_DataWystawieniaFaktury"] = dataWystawienia;
                 item.SystemUpdate();
             }
-            //}
         }
 
 

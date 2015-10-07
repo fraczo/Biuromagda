@@ -65,7 +65,7 @@ namespace admProcessRequests_EventReceiver
 
 
 
-                    tabZadania.Update_InformacjeOWystawionejFakturze(web, zadanieId, numerFaktury, wartoscDoZaplaty, terminPlatnosci);
+                    tabZadania.Update_InformacjeOWystawionejFakturze(web, zadanieId, numerFaktury, wartoscDoZaplaty, terminPlatnosci, dataWystawienia);
 
                     item.SystemUpdate();
                 }
