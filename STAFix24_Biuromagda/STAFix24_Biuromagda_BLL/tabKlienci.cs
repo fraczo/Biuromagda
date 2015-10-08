@@ -158,10 +158,10 @@ namespace BLL
         public static int Get_KlientId_BestFit(SPWeb web, string dluznik)
         {
             SPList list = web.Lists.TryGetList(listName);
-            //if (list!=null)
-            //{
+
             //szukaj w/g pełnych nazw
             SPListItem item = list.Items.Cast<SPListItem>()
+                .Where(i => i.ContentType.Name == "KPiR" || i.ContentType.Name == "KSH")
                 .Where(i => i["colNazwaSkrocona"].ToString().Trim().ToUpper() == dluznik.Trim().ToUpper())
                 .FirstOrDefault();
 
@@ -171,6 +171,7 @@ namespace BLL
             }
 
             item = list.Items.Cast<SPListItem>()
+                .Where(i => i.ContentType.Name == "KPiR" || i.ContentType.Name == "KSH")
                 .Where(i => i["colNazwaSkrocona"].ToString().Trim().ToUpper() + "  " + i["colMiejscowosc"].ToString().Trim().ToUpper() == dluznik.Trim().ToUpper())
                 .FirstOrDefault();
 
@@ -178,7 +179,6 @@ namespace BLL
             {
                 return item.ID;
             }
-            //}
 
             return 0;
         }
@@ -666,6 +666,12 @@ namespace BLL
             BLL.Models.Klient k = new Models.Klient(web, klientId);
             return k.PelnaNazwaFirmy;
 
+        }
+
+        public static string Get_PelnyAdresFirmyById(SPWeb web, int klientId)
+        {
+            BLL.Models.Klient k = new Models.Klient(web, klientId);
+            return string.Format("{0}, {1} {2}", k.Adres, k.KodPocztowy, k.Miejscowosc);
         }
     }
 }

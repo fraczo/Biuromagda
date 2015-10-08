@@ -125,5 +125,16 @@ namespace BLL
 
 
 
+
+        public static string Get_TemplateByKod(SPWeb web, string kod, bool hasFooter)
+        {
+            string temp;
+            string trescHTML = string.Empty;
+            SPList list = web.Lists.TryGetList(targetList);
+            SPListItem item = list.AddItem(); //tylko fikcyjnie tworzy rekod żeby mieć referencję ale go nie zapisuje
+            Get_TemplateByKod(item, kod, out temp, out trescHTML);
+
+            return trescHTML;
+        }
     }
 }

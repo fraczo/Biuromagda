@@ -117,5 +117,16 @@ namespace BLL
 
             return 0;
         }
+
+        public static string EmailByUserId(SPWeb web, int userId)
+        {
+            SPList list = web.Lists.TryGetList(targetList);
+            SPListItem item = list.Items.Cast<SPListItem>()
+                .Where(i => i["colKontoOperatora"] != null)
+                .Where(i => new SPFieldUserValue(web, i["colKontoOperatora"].ToString()).User.ID == userId)
+                .FirstOrDefault();
+            if (item != null) return item["colEmail"]!=null?item["colEmail"].ToString():string.Empty;
+            else return string.Empty;
+        }
     }
 }

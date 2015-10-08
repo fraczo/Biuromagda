@@ -8,25 +8,20 @@ namespace BLL
 {
     public class intBuforWiadomosci
     {
-        const string targetList = "intBuforWiadomosci";
+        const string targetList = "Bufor wiadomości";
 
         public static int AddNewItem(SPWeb web, int klientId, string komunikat, int szablonId)
         {
             SPList list = web.Lists.TryGetList(targetList);
-            if (list!=null)
-            {
-                SPListItem item = list.AddItem();
+            SPListItem item = list.AddItem();
 
-                item["selKlient_NazwaSkrocona"] = klientId;
-                item["strKomunikat"] = komunikat;
-                item["selSzablonWiadomosci"] = szablonId;
+            item["selKlient_NazwaSkrocona"] = klientId;
+            item["strKomunikat"] = komunikat;
+            item["selSzablonWiadomosci"] = szablonId;
 
-                item.SystemUpdate();
+            item.SystemUpdate();
 
-                return item.ID;
-            }
-
-            return 0;
+            return item.ID;
         }
 
 
