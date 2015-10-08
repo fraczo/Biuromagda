@@ -59,7 +59,6 @@ namespace admProcessRequests_EventReceiver
                     foreach (SPListItem item in items)
                     {
                         item["selKlient"] = klientId;
-                        item["selWiadomoscWBuforze"] = 0;
                         item.SystemUpdate();
 
 
@@ -76,10 +75,9 @@ namespace admProcessRequests_EventReceiver
                         double value2 = Double.Parse(item["colKwotaDlugu"].ToString());
                         value2total = value2total + value2;
 
-                        sbRow.Replace("___colKwotaFaktury___", value1.ToString());
-                        sbRow.Replace("___colKwotaDlugu___", value2.ToString());
-                        //sbRow.Replace("___DniZwloki___", dniZwloki.ToString());
-                        //sbRow.Replace("___colDniZwloki___", string.Empty);
+                        sbRow.Replace("___colKwotaFaktury___", BLL.Tools.Format_Currency(value1));
+                        sbRow.Replace("___colZaplacono___", BLL.Tools.Format_Currency(value1 - value2));
+                        sbRow.Replace("___colKwotaDlugu___", BLL.Tools.Format_Currency(value2));
 
                         sb.Append(sbRow);
 
@@ -93,10 +91,10 @@ namespace admProcessRequests_EventReceiver
                     dicSzablonyKomunikacji.Get_TemplateByKod(web, "OVERDUE_PAYMENTS_TEMPLATE.Include", out temat, out trescHTML, false);
                     StringBuilder sb0 = new StringBuilder(trescHTML);
                     sb0.Replace("___TABLE_ROW___", sb.ToString());
-                    sb0.Replace("___colKwotaFakturyRazem___", value1total.ToString());
-                    sb0.Replace("___colKwotaDluguRazem___", value2total.ToString());
+                    sb0.Replace("___colKwotaFakturyRazem___", BLL.Tools.Format_Currency(value1total));
+                    sb0.Replace("___colKwotaDluguRazem___", BLL.Tools.Format_Currency(value2total));
 
-                    
+
                     StringBuilder lt = new StringBuilder(dicSzablonyKomunikacji.Get_TemplateByKod(web, "OVERDUE_PAYMENTS_LEADING_TEXT", false));
                     lt.Replace("___FIRMA___", BLL.tabKlienci.Get_NazwaFirmyById(web, klientId));
                     lt.Replace("___ADRES___", BLL.tabKlienci.Get_PelnyAdresFirmyById(web, klientId));
@@ -105,7 +103,7 @@ namespace admProcessRequests_EventReceiver
 
                     StringBuilder tt = new StringBuilder(dicSzablonyKomunikacji.Get_TemplateByKod(web, "OVERDUE_PAYMENTS_TRAILING_TEXT", false));
                     tt.Replace("___DATA___", DateTime.Now.ToShortDateString());
-                    tt.Replace("___KwotaDoZaplaty___", value2total.ToString());
+                    tt.Replace("___KwotaDoZaplaty___", BLL.Tools.Format_Currency(value2total));
                     sb0.Replace("___OVERDUE_PAYMENTS_TRAILING_TEXT___", tt.ToString());
 
 
@@ -116,25 +114,27 @@ namespace admProcessRequests_EventReceiver
                         string nadawca = BLL.admSetup.GetValue(web, "EMAIL_BIURA");
                         string odbiorca = BLL.tabKlienci.Get_EmailById(web, klientId);
                         string kopiaDla = BLL.dicOperatorzy.EmailByUserId(web, properties.CurrentUserId);
-                        temat = temat;
+
+                        //dodanie nazwy firmy do tematu
+                        temat = BLL.Tools.AddCompanyName(web, temat, klientId);
+
                         trescHTML = sb0.ToString();
+
                         BLL.tabWiadomosci.AddNew(web, nadawca, odbiorca, kopiaDla, false, true, temat, string.Empty, trescHTML, new DateTime(), 0, klientId);
 
                         foreach (SPListItem item in items)
                         {
-                            //item.Delete();
-                        }
-                    }
-                    else //Weryfikcja
-                    {
-                        int messageId = BLL.intBuforWiadomosci.AddNewItem(web, klientId, sb0.ToString(), BLL.tabSzablonyWiadomosci.GetSzablonId(web, "Informacja o zadłużeniu"));
+#if DEBUG
+                            // w trybie debugowania przetworzony rekord nie jest usówany z tablicy źródłowej
+#else
+                            item.Delete();
+#endif
 
-                        foreach (SPListItem item in items)
-                        {
-                            item["selWiadomoscWBuforze"] = messageId;
-                            item.SystemUpdate();
                         }
                     }
+
+                    // jeżeli mode "Weryfikacja" to jedynie mamy przypisanie kodu klient do rekordu i dzięki temu wiemy czy rekord został rozpoznany czy nie
+
                 }
             }
 

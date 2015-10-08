@@ -492,8 +492,6 @@ namespace BLL
             int result = 0;
 
             SPList list = web.Lists.TryGetList(targetList);
-            //if (list!=null)
-            //{
             SPListItem item = list.Items.Cast<SPListItem>()
                 .Where(i => i["ContentType"].ToString() == @"Rozliczenie z biurem rachunkowym")
                 .Where(i => new SPFieldLookupValue(i["selKlient"].ToString()).LookupId == klientId)
@@ -504,7 +502,6 @@ namespace BLL
             {
                 result = item.ID;
             }
-            //}
 
             return result;
         }
@@ -746,6 +743,25 @@ namespace BLL
                 .Where(i => i["selProcedura"] != null)
                 .Where(i => new SPFieldLookupValue(i["selProcedura"].ToString()).LookupId == proceduraId)
                 .ToArray();
+
+            return result;
+        }
+
+        public static int Get_NumerZadaniaVAT(SPWeb web, int klientId, int okresId)
+        {
+            int result = 0;
+
+            SPList list = web.Lists.TryGetList(targetList);
+            SPListItem item = list.Items.Cast<SPListItem>()
+                .Where(i => i.ContentType.Name == @"Rozliczenie podatku VAT")
+                .Where(i => new SPFieldLookupValue(i["selKlient"].ToString()).LookupId == klientId)
+                .Where(i => new SPFieldLookupValue(i["selOkres"].ToString()).LookupId == okresId)
+                .SingleOrDefault();
+
+            if (item != null)
+            {
+                result = item.ID;
+            }
 
             return result;
         }

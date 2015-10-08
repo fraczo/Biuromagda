@@ -1062,6 +1062,10 @@ namespace EventReceivers.tabZadaniaER
                 BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "WBANK_TEMPLATE.Include", out temat, out trescHTML, false);
 
                 string info = item["colInformacjaDlaKlienta"] != null ? item["colInformacjaDlaKlienta"].ToString() : string.Empty;
+                int okresId = Get_LookupId(item, "selOkres");
+                string poprzedniMiesiac = BLL.tabOkresy.Get_PoprzedniMiesiacSlownieById(item.Web, okresId);
+                if (poprzedniMiesiac!=null) poprzedniMiesiac = string.Format(@"({0})", poprzedniMiesiac);
+                trescHTML = trescHTML.Replace("___PoprzedniMiesiac___", poprzedniMiesiac );
                 trescHTML = trescHTML.Replace("___colInformacjaDlaKlienta___", info);
 
                 DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
@@ -1420,6 +1424,16 @@ namespace EventReceivers.tabZadaniaER
                 lt = lt.Replace("___OKRES___", okres);
                 trescHTML = trescHTML.Replace("___PD_LEADING_TEXT___", lt);
 
+                //VAT alert
+                string va = string.Empty;
+                int okresId = Get_LookupId(item, "selOkres");
+                int vatZadanieId = BLL.tabZadania.Get_NumerZadaniaVAT(item.Web, klientId, okresId);
+                if (vatZadanieId > 0)
+                {
+                    va = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_VAT_ALERT_TEXT", false);
+                }
+                trescHTML = trescHTML.Replace("___PD_VAT_ALERT_TEXT___", va);
+
 
                 //uzupełnia temat kodem klienta i okresu
                 temat = AddSpecyfikacja(item, temat);
@@ -1764,7 +1778,7 @@ namespace EventReceivers.tabZadaniaER
                 StringBuilder sb = new StringBuilder(trescHTML);
                 sb.Replace("___colBR_NumerFaktury___", item["colBR_NumerFaktury"] != null ? item["colBR_NumerFaktury"].ToString() : string.Empty);
                 sb.Replace("___colBR_DataWystawienia___", Format_Date(item, "colBR_DataWystawieniaFaktury"));
-                sb.Replace("___colBR_WartoscDoZaplaty___", item["colBR_WartoscDoZaplaty"] != null ? item["colBR_WartoscDoZaplaty"].ToString() : string.Empty);
+                sb.Replace("___colBR_WartoscDoZaplaty___", BLL.Tools.Format_Currency(item["colBR_WartoscDoZaplaty"] != null ? double.Parse(item["colBR_WartoscDoZaplaty"].ToString()) : 0));
                 sb.Replace("___colBR_Konto___", item["colBR_Konto"] != null ? item["colBR_Konto"].ToString() : string.Empty);
                 sb.Replace("___colBR_TerminPlatnosci___", Format_Date(item, "colBR_TerminPlatnosci"));
 

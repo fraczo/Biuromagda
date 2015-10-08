@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using Microsoft.SharePoint;
 using BLL.Models;
+using System.Globalization;
 
 namespace BLL
 {
     public class Tools
     {
+        const string emptyMarker = "---";
+
         internal static string Get_ItemInfo(Microsoft.SharePoint.SPListItem item)
         {
             StringBuilder sb = new StringBuilder();
@@ -60,6 +63,18 @@ namespace BLL
             list.Update();
         }
 
+
+        public static string AddCompanyName(SPWeb web, string temat, int klientId)
+        {
+            if (klientId > 0)
+            {
+                BLL.Models.Klient k = new Klient(web, klientId);
+                return string.Format("{0} {1}", temat, k.PelnaNazwaFirmy);
+            }
+
+            return temat;
+        }
+
         public static string AddCompanyName(string temat, SPListItem item)
         {
             if (item != null)
@@ -96,6 +111,38 @@ namespace BLL
         private static int Get_LookupId(SPListItem item, string col)
         {
             return item[col] != null ? new SPFieldLookupValue(item[col].ToString()).LookupId : 0;
+        }
+
+        public static string Format_Currency(SPListItem item, string colName)
+        {
+            double n = Get_Value(item, colName);
+
+            if (n > 0) return n.ToString("c", new CultureInfo("pl-PL"));
+            else return emptyMarker;
+
+        }
+
+        public static double Get_Value(SPListItem item, string colName)
+        {
+            if (item[colName] != null)
+            {
+                return double.Parse(item[colName].ToString());
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public static string Format_Currency(double value)
+        {
+            if (value > 0) return value.ToString("c", new CultureInfo("pl-PL"));
+            else return emptyMarker;
+        }
+
+        internal static DateTime Get_Date(SPListItem item, string col)
+        {
+            return item[col] != null ? DateTime.Parse(item[col].ToString()) : new DateTime();
         }
     }
 }
