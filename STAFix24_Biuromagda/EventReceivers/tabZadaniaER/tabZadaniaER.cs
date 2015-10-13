@@ -610,7 +610,44 @@ namespace EventReceivers.tabZadaniaER
                 BLL.Models.UrzadSkarbowy us = new BLL.Models.UrzadSkarbowy(web, urzadId);
                 string odbiorca = us.Get_NazwaOdbiorcyPrzelewu();
 
-                string numerDeklaracji = okres.Substring(2, 2) + "M" + okres.Substring(5, 2); // TODO:skorygować typ deklaracji
+                string numerDeklaracji = string.Empty;
+
+                string rozliczenie = item["enumRozliczenieVAT"] != null ? item["enumRozliczenieVAT"].ToString() : string.Empty;
+                if (rozliczenie == "Kwartalnie")
+                {
+                    numerDeklaracji = okres.Substring(2, 2) + "K";
+
+                    string m = okres.Substring(5, 2); //oznaczenie miesiąca
+                    switch (m)
+                    {
+                        case "01":
+                        case "02":
+                        case "03":
+                            numerDeklaracji = numerDeklaracji + "01";
+                            break;
+                        case "04":
+                        case "05":
+                        case "06":
+                            numerDeklaracji = numerDeklaracji + "02";
+                            break;
+                        case "07":
+                        case "08":
+                        case "09":
+                            numerDeklaracji = numerDeklaracji + "03";
+                            break;
+                        case "10":
+                        case "11":
+                        case "12":
+                            numerDeklaracji = numerDeklaracji + "04";
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else
+                {
+                    numerDeklaracji = okres.Substring(2, 2) + "M" + okres.Substring(5, 2);
+                }
 
                 BLL.Models.Klient iok = new BLL.Models.Klient(web, klientId);
                 string nadawca = iok.Get_NazwaNadawcyPrzelewu();
