@@ -1163,8 +1163,11 @@ namespace EventReceivers.tabZadaniaER
 
                 //string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
 
-                string nadawca = Get_NadawcaWiadomosciZWynikami(item);
-                string kopiaDla = Get_KopiaDlaEdytora(item, nadawca);
+                //string nadawca = Get_WlacicielZadania(item);
+                //string kopiaDla = Get_KopiaDlaEdytora(item, nadawca);
+
+                string nadawca = Get_CurrentUser(item);
+                string kopiaDla = Get_WlacicielZadania(item);
 
                 string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
 
@@ -1425,8 +1428,11 @@ namespace EventReceivers.tabZadaniaER
             {
                 //string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
 
-                string nadawca = Get_NadawcaWiadomosciZWynikami(item);
-                string kopiaDla = Get_KopiaDlaEdytora(item, nadawca);
+                //string nadawca = Get_WlacicielZadania(item);
+                //string kopiaDla = Get_KopiaDlaEdytora(item, nadawca);
+
+                string nadawca = Get_CurrentUser(item);
+                string kopiaDla = Get_WlacicielZadania(item);
 
                 string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
 
@@ -1582,6 +1588,19 @@ namespace EventReceivers.tabZadaniaER
 
         }
 
+        private string Get_CurrentUser(SPListItem item)
+        {
+            string result = item["Editor"] != null ? new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email : string.Empty;
+
+            if (string.IsNullOrEmpty(result))
+            {
+                //ustaw domyślnie adres biura
+                result = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+            }
+
+            return result;
+        }
+
         private string Update_Data(string temat, DateTime terminPlatnosci)
         {
             return temat.Replace("___DATA___", terminPlatnosci.ToShortDateString());
@@ -1590,7 +1609,7 @@ namespace EventReceivers.tabZadaniaER
         /// <summary>
         /// domyślnym nadawcą wiadomości jest bieżący operator a jeżeli go nie ma to biuro
         /// </summary>
-        private string Get_NadawcaWiadomosciZWynikami(SPListItem item)
+        private string Get_WlacicielZadania(SPListItem item)
         {
             string result = string.Empty;
             int operatorId = Get_LookupId(item, "selOperator");
@@ -1647,8 +1666,12 @@ namespace EventReceivers.tabZadaniaER
 
                 //string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
 
-                string nadawca = Get_NadawcaWiadomosciZWynikami(item);
-                string kopiaDla = Get_KopiaDlaEdytora(item, nadawca);
+                //string nadawca = Get_WlacicielZadania(item);
+                //string kopiaDla = Get_KopiaDlaEdytora(item, nadawca);
+
+                string nadawca = Get_CurrentUser(item);
+                string kopiaDla = Get_WlacicielZadania(item);
+
 
                 string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
                 bool KopiaDoNadawcy = true;
@@ -1785,10 +1808,13 @@ namespace EventReceivers.tabZadaniaER
             if (klientId > 0
                 && cmd == ZATWIERDZ)
             {
-
                 //string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
-                string nadawca = Get_NadawcaWiadomosciZWynikami(item);
-                string kopiaDla = Get_KopiaDlaEdytora(item, nadawca);
+                
+                //string nadawca = Get_WlacicielZadania(item);
+                //string kopiaDla = Get_KopiaDlaEdytora(item, nadawca);
+
+                string nadawca = Get_CurrentUser(item);
+                string kopiaDla = Get_WlacicielZadania(item);
 
                 string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, new SPFieldLookupValue(item["selKlient"].ToString()).LookupId);
 
