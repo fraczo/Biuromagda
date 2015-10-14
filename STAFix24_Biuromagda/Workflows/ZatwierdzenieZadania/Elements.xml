@@ -6,10 +6,10 @@ Name="[NAME]" ==> Name="MyWorkflow" -->
 
 <Elements xmlns="http://schemas.microsoft.com/sharepoint/">
   <Workflow
-     Name="Obsługa wiadomości"
-     Description="Przekazuje wiadomość do serwera pocztowego"
-     Id="268cce03-92d8-4016-a6e0-4b4a46aedad1"
-     CodeBesideClass="Workflows.ObslugaWiadomosci.ObslugaWiadomosci"
+     Name="Zatwierdzenie zadania"
+     Description="Dla aktywnego zadania wymusza akcję=Zatwierdź"
+     Id="602ec44a-b1ec-4f8b-a2a9-968fa5109499"
+     CodeBesideClass="Workflows.ZatwierdzenieZadania.ZatwierdzenieZadania"
      CodeBesideAssembly="$assemblyname$">
     <Categories/>
     <MetaData>

@@ -111,9 +111,22 @@ namespace admProcessRequests_EventReceiver
             }
             finally
             {
-                //properties.ListItem.Delete();
-                properties.ListItem["enumStatusZlecenia"] = "Zakończony";
-                properties.ListItem.SystemUpdate();
+                properties.ListItem.Delete();
+//                properties.ListItem["enumStatusZlecenia"] = "Zakończony";
+//                properties.ListItem.SystemUpdate();
+
+//                //oczyszczanie listy zleceń starszych niż 1 dzień
+//                try
+//                {
+//                    BLL.admProcessRequests.List_Cleanup(properties.Web, 1);
+//                }
+//                catch (Exception)
+//                {
+//#if DEBUG
+//                    throw;
+//#endif
+//                }              
+
                 this.EventFiringEnabled = true;
             }
         }

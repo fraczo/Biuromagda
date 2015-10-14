@@ -144,5 +144,11 @@ namespace BLL
         {
             return item[col] != null ? DateTime.Parse(item[col].ToString()) : new DateTime();
         }
+
+        public static string Get_Text(SPListItem item, string col)
+        {
+            return item[col] != null ? item[col].ToString() : string.Empty;
+        }
+
     }
 }

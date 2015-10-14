@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="admProcessRequests.cs" />
     <Compile Include="admSetup.cs" />
     <Compile Include="dicBiura.cs" />
     <Compile Include="dicOddzialyZUS.cs" />

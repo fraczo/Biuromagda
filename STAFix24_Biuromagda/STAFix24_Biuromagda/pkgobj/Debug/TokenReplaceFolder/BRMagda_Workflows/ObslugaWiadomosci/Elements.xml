@@ -7,7 +7,7 @@ Name="[NAME]" ==> Name="MyWorkflow" -->
 <Elements xmlns="http://schemas.microsoft.com/sharepoint/">
   <Workflow
      Name="Obsługa wiadomości"
-     Description="My SharePoint Workflow"
+     Description="Przekazuje wiadomość do serwera pocztowego"
      Id="268cce03-92d8-4016-a6e0-4b4a46aedad1"
      CodeBesideClass="Workflows.ObslugaWiadomosci.ObslugaWiadomosci"
      CodeBesideAssembly="BRMagda.Workflows, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7c2016d13a1c5fef">

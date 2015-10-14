@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 
 <!-- Customize the text in square brackets. 
 Remove brackets when filling in, e.g.
@@ -6,11 +6,11 @@ Name="[NAME]" ==> Name="MyWorkflow" -->
 
 <Elements xmlns="http://schemas.microsoft.com/sharepoint/">
   <Workflow
-     Name="Obsługa wiadomości"
-     Description="Przekazuje wiadomość do serwera pocztowego"
-     Id="268cce03-92d8-4016-a6e0-4b4a46aedad1"
-     CodeBesideClass="Workflows.ObslugaWiadomosci.ObslugaWiadomosci"
-     CodeBesideAssembly="$assemblyname$">
+     Name="Zatwierdzenie zadania"
+     Description="Dla aktywnego zadania wymusza akcję=Zatwierdź"
+     Id="602ec44a-b1ec-4f8b-a2a9-968fa5109499"
+     CodeBesideClass="Workflows.ZatwierdzenieZadania.ZatwierdzenieZadania"
+     CodeBesideAssembly="BRMagda.Workflows, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7c2016d13a1c5fef">
     <Categories/>
     <MetaData>
       <AssociationCategories>List</AssociationCategories>
