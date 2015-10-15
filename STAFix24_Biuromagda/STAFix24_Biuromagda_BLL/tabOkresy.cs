@@ -343,5 +343,27 @@ namespace BLL
             return string.Empty;
 
         }
+
+        internal static int Get_PoprzedniOkresIdById(SPWeb web, int okresId)
+        {
+            SPList list = web.Lists.TryGetList(targetList);
+            SPListItem item = list.GetItemById(okresId);
+            if (item!=null)
+            {
+                DateTime d = Get_Date(item, "colDataRozpoczecia");
+                DateTime endDate = d.AddDays(-1);
+                
+                SPListItem foundItem = list.Items.Cast<SPListItem>()
+                    .Where(i => i["colDataZakonczenia"]!=null)
+                    .Where(i => (DateTime.Parse(i["colDataZakonczenia"].ToString())).Equals(endDate))
+                    .FirstOrDefault();
+
+                if (foundItem != null)
+                {
+                    return foundItem.ID;
+                }
+            }
+            return 0;
+        }
     }
 }

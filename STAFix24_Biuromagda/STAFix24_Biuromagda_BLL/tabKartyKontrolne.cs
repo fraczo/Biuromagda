@@ -288,7 +288,7 @@ namespace BLL
             return Create_KEY(klientId, okresId);
         }
 
-        private static string Create_KEY(int klientId, int okresId)
+        public static string Create_KEY(int klientId, int okresId)
         {
             return string.Format(@"{0}::{1}", klientId.ToString(), okresId.ToString());
         }
@@ -336,8 +336,23 @@ namespace BLL
 
         }
 
+        internal static double Get_WartoscNadwyzkiDoPrzeniesienia(SPWeb web, int klientId, int okresId)
+        {
+            SPList list = web.Lists.TryGetList(targetList);
 
+            string KEY = BLL.tabKartyKontrolne.Create_KEY(klientId, okresId);
+            int kkId = Get_KartaKontrolnaId(web, klientId, okresId, KEY);
 
+            if (kkId>0)
+            {
+                SPListItem item = Get_KartaKontrolnaById(web, kkId);
+                if (item!=null)
+                {
+                    return BLL.Tools.Get_Value(item, "colVAT_WartoscDoPrzeniesienia");
+                }
+            }
 
+            return 0;
+        }
     }
 }

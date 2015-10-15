@@ -212,6 +212,14 @@ namespace BLL
                     Set_KontoOperatora(item, operatorId);
                 }
 
+                //przenieś wartość nadwyżki z poprzedniej deklaracji
+                int preOkresId = BLL.tabOkresy.Get_PoprzedniOkresIdById(web, okresId);
+                double v = BLL.tabKartyKontrolne.Get_WartoscNadwyzkiDoPrzeniesienia(web, klientId, preOkresId);
+                if (v > 0)
+                {
+                    item["colVAT_WartoscNadwyzkiZaPoprzedniMiesiac"] = v;
+                }
+
                 item.SystemUpdate();
             }
 
@@ -236,7 +244,7 @@ namespace BLL
 
             //numery kont i nazwa urzędu
 
-            item["colPD_Konto"] = iok.NumerRachunkuPD;  
+            item["colPD_Konto"] = iok.NumerRachunkuPD;
             item["selUrzadSkarbowy"] = iok.UrzadSkarbowyId;
 
             //terminy
@@ -250,7 +258,7 @@ namespace BLL
             item["colPrzypomnienieOTerminiePlatnos"] = fl.PrzypomnienieOTerminiePlatnosci;
             item["colDrukWplaty"] = fl.GenerowanieDrukuWplaty;
             item["colAudytDanych"] = fl.AudytDanych;
-            
+
             //rozliczenie
             if (isKwartalnie)
             {
@@ -283,7 +291,7 @@ namespace BLL
                 item["selOperator"] = operatorId;
                 Set_KontoOperatora(item, operatorId);
             }
-            
+
 
             item.SystemUpdate();
 
@@ -298,7 +306,7 @@ namespace BLL
         {
             Create_ctPD_Form(web, ct, klientId, okresId, key, terminPlatnosci, terminPrzekazania, isKwartalnie);
         }
- 
+
 
         public static void Create_Form(SPWeb web, string ct, int klientId, int okresId, string key, int operatorId)
         {
@@ -362,7 +370,7 @@ namespace BLL
             item["selOkres"] = okresId;
             item["KEY"] = key;
             item["colZatrudniaPracownikow"] = iok.ZatrudniaPracownikow;
-            
+
             //procedura
             string procName = string.Format(": {0}", ct);
             item["selProcedura"] = tabProcedury.Ensure(web, procName);
