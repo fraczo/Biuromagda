@@ -108,7 +108,7 @@ namespace BLL
             return temat;
         }
 
-        private static int Get_LookupId(SPListItem item, string col)
+        public static int Get_LookupId(SPListItem item, string col)
         {
             return item[col] != null ? new SPFieldLookupValue(item[col].ToString()).LookupId : 0;
         }

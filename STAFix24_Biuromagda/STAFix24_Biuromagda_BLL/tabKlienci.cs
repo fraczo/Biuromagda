@@ -673,5 +673,26 @@ namespace BLL
             BLL.Models.Klient k = new Models.Klient(web, klientId);
             return string.Format("{0}, {1} {2}", k.Adres, k.KodPocztowy, k.Miejscowosc);
         }
+
+        public static bool Has_ServiceById(SPWeb web,int klientId, string serviceName)
+        {
+            bool result = false;
+            SPList list = web.Lists.TryGetList(listName);
+            SPListItem item = list.GetItemById(klientId);
+            SPFieldLookupValueCollection serwisy = item["selSewisy"] != null ? new SPFieldLookupValueCollection(item["selSewisy"].ToString()) : null;
+            if (serwisy.Count>0)
+            {
+                foreach (SPFieldLookupValue s in serwisy)
+                {
+                    if (s.LookupValue == serviceName)
+                    {
+                        result = true;
+                        break;
+                    }
+                }
+            }
+
+            return result;
+        }
     }
 }

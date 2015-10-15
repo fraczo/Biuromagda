@@ -28,9 +28,18 @@ namespace EventReceivers.admProcessRequestsER
                     Array tasks = BLL.tabZadania.Get_GotoweTasksByProceduraId(web, new SPFieldLookupValue(item["selProcedura"].ToString()).LookupId);
                     foreach (SPListItem task in tasks)
                     {
-                        Set_Command(task, "Zatwierdź");
-                        //EventReceivers.tabZadaniaER.tabZadaniaER o = new tabZadaniaER.tabZadaniaER();
-                        //o.Execute(task);
+                        //Sprawdź czy klient ma ustawiony serwis AD czy ADO
+                        //w przypadku AD zablokuj automatyczną akceptację
+
+                        if (BLL.tabKlienci.Has_ServiceById(task.Web, BLL.Tools.Get_LookupId(task, "selKlient"), "AD"))
+                        {
+                            //pomiń 
+                        }
+                        else
+                        {
+                            //uruchom proces zatwierdzenia
+                            BLL.WorkflowHelpers.StartWorkflow(task, "Zatwierdzenie zadania");
+                        }
                     }
                     
                     break;

@@ -31,8 +31,8 @@ namespace Workflows.ZatwierdzenieZadania
         {
             SPListItem item = workflowProperties.Item;
 
-            if (string.IsNullOrEmpty(BLL.Tools.Get_Text(item, "cmdFormatka"))) 
-            {
+            //if (string.IsNullOrEmpty(BLL.Tools.Get_Text(item, "cmdFormatka")))
+            //{
                 string status = BLL.Tools.Get_Text(item, "enumStatusZadania");
                 switch (status)
                 {
@@ -53,7 +53,7 @@ namespace Workflows.ZatwierdzenieZadania
                     default:
                         break;
                 }
-            }
+            //}
         }
 
         private static void Zatwierdz_Zadanie(SPListItem item)
@@ -62,7 +62,7 @@ namespace Workflows.ZatwierdzenieZadania
             if (string.IsNullOrEmpty(cmd))
             {
                 item["cmdFormatka"] = "Zatwierdź";
-                item.SystemUpdate();
+                item.Update(); //aby respektował informację o bieżącym użytkowniku i prawidłowo wyświetlał stopkę wiadomości
             }
         }
     }
