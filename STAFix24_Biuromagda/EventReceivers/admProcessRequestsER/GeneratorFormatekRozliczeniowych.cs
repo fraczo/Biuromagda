@@ -50,6 +50,7 @@ namespace admProcessRequests_EventReceiver
                         case "Osoba fizyczna":
                             ZUS_Forms.Create(web, klientId, okresId);
                             PD_Forms.Create(web, klientId, okresId);
+                            PDS_Forms.Create(web, klientId, okresId);
                             VAT_Forms.Create(web, klientId, okresId);
                             break;
 
