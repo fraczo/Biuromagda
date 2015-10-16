@@ -152,32 +152,36 @@ namespace BLL
 
 
         // zakłada format wejściowy YYYY-MM
-        public static string Get_KwartalDesc(string okres)
+        public static string Get_KwartalDisplayName(string okres)
         {
-            string rok = okres.Substring(1, 4);
-            string miesiac = okres.Substring(6, 2);
-            int mNumber = int.Parse(miesiac);
-            switch (mNumber)
+            if (okres.Length == 7)
             {
-                case 1:
-                case 2:
-                case 3:
-                    return rok + "-K01";
-                case 4:
-                case 5:
-                case 6:
-                    return rok + "-K02";
-                case 7:
-                case 8:
-                case 9:
-                    return rok + "-K03";
-                case 10:
-                case 11:
-                case 12:
-                    return rok + "-K04";
-                default:
-                    return string.Empty;
+                string rok = okres.Substring(0, 4);
+                string miesiac = okres.Substring(5, 2);
+                int mNumber = int.Parse(miesiac);
+                switch (mNumber)
+                {
+                    case 1:
+                    case 2:
+                    case 3:
+                        return rok + "-K01";
+                    case 4:
+                    case 5:
+                    case 6:
+                        return rok + "-K02";
+                    case 7:
+                    case 8:
+                    case 9:
+                        return rok + "-K03";
+                    case 10:
+                    case 11:
+                    case 12:
+                        return rok + "-K04";
+                    default:
+                        return string.Empty;
+                }
             }
+            return string.Empty;
         }
     }
 }

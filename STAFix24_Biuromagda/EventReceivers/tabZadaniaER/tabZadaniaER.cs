@@ -1470,7 +1470,7 @@ namespace EventReceivers.tabZadaniaER
                 
                 if (Get_String(item, "enumRozliczeniePD") == "Kwartalnie")
                 {
-                    okres = "kwartał " + BLL.Tools.Get_KwartalDesc(okres);
+                    okres = "kwartał " + BLL.Tools.Get_KwartalDisplayName(okres);
                 }
                 else
                 {
@@ -1721,9 +1721,9 @@ namespace EventReceivers.tabZadaniaER
                 //zdefiniuj opis bieżącego okresu
                 string okres = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupValue : string.Empty;
 
-                if (Get_String(item, "enumRozliczeniePD") == "Kwartalnie")
+                if (Get_String(item, "enumRozliczenieVAT") == "Kwartalnie")
                 {
-                    okres = "kwartał " + BLL.Tools.Get_KwartalDesc(okres);
+                    okres = "kwartał " + BLL.Tools.Get_KwartalDisplayName(okres);
                 }
                 else
                 {
