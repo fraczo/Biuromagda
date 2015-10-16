@@ -16,12 +16,9 @@ namespace BLL
             SPList targetList = web.Lists.TryGetList(listName);
             Array result = null;
 
-            //if (targetList != null)
-            //{
             result = targetList.Items.Cast<SPListItem>()
                 .Where(i => i["enumStatus"].ToString() == "Aktywny")
                 .ToArray();
-            //}
 
             return result;
         }
@@ -202,6 +199,7 @@ namespace BLL
             return 0;
         }
 
+
         public static int AddNew_KPiR_Klient(SPWeb web, string nazwaSkrocona, SPListItem item)
         {
             SPList list = web.Lists.TryGetList(listName);
@@ -287,8 +285,6 @@ namespace BLL
 
             //return 0;
         }
-
-
 
         public static int AddNew_KSH_Klient(SPWeb web, string nazwaSkrocona, SPListItem item)
         {

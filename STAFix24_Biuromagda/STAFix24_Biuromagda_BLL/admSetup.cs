@@ -89,5 +89,18 @@ namespace BLL
 
             return string.Empty;
         }
+
+        public static string Get_NazwaBiura(SPWeb web)
+        {
+            string result = GetValue(web, "BR_NAZWA");
+            string v = GetValue(web, "BR_ADRES");
+            if (!string.IsNullOrEmpty(v)) result = result + " " + v;
+            v = GetValue(web, "BR_KOD_POCZTOWY");
+            if (!string.IsNullOrEmpty(v)) result = result + " " + v;
+            v = GetValue(web, "BR_MIEJSCOWOSC");
+            if (!string.IsNullOrEmpty(v)) result = result + " " + v;
+
+            return result;
+        }
     }
 }

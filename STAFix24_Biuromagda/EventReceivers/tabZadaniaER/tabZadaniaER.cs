@@ -680,7 +680,8 @@ namespace EventReceivers.tabZadaniaER
                 string fileName = String.Format(@"{0}Faktura za obsługę księgową_{1}.pdf",
                     targetFileNameLeading,
                     okres);
-                string odbiorca = admSetup.GetValue(web, "BR_NAZWA");
+                //string odbiorca = admSetup.GetValue(web, "BR_NAZWA");
+                string odbiorca = admSetup.Get_NazwaBiura(web);
                 string numerFaktury = item["colBR_NumerFaktury"] != null ? item["colBR_NumerFaktury"].ToString() : string.Empty;
                 string tytulem = String.Format("Zapłata za FV {0}", numerFaktury);
 
@@ -1680,10 +1681,13 @@ namespace EventReceivers.tabZadaniaER
                 string tresc = string.Empty;
                 string trescHTML = string.Empty;
 
+                bool IsBWAllowed = false; //Czy informacja o blankicie wpłaty może być załączona
+
                 switch (item["colVAT_Decyzja"] != null ? item["colVAT_Decyzja"].ToString() : string.Empty)
                 {
                     case "Do zapłaty":
                         BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_DO_ZAPLATY_TEMPLATE.Include", out temat, out trescHTML);
+                        IsBWAllowed = true;
                         break;
                     case "Do przeniesienia":
                         BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_DO_PRZENIESIENIA_TEMPLATE.Include", out temat, out trescHTML);
@@ -1734,7 +1738,8 @@ namespace EventReceivers.tabZadaniaER
                 //    info2 = info2 + string.Format(templateR, "VAT-27");
                 //}
 
-                if (item["colDrukWplaty"] != null ? (bool)item["colDrukWplaty"] : false)
+                if (item["colDrukWplaty"] != null ? (bool)item["colDrukWplaty"] : false &&
+                    IsBWAllowed) //dodawaj informację o załącznikach tylko w przypadku płatności VAT
                 {
                     info2 = info2 + string.Format(templateR, "Druk wpłaty");
                 }
@@ -1899,7 +1904,7 @@ namespace EventReceivers.tabZadaniaER
                         sb = new StringBuilder(trescHTML);
                         sb.Replace("___colBR_NumerFaktury___", item["colBR_NumerFaktury"] != null ? item["colBR_NumerFaktury"].ToString() : string.Empty);
                         sb.Replace("___colBR_DataWystawienia___", Format_Date(item, "colBR_DataWystawieniaFaktury"));
-                        sb.Replace("___colBR_WartoscDoZaplaty___", item["colBR_WartoscDoZaplaty"] != null ? item["colBR_WartoscDoZaplaty"].ToString() : string.Empty);
+                        sb.Replace("___colBR_WartoscDoZaplaty___", Format_Currency(item,"colBR_WartoscDoZaplaty"));
                         sb.Replace("___colBR_Konto___", item["colBR_Konto"] != null ? item["colBR_Konto"].ToString() : string.Empty);
                         sb.Replace("___colBR_TerminPlatnosci___", Format_Date(item, "colBR_TerminPlatnosci"));
 

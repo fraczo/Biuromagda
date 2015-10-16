@@ -376,22 +376,6 @@ namespace BLL
             item["selProcedura"] = tabProcedury.Ensure(web, procName);
             item["Title"] = procName;
 
-            if (isTylkoZdrowotna)
-            {
-                item["colZUS_Opcja"] = "Tylko zdrowotna";
-            }
-            else
-            {
-                if (isChorobowa)
-                {
-                    item["colZUS_Opcja"] = "Z chorobowym";
-                }
-                else
-                {
-                    item["colZUS_Opcja"] = "Bez chorobowego";
-                }
-            }
-
             //jeżeli ZUS-PRAC to nie wypełniaj wysokości składek
             if (hasKlientMaAktywnySerwis(item, "ZUS-PRAC"))
             {
@@ -425,6 +409,10 @@ namespace BLL
             //termin realizacji
             item["colTerminRealizacji"] = item["colZUS_TerminPrzekazaniaWynikow"];
 
+            if (iok.FormaOpodatkowaniaZUS != "Nie dotyczy")
+            {
+                item["colZUS_Opcja"] = iok.FormaOpodatkowaniaZUS;
+            }
             item["colFormaOpodakowania_ZUS"] = iok.FormaOpodatkowaniaZUS;
             item["selOddzialZUS"] = iok.OddzialZUSId;
             item["colOsobaDoKontaktu"] = iok.OsobaDoKontaktu;
@@ -433,6 +421,9 @@ namespace BLL
             item["colAdres"] = iok.Adres;
             item["colKodPocztowy"] = iok.KodPocztowy;
             item["colMiejscowosc"] = iok.Miejscowosc;
+
+            //forma opodatkowania ZUS
+
 
             // przypisz domyślnego operatora
             int operatorId = iok.OperatorId_Kadry;
@@ -443,7 +434,6 @@ namespace BLL
             }
 
             item.SystemUpdate();
-            //}
         }
 
         public static void Create_ctBR_Form(SPWeb web, string ct, int klientId, int okresId, string key)
