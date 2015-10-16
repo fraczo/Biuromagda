@@ -14,6 +14,10 @@ namespace BLL
 
         public static void AddNew(SPWeb web, SPListItem item, string nadawca, string odbiorca, string kopiaDla, bool KopiaDoNadawcy, bool KopiaDoBiura, string temat, string tresc, string trescHTML, DateTime planowanaDataNadania, int zadanieId, int klientId)
         {
+            AddNew(web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId, BLL.Models.Marker.Ignore);
+        }
+        public static void AddNew(SPWeb web, SPListItem item, string nadawca, string odbiorca, string kopiaDla, bool KopiaDoNadawcy, bool KopiaDoBiura, string temat, string tresc, string trescHTML, DateTime planowanaDataNadania, int zadanieId, int klientId, BLL.Models.Marker marker)
+        {
             SPList list = web.Lists.TryGetList(targetList);
             SPListItem newItem = list.AddItem();
             newItem["Title"] = temat;
@@ -47,17 +51,37 @@ namespace BLL
 
                     if (file.Exists)
                     {
-                        int bufferSize = 20480;
-                        byte[] byteBuffer = new byte[bufferSize];
-                        //byteBuffer = File.ReadAllBytes(pdfFilePath);
-                        byteBuffer = file.OpenBinary();
-                        //string targetUrl = newItem.Attachments.UrlPrefix + file.Name;
-                        newItem.Attachments.Add(file.Name, byteBuffer);
+                        //sprawdź markety i dodawaj tylko odpowiednie pliki
+                        switch (marker)
+                        {
+                            case BLL.Models.Marker.ReminderZUS:
+                                if (file.Name.StartsWith("DRUK WPŁATY__ZUS")
+                                    || file.Name.StartsWith("DRUK WPŁATY__Składka zdrowotna"))
+                                    Copy_Attachement(newItem, file);
+                                break;
+                            case BLL.Models.Marker.ReminderZUS_PIT:
+                                if (file.Name.StartsWith("DRUK WPŁATY__PIT"))
+                                    Copy_Attachement(newItem, file);
+                                break;
+                            default:
+                                Copy_Attachement(newItem, file);
+                                break;
+                        }
+
+
                     }
                 }
             }
 
             newItem.SystemUpdate();
+        }
+
+        private static void Copy_Attachement(SPListItem newItem, SPFile file)
+        {
+            int bufferSize = 20480;
+            byte[] byteBuffer = new byte[bufferSize];
+            byteBuffer = file.OpenBinary();
+            newItem.Attachments.Add(file.Name, byteBuffer);
         }
 
         /// <summary>

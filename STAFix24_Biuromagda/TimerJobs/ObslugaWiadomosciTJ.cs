@@ -18,8 +18,10 @@ namespace TimerJobs
             timerJob.Schedule = new SPMinuteSchedule
             {
                 BeginSecond = 0,
-                EndSecond = 0
+                EndSecond = 0,
+                Interval = 15
             };
+
             timerJob.Update();
         }
 

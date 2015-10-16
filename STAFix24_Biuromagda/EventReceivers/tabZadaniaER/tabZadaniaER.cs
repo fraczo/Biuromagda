@@ -1355,7 +1355,7 @@ namespace EventReceivers.tabZadaniaER
                         planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
                         nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
 
-                        BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
+                        BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId, Marker.ReminderZUS);
                     }
 
                     //podatek za pracowników
@@ -1395,7 +1395,7 @@ namespace EventReceivers.tabZadaniaER
                         planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
                         nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
 
-                        BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
+                        BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId, Marker.ReminderZUS_PIT);
                     }
                 }
 
