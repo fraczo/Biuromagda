@@ -1464,7 +1464,18 @@ namespace EventReceivers.tabZadaniaER
                 string lt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_LEADING_TEXT", false);
                 string firma = BLL.tabKlienci.Get_NazwaFirmyById(item.Web, klientId);
                 lt = lt.Replace("___FIRMA___", firma);
+                
+                //opis okresu rozliczeniowego
                 string okres = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupValue : string.Empty;
+                
+                if (Get_String(item, "enumRozliczeniePD") == "Kwartalnie")
+                {
+                    okres = "kwartał " + BLL.Tools.Get_KwartalDesc(okres);
+                }
+                else
+                {
+                    okres = "miesiąc " + okres;
+                }
                 lt = lt.Replace("___OKRES___", okres);
                 trescHTML = trescHTML.Replace("___PD_LEADING_TEXT___", lt);
 
@@ -1706,7 +1717,19 @@ namespace EventReceivers.tabZadaniaER
                 string lt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_LEADING_TEXT", false);
                 string firma = BLL.tabKlienci.Get_NazwaFirmyById(item.Web, klientId);
                 lt = lt.Replace("___FIRMA___", firma);
+                
+                //zdefiniuj opis bieżącego okresu
                 string okres = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupValue : string.Empty;
+
+                if (Get_String(item, "enumRozliczeniePD") == "Kwartalnie")
+                {
+                    okres = "kwartał " + BLL.Tools.Get_KwartalDesc(okres);
+                }
+                else
+                {
+                    okres = "miesiąc " + okres;
+                }
+
                 lt = lt.Replace("___OKRES___", okres);
                 trescHTML = trescHTML.Replace("___VAT_LEADING_TEXT___", lt);
 

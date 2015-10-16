@@ -107,11 +107,14 @@ namespace BLL.Models
                 this.OperatorId_Kadry = item["selDedykowanyOperator_Kadry"] != null ? new SPFieldLookupValue(item["selDedykowanyOperator_Kadry"].ToString()).LookupId : 0;
 
                 //Daty
-                this.DataRozpoczeciaDzialalnosci = item["colDataRozpoczeciaDzialalnosci"] != null ? item["colDataRozpoczeciaDzialalnosci"] : new DateTime();
+                this.DataRozpoczeciaDzialalnosci = BLL.Tools.Get_Date(item,"colDataRozpoczeciaDzialalnosci");
 
+
+                // PIT
                 try
                 {
                     int urzadId = item["selUrzadSkarbowy"] != null ? new SPFieldLookupValue(item["selUrzadSkarbowy"].ToString()).LookupId : 0;
+                    urzadId = BLL.dicUrzedySkarbowe.Ensure(web, urzadId);
                     if (urzadId > 0)
                     {
                         if (this.FormaOpodatkowaniaPD=="CIT")
@@ -138,6 +141,65 @@ namespace BLL.Models
 #endif
 
                 }
+
+                //VAT
+
+                try
+                {
+                    int urzadVATId = item["selUrzadSkarbowyVAT"] != null ? new SPFieldLookupValue(item["selUrzadSkarbowyVAT"].ToString()).LookupId : 0;
+                    urzadVATId = BLL.dicUrzedySkarbowe.Ensure(web, urzadVATId);
+                    if (urzadVATId > 0)
+                    {
+                        NumerRachunkuVAT = tabUrzedySkarbowe.Get_NumerRachunkuVATById(web, urzadVATId);
+                        NazwaUrzeduSkarbowegoVAT = tabUrzedySkarbowe.Get_NazwaUrzeduById(web, urzadVATId);
+                        UrzadSkarbowyVATId = urzadVATId;
+                    }
+                    else
+                    {
+                        //Przyjmij parametry jak dla US od podatku PIT
+                        NumerRachunkuVAT = this.NumerRachunkuPD;
+                        NazwaUrzeduSkarbowegoVAT = this.NazwaUrzeduSkarbowego;
+                        UrzadSkarbowyVATId = this.UrzadSkarbowyId;
+                    }
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                throw ex;
+#else
+                    BLL.Logger.LogEvent(web.Url, ex.ToString() + " KlientId= " + klientId.ToString());
+                    var result = ElasticEmail.EmailGenerator.ReportError(ex, web.Url, BLL.Tools.Get_ItemInfo(item));
+#endif
+                }
+
+                // ZUS
+
+                try
+                {
+                    int oddzialZUSId = item["selOddzialZUS"] != null ? new SPFieldLookupValue(item["selOddzialZUS"].ToString()).LookupId : 0;
+                    oddzialZUSId = BLL.dicOddzialyZUS.Ensure(web, oddzialZUSId);
+                    if (oddzialZUSId > 0)
+                    {
+                        this.OddzialZUSId = oddzialZUSId;
+                    }
+                    else
+                    {
+                        //Przyjmij parametry jak dla US od podatku PIT
+                        NumerRachunkuVAT = this.NumerRachunkuPD;
+                        NazwaUrzeduSkarbowegoVAT = this.NazwaUrzeduSkarbowego;
+                        UrzadSkarbowyVATId = this.UrzadSkarbowyId;
+                    }
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    throw ex;
+#else
+                    BLL.Logger.LogEvent(web.Url, ex.ToString() + " KlientId= " + klientId.ToString());
+                    var result = ElasticEmail.EmailGenerator.ReportError(ex, web.Url, BLL.Tools.Get_ItemInfo(item));
+#endif
+                }
+
             }
 
         }
@@ -178,8 +240,8 @@ namespace BLL.Models
         public int UrzadSkarbowyId { get; set; }
         public string UwagiKadrowe { get; set; }
 
-        public object RozliczeniePD { get; set; }
-        public object RozliczenieVAT { get; set; }
+        public string RozliczeniePD { get; set; }
+        public string RozliczenieVAT { get; set; }
 
         public int OperatorId_Audyt { get; set; }
         public int OperatorId_Podatki { get; set; }
@@ -189,12 +251,18 @@ namespace BLL.Models
 
         public string TypKlienta { get; set; }
 
-        public object Uwagi { get; set; }
+        public string Uwagi { get; set; }
 
-        public object DataRozpoczeciaDzialalnosci { get; set; }
+        public DateTime DataRozpoczeciaDzialalnosci { get; set; }
 
-        public object FormaPrawna { get; set; }
+        public string FormaPrawna { get; set; }
 
-        public object ZatrudniaPracownikow { get; set; }
+        public bool ZatrudniaPracownikow { get; set; }
+
+        public string NumerRachunkuVAT { get; set; }
+
+        public int UrzadSkarbowyVATId { get; set; }
+
+        public string NazwaUrzeduSkarbowegoVAT { get; set; }
     }
 }

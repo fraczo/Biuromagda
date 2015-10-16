@@ -15,14 +15,14 @@ namespace BLL
             SPList list = web.Lists.TryGetList(targetList);
             //if (list != null)
             //{
-                SPListItem item = list.Items.Cast<SPListItem>()
-                    .Where(i => i.Title == v)
-                    .FirstOrDefault();
+            SPListItem item = list.Items.Cast<SPListItem>()
+                .Where(i => i.Title == v)
+                .FirstOrDefault();
 
-                if (item != null)
-                {
-                    return item.ID;
-                }
+            if (item != null)
+            {
+                return item.ID;
+            }
             //}
 
             SPListItem newItem = list.AddItem();
@@ -30,6 +30,26 @@ namespace BLL
             newItem.SystemUpdate();
 
             return newItem.ID;
+        }
+
+        internal static int Ensure(SPWeb web, int oddzialId)
+        {
+            if (oddzialId > 0)
+            {
+                SPList list = web.Lists.TryGetList(targetList);
+                try
+                {
+                    SPListItem item = list.GetItemById(oddzialId);
+                    if (item != null)
+                    {
+                        return item.ID;
+                    }
+                }
+                catch (Exception)
+                { }
+            }
+
+            return 0;
         }
     }
 }

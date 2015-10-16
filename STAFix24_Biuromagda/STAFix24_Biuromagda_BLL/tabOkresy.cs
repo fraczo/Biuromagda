@@ -365,5 +365,26 @@ namespace BLL
             }
             return 0;
         }
+
+        internal static int Get_PoprzedniOkresKwartalnyIdById(SPWeb web, int okresId)
+        {
+            int mNumber = 0;
+            int oId = okresId;
+            do
+            {
+                oId = Get_PoprzedniOkresIdById(web, oId);
+                try
+                {
+                    SPListItem item = Get_ItemById(web, oId);
+                    mNumber = BLL.Tools.Get_Date(item, "colDataRozpoczecia").Month;
+                }
+                catch (Exception)
+                {}
+
+
+            } while (oId > 0 && (mNumber == 3 || mNumber == 6 || mNumber == 9 || mNumber == 12));
+
+            return oId;
+        }
     }
 }

@@ -164,9 +164,10 @@ namespace BLL
 
                 //numery kont i nazwa urzędu
 
-                KontaKlienta k = new KontaKlienta(web, klientId);
-                item["colVAT_Konto"] = k.KontoVAT;
-                item["selUrzadSkarbowy"] = k.IdUrzeduSkarbowego;
+                //KontaKlienta k = new KontaKlienta(web, klientId);
+
+                item["colVAT_Konto"] = iok.NumerRachunkuVAT;
+                item["selUrzadSkarbowy"] = iok.UrzadSkarbowyVATId;
 
                 //terminy
                 item["colVAT_TerminPlatnosciPodatku"] = terminPlatnosci;
@@ -213,11 +214,19 @@ namespace BLL
                 }
 
                 //przenieś wartość nadwyżki z poprzedniej deklaracji
-                int preOkresId = BLL.tabOkresy.Get_PoprzedniOkresIdById(web, okresId);
-                double v = BLL.tabKartyKontrolne.Get_WartoscNadwyzkiDoPrzeniesienia(web, klientId, preOkresId);
-                if (v > 0)
+                int preOkresId;
+                if (isKwartalnie)
                 {
-                    item["colVAT_WartoscNadwyzkiZaPoprzedniMiesiac"] = v;
+                    preOkresId = BLL.tabOkresy.Get_PoprzedniOkresKwartalnyIdById(web, okresId);
+                }
+                else
+                {
+                    preOkresId = BLL.tabOkresy.Get_PoprzedniOkresIdById(web, okresId);
+                }
+                
+                if (preOkresId > 0)
+                {
+                    item["colVAT_WartoscNadwyzkiZaPoprzedniMiesiac"] = BLL.tabKartyKontrolne.Get_WartoscNadwyzkiDoPrzeniesienia(web, klientId, preOkresId);
                 }
 
                 item.SystemUpdate();
@@ -377,11 +386,7 @@ namespace BLL
             item["Title"] = procName;
 
             //jeżeli ZUS-PRAC to nie wypełniaj wysokości składek
-            if (hasKlientMaAktywnySerwis(item, "ZUS-PRAC"))
-            {
-                item["colZatrudniaPracownikow"] = true;
-            }
-            else
+            if (!hasKlientMaAktywnySerwis(item, "ZUS-PRAC"))
             {
                 item["colZUS_SP_Skladka"] = skladkaSP;
                 item["colZUS_ZD_Skladka"] = skladkaZD;

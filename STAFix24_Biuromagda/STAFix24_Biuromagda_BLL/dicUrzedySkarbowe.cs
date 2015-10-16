@@ -57,5 +57,25 @@ namespace BLL
             return result;
         }
 
+
+        internal static int Ensure(SPWeb web, int urzadId)
+        {
+            if (urzadId > 0)
+            {
+                SPList list = web.Lists.TryGetList(targetList);
+                try
+                {
+                    SPListItem item = list.GetItemById(urzadId);
+                    if (item != null)
+                    {
+                        return item.ID;
+                    }
+                }
+                catch (Exception)
+                {}
+            }
+
+            return 0;
+        }
     }
 }

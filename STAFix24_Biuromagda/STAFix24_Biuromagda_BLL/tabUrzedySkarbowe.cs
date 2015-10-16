@@ -70,5 +70,17 @@ namespace BLL
 
             return string.Empty;
         }
+
+        internal static string Get_NumerRachunkuVATById(SPWeb web, int urzadId)
+        {
+            SPList list = web.Lists.TryGetList(targetList);
+            SPListItem item = list.GetItemById(urzadId);
+            if (item != null)
+            {
+                return item["colVAT_Konto"] != null ? item["colVAT_Konto"].ToString() : string.Empty;
+            }
+
+            return string.Empty;
+        }
     }
 }
