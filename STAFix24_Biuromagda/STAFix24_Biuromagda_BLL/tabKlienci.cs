@@ -675,10 +675,26 @@ namespace BLL
             bool result = false;
             SPList list = web.Lists.TryGetList(listName);
             SPListItem item = list.GetItemById(klientId);
+            
+            //sprawdź Serwisy
             SPFieldLookupValueCollection serwisy = item["selSewisy"] != null ? new SPFieldLookupValueCollection(item["selSewisy"].ToString()) : null;
             if (serwisy.Count>0)
             {
                 foreach (SPFieldLookupValue s in serwisy)
+                {
+                    if (s.LookupValue == serviceName)
+                    {
+                        result = true;
+                        break;
+                    }
+                }
+            }
+
+            //Sprawdź Serwisy-Wspólnicy
+            SPFieldLookupValueCollection serwisy2 = item["selSerwisyWspolnicy"] != null ? new SPFieldLookupValueCollection(item["selSerwisyWspolnicy"].ToString()) : null;
+            if (serwisy2.Count > 0)
+            {
+                foreach (SPFieldLookupValue s in serwisy2)
                 {
                     if (s.LookupValue == serviceName)
                     {

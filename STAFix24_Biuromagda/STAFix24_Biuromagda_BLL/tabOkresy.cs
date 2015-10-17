@@ -311,14 +311,14 @@ namespace BLL
             return item[col] != null ? DateTime.Parse(item[col].ToString()) : new DateTime();
         }
 
-        public static string Get_PoprzedniMiesiacSlownieById(SPWeb web, int okresId)
+        public static string Get_PoprzedniMiesiacSlownieById(SPWeb web, int okresId, int offset)
         {
             SPListItem item = Get_ItemById(web, okresId);
 
             if (item != null)
             {
                 DateTime start = BLL.Tools.Get_Date(item, "colDataRozpoczecia");
-                DateTime targetDate = start.AddMonths(-1);
+                DateTime targetDate = start.AddMonths(-1 * offset);
                 switch (targetDate.Month)
                 {
                     case 1: return "styczeń";

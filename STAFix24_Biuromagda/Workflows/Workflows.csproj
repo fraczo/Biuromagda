@@ -94,6 +94,10 @@
     <Content Include="ZatwierdzenieZadania\Elements.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EventReceivers\EventReceivers.csproj">
+      <Project>{55BA1847-ED27-481D-B213-C6A4C8BCC3ED}</Project>
+      <Name>EventReceivers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\STAFix24_Biuromagda_BLL\BLL.csproj">
       <Project>{2C8ECD80-A047-4795-99B3-C0EFC6961A9E}</Project>
       <Name>BLL</Name>

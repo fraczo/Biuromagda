@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.SharePoint;
 
 namespace EventReceivers.admProcessRequestsER
@@ -14,9 +11,11 @@ namespace EventReceivers.admProcessRequestsER
 
             // sprawdź czy wybrana procedura jest obsługiwana
             string procName = string.Empty;
+            int procId = 0;
             if (item["selProcedura"]!=null)
             {
                 procName = new SPFieldLookupValue(item["selProcedura"].ToString()).LookupValue;
+                procId = new SPFieldLookupValue(item["selProcedura"].ToString()).LookupId;
             }
 
             switch (procName)
@@ -25,17 +24,13 @@ namespace EventReceivers.admProcessRequestsER
                 case ": Rozliczenie podatku dochodowego spółki":
                 case ": Rozliczenie podatku VAT":
                 case ": Rozliczenie ZUS":
-                    Array tasks = BLL.tabZadania.Get_GotoweTasksByProceduraId(web, new SPFieldLookupValue(item["selProcedura"].ToString()).LookupId);
+                    Array tasks = BLL.tabZadania.Get_GotoweZadaniaByProceduraId(web, procId);
                     foreach (SPListItem task in tasks)
                     {
                         //Sprawdź czy klient ma ustawiony serwis AD czy ADO
                         //w przypadku AD zablokuj automatyczną akceptację
 
-                        if (BLL.tabKlienci.Has_ServiceById(task.Web, BLL.Tools.Get_LookupId(task, "selKlient"), "AD"))
-                        {
-                            //pomiń 
-                        }
-                        else
+                        if (BLL.tabKlienci.Has_ServiceById(task.Web, BLL.Tools.Get_LookupId(task, "selKlient"), "ADO"))
                         {
                             //uruchom proces zatwierdzenia
                             BLL.WorkflowHelpers.StartWorkflow(task, "Zatwierdzenie zadania");
@@ -43,15 +38,19 @@ namespace EventReceivers.admProcessRequestsER
                     }
                     
                     break;
+
+                case ": Prośba o dokumenty":
+                case ": Prośba o przesłanie wyciągu bankowego":
+                case ": Rozliczenie z biurem rachunkowym":
+                    Array tasks2 = BLL.tabZadania.Get_AktywneZadaniaByProceduraId(web, procId);
+                    foreach (SPListItem task in tasks2)
+                    {
+                            BLL.WorkflowHelpers.StartWorkflow(task, "Zatwierdzenie zadania");
+                    }
+                    break;
                 default:
                     break;
             }
-        }
-
-        private static void Set_Command(SPListItem item, string command)
-        {
-            item["cmdFormatka"] = command;
-            item.Update();
         }
     }
 }

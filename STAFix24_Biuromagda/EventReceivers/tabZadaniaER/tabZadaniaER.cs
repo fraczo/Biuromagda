@@ -49,15 +49,15 @@ namespace EventReceivers.tabZadaniaER
 
         private void Execute(SPItemEventProperties properties)
         {
+            this.EventFiringEnabled = false;
             this.Execute(properties.ListItem);
+            this.EventFiringEnabled = true;
         }
 
         #endregion
 
         public void Execute(SPListItem item)
         {
-            this.EventFiringEnabled = false;
-
             try
             {
                 //BLL.Logger.LogEvent(properties.WebUrl, properties.ListItem.Title + ".OnUpdate");
@@ -105,11 +105,6 @@ namespace EventReceivers.tabZadaniaER
 #endif
 
             }
-            finally
-            {
-                this.EventFiringEnabled = true;
-            }
-
         }
 
         private void Manage_PotwierdzenieOdbioruDokumentow(SPListItem item)
@@ -1101,9 +1096,9 @@ namespace EventReceivers.tabZadaniaER
 
                 string info = item["colInformacjaDlaKlienta"] != null ? item["colInformacjaDlaKlienta"].ToString() : string.Empty;
                 int okresId = Get_LookupId(item, "selOkres");
-                string poprzedniMiesiac = BLL.tabOkresy.Get_PoprzedniMiesiacSlownieById(item.Web, okresId);
-                if (poprzedniMiesiac!=null) poprzedniMiesiac = string.Format(@"({0})", poprzedniMiesiac);
-                trescHTML = trescHTML.Replace("___PoprzedniMiesiac___", poprzedniMiesiac );
+                string aktualnyMiesiac = BLL.tabOkresy.Get_PoprzedniMiesiacSlownieById(item.Web, okresId, 0);
+                if (aktualnyMiesiac != null) aktualnyMiesiac = string.Format(@"({0})", aktualnyMiesiac);
+                trescHTML = trescHTML.Replace("___PoprzedniMiesiac___", aktualnyMiesiac);
                 trescHTML = trescHTML.Replace("___colInformacjaDlaKlienta___", info);
 
                 DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
@@ -1189,10 +1184,10 @@ namespace EventReceivers.tabZadaniaER
                         switch (zusOpcja)
                         {
                             case "Tylko zdrowotna":
-                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_Z_PIT_TEMPLATE.Include", out temat, out trescHTML);
+                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_Z_PIT_TEMPLATE.Include", out temat, out trescHTML, nadawca);
                                 break;
                             default:
-                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_PIT_TEMPLATE.Include", out temat, out trescHTML);
+                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_PIT_TEMPLATE.Include", out temat, out trescHTML, nadawca);
                                 break;
                         }
                     }
@@ -1201,10 +1196,10 @@ namespace EventReceivers.tabZadaniaER
                         switch (zusOpcja)
                         {
                             case "Tylko zdrowotna":
-                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_Z_TEMPLATE.Include", out temat, out trescHTML);
+                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_Z_TEMPLATE.Include", out temat, out trescHTML, nadawca);
                                 break;
                             default:
-                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_TEMPLATE.Include", out temat, out trescHTML);
+                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_TEMPLATE.Include", out temat, out trescHTML, nadawca);
                                 break;
                         }
                     }
@@ -1214,10 +1209,10 @@ namespace EventReceivers.tabZadaniaER
                     switch (zusOpcja)
                     {
                         case "Tylko zdrowotna":
-                            BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_Z_TEMPLATE.Include", out temat, out trescHTML);
+                            BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_Z_TEMPLATE.Include", out temat, out trescHTML, nadawca);
                             break;
                         default:
-                            BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_TEMPLATE.Include", out temat, out trescHTML);
+                            BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_TEMPLATE.Include", out temat, out trescHTML, nadawca);
                             break;
                     }
                 }
@@ -1446,7 +1441,7 @@ namespace EventReceivers.tabZadaniaER
                 switch (Get_String(item, "colPD_OcenaWyniku"))
                 {
                     case "Dochód":
-                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_DOCHOD_TEMPLATE.Include", out temat, out trescHTML);
+                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_DOCHOD_TEMPLATE.Include", out temat, out trescHTML, nadawca);
                         //jeżeli wartość do zapłaty = 0 wtdy zastąp tekst formułką i ukryj tabelkę z płatnościami
                         if (GetValue(item, "colPD_WartoscDoZaplaty") == 0)
                             trescHTML = trescHTML.Replace("___NOTIFICATION___", BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_DOCHOD_0_NOTIFICATION", false));
@@ -1454,10 +1449,9 @@ namespace EventReceivers.tabZadaniaER
                             trescHTML = trescHTML.Replace("___NOTIFICATION___", "WARTOŚĆ DO ZAPŁATY");
                         break;
                     case "Strata":
-                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_STRATA_TEMPLATE.Include", out temat, out trescHTML);
+                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_STRATA_TEMPLATE.Include", out temat, out trescHTML, nadawca);
                         break;
                     default:
-                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_TEMPLATE.Include", out temat, out trescHTML);
                         break;
                 }
 
@@ -1697,20 +1691,19 @@ namespace EventReceivers.tabZadaniaER
                 switch (item["colVAT_Decyzja"] != null ? item["colVAT_Decyzja"].ToString() : string.Empty)
                 {
                     case "Do zapłaty":
-                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_DO_ZAPLATY_TEMPLATE.Include", out temat, out trescHTML);
+                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_DO_ZAPLATY_TEMPLATE.Include", out temat, out trescHTML, nadawca);
                         IsBWAllowed = true;
                         break;
                     case "Do przeniesienia":
-                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_DO_PRZENIESIENIA_TEMPLATE.Include", out temat, out trescHTML);
+                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_DO_PRZENIESIENIA_TEMPLATE.Include", out temat, out trescHTML, nadawca);
                         break;
                     case "Do zwrotu":
-                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_DO_ZWROTU_TEMPLATE.Include", out temat, out trescHTML);
+                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_DO_ZWROTU_TEMPLATE.Include", out temat, out trescHTML, nadawca);
                         break;
                     case "Do przeniesienia i do zwrotu":
-                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_DO_PRZENIESIENIA_ZWROTU_TEMPLATE.Include", out temat, out trescHTML);
+                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_DO_PRZENIESIENIA_ZWROTU_TEMPLATE.Include", out temat, out trescHTML,nadawca);
                         break;
                     default:
-                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_TEMPLATE.Include", out temat, out trescHTML);
                         break;
                 }
 
@@ -1853,7 +1846,7 @@ namespace EventReceivers.tabZadaniaER
                 string tresc = string.Empty;
                 string trescHTML = string.Empty;
 
-                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "RBR_TEMPLATE.Include", out temat, out trescHTML);
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "RBR_TEMPLATE.Include", out temat, out trescHTML, nadawca);
 
                 string lt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "RBR_LEADING_TEXT", false);
                 string firma = BLL.tabKlienci.Get_NazwaFirmyById(item.Web, klientId);

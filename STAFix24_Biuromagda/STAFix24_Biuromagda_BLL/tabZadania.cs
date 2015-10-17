@@ -738,7 +738,7 @@ namespace BLL
         }
 
 
-        public static Array Get_GotoweTasksByProceduraId(SPWeb web, int proceduraId)
+        public static Array Get_GotoweZadaniaByProceduraId(SPWeb web, int proceduraId)
         {
             SPList list = web.Lists.TryGetList(targetList);
             Array result = list.Items.Cast<SPListItem>()
@@ -765,6 +765,18 @@ namespace BLL
             {
                 result = item.ID;
             }
+
+            return result;
+        }
+
+        public static Array Get_AktywneZadaniaByProceduraId(SPWeb web, int proceduraId)
+        {
+            SPList list = web.Lists.TryGetList(targetList);
+            Array result = list.Items.Cast<SPListItem>()
+                .Where(i => i["enumStatusZadania"].ToString() == "Nowe" || i["enumStatusZadania"].ToString()=="Obsługa")
+                .Where(i => i["selProcedura"] != null)
+                .Where(i => new SPFieldLookupValue(i["selProcedura"].ToString()).LookupId == proceduraId)
+                .ToArray();
 
             return result;
         }

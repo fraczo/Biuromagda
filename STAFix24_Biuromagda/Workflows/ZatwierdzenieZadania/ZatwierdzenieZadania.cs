@@ -29,31 +29,30 @@ namespace Workflows.ZatwierdzenieZadania
 
         private void codeExecute_ExecuteCode(object sender, EventArgs e)
         {
-            SPListItem item = workflowProperties.Item;
+            //SPListItem item = workflowProperties.Item;
+            SPListItem item = workflowProperties.List.GetItemById(workflowProperties.ItemId); //Może to pomoże wymusić obsługę zdarzeń
 
-            //if (string.IsNullOrEmpty(BLL.Tools.Get_Text(item, "cmdFormatka")))
-            //{
-                string status = BLL.Tools.Get_Text(item, "enumStatusZadania");
-                switch (status)
-                {
-                    case "Nowe":
-                    case "Obsługa":
-                        if (item.ContentType.Name == "Prośba o dokumenty"
-                            || item.ContentType.Name == "Prośba o przesłanie wyciągu bankowego"
-                            || item.ContentType.Name == "Rozliczenie z biurem rachunkowym")
-                            Zatwierdz_Zadanie(item);
-                        break;
-                    case "Gotowe":
-                        if (item.ContentType.Name == "Rozliczenie ZUS"
-                            || item.ContentType.Name == "Rozliczenie podatku VAT"
-                            || item.ContentType.Name == "Rozliczenie podatku dochodowego"
-                            || item.ContentType.Name == "Rozliczenie podatku dochodowego spółki")
-                            Zatwierdz_Zadanie(item);
-                        break;
-                    default:
-                        break;
-                }
-            //}
+            string status = BLL.Tools.Get_Text(item, "enumStatusZadania");
+            switch (status)
+            {
+                case "Nowe":
+                case "Obsługa":
+                    if (item.ContentType.Name == "Prośba o dokumenty"
+                        || item.ContentType.Name == "Prośba o przesłanie wyciągu bankowego"
+                        || item.ContentType.Name == "Rozliczenie z biurem rachunkowym")
+                        Zatwierdz_Zadanie(item);
+                    break;
+                case "Gotowe":
+                    if (item.ContentType.Name == "Rozliczenie ZUS"
+                        || item.ContentType.Name == "Rozliczenie podatku VAT"
+                        || item.ContentType.Name == "Rozliczenie podatku dochodowego"
+                        || item.ContentType.Name == "Rozliczenie podatku dochodowego spółki")
+                        Zatwierdz_Zadanie(item);
+                    break;
+                default:
+                    break;
+            }
+
         }
 
         private static void Zatwierdz_Zadanie(SPListItem item)
@@ -62,8 +61,28 @@ namespace Workflows.ZatwierdzenieZadania
             if (string.IsNullOrEmpty(cmd))
             {
                 item["cmdFormatka"] = "Zatwierdź";
-                item.Update(); //aby respektował informację o bieżącym użytkowniku i prawidłowo wyświetlał stopkę wiadomości
+                item.SystemUpdate();
             }
+
+            EventReceivers.tabZadaniaER.tabZadaniaER o = new EventReceivers.tabZadaniaER.tabZadaniaER();
+            o.Execute(item);
+
+        }
+
+        private void codeTriggerItemEventReceiver_ExecuteCode(object sender, EventArgs e)
+        {
+            try
+            {
+                //EventReceivers.tabZadaniaER.tabZadaniaER o = new EventReceivers.tabZadaniaER.tabZadaniaER();
+                //o.Execute(workflowProperties.Item);
+            }
+            catch (Exception)
+            {
+#if DEBUG
+                throw;
+#endif
+            }
+
         }
     }
 }
