@@ -18,6 +18,8 @@ namespace admProcessRequests_EventReceiver
         /// <param name="properties"></param>
         internal static void Execute_GenFormRozlK(SPItemEventProperties properties, SPWeb web)
         {
+            StringBuilder msg = new StringBuilder();
+
             SPListItem item = properties.ListItem;
 
             int okresId = new SPFieldLookupValue(item["selOkres"].ToString()).LookupId;
@@ -28,6 +30,9 @@ namespace admProcessRequests_EventReceiver
                 SPListItem klient = tabKlienci.Get_KlientById(web, klientId);
                 if (klient != null && klient["enumStatus"] != null && klient["enumStatus"].ToString() == "Aktywny")
                 {
+                    msg.AppendFormat(@"<li>klient: {0}</li>",
+                        BLL.Tools.Get_LookupValue(item, "selKlient"));
+
                     switch (klient.ContentType.Name)
                     {
                         case "KPiR":
@@ -60,6 +65,17 @@ namespace admProcessRequests_EventReceiver
                 }
             }
 
+            // info o zakończeniu procesu
+            string bodyHTML = string.Empty;
+
+            if (msg.Length > 0)
+            {
+                bodyHTML = string.Format(@"<ul>{0}</ul>", msg.ToString());
+            }
+
+            string subject = string.Format(@"Generowanie formatek rozliczeniowych dla klienta");
+            SPEmail.EmailGenerator.SendProcessEndConfirmationMail(subject, bodyHTML, web, item);
+
         }
 
 
@@ -69,6 +85,8 @@ namespace admProcessRequests_EventReceiver
         /// <param name="properties"></param>
         internal static void Execute_GenFormRozl(SPItemEventProperties properties, SPWeb web)
         {
+            StringBuilder msg = new StringBuilder();
+
             StringBuilder sb = new StringBuilder();
 
             //sprawdź parametry wywołania
@@ -115,9 +133,26 @@ namespace admProcessRequests_EventReceiver
                             break;
                     }
 
-
+                    //informacja dla operatora
+                    foreach (SPListItem klinet in klienci)
+                    {
+                        msg.AppendFormat(@"<li>klient: {0}</li>",
+                        BLL.Tools.Get_LookupValue(item, "selKlient"));
+                    }
                 }
             }
+
+            // info o zakończeniu procesu
+            string bodyHTML = string.Empty;
+
+            if (msg.Length > 0)
+            {
+                bodyHTML = string.Format(@"<ul>{0}</ul>", msg.ToString());
+            }
+
+            string subject = string.Format(@"Generowanie formatek rozliczeniowych dla klientów typu {0}",
+                wt.ToString());
+            SPEmail.EmailGenerator.SendProcessEndConfirmationMail(subject, bodyHTML, web, item);
         }
 
         #region Helpers

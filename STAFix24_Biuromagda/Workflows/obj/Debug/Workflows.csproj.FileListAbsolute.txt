@@ -4,11 +4,11 @@ C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\obj\Debug\BRMagda.Workflows.
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\obj\Debug\BRMagda.Workflows.pdb
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\obj\Debug\Workflows.csprojResolveAssemblyReference.cache
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\bin\Debug\BRMagda.BLL.dll
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\bin\Debug\BRMagda.BLL.pdb
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\bin\Debug\BRMagda.EventReceivers.dll
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\bin\Debug\BRMagda.GeneratorDrukow.dll
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\bin\Debug\BRMagda.PdfSharp.dll
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\bin\Debug\BRMagda.EventReceivers.pdb
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\bin\Debug\BRMagda.BLL.pdb
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\bin\Debug\BRMagda.GeneratorDrukow.pdb
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\bin\Debug\BRMagda.PdfSharp.pdb
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Workflows\bin\Debug\BRMagda.PdfSharp.xml

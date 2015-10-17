@@ -183,5 +183,10 @@ namespace BLL
             }
             return string.Empty;
         }
+
+        public static string Get_LookupValue(SPListItem item, string col)
+        {
+            return item[col] != null ? new SPFieldLookupValue(item[col].ToString()).LookupValue : string.Empty;
+        }
     }
 }

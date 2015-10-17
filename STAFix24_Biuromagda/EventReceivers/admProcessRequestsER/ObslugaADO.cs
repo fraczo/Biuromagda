@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.SharePoint;
+using System.Text;
 
 namespace EventReceivers.admProcessRequestsER
 {
@@ -7,6 +8,8 @@ namespace EventReceivers.admProcessRequestsER
     {
         internal static void Execute(Microsoft.SharePoint.SPItemEventProperties properties, Microsoft.SharePoint.SPWeb web)
         {
+            StringBuilder msg = new StringBuilder();
+
             SPListItem item = properties.ListItem;
 
             // sprawdź czy wybrana procedura jest obsługiwana
@@ -33,6 +36,10 @@ namespace EventReceivers.admProcessRequestsER
                         if (BLL.tabKlienci.Has_ServiceById(task.Web, BLL.Tools.Get_LookupId(task, "selKlient"), "ADO"))
                         {
                             //uruchom proces zatwierdzenia
+                            msg.AppendFormat("<li>zadanie: {0} klient: {1}, procedura: {2}</li>",
+                                task.ID.ToString(),
+                                BLL.Tools.Get_LookupValue(task, "selKlient"),
+                                procName);
                             BLL.WorkflowHelpers.StartWorkflow(task, "Zatwierdzenie zadania");
                         }
                     }
@@ -51,6 +58,17 @@ namespace EventReceivers.admProcessRequestsER
                 default:
                     break;
             }
+
+            // info o zakończeniu procesu
+            string bodyHTML = string.Empty;
+
+            if (msg.Length>0)
+            {
+                bodyHTML = string.Format(@"<ul>{0}</ul>", msg.ToString());
+            }
+
+            string subject = string.Format(@"Automatyczne zatwierdzenie zadań typu {0}", procName);
+            SPEmail.EmailGenerator.SendProcessEndConfirmationMail(subject, bodyHTML, web, item);
         }
     }
 }

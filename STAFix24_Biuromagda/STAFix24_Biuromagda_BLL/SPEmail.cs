@@ -7,6 +7,7 @@ using System.Net.Mail;
 using System.Collections.Specialized;
 using Microsoft.SharePoint.Utilities;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace SPEmail
 {
@@ -155,8 +156,18 @@ namespace SPEmail
 
         public static void SendProcessEndConfirmationMail(string subject, string bodyHtml, SPWeb web, SPListItem item)
         {
+            subject = string.Format(": Zlecenie #{0} [{1}] - zakończone", item.ID.ToString(), subject);
+
             string from = "STAFix24 Robot<noreply@stafix24.pl>";
             string to = new SPFieldUserValue(web, item["Author"].ToString()).User.Email;
+
+            DateTime sDate = DateTime.Parse(item["Created"].ToString());
+            DateTime eDate = DateTime.Now;
+            TimeSpan ts = eDate - sDate;
+                bodyHtml = string.Format(@"<div>od: {0}<br>do: {1} ({2})</div>",
+                    sDate.ToString(),
+                    eDate.ToString(),
+                    string.Format("{0:HH\\:mm\\:ss}", new DateTime(ts.Ticks)));
 
             SendMail(web, from, to, subject, bodyHtml, true, string.Empty, string.Empty);
 
