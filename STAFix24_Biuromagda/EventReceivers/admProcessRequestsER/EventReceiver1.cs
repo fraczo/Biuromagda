@@ -53,13 +53,11 @@ namespace admProcessRequests_EventReceiver
                             {
                                 case "Generowanie formatek rozliczeniowych":
                                     GeneratorFormatekRozliczeniowych.Execute_GenFormRozl(properties, web);
-                                    //PotwierdzMailemZakonczenieZlecenia(properties, web, ct);
-                                    //obsługa wewnętrz porcedury
+                                    PotwierdzMailemZakonczenieZlecenia(properties, web, ct);
                                     break;
                                 case "Generowanie formatek rozliczeniowych dla klienta":
                                     GeneratorFormatekRozliczeniowych.Execute_GenFormRozlK(properties, web);
-                                    //PotwierdzMailemZakonczenieZlecenia(properties, web, ct);
-                                    //obsługa wewnętrz porcedury
+                                    PotwierdzMailemZakonczenieZlecenia(properties, web, ct);
                                     break;
                                 case "Import Klientów":
                                     string message;
@@ -141,9 +139,12 @@ namespace admProcessRequests_EventReceiver
             PotwierdzMailemZakonczenieZlecenia(properties, web, ct, bodyHtml);
         }
 
-        private static void PotwierdzMailemZakonczenieZlecenia(SPItemEventProperties properties, SPWeb web, string ct, string bodyHtml)
+        private static void PotwierdzMailemZakonczenieZlecenia(SPItemEventProperties properties, SPWeb web, string ct, string message)
         {
-            string subject = ct.ToString();
+
+            string subject = String.Format(@": Zlecenie #{0} {1} - zakończone", properties.ListItemId.ToString(), ct);
+            string bodyHtml = message;
+
 #if DEBUG
             //send directly via ElasticEmail
             ElasticEmail.EmailGenerator.SendProcessEndConfirmationMail(

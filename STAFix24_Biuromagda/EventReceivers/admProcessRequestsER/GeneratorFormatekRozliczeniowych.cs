@@ -30,9 +30,8 @@ namespace admProcessRequests_EventReceiver
                 SPListItem klient = tabKlienci.Get_KlientById(web, klientId);
                 if (klient != null && klient["enumStatus"] != null && klient["enumStatus"].ToString() == "Aktywny")
                 {
-                    msg.AppendFormat(@"<li>klient# {0} {1}</li>",
-                        klient.ID.ToString(),
-                        BLL.Tools.Get_Text(klient, "_NazwaPrezentowana"));
+                    msg.AppendFormat(@"<li>klient: {0}</li>",
+                        BLL.Tools.Get_LookupValue(item, "selKlient"));
 
                     switch (klient.ContentType.Name)
                     {
@@ -109,15 +108,15 @@ namespace admProcessRequests_EventReceiver
                     {
                         case "KPiR":
                             ZUS_Forms.Create(web, klienci, okresId, createKK);
-                            PD_Forms.Create(web, klienci, okresId, createKK);
+                            PD_Forms.Create(web, klienci, okresId, createKK );
                             VAT_Forms.Create(web, klienci, okresId, createKK);
                             BR_Forms.Create(web, klienci, okresId);
                             Reminder_Forms.Create(web, klienci, okresId);
                             break;
                         case "KSH":
-                            ZUS_Forms.Create(web, klienci, okresId, createKK);
+                            ZUS_Forms.Create(web, klienci, okresId,createKK);
                             PDS_Forms.Create(web, klienci, okresId, createKK);
-                            VAT_Forms.Create(web, klienci, okresId, createKK);
+                            VAT_Forms.Create(web, klienci, okresId,createKK);
                             BR_Forms.Create(web, klienci, okresId);
                             Reminder_Forms.Create(web, klienci, okresId);
                             break;
@@ -135,11 +134,10 @@ namespace admProcessRequests_EventReceiver
                     }
 
                     //informacja dla operatora
-                    foreach (SPListItem klient in klienci)
+                    foreach (SPListItem klinet in klienci)
                     {
-                        msg.AppendFormat(@"<li>klient# {0} {1}</li>",
-                            klient.ID.ToString(),
-                            BLL.Tools.Get_Text(klient, "_NazwaPrezentowana"));
+                        msg.AppendFormat(@"<li>klient: {0}</li>",
+                        BLL.Tools.Get_LookupValue(item, "selKlient"));
                     }
                 }
             }

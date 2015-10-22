@@ -164,11 +164,10 @@ namespace SPEmail
             DateTime sDate = DateTime.Parse(item["Created"].ToString());
             DateTime eDate = DateTime.Now;
             TimeSpan ts = eDate - sDate;
-                bodyHtml = string.Format(@"<div>od: {0}<br>do: {1} ({2})</div>{3}",
+                bodyHtml = string.Format(@"<div>od: {0}<br>do: {1} ({2})</div>",
                     sDate.ToString(),
                     eDate.ToString(),
-                    string.Format("{0:HH\\:mm\\:ss}", new DateTime(ts.Ticks)),
-                    bodyHtml.ToString());
+                    string.Format("{0:HH\\:mm\\:ss}", new DateTime(ts.Ticks)));
 
             SendMail(web, from, to, subject, bodyHtml, true, string.Empty, string.Empty);
 
