@@ -1,5 +1,0 @@
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\SharePointConsoleApplication1\bin\Debug\SharePointConsoleApplication1.exe
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\SharePointConsoleApplication1\bin\Debug\SharePointConsoleApplication1.pdb
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\SharePointConsoleApplication1\obj\Debug\SharePointConsoleApplication1.csprojResolveAssemblyReference.cache
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\SharePointConsoleApplication1\obj\Debug\SharePointConsoleApplication1.exe
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\SharePointConsoleApplication1\obj\Debug\SharePointConsoleApplication1.pdb
