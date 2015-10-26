@@ -188,5 +188,29 @@ namespace BLL
         {
             return item[col] != null ? new SPFieldLookupValue(item[col].ToString()).LookupValue : string.Empty;
         }
+
+        public static bool Get_Flag(SPListItem item, string col)
+        {
+            return item[col] != null ? (bool)item[col] : false;
+        }
+
+        public static void Clear_Value(SPListItem item, string col)
+        {
+
+            if (item[col] != null)
+            {
+                item[col] = string.Empty;
+                item.SystemUpdate();
+            }
+        }
+
+        public static void Clear_Flag(SPListItem item, string col)
+        {
+            if (item[col] != null)
+            {
+                item[col] = false;
+                item.SystemUpdate();
+            }
+        }
     }
 }

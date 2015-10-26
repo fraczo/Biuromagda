@@ -1966,82 +1966,158 @@ namespace EventReceivers.tabZadaniaER
             Set_ValidationFlag(item, false);
 
             //oczyść dane w zależności od wybranej Decyzji
-            string opcja = item["colZUS_Opcja"] != null ? item["colZUS_Opcja"].ToString() : string.Empty;
+            bool zpFlag = BLL.Tools.Get_Flag(item, "colZatrudniaPracownikow");
+            string opcja = BLL.Tools.Get_Text(item, "colZUS_Opcja");
             if (string.IsNullOrEmpty(opcja))
             {
                 return false;
             }
 
-            switch (opcja)
+            if (zpFlag) //zatrudnia pracowników
             {
-                case "Tylko zdrowotna":
-                    ClearValue(item, "colZUS_SP_Skladka");
-                    ClearValue(item, "colZUS_FP_Skladka");
-                    if (GetValue(item, "colZUS_ZD_Skladka") >= 0)
-                    {
-                        bool foundError = false;
+                switch (opcja)
+                {
+                    case "Tylko zdrowotna":
+                        BLL.Tools.Clear_Flag(item, "colZUS_PIT-4R_Zalaczony");
+                        BLL.Tools.Clear_Value(item, "colZUS_PIT-4R");
+                        BLL.Tools.Clear_Flag(item, "colZUS_PIT-8AR_Zalaczony");
+                        BLL.Tools.Clear_Value(item, "colZUS_PIT-8AR");
 
-                        if (string.IsNullOrEmpty(Get_String(item, "colZUS_SP_Konto")))
+                        BLL.Tools.Clear_Value(item, "colZUS_SP_Skladka");
+                        BLL.Tools.Clear_Value(item, "colZUS_FP_Skladka");
+                        if (GetValue(item, "colZUS_ZD_Skladka") >= 0)
                         {
-                            Add_Comment(item, "brak numeru konta ZUS SP");
-                            foundError = true;
-                        }
-                        if (string.IsNullOrEmpty(Get_String(item, "colZUS_ZD_Konto")))
-                        {
-                            Add_Comment(item, "brak numeru konta ZUS ZD");
-                            foundError = true;
-                        }
-                        if (string.IsNullOrEmpty(Get_String(item, "colZUS_FP_Konto")))
-                        {
-                            Add_Comment(item, "brak numeru konta ZUS FP");
-                            foundError = true;
-                        }
+                            bool foundError = false;
 
-                        if (foundError)
+                            if (string.IsNullOrEmpty(Get_String(item, "colZUS_SP_Konto")))
+                            {
+                                Add_Comment(item, "brak numeru konta ZUS SP");
+                                foundError = true;
+                            }
+                            if (string.IsNullOrEmpty(Get_String(item, "colZUS_ZD_Konto")))
+                            {
+                                Add_Comment(item, "brak numeru konta ZUS ZD");
+                                foundError = true;
+                            }
+                            if (string.IsNullOrEmpty(Get_String(item, "colZUS_FP_Konto")))
+                            {
+                                Add_Comment(item, "brak numeru konta ZUS FP");
+                                foundError = true;
+                            }
+
+                            if (foundError)
+                            {
+                                Set_ValidationFlag(item, true);
+                                return false;
+                            }
+
+                            return true;
+                        }
+                        else
                         {
+                            Add_Comment(item, "Niedozwolona ujemna wartość składki zdrowotnej");
                             Set_ValidationFlag(item, true);
                             return false;
                         }
+                        break;
+                    default:
+                        if (GetValue(item, "colZUS_SP_Skladka") >= 0
+                            && GetValue(item, "colZUS_ZD_Skladka") >= 0
+                            && GetValue(item, "colZUS_FP_Skladka") >= 0)
+                        {
+                            bool foundError = false;
 
-                        return true;
-                    }
-                    break;
-                default:
-                    if (GetValue(item, "colZUS_SP_Skladka") >= 0
-                        && GetValue(item, "colZUS_ZD_Skladka") >= 0
-                        && GetValue(item, "colZUS_FP_Skladka") >= 0)
-                    {
-                        bool foundError = false;
+                            if (string.IsNullOrEmpty(Get_String(item, "colZUS_SP_Konto")))
+                            {
+                                Add_Comment(item, "brak numeru konta ZUS SP");
+                                foundError = true;
+                            }
+                            if (string.IsNullOrEmpty(Get_String(item, "colZUS_ZD_Konto")))
+                            {
+                                Add_Comment(item, "brak numeru konta ZUS ZD");
+                                foundError = true;
+                            }
+                            if (string.IsNullOrEmpty(Get_String(item, "colZUS_FP_Konto")))
+                            {
+                                Add_Comment(item, "brak numeru konta ZUS FP");
+                                foundError = true;
+                            }
 
-                        if (string.IsNullOrEmpty(Get_String(item, "colZUS_SP_Konto")))
-                        {
-                            Add_Comment(item, "brak numeru konta ZUS SP");
-                            foundError = true;
-                        }
-                        if (string.IsNullOrEmpty(Get_String(item, "colZUS_ZD_Konto")))
-                        {
-                            Add_Comment(item, "brak numeru konta ZUS ZD");
-                            foundError = true;
-                        }
-                        if (string.IsNullOrEmpty(Get_String(item, "colZUS_FP_Konto")))
-                        {
-                            Add_Comment(item, "brak numeru konta ZUS FP");
-                            foundError = true;
-                        }
+                            if (BLL.Tools.Get_Flag(item, "colZUS_PIT-8AR_Zalaczony")
+                                && GetValue(item, "colZUS_PIT-4R") < 0)
+                            {
+                                Add_Comment(item, "Niedozolona ujemna wartość PIT-4R");
+                                foundError = true;
+                            }
+                            if (BLL.Tools.Get_Flag(item, "colZUS_PIT-8AR_Zalaczony")
+                                && GetValue(item, "colZUS_PIT-8AR") < 0)
+                            {
+                                Add_Comment(item, "Niedozolona ujemna wartość PIT-8AR");
+                                foundError = true;
+                            }
 
-                        if (foundError)
+                            if (foundError)
+                            {
+                                Set_ValidationFlag(item, true);
+                                return false;
+                            }
+
+                            return true;
+                        }
+                        else
                         {
+                            Add_Comment(item, "Niedozwolona ujemna wartość składki");
                             Set_ValidationFlag(item, true);
                             return false;
                         }
+                        break;
+                }
 
-                        return true;
-                    }
-                    break;
             }
+            else //nie zatrudnia pracowników
+            {
+                BLL.Tools.Clear_Flag(item, "colZUS_PIT-4R_Zalaczony");
+                BLL.Tools.Clear_Value(item, "colZUS_PIT-4R");
+                BLL.Tools.Clear_Flag(item, "colZUS_PIT-8AR_Zalaczony");
+                BLL.Tools.Clear_Value(item, "colZUS_PIT-8AR");
 
-            Set_ValidationFlag(item, true);
-            return false;
+                if (GetValue(item, "colZUS_SP_Skladka") >= 0
+                && GetValue(item, "colZUS_ZD_Skladka") >= 0
+                && GetValue(item, "colZUS_FP_Skladka") >= 0)
+                {
+                    bool foundError = false;
+
+                    if (string.IsNullOrEmpty(Get_String(item, "colZUS_SP_Konto")))
+                    {
+                        Add_Comment(item, "brak numeru konta ZUS SP");
+                        foundError = true;
+                    }
+                    if (string.IsNullOrEmpty(Get_String(item, "colZUS_ZD_Konto")))
+                    {
+                        Add_Comment(item, "brak numeru konta ZUS ZD");
+                        foundError = true;
+                    }
+                    if (string.IsNullOrEmpty(Get_String(item, "colZUS_FP_Konto")))
+                    {
+                        Add_Comment(item, "brak numeru konta ZUS FP");
+                        foundError = true;
+                    }
+
+                    if (foundError)
+                    {
+                        Set_ValidationFlag(item, true);
+                        return false;
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    Add_Comment(item, "Niedozwolona ujemna wartość składki");
+                    Set_ValidationFlag(item, true);
+                    return false;
+                }
+            }
         }
 
         private bool isValidated_PD(SPListItem item)
@@ -2060,7 +2136,7 @@ namespace EventReceivers.tabZadaniaER
             switch (ocena)
             {
                 case "Dochód":
-                    ClearValue(item, "colPD_WartoscStraty");
+                    BLL.Tools.Clear_Value(item, "colPD_WartoscStraty");
 
                     if (GetValue(item, "colPD_WartoscDoZaplaty") >= 0
                         && GetValue(item, "colPD_WartoscDochodu") >= 0)
@@ -2072,8 +2148,8 @@ namespace EventReceivers.tabZadaniaER
                         }
                     break;
                 case "Strata":
-                    ClearValue(item, "colPD_WartoscDochodu");
-                    ClearValue(item, "colPD_WartoscDoZaplaty");
+                    BLL.Tools.Clear_Value(item, "colPD_WartoscDochodu");
+                    BLL.Tools.Clear_Value(item, "colPD_WartoscDoZaplaty");
 
                     if (GetValue(item, "colPD_WartoscStraty") > 0) return true;
                     else
@@ -2099,7 +2175,81 @@ namespace EventReceivers.tabZadaniaER
         private bool isValidated_PDS(SPListItem item)
         {
             //wszystkie warunki dla PD powinny być spełnione dla PDS
-            return isValidated_PD(item);
+            bool result = isValidated_PD(item);
+            if (result)
+            {
+                //dodatkowe warunki do sprawdzenia dla PDS
+                bool foundError = false;
+
+                // koszty NKUP
+
+                if (BLL.Tools.Get_Flag(item, "colKosztyNKUP"))
+                {
+                    if (GetValue(item, "colKosztyNKUP_WynWyl") < 0
+                        || GetValue(item, "colKosztyNKUP_ZUSPlatWyl") < 0
+                        || GetValue(item, "colKosztyNKUP_FakWyl") < 0
+                        || GetValue(item, "colKosztyNKUP_PozostaleKoszty") < 0)
+                    {
+                        Add_Comment(item, "Niedozolone wartości w sekcji Koszty NKUP");
+                        foundError = true;
+                    }
+                }
+                else
+                {
+                    BLL.Tools.Clear_Value(item, "colKosztyNKUP_WynWyl");
+                    BLL.Tools.Clear_Value(item, "colKosztyNKUP_ZUSPlatWyl");
+                    BLL.Tools.Clear_Value(item, "colKosztyNKUP_FakWyl");
+                    BLL.Tools.Clear_Value(item, "colKosztyNKUP_PozostaleKoszty");
+                }
+
+                // Przychody WS
+
+                if (BLL.Tools.Get_Flag(item, "colKosztyWS"))
+                {
+                    if (GetValue(item, "colKosztyWS_WynWlaczone") < 0
+                        || GetValue(item, "colKosztyWS_ZUSPlatWlaczone") < 0
+                        || GetValue(item, "colKosztyWS_FakWlaczone") < 0)
+                    {
+                        Add_Comment(item, "Niedozolone wartości w sekcji Koszty WS");
+                        foundError = true;
+                    }
+                }
+                else
+                {
+                    BLL.Tools.Clear_Value(item, "colKosztyWS_WynWlaczone");
+                    BLL.Tools.Clear_Value(item, "colKosztyWS_ZUSPlatWlaczone");
+                    BLL.Tools.Clear_Value(item, "colKosztyWS_FakWlaczone");
+                }
+
+                // Przychody NP
+
+                if (BLL.Tools.Get_Flag(item, "colPrzychodyNP"))
+                {
+                    if (GetValue(item, "colPrzychodyNP_DywidendySpO") < 0
+                        || GetValue(item, "colPrzychodyNP_Inne") < 0)
+                    {
+                        Add_Comment(item, "Niedozolone wartości w sekcji Przychody NP");
+                        foundError = true;
+                    }
+                }
+                else
+                {
+                    BLL.Tools.Clear_Value(item, "colPrzychodyNP_DywidendySpO");
+                    BLL.Tools.Clear_Value(item, "colPrzychodyNP_Inne");
+                }
+
+                // TODO: rozwinięcie walidatora
+
+                if (foundError)
+                {
+                    Set_ValidationFlag(item, true);
+                    result = false;
+                }
+
+                return result;
+            }
+
+            return false;
         }
 
         private bool isValidated_VAT(SPListItem item)
@@ -2116,9 +2266,9 @@ namespace EventReceivers.tabZadaniaER
             switch (decyzja)
             {
                 case "Do zapłaty":
-                    //ClearValue(item, "colVAT_WartoscDoZaplaty");
-                    ClearValue(item, "colVAT_WartoscDoPrzeniesienia");
-                    ClearValue(item, "colVAT_WartoscDoZwrotu");
+                    //BLL.Tools.Clear_Value(item, "colVAT_WartoscDoZaplaty");
+                    BLL.Tools.Clear_Value(item, "colVAT_WartoscDoPrzeniesienia");
+                    BLL.Tools.Clear_Value(item, "colVAT_WartoscDoZwrotu");
 
                     if (GetValue(item, "colVAT_WartoscDoZaplaty") >= 0)
                         if (!string.IsNullOrEmpty(Get_String(item, "colVAT_Konto"))) return true;
@@ -2129,9 +2279,9 @@ namespace EventReceivers.tabZadaniaER
                     }
                     break;
                 case "Do przeniesienia":
-                    ClearValue(item, "colVAT_WartoscDoZaplaty");
-                    //ClearValue(item, "colVAT_WartoscDoPrzeniesienia");
-                    ClearValue(item, "colVAT_WartoscDoZwrotu");
+                    BLL.Tools.Clear_Value(item, "colVAT_WartoscDoZaplaty");
+                    //BLL.Tools.Clear_Value(item, "colVAT_WartoscDoPrzeniesienia");
+                    BLL.Tools.Clear_Value(item, "colVAT_WartoscDoZwrotu");
 
                     if (GetValue(item, "colVAT_WartoscDoPrzeniesienia") >= 0) return true;
                     else
@@ -2140,9 +2290,9 @@ namespace EventReceivers.tabZadaniaER
                     }
                     break;
                 case "Do zwrotu":
-                    ClearValue(item, "colVAT_WartoscDoZaplaty");
-                    ClearValue(item, "colVAT_WartoscDoPrzeniesienia");
-                    //ClearValue(item, "colVAT_WartoscDoZwrotu");
+                    BLL.Tools.Clear_Value(item, "colVAT_WartoscDoZaplaty");
+                    BLL.Tools.Clear_Value(item, "colVAT_WartoscDoPrzeniesienia");
+                    //BLL.Tools.Clear_Value(item, "colVAT_WartoscDoZwrotu");
 
                     if (GetValue(item, "colVAT_WartoscDoZwrotu") >= 0) return true;
                     else
@@ -2151,9 +2301,9 @@ namespace EventReceivers.tabZadaniaER
                     }
                     break;
                 case "Do przeniesienia i do zwrotu":
-                    ClearValue(item, "colVAT_WartoscDoZaplaty");
-                    //ClearValue(item, "colVAT_WartoscDoPrzeniesienia");
-                    //ClearValue(item, "colVAT_WartoscDoZwrotu");
+                    BLL.Tools.Clear_Value(item, "colVAT_WartoscDoZaplaty");
+                    //BLL.Tools.Clear_Value(item, "colVAT_WartoscDoPrzeniesienia");
+                    //BLL.Tools.Clear_Value(item, "colVAT_WartoscDoZwrotu");
 
                     if (GetValue(item, "colVAT_WartoscDoPrzeniesienia") >= 0
                         && GetValue(item, "colVAT_WartoscDoZwrotu") >= 0) return true;
@@ -2198,15 +2348,6 @@ namespace EventReceivers.tabZadaniaER
             }
         }
 
-        private void ClearValue(SPListItem item, string colName)
-        {
-            if (item[colName] != null)
-            {
-                item[colName] = string.Empty;
-                item.SystemUpdate();
-            }
-        }
-
         private bool isValidated_RBR(SPListItem item)
         {
             Set_ValidationFlag(item, false);
@@ -2214,6 +2355,13 @@ namespace EventReceivers.tabZadaniaER
             StringBuilder sb = new StringBuilder();
 
             bool foundErrors = false;
+
+            if (string.IsNullOrEmpty(Get_String(item, "colBR_DataWystawieniaFaktury")))
+            {
+                foundErrors = true;
+                sb.AppendLine(@"brak daty wystawienia faktury");
+            }
+
             if (string.IsNullOrEmpty(Get_String(item, "colBR_NumerFaktury")))
             {
                 foundErrors = true;
@@ -2232,6 +2380,12 @@ namespace EventReceivers.tabZadaniaER
                     foundErrors = true;
                     sb.AppendLine(@"brak załącznika");
                 }
+            }
+
+            if (string.IsNullOrEmpty(Get_String(item, "colBR_TerminPlatnosci")))
+            {
+                foundErrors = true;
+                sb.AppendLine(@"brak terminu płatności faktury");
             }
 
             if (!foundErrors) return true;
