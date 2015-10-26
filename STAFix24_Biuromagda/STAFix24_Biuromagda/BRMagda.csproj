@@ -117,6 +117,10 @@
     <Content Include="SiteAssets\Elements.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\STAFix24_Biuromagda_BLL\BLL.csproj">
+      <Project>{2C8ECD80-A047-4795-99B3-C0EFC6961A9E}</Project>
+      <Name>BLL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TimerJobs\TimerJobs.csproj">
       <Project>{1C9C88D5-6A79-47DC-A888-138CA7DB8A28}</Project>
       <Name>TimerJobs</Name>
