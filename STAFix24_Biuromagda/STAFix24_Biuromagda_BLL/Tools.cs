@@ -164,19 +164,19 @@ namespace BLL
                     case 1:
                     case 2:
                     case 3:
-                        return rok + "-K01";
+                        return "I " + rok;
                     case 4:
                     case 5:
                     case 6:
-                        return rok + "-K02";
+                        return "II " + rok;
                     case 7:
                     case 8:
                     case 9:
-                        return rok + "-K03";
+                        return "III " + rok;
                     case 10:
                     case 11:
                     case 12:
-                        return rok + "-K04";
+                        return "IV " + rok;
                     default:
                         return string.Empty;
                 }
