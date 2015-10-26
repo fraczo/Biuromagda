@@ -1,0 +1,12 @@
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\bin\Debug\BRMagda.PdfSharp.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\bin\Debug\BRMagda.PdfSharp.pdb
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\bin\Debug\de\BRMagda.PdfSharp.resources.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\obj\Debug\PdfSharp.Forms.PagePreview.resources
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\obj\Debug\PdfSharp.Forms.PagePreviewCanvas.resources
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\obj\Debug\PdfSharp.Resources.Messages.resources
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\obj\Debug\PdfSharp.Resources.Messages.de.resources
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\obj\Debug\PdfSharp.csproj.GenerateResource.Cache
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\obj\Debug\de\BRMagda.PdfSharp.resources.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\obj\Debug\BRMagda.PdfSharp.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\obj\Debug\BRMagda.PdfSharp.pdb
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\bin\Debug\BRMagda.PdfSharp.xml

@@ -1,0 +1,5 @@
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\SharePointConsoleApplication1\bin\Release\SharePointConsoleApplication1.exe
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\SharePointConsoleApplication1\bin\Release\SharePointConsoleApplication1.pdb
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\SharePointConsoleApplication1\obj\Release\SharePointConsoleApplication1.csprojResolveAssemblyReference.cache
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\SharePointConsoleApplication1\obj\Release\SharePointConsoleApplication1.exe
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\SharePointConsoleApplication1\obj\Release\SharePointConsoleApplication1.pdb
