@@ -61,7 +61,9 @@ namespace BLL.Models
                         this.FormaPrawna = item["enumFormaPrawna"] != null ? item["enumFormaPrawna"].ToString() : string.Empty;
                         break;
                     case "Osoba fizyczna":
-
+                        this.ImieNazwisko = string.Format("{0} {1}",
+                            item["colImie"] != null ? item["colImie"].ToString() : string.Empty,
+                            item["colNazwisko"] != null ? item["colNazwisko"].ToString() : string.Empty);
                         this.PelnaNazwaFirmy = string.Format("{0} {1} {2}",
                             item["colImie"] != null ? item["colImie"].ToString() : string.Empty,
                             item["colNazwisko"] != null ? item["colNazwisko"].ToString() : string.Empty,
@@ -231,7 +233,17 @@ namespace BLL.Models
 
         public string Get_NazwaNadawcyPrzelewu()
         {
-            string s = NazwaFirmy + " " + Adres + " " + KodPocztowy + " " + Miejscowosc;
+            string s;
+            switch (this.TypKlienta)
+            {
+                case "Osoba fizyczna":
+                    s = NazwaFirmy + " " + Adres + " " + KodPocztowy + " " + Miejscowosc;
+                    break;
+                default:
+                    s = ImieNazwisko + " " + Adres + " " + KodPocztowy + " " + Miejscowosc;
+                    break;
+            }
+            
             s = s.Replace("  ", " ").Replace("  ", " ").Replace("  ", " ").Trim();
             return s;
 
@@ -264,5 +276,7 @@ namespace BLL.Models
         public int UrzadSkarbowyVATId { get; set; }
 
         public string NazwaUrzeduSkarbowegoVAT { get; set; }
+
+        public string ImieNazwisko { get; set; }
     }
 }
