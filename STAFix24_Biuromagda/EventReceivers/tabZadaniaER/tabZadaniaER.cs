@@ -1308,14 +1308,14 @@ namespace EventReceivers.tabZadaniaER
                         || GetValue(item, "colZUS_FP_Skladka") > 0)
                     {
                         //ustaw reminder
-
+                        nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
                         switch (zusOpcja)
                         {
                             case "Tylko zdrowotna":
-                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_Z_REMINDER_TEMPLATE.Include", out temat, out trescHTML);
+                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_Z_REMINDER_TEMPLATE.Include", out temat, out trescHTML, nadawca);
                                 break;
                             default:
-                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_REMINDER_TEMPLATE.Include", out temat, out trescHTML);
+                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_REMINDER_TEMPLATE.Include", out temat, out trescHTML, nadawca);
                                 break;
                         }
                             
@@ -1348,7 +1348,7 @@ namespace EventReceivers.tabZadaniaER
                         
 
                         planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
-                        nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+                        
 
                         BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId, Marker.ReminderZUS);
                     }
@@ -1361,8 +1361,8 @@ namespace EventReceivers.tabZadaniaER
                         || GetValue(item, "colZUS_PIT-8AR") > 0)
                     {
                         //ustaw reminder
-
-                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_PIT_REMINDER_TEMPLATE.Include", out temat, out trescHTML);
+                        nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_PIT_REMINDER_TEMPLATE.Include", out temat, out trescHTML, nadawca);
 
                         temat = Update_Data(temat, terminPlatnosci);
                         temat = BLL.Tools.AddCompanyName(temat, item);
@@ -1388,7 +1388,7 @@ namespace EventReceivers.tabZadaniaER
                         trescHTML = sb.ToString();
 
                         planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
-                        nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+                        
 
                         BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId, Marker.ReminderZUS_PIT);
                     }
@@ -1558,7 +1558,8 @@ namespace EventReceivers.tabZadaniaER
                         if (GetValue(item, "colPD_WartoscDoZaplaty") > 0)
                         {
                             //ustaw reminder
-                            BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_DOCHOD_REMINDER_TEMPLATE.Include", out temat, out trescHTML);
+                            nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+                            BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_DOCHOD_REMINDER_TEMPLATE.Include", out temat, out trescHTML, nadawca);
                             temat = Update_Data(temat, terminPlatnosci);
                             temat = BLL.Tools.AddCompanyName(temat, item);
 
@@ -1583,7 +1584,7 @@ namespace EventReceivers.tabZadaniaER
                             trescHTML = sb.ToString();
 
                             planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
-                            nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+                            
 
                             BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
                         }
@@ -1787,7 +1788,8 @@ namespace EventReceivers.tabZadaniaER
                         if (GetValue(item, "colVAT_WartoscDoZaplaty") > 0)
                         {
                             //ustaw reminder
-                            BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_DO_ZAPLATY_REMINDER_TEMPLATE.Include", out temat, out trescHTML);
+                            nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+                            BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "VAT_DO_ZAPLATY_REMINDER_TEMPLATE.Include", out temat, out trescHTML, nadawca);
                             temat = Update_Data(temat, terminPlatnosci);
                             temat = BLL.Tools.AddCompanyName(temat, item);
 
@@ -1812,7 +1814,7 @@ namespace EventReceivers.tabZadaniaER
                             trescHTML = sb.ToString();
 
                             planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
-                            nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+                            
 
                             BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
                         }
@@ -1901,7 +1903,8 @@ namespace EventReceivers.tabZadaniaER
                     if (GetValue(item, "colBR_WartoscDoZaplaty") > 0)
                     {
                         //ustaw reminder
-                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "RBR_REMINDER_TEMPLATE.Include", out temat, out trescHTML);
+                        nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "RBR_REMINDER_TEMPLATE.Include", out temat, out trescHTML, nadawca);
                         temat = Update_Data(temat, terminPlatnosci);
                         temat = BLL.Tools.AddCompanyName(temat, item);
 
@@ -1927,7 +1930,7 @@ namespace EventReceivers.tabZadaniaER
                         trescHTML = sb.ToString();
 
                         planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
-                        nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+                        
 
                         BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
                     }
