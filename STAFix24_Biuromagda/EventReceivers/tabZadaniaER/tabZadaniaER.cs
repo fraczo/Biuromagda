@@ -1146,6 +1146,9 @@ namespace EventReceivers.tabZadaniaER
             //dodaj nazwę firmy w tytule wiadomości
             temat = BLL.Tools.AddCompanyName(temat, item);
 
+            string firma = BLL.tabKlienci.Get_NazwaFirmyById(item.Web, klientId);
+            trescHTML = trescHTML.Replace("___Firma___", firma);
+
             string info = item["colInformacjaDlaKlienta"] != null ? item["colInformacjaDlaKlienta"].ToString() : string.Empty;
             trescHTML = trescHTML.Replace("___colInformacjaDlaKlienta___", info);
 
