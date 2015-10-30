@@ -117,9 +117,6 @@ namespace SPEmail
         /// <param name="isTestMode"></param>
         public static void SendMailFromMessageQueue(SPListItem item, MailMessage mail, bool isTestMode)
         {
-            //wymusza zaślepienie wysyłek
-            isTestMode = true;
-
             if (isTestMode)
             {
                 StringBuilder sb = new StringBuilder();

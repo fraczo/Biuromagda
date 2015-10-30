@@ -106,6 +106,21 @@ namespace Workflows.ObslugaWiadomosci
             if (isMailReadyToSend)
             {
                 bool testMode = true;
+
+                try
+                {
+                    if (BLL.admSetup.IsProductionEnabled(item.Web))
+                    {
+                        //TRYB PRODUKCYNJY AKTYWNY
+                        testMode = false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var result = ElasticEmail.EmailGenerator.ReportError(ex, item.ParentList.ParentWeb.Url);
+                }
+
+                
                 SPEmail.EmailGenerator.SendMailFromMessageQueue(item, mail, testMode);
 
                 //ustaw flagę wysyłki

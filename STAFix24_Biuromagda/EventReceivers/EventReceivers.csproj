@@ -85,9 +85,6 @@
       <SharePointProjectItemId>{95c6a07b-c9ed-4adb-bd85-f16c5275766b}</SharePointProjectItemId>
       <SubType>Designer</SubType>
     </None>
-    <None Include="Features\Feature1\Feature1.feature">
-      <FeatureId>{9ef4bdb3-406d-484c-9183-f61e2a90a978}</FeatureId>
-    </None>
     <None Include="key.snk" />
     <None Include="Package\Package.package">
       <PackageId>{3994201a-04b5-4281-8ce8-582b6b7a7bd3}</PackageId>
@@ -131,11 +128,10 @@
       <Name>BLL</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Content Include="Features\Feature1\Feature1.Template.xml">
-      <DependentUpon>Feature1.feature</DependentUpon>
-    </Content>
+    <Folder Include="Features\" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="tabDochodyWspolnikow\Elements.xml" />
     <Content Include="tabDochodyZInnychSpolek\Elements.xml" />
     <Content Include="tabProceduryER\Elements.xml" />

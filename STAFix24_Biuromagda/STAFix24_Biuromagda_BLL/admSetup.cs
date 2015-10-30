@@ -13,7 +13,7 @@ namespace BLL
 
         internal static Models.KontaZUS GetKontaZUS(Microsoft.SharePoint.SPWeb web)
         {
-            SPList list  = web.Lists.TryGetList(targetList);
+            SPList list = web.Lists.TryGetList(targetList);
 
             KontaZUS obj = new Models.KontaZUS();
 
@@ -24,7 +24,7 @@ namespace BLL
                     .Where(i => i["KEY"].ToString() == @"ZUS_SP_KONTO")
                     .FirstOrDefault();
 
-                if (item!=null)
+                if (item != null)
                 {
                     obj.KontoSP = item["VALUE"].ToString();
                 }
@@ -59,14 +59,14 @@ namespace BLL
             SPList list = web.Lists.TryGetList(targetList);
             //if (list!=null)
             //{
-                SPListItem item = list.Items.Cast<SPListItem>()
-                    .Where(i => i["KEY"].ToString() == key)
-                    .FirstOrDefault();
+            SPListItem item = list.Items.Cast<SPListItem>()
+                .Where(i => i["KEY"].ToString() == key)
+                .FirstOrDefault();
 
-                if (item!=null)
-                {
-                    return item["VALUE"].ToString();
-                }
+            if (item != null)
+            {
+                return item["VALUE"].ToString();
+            }
             //}
 
             return string.Empty;
@@ -75,17 +75,16 @@ namespace BLL
         public static string GetText(SPWeb web, string key)
         {
             SPList list = web.Lists.TryGetList(targetList);
-            //if (list != null)
-            //{
-                SPListItem item = list.Items.Cast<SPListItem>()
-                    .Where(i => i["KEY"].ToString() == key)
-                    .FirstOrDefault();
 
-                if (item != null)
-                {
-                    return item["TEXT"].ToString();
-                }
-            //}
+            SPListItem item = list.Items.Cast<SPListItem>()
+                .Where(i => i["KEY"].ToString() == key)
+                .FirstOrDefault();
+
+            if (item != null)
+            {
+                return item["TEXT"].ToString();
+            }
+
 
             return string.Empty;
         }
@@ -102,5 +101,56 @@ namespace BLL
 
             return result;
         }
+
+        public static bool IsProductionEnabled(SPWeb web)
+        {
+
+            string proKEY = "PRODUCTION_MODE";
+            string proEnabled = "Enabled";
+            string proDisabled = "Disabled";
+
+            string v = GetValue(web, proKEY);
+            if (v == proEnabled)
+            {
+                return true;
+            }
+            else
+            {
+                //dodaj nieaktywny klucz
+                SPSecurity.RunWithElevatedPrivileges(delegate()
+                {
+                    BLL.admSetup.Ensure(web, proKEY, proDisabled, "VALUE", "Przełącznik odblokowujący produkcyjną pracę systemu");
+                });
+
+                return false;
+            }
+
+        }
+
+        private static void Ensure(SPWeb web, string key, string defaultValue, string columnName, string description)
+        {
+            SPList list = web.Lists.TryGetList(targetList);
+            SPListItem item = list.Items.Cast<SPListItem>()
+                .Where(i => i["KEY"].ToString() == key)
+                .FirstOrDefault();
+
+            if (item == null)
+            {
+                try
+                {
+                    item = list.AddItem();
+                    item["KEY"] = key;
+                    item[columnName] = defaultValue;
+                    item["colOpis"] = description;
+                    item.SystemUpdate();
+                }
+                catch (Exception ex)
+                {
+                    var result = ElasticEmail.EmailGenerator.ReportError(ex, web.Url);
+                }
+
+            }
+        }
     }
+
 }

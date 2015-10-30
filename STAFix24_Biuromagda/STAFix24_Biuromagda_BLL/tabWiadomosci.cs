@@ -12,6 +12,11 @@ namespace BLL
     {
         const string targetList = "Wiadomości";
 
+        public static void AddNew_NoAtt(SPListItem item, string nadawca, string odbiorca, string kopiaDla, bool KopiaDoNadawcy, bool KopiaDoBiura, string temat, string tresc, string trescHTML, DateTime planowanaDataNadania, int zadanieId, int klientId)
+        {
+            AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, zadanieId, klientId, BLL.Models.Marker.NoAttachements);
+        }
+
         public static void AddNew(SPWeb web, SPListItem item, string nadawca, string odbiorca, string kopiaDla, bool KopiaDoNadawcy, bool KopiaDoBiura, string temat, string tresc, string trescHTML, DateTime planowanaDataNadania, int zadanieId, int klientId)
         {
             AddNew(web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId, BLL.Models.Marker.Ignore);
@@ -63,25 +68,17 @@ namespace BLL
                                 if (file.Name.StartsWith("DRUK WPŁATY__PIT"))
                                     Copy_Attachement(newItem, file);
                                 break;
+                            case BLL.Models.Marker.NoAttachements:
+                                break;
                             default:
                                 Copy_Attachement(newItem, file);
                                 break;
                         }
-
-
                     }
                 }
             }
 
             newItem.SystemUpdate();
-        }
-
-        private static void Copy_Attachement(SPListItem newItem, SPFile file)
-        {
-            int bufferSize = 20480;
-            byte[] byteBuffer = new byte[bufferSize];
-            byteBuffer = file.OpenBinary();
-            newItem.Attachments.Add(file.Name, byteBuffer);
         }
 
         /// <summary>
@@ -92,14 +89,28 @@ namespace BLL
             AddNew(web, null, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, zadanieId, klientId);
         }
 
-
-        private static void AddNew(SPListItem item, DateTime reminderDate, string subject, string bodyHtml)
+        public static void AddNew(SPListItem item, bool hasAttachements, string nadawca, string odbiorca, string kopiaDla, bool KopiaDoNadawcy, bool KopiaDoBiura, string temat, string tresc, string trescHTML, DateTime planowanaDataNadania, int zadanieId, int klientId)
         {
-            int klientId = Get_KlientId(item);
-            string nadawca = string.Empty;
-            string odbiorca = Get_String(item, "colEmail");
-            AddNew(item.Web, nadawca, odbiorca, string.Empty, false, false, subject, string.Empty, bodyHtml, reminderDate, item.ID, klientId);
+            AddNew(item.Web, null, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, zadanieId, klientId);
         }
+
+        //private static void AddNew(SPListItem item, DateTime reminderDate, string subject, string bodyHtml)
+        //{
+        //    int klientId = Get_KlientId(item);
+        //    string nadawca = string.Empty;
+        //    string odbiorca = Get_String(item, "colEmail");
+        //    AddNew(item.Web, nadawca, odbiorca, string.Empty, false, false, subject, string.Empty, bodyHtml, reminderDate, item.ID, klientId);
+        //}
+
+        private static void Copy_Attachement(SPListItem newItem, SPFile file)
+        {
+            int bufferSize = 20480;
+            byte[] byteBuffer = new byte[bufferSize];
+            byteBuffer = file.OpenBinary();
+            newItem.Attachments.Add(file.Name, byteBuffer);
+        }
+
+
 
         private static string Get_String(SPListItem item, string col)
         {
@@ -113,5 +124,8 @@ namespace BLL
             return item[col] != null ? new SPFieldLookupValue(item[col].ToString()).LookupId : 0;
         }
         #endregion
+
+
+
     }
 }

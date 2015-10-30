@@ -943,8 +943,9 @@ namespace EventReceivers.tabZadaniaER
 
                 DateTime planowanaDataNadania = new DateTime(); //wyślij natychmiast
 
-                //nie kopiuj załączników
-                BLL.tabWiadomosci.AddNew(item.Web, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId);
+                //nie wysyłaj załączników
+                int zadanieId = item.ID;
+                BLL.tabWiadomosci.AddNew_NoAtt(item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, zadanieId, klientId);
             }
         }
 
