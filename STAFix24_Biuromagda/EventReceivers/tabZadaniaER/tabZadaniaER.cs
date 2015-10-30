@@ -1094,11 +1094,18 @@ namespace EventReceivers.tabZadaniaER
                 //BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "WBANK_TEMPLATE.Include", out temat, out trescHTML);
                 BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item.Web, "WBANK_TEMPLATE.Include", out temat, out trescHTML, false);
 
+                //dodaj nazwę firmy w tytule wiadomości
+                temat = BLL.Tools.AddCompanyName(temat, item);
+
                 string info = item["colInformacjaDlaKlienta"] != null ? item["colInformacjaDlaKlienta"].ToString() : string.Empty;
                 int okresId = Get_LookupId(item, "selOkres");
                 string aktualnyMiesiac = BLL.tabOkresy.Get_PoprzedniMiesiacSlownieById(item.Web, okresId, 0);
                 if (aktualnyMiesiac != null) aktualnyMiesiac = string.Format(@"({0})", aktualnyMiesiac);
                 trescHTML = trescHTML.Replace("___PoprzedniMiesiac___", aktualnyMiesiac);
+
+                string firma = BLL.tabKlienci.Get_NazwaFirmyById(item.Web, klientId);
+                trescHTML = trescHTML.Replace("___Firma___", firma);
+
                 trescHTML = trescHTML.Replace("___colInformacjaDlaKlienta___", info);
 
                 DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
@@ -1983,8 +1990,12 @@ namespace EventReceivers.tabZadaniaER
                         BLL.Tools.Clear_Flag(item, "colZUS_PIT-8AR_Zalaczony");
                         BLL.Tools.Clear_Value(item, "colZUS_PIT-8AR");
 
-                        BLL.Tools.Clear_Value(item, "colZUS_SP_Skladka");
-                        BLL.Tools.Clear_Value(item, "colZUS_FP_Skladka");
+                        if (!zpFlag)
+                        {
+                            BLL.Tools.Clear_Value(item, "colZUS_SP_Skladka");
+                            BLL.Tools.Clear_Value(item, "colZUS_FP_Skladka");                           
+                        }
+
                         if (GetValue(item, "colZUS_ZD_Skladka") >= 0)
                         {
                             bool foundError = false;
