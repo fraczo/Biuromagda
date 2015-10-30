@@ -330,6 +330,31 @@ namespace EventReceivers.tabZadaniaER
                                            okres);
 
                         result = Generuj_DrukZUS(web, item, result, okres, klientId, kwota, konto, fileName);
+
+                        //skladka spoleczna
+                        kwota = item["colZUS_SP_Skladka"] != null ? Double.Parse(item["colZUS_SP_Skladka"].ToString()) : 0;
+                        if (kwota>0) //przypadek gdzie zatrudnia pracowników
+                        {
+                            konto = Clean_NumerRachunku(item, "colZUS_SP_Konto");
+                            fileName = String.Format(@"{0}ZUS 51_{1}.pdf",
+                                               targetFileNameLeading,
+                                               okres);
+
+                            result = Generuj_DrukZUS(web, item, result, okres, klientId, kwota, konto, fileName);
+                        }
+
+                        //fundusz pracy
+                        kwota = item["colZUS_FP_Skladka"] != null ? Double.Parse(item["colZUS_FP_Skladka"].ToString()) : 0;
+                        if (kwota>0) //przypadek gdy zatrudnia pracowników
+                        {
+                            konto = Clean_NumerRachunku(item, "colZUS_FP_Konto");
+                            fileName = String.Format(@"{0}ZUS 53_{1}.pdf",
+                                               targetFileNameLeading,
+                                               okres);
+
+                            result = Generuj_DrukZUS(web, item, result, okres, klientId, kwota, konto, fileName);
+                        }
+
                         break;
                     default:
 

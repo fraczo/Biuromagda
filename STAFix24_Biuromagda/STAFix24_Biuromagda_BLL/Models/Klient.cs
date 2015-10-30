@@ -237,10 +237,10 @@ namespace BLL.Models
             switch (this.TypKlienta)
             {
                 case "Osoba fizyczna":
-                    s = NazwaFirmy + " " + Adres + " " + KodPocztowy + " " + Miejscowosc;
+                    s = ImieNazwisko + " " + Adres + " " + KodPocztowy + " " + Miejscowosc;
                     break;
                 default:
-                    s = ImieNazwisko + " " + Adres + " " + KodPocztowy + " " + Miejscowosc;
+                    s = NazwaFirmy + " " + Adres + " " + KodPocztowy + " " + Miejscowosc;
                     break;
             }
             
