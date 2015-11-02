@@ -101,19 +101,19 @@ namespace BLL
             SPList list = web.Lists.TryGetList(targetList);
             SPListItem item = list.Items.Cast<SPListItem>()
                 .Where(i => i["colEmail"] != null)
-                .Where(i => i["colEmail"].ToString() == email)
+                .Where(i => i["colEmail"].ToString().Contains(email.Trim()))
                 .FirstOrDefault();
 
             if (item != null) return item.ID;
-            //else
-            //{
-            //    item = list.Items.Cast<SPListItem>()
-            //    .Where(i => i["colKontoOperatora"] != null)
-            //    .Where(i => new SPFieldUserValue(web, i["colKontoOperatora"].ToString()).User.Email == email)
-            //    .FirstOrDefault();
-            //    if (item != null)
-            //        return item.ID;
-            //}
+            else
+            {
+                item = list.Items.Cast<SPListItem>()
+                .Where(i => i["colKontoOperatora"] != null)
+                .Where(i => new SPFieldUserValue(web, i["colKontoOperatora"].ToString()).User.Email.Contains(email.Trim()))
+                .FirstOrDefault();
+                if (item != null)
+                    return item.ID;
+            }
 
             return 0;
         }

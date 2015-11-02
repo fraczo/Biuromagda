@@ -1261,7 +1261,7 @@ namespace EventReceivers.tabZadaniaER
                 trescHTML = trescHTML.Replace("___ZUS_LEADING_TEXT___", lt);
 
                 //uzupełnia temat kodem klienta i okresu
-                temat = AddSpecyfikacja(item, temat);
+                temat = AddSpecyfikacja(item, temat, string.Empty);
 
                 //uzupełnia dane w formatce BR_TEMPLATE
                 StringBuilder sb = new StringBuilder(trescHTML);
@@ -1496,15 +1496,18 @@ namespace EventReceivers.tabZadaniaER
                 lt = lt.Replace("___FIRMA___", firma);
 
                 //opis okresu rozliczeniowego
+                string okresTemat;
                 string okres = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupValue : string.Empty;
 
                 if (Get_String(item, "enumRozliczeniePD") == "Kwartalnie")
                 {
-                    okres = "kwartał " + BLL.Tools.Get_KwartalDisplayName(okres);
+                    okresTemat = BLL.Tools.Get_KwartalDisplayName(okres);
+                    okres = "kwartał " + okresTemat;
                 }
                 else
                 {
-                    okres = "miesiąc " + okres;
+                    okresTemat = okres;
+                    okres = "miesiąc " + okresTemat;
                 }
                 lt = lt.Replace("___OKRES___", okres);
                 trescHTML = trescHTML.Replace("___PD_LEADING_TEXT___", lt);
@@ -1521,7 +1524,7 @@ namespace EventReceivers.tabZadaniaER
 
 
                 //uzupełnia temat kodem klienta i okresu
-                temat = AddSpecyfikacja(item, temat);
+                temat = AddSpecyfikacja(item, temat, okresTemat);
 
 
                 //uzupełnia dane w formatce PD_TEMPLATE
@@ -1749,15 +1752,18 @@ namespace EventReceivers.tabZadaniaER
                 lt = lt.Replace("___FIRMA___", firma);
 
                 //zdefiniuj opis bieżącego okresu
+                string okresTemat;
                 string okres = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupValue : string.Empty;
 
                 if (Get_String(item, "enumRozliczenieVAT") == "Kwartalnie")
                 {
-                    okres = "kwartał " + BLL.Tools.Get_KwartalDisplayName(okres);
+                    okresTemat = BLL.Tools.Get_KwartalDisplayName(okres);
+                    okres = "kwartał " + okresTemat;
                 }
                 else
                 {
-                    okres = "miesiąc " + okres;
+                    okresTemat = okres;
+                    okres = "miesiąc " + okresTemat;
                 }
 
                 lt = lt.Replace("___OKRES___", okres);
@@ -1765,7 +1771,7 @@ namespace EventReceivers.tabZadaniaER
 
 
                 //uzupełnia temat kodem klienta i okresu
-                temat = AddSpecyfikacja(item, temat);
+                temat = AddSpecyfikacja(item, temat, okresTemat);
 
                 //uzupełnia dane w formatce VAT_TEMPLATE 
                 StringBuilder sb = new StringBuilder(trescHTML);
@@ -1894,7 +1900,7 @@ namespace EventReceivers.tabZadaniaER
                 trescHTML = trescHTML.Replace("___RBR_LEADING_TEXT___", lt);
 
                 //uzupełnia temat kodem klienta i okresu
-                temat = AddSpecyfikacja(item, temat);
+                temat = AddSpecyfikacja(item, temat, string.Empty);
 
                 //uzupełnia dane w formatce BR_TEMPLATE
                 StringBuilder sb = new StringBuilder(trescHTML);
@@ -2459,9 +2465,12 @@ namespace EventReceivers.tabZadaniaER
             }
             return odbiorca;
         }
-        private string AddSpecyfikacja(SPListItem item, string temat)
+        private string AddSpecyfikacja(SPListItem item, string temat, string okres)
         {
-            string okres = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupValue : string.Empty;
+            if (string.IsNullOrEmpty(okres))
+            {
+                okres = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupValue : string.Empty;    
+            }
             string klient = item["selKlient"] != null ? new SPFieldLookupValue(item["selKlient"].ToString()).LookupValue : string.Empty;
 
             if (!string.IsNullOrEmpty(okres)) temat = temat + " " + okres;
