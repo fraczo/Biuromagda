@@ -74,6 +74,10 @@ namespace admProcessRequests_EventReceiver
                                     ImportFakturElektronicznych.Execute(properties, web);
                                     PotwierdzMailemZakonczenieZlecenia(properties, web, ct);
                                     break;
+                                case "Usuń przetworzone faktury":
+                                    ImportFakturElektronicznych.Remove_Completed(properties, web);
+                                    PotwierdzMailemZakonczenieZlecenia(properties, web, ct);
+                                    break;
                                 case "Import faktur za obsługę":
                                     ImportFakturZaObsluge.Execute(properties, web);
                                     PotwierdzMailemZakonczenieZlecenia(properties, web, ct);

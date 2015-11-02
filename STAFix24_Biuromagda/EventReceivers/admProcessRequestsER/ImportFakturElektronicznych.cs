@@ -17,16 +17,12 @@ namespace admProcessRequests_EventReceiver
 
             SPList list = web.Lists.TryGetList(targetList);
 
-            //if (list != null)
-            //{
-                list.Items.Cast<SPListItem>()
-                    .ToList()
-                    .ForEach(item =>
-                    {
-                        Import_Faktura(item, okresId);
-                    });
-
-            //}
+            list.Items.Cast<SPListItem>()
+                .ToList()
+                .ForEach(item =>
+                {
+                    Import_Faktura(item, okresId);
+                });
         }
 
         #region Helpers
@@ -52,7 +48,7 @@ namespace admProcessRequests_EventReceiver
 
                 int zadanieId = tabZadania.Get_NumerZadaniaBR(item.Web, klientId, okresId);
 
-                if (zadanieId>0)
+                if (zadanieId > 0)
                 {
                     item["selZadanie"] = zadanieId;
                     bool attResult = tabZadania.Add_FileFromURL(item.Web, zadanieId, item.File);
@@ -87,9 +83,24 @@ namespace admProcessRequests_EventReceiver
             return result;
 
         }
-        
+
+
+
         #endregion
 
+        internal static void Remove_Completed(SPItemEventProperties properties, SPWeb web)
+        {
+            SPList list = web.Lists.TryGetList(targetList);
 
+            list.Items.Cast<SPListItem>()
+                .Where(i => (i["selZadanie"] != null ? new SPFieldLookupValue(i["selZadanie"].ToString()).LookupId : 0) > 0)
+                .Where(i => (i["selOkres"] != null ? new SPFieldLookupValue(i["selOkres"].ToString()).LookupId : 0) > 0)
+                .Where(i => (i["selKlient"]!=null?new SPFieldLookupValue(i["selKlient"].ToString()).LookupId:0) > 0)
+                .ToList()
+                .ForEach(item =>
+                {
+                    item.Delete();
+                });
+        }
     }
 }
