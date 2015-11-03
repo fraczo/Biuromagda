@@ -459,6 +459,16 @@ namespace EventReceivers.tabZadaniaER
                 BLL.Models.Klient iok = new BLL.Models.Klient(web, klientId);
                 string nadawca = iok.Get_NazwaNadawcyPrzelewu().Trim().ToUpper();
                 string regon = iok.Regon;
+                string typIdentyfikatora = "R";
+                if (string.IsNullOrEmpty(regon)) //jeżeli nie ma regonu podaj pesel
+                {
+                    regon = iok.Pesel;
+                    typIdentyfikatora = "P";
+                }
+                if (string.IsNullOrEmpty(regon)) //jeżeli nie ma pesela nie podawaj drugiego identyfikatora
+                {
+                    typIdentyfikatora = string.Empty;
+                }
                 string nip = iok.NIP;
 
                 string identyfikatorDeklaracji = String.Format("{0} {1} {2}{3} {4}",
@@ -472,7 +482,7 @@ namespace EventReceivers.tabZadaniaER
                 fileName,
                 konto,
                 kwota,
-                nadawca, nip, "R", regon, identyfikatorDeklaracji);
+                nadawca, nip, typIdentyfikatora.Substring(0,1), regon, identyfikatorDeklaracji);
             }
             return result;
         }

@@ -86,6 +86,7 @@ namespace BLL.Models
                 NIP = item["colNIP"] != null ? item["colNIP"].ToString() : string.Empty;
                 NazwaFirmy = item.Title;
                 Regon = item["colRegon"] != null ? item["colRegon"].ToString() : string.Empty;
+                this.Pesel = BLL.Tools.Get_Text(item, "colPESEL");
 
                 this.UwagiKadrowe = item["colUwagiKadrowe"] != null ? item["colUwagiKadrowe"].ToString() : string.Empty;
                 this.Uwagi = item["colUwagi"] != null ? item["colUwagi"].ToString() : string.Empty;
@@ -278,5 +279,7 @@ namespace BLL.Models
         public string NazwaUrzeduSkarbowegoVAT { get; set; }
 
         public string ImieNazwisko { get; set; }
+
+        public string Pesel { get; set; }
     }
 }
