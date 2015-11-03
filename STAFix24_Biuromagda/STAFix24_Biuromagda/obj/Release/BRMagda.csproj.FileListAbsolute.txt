@@ -3,7 +3,3 @@ C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda\bin\Release\BRMagd
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda\obj\Release\BRMagda.csprojResolveAssemblyReference.cache
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda\obj\Release\BRMagda.dll
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda\obj\Release\BRMagda.pdb
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda\bin\Release\BRMagda.TimerJobs.dll
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda\bin\Release\BRMagda.TimerJobs.pdb
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda\bin\Release\BRMagda.BLL.dll
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda\bin\Release\BRMagda.BLL.pdb

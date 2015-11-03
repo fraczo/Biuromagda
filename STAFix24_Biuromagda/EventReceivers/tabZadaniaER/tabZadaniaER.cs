@@ -324,16 +324,22 @@ namespace EventReceivers.tabZadaniaER
                     case "Tylko zdrowotna":
                         //skladka zdrowotna
                         kwota = item["colZUS_ZD_Skladka"] != null ? Double.Parse(item["colZUS_ZD_Skladka"].ToString()) : 0;
-                        konto = Clean_NumerRachunku(item, "colZUS_ZD_Konto");
-                        fileName = String.Format(@"{0}Składka zdrowotna_{1}.pdf",
-                                           targetFileNameLeading,
-                                           okres);
+                        if (kwota > 0)
+                        {
+                            konto = Clean_NumerRachunku(item, "colZUS_ZD_Konto");
+                            fileName = String.Format(@"{0}Składka zdrowotna_{1}.pdf",
+                                               targetFileNameLeading,
+                                               okres);
 
-                        result = Generuj_DrukZUS(web, item, result, okres, klientId, kwota, konto, fileName);
+
+                            result = Generuj_DrukZUS(web, item, result, okres, klientId, kwota, konto, fileName);
+                        }
+
+
 
                         //skladka spoleczna
                         kwota = item["colZUS_SP_Skladka"] != null ? Double.Parse(item["colZUS_SP_Skladka"].ToString()) : 0;
-                        if (kwota>0) //przypadek gdzie zatrudnia pracowników
+                        if (kwota > 0) //przypadek gdzie zatrudnia pracowników
                         {
                             konto = Clean_NumerRachunku(item, "colZUS_SP_Konto");
                             fileName = String.Format(@"{0}ZUS 51_{1}.pdf",
@@ -345,7 +351,7 @@ namespace EventReceivers.tabZadaniaER
 
                         //fundusz pracy
                         kwota = item["colZUS_FP_Skladka"] != null ? Double.Parse(item["colZUS_FP_Skladka"].ToString()) : 0;
-                        if (kwota>0) //przypadek gdy zatrudnia pracowników
+                        if (kwota > 0) //przypadek gdy zatrudnia pracowników
                         {
                             konto = Clean_NumerRachunku(item, "colZUS_FP_Konto");
                             fileName = String.Format(@"{0}ZUS 53_{1}.pdf",
@@ -361,30 +367,40 @@ namespace EventReceivers.tabZadaniaER
 
                         //fundusz pracy
                         kwota = item["colZUS_FP_Skladka"] != null ? Double.Parse(item["colZUS_FP_Skladka"].ToString()) : 0;
-                        konto = Clean_NumerRachunku(item, "colZUS_FP_Konto");
-                        fileName = String.Format(@"{0}ZUS 53_{1}.pdf",
-                                           targetFileNameLeading,
-                                           okres);
+                        if (kwota > 0)
+                        {
+                            konto = Clean_NumerRachunku(item, "colZUS_FP_Konto");
+                            fileName = String.Format(@"{0}ZUS 53_{1}.pdf",
+                                               targetFileNameLeading,
+                                               okres);
 
-                        result = Generuj_DrukZUS(web, item, result, okres, klientId, kwota, konto, fileName);
+                            result = Generuj_DrukZUS(web, item, result, okres, klientId, kwota, konto, fileName);
+                        }
+
 
                         //skladka zdrowotna
                         kwota = item["colZUS_ZD_Skladka"] != null ? Double.Parse(item["colZUS_ZD_Skladka"].ToString()) : 0;
-                        konto = Clean_NumerRachunku(item, "colZUS_ZD_Konto");
-                        fileName = String.Format(@"{0}ZUS 52_{1}.pdf",
-                                            targetFileNameLeading,
-                                            okres);
+                        if (kwota > 0)
+                        {
+                            konto = Clean_NumerRachunku(item, "colZUS_ZD_Konto");
+                            fileName = String.Format(@"{0}ZUS 52_{1}.pdf",
+                                                targetFileNameLeading,
+                                                okres);
 
-                        result = Generuj_DrukZUS(web, item, result, okres, klientId, kwota, konto, fileName);
+                            result = Generuj_DrukZUS(web, item, result, okres, klientId, kwota, konto, fileName);
+                        }
 
                         //skladka spoleczna
                         kwota = item["colZUS_SP_Skladka"] != null ? Double.Parse(item["colZUS_SP_Skladka"].ToString()) : 0;
-                        konto = Clean_NumerRachunku(item, "colZUS_SP_Konto");
-                        fileName = String.Format(@"{0}ZUS 51_{1}.pdf",
-                                           targetFileNameLeading,
-                                           okres);
+                        if (kwota > 0)
+                        {
+                            konto = Clean_NumerRachunku(item, "colZUS_SP_Konto");
+                            fileName = String.Format(@"{0}ZUS 51_{1}.pdf",
+                                               targetFileNameLeading,
+                                               okres);
 
-                        result = Generuj_DrukZUS(web, item, result, okres, klientId, kwota, konto, fileName);
+                            result = Generuj_DrukZUS(web, item, result, okres, klientId, kwota, konto, fileName);
+                        }
 
                         break;
                 }
@@ -471,9 +487,12 @@ namespace EventReceivers.tabZadaniaER
             if (wymaganyDrukWplaty && konto.Length == 26 && kwota > 0 && ocenaWyniku == "Dochód")
             {
 
-                string fileName = String.Format(@"{0}Podatek dochodowy_{1}.pdf",
-                    targetFileNameLeading,
-                    okres);
+                //string fileName = String.Format(@"{0}Podatek dochodowy_{1}.pdf",
+                //    targetFileNameLeading,
+                //    okres);
+
+                string fileName = String.Format(@"{0}Podatek dochodowy.pdf",
+                targetFileNameLeading);
 
                 int urzadId = item["selUrzadSkarbowy"] != null ? new SPFieldLookupValue(item["selUrzadSkarbowy"].ToString()).LookupId : 0;
                 BLL.Models.UrzadSkarbowy us = new BLL.Models.UrzadSkarbowy(web, urzadId);
@@ -622,9 +641,12 @@ namespace EventReceivers.tabZadaniaER
 
             if (wymaganyDrukWplaty && konto.Length == 26 && kwota > 0 && decyzja == "Do zapłaty")
             {
-                string fileName = String.Format(@"{0}Podatek VAT_{1}.pdf",
-                    targetFileNameLeading,
-                    okres);
+                //string fileName = String.Format(@"{0}Podatek VAT_{1}.pdf",
+                //    targetFileNameLeading,
+                //    okres);
+
+                string fileName = String.Format(@"{0}Podatek VAT.pdf",
+                targetFileNameLeading);
 
                 int urzadId = item["selUrzadSkarbowy"] != null ? new SPFieldLookupValue(item["selUrzadSkarbowy"].ToString()).LookupId : 0;
                 BLL.Models.UrzadSkarbowy us = new BLL.Models.UrzadSkarbowy(web, urzadId);
@@ -697,9 +719,14 @@ namespace EventReceivers.tabZadaniaER
 
             if (konto.Length == 26 && kwota > 0)
             {
-                string fileName = String.Format(@"{0}Faktura za obsługę księgową_{1}.pdf",
-                    targetFileNameLeading,
-                    okres);
+                //string fileName = String.Format(@"{0}Faktura za obsługę księgową_{1}.pdf",
+                //    targetFileNameLeading,
+                //    okres);
+
+                string fileName = String.Format(@"{0}Faktura za obsługę księgową.pdf",
+                targetFileNameLeading);
+
+
                 //string odbiorca = admSetup.GetValue(web, "BR_NAZWA");
                 string odbiorca = admSetup.Get_NazwaBiura(web);
                 string numerFaktury = item["colBR_NumerFaktury"] != null ? item["colBR_NumerFaktury"].ToString() : string.Empty;
@@ -1217,27 +1244,33 @@ namespace EventReceivers.tabZadaniaER
                 {
                     if (GetValue(item, "colZUS_PIT-4R") > 0 || GetValue(item, "colZUS_PIT-8AR") > 0)
                     {
-                        switch (zusOpcja)
-                        {
-                            case "Tylko zdrowotna":
-                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_Z_PIT_TEMPLATE.Include", out temat, out trescHTML, nadawca);
-                                break;
-                            default:
-                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_PIT_TEMPLATE.Include", out temat, out trescHTML, nadawca);
-                                break;
-                        }
+
+                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_PIT_TEMPLATE.Include", out temat, out trescHTML, nadawca);
+
+                        //switch (zusOpcja)
+                        //{
+                        //    case "Tylko zdrowotna":
+                        //        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_Z_PIT_TEMPLATE.Include", out temat, out trescHTML, nadawca);
+                        //        break;
+                        //    default:
+                        //        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_PIT_TEMPLATE.Include", out temat, out trescHTML, nadawca);
+                        //        break;
+                        //}
                     }
                     else
                     {
-                        switch (zusOpcja)
-                        {
-                            case "Tylko zdrowotna":
-                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_Z_TEMPLATE.Include", out temat, out trescHTML, nadawca);
-                                break;
-                            default:
-                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_TEMPLATE.Include", out temat, out trescHTML, nadawca);
-                                break;
-                        }
+
+                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_TEMPLATE.Include", out temat, out trescHTML, nadawca);
+
+                        //switch (zusOpcja)
+                        //{
+                        //    case "Tylko zdrowotna":
+                        //        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_Z_TEMPLATE.Include", out temat, out trescHTML, nadawca);
+                        //        break;
+                        //    default:
+                        //        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_TEMPLATE.Include", out temat, out trescHTML, nadawca);
+                        //        break;
+                        //}
                     }
                 }
                 else
@@ -1312,7 +1345,13 @@ namespace EventReceivers.tabZadaniaER
                 }
                 if (item["colDrukWplaty"] != null ? (bool)item["colDrukWplaty"] : false)
                 {
-                    info2 = info2 + string.Format(templateR, "Druk(i) wpłaty ZUS");
+                    if (BLL.Tools.Get_Value(item, "colZUS_SP_Skladka") > 0
+                        || BLL.Tools.Get_Value(item, "colZUS_ZD_Skladka") > 0
+                        || BLL.Tools.Get_Value(item, "colZUS_FP_Skladka") > 0)
+                    {
+                        info2 = info2 + string.Format(templateR, "Druk(i) wpłaty ZUS");
+                    }
+                    
                 }
 
                 if (!string.IsNullOrEmpty(info2))
@@ -2028,7 +2067,7 @@ namespace EventReceivers.tabZadaniaER
                         if (!zpFlag)
                         {
                             BLL.Tools.Clear_Value(item, "colZUS_SP_Skladka");
-                            BLL.Tools.Clear_Value(item, "colZUS_FP_Skladka");                           
+                            BLL.Tools.Clear_Value(item, "colZUS_FP_Skladka");
                         }
 
                         if (GetValue(item, "colZUS_ZD_Skladka") >= 0)
@@ -2469,7 +2508,7 @@ namespace EventReceivers.tabZadaniaER
         {
             if (string.IsNullOrEmpty(okres))
             {
-                okres = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupValue : string.Empty;    
+                okres = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupValue : string.Empty;
             }
             string klient = item["selKlient"] != null ? new SPFieldLookupValue(item["selKlient"].ToString()).LookupValue : string.Empty;
 
