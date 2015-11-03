@@ -1298,6 +1298,14 @@ namespace EventReceivers.tabZadaniaER
 
                 string lt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_LEADING_TEXT", false);
                 string firma = BLL.tabKlienci.Get_NazwaFirmyById(item.Web, klientId);
+                if (item.ContentType.Name == "Osoba fizyczna")
+                {
+                    firma = "wspólnika " + firma;
+                }
+                else
+                {
+                    firma = "firmy " + firma;
+                }
                 lt = lt.Replace("___FIRMA___", firma);
                 string okres = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupValue : string.Empty;
                 lt = lt.Replace("___OKRES___", okres);
@@ -1410,6 +1418,14 @@ namespace EventReceivers.tabZadaniaER
 
                         //leading reminder text
                         string lrt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_LEADING_REMINDER_TEXT", false);
+                        if (item.ContentType.Name == "Osoba fizyczna")
+                        {
+                            firma = "wspólnika " + firma;
+                        }
+                        else
+                        {
+                            firma = "firmy " + firma;
+                        }
                         lrt = lrt.Replace("___FIRMA___", firma);
                         lrt = lrt.Replace("___OKRES___", okres);
                         trescHTML = trescHTML.Replace("___ZUS_LEADING_REMINDER_TEXT___", lrt);
@@ -1542,6 +1558,15 @@ namespace EventReceivers.tabZadaniaER
 
                 string lt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_LEADING_TEXT", false);
                 string firma = BLL.tabKlienci.Get_NazwaFirmyById(item.Web, klientId);
+                if (item.ContentType.Name == "Osoba fizyczna")
+                {
+                    firma = "wspólnika " + firma;
+                }
+                else
+                {
+                    firma = "firmy " + firma;
+                }
+
                 lt = lt.Replace("___FIRMA___", firma);
 
                 //opis okresu rozliczeniowego
@@ -1653,6 +1678,14 @@ namespace EventReceivers.tabZadaniaER
 
                             //leading reminder text
                             string lrt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_LEADING_REMINDER_TEXT", false);
+                            if (item.ContentType.Name == "Osoba fizyczna")
+                            {
+                                firma = "wspólnika " + firma;
+                            }
+                            else
+                            {
+                                firma = "firmy " + firma;
+                            }
                             lrt = lrt.Replace("___FIRMA___", firma);
                             lrt = lrt.Replace("___OKRES___", okres);
                             trescHTML = trescHTML.Replace("___PD_LEADING_REMINDER_TEXT___", lrt);
