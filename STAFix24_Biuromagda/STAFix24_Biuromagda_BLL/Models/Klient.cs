@@ -246,7 +246,7 @@ namespace BLL.Models
             }
             
             s = s.Replace("  ", " ").Replace("  ", " ").Replace("  ", " ").Trim();
-            return s;
+            return s.Trim().ToUpper();
 
         }
 

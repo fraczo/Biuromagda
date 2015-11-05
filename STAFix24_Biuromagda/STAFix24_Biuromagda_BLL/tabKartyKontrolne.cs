@@ -136,8 +136,12 @@ namespace BLL
             Copy_Field(item, form, "colUwagiKadrowe");
 
             BLL.Models.Klient k = new Models.Klient(item.Web, Get_LookupId(item, "selKlient"));
-            form["colDataRozpoczeciaDzialalnosci"] = k.DataRozpoczeciaDzialalnosci;
-
+            if (k.DataRozpoczeciaDzialalnosci!=null
+                && k.DataRozpoczeciaDzialalnosci!= new DateTime())
+            {
+                form["colDataRozpoczeciaDzialalnosci"] = k.DataRozpoczeciaDzialalnosci;    
+            }
+            
             Copy_Field(item, "colNieWysylajDoKlienta", form, "_NieWysylajDoKlienta_ZUS");
 
             Copy_Id(item, form, "_ZadanieID_ZUS");

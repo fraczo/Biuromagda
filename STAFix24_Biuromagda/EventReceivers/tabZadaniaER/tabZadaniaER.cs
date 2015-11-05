@@ -193,7 +193,8 @@ namespace EventReceivers.tabZadaniaER
                 string klient = item["selKlient"] != null ? new SPFieldLookupValue(item["selKlient"].ToString()).LookupValue : string.Empty;
                 int klientId = item["selKlient"] != null ? new SPFieldLookupValue(item["selKlient"].ToString()).LookupId : 0;
 
-                string nadawca = Get_Nadawca(web, klient, klientId);
+                BLL.Models.Klient iok = new BLL.Models.Klient(web, klientId);
+                string nadawca = iok.Get_NazwaNadawcyPrzelewu();
 
                 string okres = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupValue : string.Empty;
 
@@ -271,6 +272,8 @@ namespace EventReceivers.tabZadaniaER
                 string konto;
                 string fileName;
 
+                BLL.Models.Klient iok = new BLL.Models.Klient(web, klientId);
+
                 if (Get_FlagValue(item, "colZatrudniaPracownikow"))
                 {
 
@@ -280,7 +283,7 @@ namespace EventReceivers.tabZadaniaER
                         kwota = item["colZUS_PIT-8AR"] != null ? Double.Parse(item["colZUS_PIT-8AR"].ToString()) : 0;
                         if (kwota > 0)
                         {
-                            BLL.Models.Klient iok = new BLL.Models.Klient(web, klientId);
+                            
                             konto = iok.NumerRachunkuPD;
                             int urzadId = iok.UrzadSkarbowyId;
 
@@ -301,7 +304,7 @@ namespace EventReceivers.tabZadaniaER
                         kwota = item["colZUS_PIT-4R"] != null ? Double.Parse(item["colZUS_PIT-4R"].ToString()) : 0;
                         if (kwota > 0)
                         {
-                            BLL.Models.Klient iok = new BLL.Models.Klient(web, klientId);
+                            
                             konto = iok.NumerRachunkuPD;
                             int urzadId = iok.UrzadSkarbowyId;
 
@@ -417,8 +420,7 @@ namespace EventReceivers.tabZadaniaER
 
             konto = Clean_NumerRachunku(konto);
 
-            string nadawca = iok.NazwaFirmy + " " + iok.Adres + " " + iok.KodPocztowy + " " + iok.Miejscowosc;
-            nadawca = nadawca.ToUpper();
+            string nadawca = iok.Get_NazwaNadawcyPrzelewu();
             string nip = iok.NIP;
             string typIdentyfikatora = "N";
 
@@ -457,7 +459,7 @@ namespace EventReceivers.tabZadaniaER
 
 
                 BLL.Models.Klient iok = new BLL.Models.Klient(web, klientId);
-                string nadawca = iok.Get_NazwaNadawcyPrzelewu().Trim().ToUpper();
+                string nadawca = iok.Get_NazwaNadawcyPrzelewu();
                 string regon = iok.Regon;
                 string typIdentyfikatora = "R";
                 if (string.IsNullOrEmpty(regon)) //jeżeli nie ma regonu podaj pesel
@@ -550,8 +552,6 @@ namespace EventReceivers.tabZadaniaER
                 }
 
                 BLL.Models.Klient iok = new BLL.Models.Klient(web, klientId);
-
-
                 string nadawca = iok.Get_NazwaNadawcyPrzelewu();
 
                 //nip z kartoteki
