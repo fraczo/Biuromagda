@@ -34,30 +34,32 @@ namespace admProcessRequests_EventReceiver
                         klient.ID.ToString(),
                         BLL.Tools.Get_Text(klient, "_NazwaPrezentowana"));
 
+                    bool createKK = Get_Flag(item, "colDodajKartyKontrolne");
+
                     switch (klient.ContentType.Name)
                     {
                         case "KPiR":
-                            ZUS_Forms.Create(web, klientId, okresId);
-                            PD_Forms.Create(web, klientId, okresId);
-                            VAT_Forms.Create(web, klientId, okresId);
-                            BR_Forms.Create(web, klientId, okresId);
+                            ZUS_Forms.Create(web, klientId, okresId, createKK);
+                            PD_Forms.Create(web, klientId, okresId, createKK);
+                            VAT_Forms.Create(web, klientId, okresId, createKK);
+                            BR_Forms.Create(web, klientId, okresId, createKK);
                             Reminder_Forms.Create(web, klientId, okresId);
                             break;
                         case "KSH":
-                            ZUS_Forms.Create(web, klientId, okresId);
-                            PDS_Forms.Create(web, klientId, okresId);
-                            VAT_Forms.Create(web, klientId, okresId);
-                            BR_Forms.Create(web, klientId, okresId);
+                            ZUS_Forms.Create(web, klientId, okresId, createKK);
+                            PDS_Forms.Create(web, klientId, okresId, createKK);
+                            VAT_Forms.Create(web, klientId, okresId, createKK);
+                            BR_Forms.Create(web, klientId, okresId, createKK);
                             Reminder_Forms.Create(web, klientId, okresId);
                             break;
                         case "Firma":
-                            PDS_Forms.Create(web, klientId, okresId);
+                            PDS_Forms.Create(web, klientId, okresId, createKK);
                             break;
                         case "Osoba fizyczna":
-                            ZUS_Forms.Create(web, klientId, okresId);
-                            PD_Forms.Create(web, klientId, okresId);
-                            PDS_Forms.Create(web, klientId, okresId);
-                            VAT_Forms.Create(web, klientId, okresId);
+                            ZUS_Forms.Create(web, klientId, okresId, createKK);
+                            PD_Forms.Create(web, klientId, okresId, createKK);
+                            PDS_Forms.Create(web, klientId, okresId, createKK);
+                            VAT_Forms.Create(web, klientId, okresId, createKK);
                             break;
 
                         default:
@@ -111,23 +113,23 @@ namespace admProcessRequests_EventReceiver
                             ZUS_Forms.Create(web, klienci, okresId, createKK);
                             PD_Forms.Create(web, klienci, okresId, createKK);
                             VAT_Forms.Create(web, klienci, okresId, createKK);
-                            BR_Forms.Create(web, klienci, okresId);
+                            BR_Forms.Create(web, klienci, okresId, createKK);
                             Reminder_Forms.Create(web, klienci, okresId);
                             break;
                         case "KSH":
                             ZUS_Forms.Create(web, klienci, okresId, createKK);
                             PDS_Forms.Create(web, klienci, okresId, createKK);
                             VAT_Forms.Create(web, klienci, okresId, createKK);
-                            BR_Forms.Create(web, klienci, okresId);
+                            BR_Forms.Create(web, klienci, okresId, createKK);
                             Reminder_Forms.Create(web, klienci, okresId);
                             break;
                         case "Firma":
-                            PDS_Forms.Create(web, klienci, okresId, false);
+                            PDS_Forms.Create(web, klienci, okresId, createKK);
                             break;
                         case "Osoba fizyczna":
-                            ZUS_Forms.Create(web, klienci, okresId, false);
-                            PD_Forms.Create(web, klienci, okresId, false);
-                            VAT_Forms.Create(web, klienci, okresId, false);
+                            ZUS_Forms.Create(web, klienci, okresId, createKK);
+                            PD_Forms.Create(web, klienci, okresId, createKK);
+                            VAT_Forms.Create(web, klienci, okresId, createKK);
                             break;
 
                         default:

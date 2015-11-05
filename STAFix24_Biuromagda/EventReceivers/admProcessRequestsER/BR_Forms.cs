@@ -11,18 +11,30 @@ namespace admProcessRequests_EventReceiver.admProcessRequestsER
     {
         const string ctBR = @"Rozliczenie z biurem rachunkowym";
 
-        internal static void Create(Microsoft.SharePoint.SPWeb web, int klientId, int okresId)
+        internal static void Create(SPWeb web, Array aKlienci, int okresId, bool createKK)
         {
-            SPListItem item = tabKlienci.Get_KlientById(web, klientId);
-
-            if (item != null)
+            foreach (SPListItem item in aKlienci)
             {
-                SPFieldLookupValueCollection kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
+                SPFieldLookupValueCollection kody;
+
+                switch (item.ContentType.Name)
+                {
+                    case "Osoba fizyczna":
+                    case "Firma":
+                        kody = new SPFieldLookupValueCollection(item["selSerwisyWspolnicy"].ToString());
+                        break;
+                    default:
+                        kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
+                        break;
+                }
+
                 foreach (SPFieldLookupValue kod in kody)
                 {
                     switch (kod.LookupValue)
                     {
                         case @"RBR":
+                            if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
+
                             Create_BR_Form(web, item.ID, okresId);
                             break;
                         default:
@@ -32,23 +44,80 @@ namespace admProcessRequests_EventReceiver.admProcessRequestsER
             }
         }
 
-        internal static void Create(Microsoft.SharePoint.SPWeb web, Array aKlienci, int okresId)
+
+        //internal static void Create(Microsoft.SharePoint.SPWeb web, int klientId, int okresId)
+        //{
+        //    SPListItem item = tabKlienci.Get_KlientById(web, klientId);
+
+        //    if (item != null)
+        //    {
+        //        SPFieldLookupValueCollection kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
+        //        foreach (SPFieldLookupValue kod in kody)
+        //        {
+        //            switch (kod.LookupValue)
+        //            {
+        //                case @"RBR":
+        //                    Create_BR_Form(web, item.ID, okresId);
+        //                    break;
+        //                default:
+        //                    break;
+        //            }
+        //        }
+        //    }
+        //}
+
+
+
+        //internal static void Create(Microsoft.SharePoint.SPWeb web, Array aKlienci, int okresId)
+        //{
+
+        //    SPFieldLookupValueCollection kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
+        //    foreach (SPFieldLookupValue kod in kody)
+        //    {
+        //        switch (kod.LookupValue)
+        //        {
+        //            case @"RBR":
+        //                Create_BR_Form(web, item.ID, okresId);
+        //                break;
+        //            default:
+        //                break;
+        //        }
+        //    }
+
+        //}
+
+
+        internal static void Create(SPWeb web, int klientId, int okresId, bool createKK)
         {
-            foreach (SPListItem item in aKlienci)
+            SPListItem item = tabKlienci.Get_KlientById(web, klientId);
+
+            SPFieldLookupValueCollection kody;
+
+            switch (item.ContentType.Name)
             {
-                SPFieldLookupValueCollection kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
-                foreach (SPFieldLookupValue kod in kody)
+                case "Osoba fizyczna":
+                case "Firma":
+                    kody = new SPFieldLookupValueCollection(item["selSerwisyWspolnicy"].ToString());
+                    break;
+                default:
+                    kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
+                    break;
+            }
+
+            foreach (SPFieldLookupValue kod in kody)
+            {
+                switch (kod.LookupValue)
                 {
-                    switch (kod.LookupValue)
-                    {
-                        case @"RBR":
-                            Create_BR_Form(web, item.ID, okresId);
-                            break;
-                        default:
-                            break;
-                    }
+                    case @"RBR":
+                        if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
+
+                        Create_BR_Form(web, item.ID, okresId);
+                        break;
+                    default:
+                        break;
                 }
             }
+
         }
 
         private static void Create_BR_Form(SPWeb web, int klientId, int okresId)
@@ -72,5 +141,9 @@ namespace admProcessRequests_EventReceiver.admProcessRequestsER
 
             }
         }
+
+
+
+
     }
 }

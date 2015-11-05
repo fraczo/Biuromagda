@@ -49,7 +49,43 @@ namespace admProcessRequests_EventReceiver
                 }
             }
         }
-        public static void Create(SPWeb web, int klientId, int okresId)
+        //public static void Create(SPWeb web, int klientId, int okresId)
+        //{
+        //    SPListItem item = tabKlienci.Get_KlientById(web, klientId);
+
+        //    if (item != null)
+        //    {
+        //        SPFieldLookupValueCollection kody;
+
+        //        switch (item.ContentType.Name)
+        //        {
+        //            case "Osoba fizyczna":
+        //            case "Firma":
+        //                kody = new SPFieldLookupValueCollection(item["selSerwisyWspolnicy"].ToString());
+        //                break;
+        //            default:
+        //                kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
+        //                break;
+        //        }
+
+        //        foreach (SPFieldLookupValue kod in kody)
+        //        {
+        //            switch (kod.LookupValue)
+        //            {
+        //                case @"VAT-M":
+        //                    Create_VAT_M_Form(web, item.ID, okresId);
+        //                    break;
+        //                case @"VAT-KW":
+        //                    Create_VAT_KW_Form(web, item.ID, okresId);
+        //                    break;
+        //                default:
+        //                    break;
+        //            }
+        //        }
+        //    }
+        //}
+
+        internal static void Create(SPWeb web, int klientId, int okresId, bool createKK)
         {
             SPListItem item = tabKlienci.Get_KlientById(web, klientId);
 
@@ -73,9 +109,13 @@ namespace admProcessRequests_EventReceiver
                     switch (kod.LookupValue)
                     {
                         case @"VAT-M":
+                            if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
+
                             Create_VAT_M_Form(web, item.ID, okresId);
                             break;
                         case @"VAT-KW":
+                            if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
+
                             Create_VAT_KW_Form(web, item.ID, okresId);
                             break;
                         default:
@@ -146,5 +186,7 @@ namespace admProcessRequests_EventReceiver
 
             }
         }
+
+
     }
 }

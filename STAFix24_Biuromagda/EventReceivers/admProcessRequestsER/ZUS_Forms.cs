@@ -22,14 +22,23 @@ namespace admProcessRequests_EventReceiver.admProcessRequestsER
             }
         }
 
-        public static void Create(SPWeb web, int klientId, int okresId)
+        //public static void Create(SPWeb web, int klientId, int okresId)
+        //{
+        //    SPListItem item = tabKlienci.Get_KlientById(web, klientId);
+
+        //    if (item != null)
+        //    {
+        //        Create_ZUS_Forms(web, okresId, item);
+        //    }
+        //}
+
+        internal static void Create(SPWeb web, int klientId, int okresId, bool createKK)
         {
             SPListItem item = tabKlienci.Get_KlientById(web, klientId);
 
-            if (item != null)
-            {
-                Create_ZUS_Forms(web, okresId, item);
-            }
+            if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
+
+            Create_ZUS_Forms(web, okresId, item);
         }
 
         #region Helpers
@@ -138,6 +147,8 @@ namespace admProcessRequests_EventReceiver.admProcessRequestsER
         }
 
         #endregion
+
+
 
     }
 }
