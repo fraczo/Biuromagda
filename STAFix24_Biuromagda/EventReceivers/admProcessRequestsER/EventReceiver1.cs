@@ -39,8 +39,34 @@ namespace admProcessRequests_EventReceiver
             properties.ListItem["enumStatusZlecenia"] = "Obsługa";
             properties.ListItem.SystemUpdate();
 
+            try 
+            {
+                // na uprawnieniach operatora
+
+                SPListItem item = properties.ListItem;
+                switch (item.ContentType.Name)
+                {
+                    case "Obsługa ADO":
+                        ObslugaADO.Execute(properties, item.Web);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                properties.ListItem["enumStatusZlecenia"] = "Anulowany";
+                properties.ListItem.SystemUpdate();
+
+                BLL.Logger.LogEvent(properties.WebUrl, ex.ToString());
+                var result = ElasticEmail.EmailGenerator.ReportError(ex, properties.WebUrl.ToString());
+            }
+
+
             try
             {
+                // na podwyższonych uprawnieniach
+
                 SPSecurity.RunWithElevatedPrivileges(delegate()
                 {
                     using (SPSite site = new SPSite(properties.SiteId))
@@ -92,9 +118,7 @@ namespace admProcessRequests_EventReceiver
                                 case "Obsługa zadań":
                                     ObslugaZadan.Execute(properties, web);
                                     break;
-                                case "Obsługa ADO":
-                                    ObslugaADO.Execute(properties, web);
-                                    break;
+
                                 default:
                                     //properties.ListItem["colStatus"] = "Zakończony";
                                     //properties.ListItem.SystemUpdate();

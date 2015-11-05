@@ -37,11 +37,6 @@ namespace admProcessRequests_EventReceiver.admProcessRequestsER
         private static void Create_ZUS_Forms(SPWeb web, int okresId, SPListItem item)
         {
             bool isPracownicy = false;
-            if (item["colZatrudniaPracownikow0"]!=null)
-	        {
-		        isPracownicy =(bool)item["colZatrudniaPracownikow0"];
-	        }
-
 
             SPFieldLookupValueCollection kody;
 
@@ -52,6 +47,10 @@ namespace admProcessRequests_EventReceiver.admProcessRequestsER
                     kody = new SPFieldLookupValueCollection(item["selSerwisyWspolnicy"].ToString());
                     break;
                 default:
+                    if (item["colZatrudniaPracownikow0"] != null)
+                    {
+                        isPracownicy = (bool)item["colZatrudniaPracownikow0"];
+                    }
                     kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
                     break;
             }

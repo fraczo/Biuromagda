@@ -106,6 +106,7 @@
     </Content>
     <Content Include="Features\Workflows\Workflows.Template.xml">
       <DependentUpon>Workflows.feature</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Images\Biuromagda\SETTINGS.GIF" />
     <Content Include="Images\Biuromagda\SETTINGS16.GIF" />

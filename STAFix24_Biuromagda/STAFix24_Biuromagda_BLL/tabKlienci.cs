@@ -28,12 +28,20 @@ namespace BLL
             SPList targetList = web.Lists.TryGetList(listName);
             Array result = null;
 
+            //result = targetList.Items.Cast<SPListItem>()
+            //    .Where(i => i["enumStatus"].ToString() == "Aktywny")
+            //    .Where(i => i["ContentType"].ToString() == typKlienta)
+            //    .Where(i => new SPFieldLookupValueCollection(i["selSewisy"].ToString()).Count > 0
+            //    || new SPFieldLookupValueCollection(i["selSerwisyWspolnicy"].ToString()).Count > 0)
+            //    .ToArray(); >>> zaczęła raportować błąd System.Linq.Enumrable....
+
             result = targetList.Items.Cast<SPListItem>()
-                .Where(i => i["enumStatus"].ToString() == "Aktywny")
-                .Where(i => i["ContentType"].ToString() == typKlienta)
-                .Where(i => new SPFieldLookupValueCollection(i["selSewisy"].ToString()).Count > 0
-                || new SPFieldLookupValueCollection(i["selSerwisyWspolnicy"].ToString()).Count > 0)
+                .Where(i => i.ContentType.Name == typKlienta
+                    && i["enumStatus"].ToString() == "Aktywny")
+                .Where(i => !string.IsNullOrEmpty(i["selSewisy"].ToString())
+                || !string.IsNullOrEmpty(i["selSerwisyWspolnicy"].ToString()))
                 .ToArray();
+
 
             return result;
         }
@@ -106,7 +114,7 @@ namespace BLL
             SPListItem item = targetList.GetItemById(klientId);
 
             return item.ContentType.Name;
-            
+
         }
 
         public static int Get_KlientId(SPWeb web, string nazwaSkrocona)
@@ -670,15 +678,15 @@ namespace BLL
             return string.Format("{0}, {1} {2}", k.Adres, k.KodPocztowy, k.Miejscowosc);
         }
 
-        public static bool Has_ServiceById(SPWeb web,int klientId, string serviceName)
+        public static bool Has_ServiceById(SPWeb web, int klientId, string serviceName)
         {
             bool result = false;
             SPList list = web.Lists.TryGetList(listName);
             SPListItem item = list.GetItemById(klientId);
-            
+
             //sprawdź Serwisy
             SPFieldLookupValueCollection serwisy = item["selSewisy"] != null ? new SPFieldLookupValueCollection(item["selSewisy"].ToString()) : null;
-            if (serwisy.Count>0)
+            if (serwisy.Count > 0)
             {
                 foreach (SPFieldLookupValue s in serwisy)
                 {

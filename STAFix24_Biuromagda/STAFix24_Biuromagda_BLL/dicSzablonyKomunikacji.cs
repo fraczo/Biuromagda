@@ -47,9 +47,6 @@ namespace BLL
                     Get_TemplateByKod(item.Web, kod, out temat, out trescHTML, true);
                     break;
             }
-
-
-
         }
 
         private static string Format_FooterTR(SPListItem item, string footerTR, int operatorId)

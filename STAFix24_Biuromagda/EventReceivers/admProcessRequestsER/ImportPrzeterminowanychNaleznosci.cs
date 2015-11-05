@@ -120,7 +120,7 @@ namespace admProcessRequests_EventReceiver
 
                         trescHTML = sb0.ToString();
 
-                        BLL.tabWiadomosci.AddNew(web, nadawca, odbiorca, kopiaDla, false, true, temat, string.Empty, trescHTML, new DateTime(), 0, klientId);
+                        BLL.tabWiadomosci.AddNew(web, null, nadawca, odbiorca, kopiaDla, false, true, temat, string.Empty, trescHTML, new DateTime(), 0, klientId, BLL.Models.Marker.NoAttachements);
 
                         foreach (SPListItem item in items)
                         {

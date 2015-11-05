@@ -17,10 +17,33 @@ namespace BLL
             AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, zadanieId, klientId, BLL.Models.Marker.NoAttachements);
         }
 
-        public static void AddNew(SPWeb web, SPListItem item, string nadawca, string odbiorca, string kopiaDla, bool KopiaDoNadawcy, bool KopiaDoBiura, string temat, string tresc, string trescHTML, DateTime planowanaDataNadania, int zadanieId, int klientId)
-        {
-            AddNew(web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId, BLL.Models.Marker.Ignore);
-        }
+        //public static void AddNew(SPWeb web, SPListItem item, string nadawca, string odbiorca, string kopiaDla, bool KopiaDoNadawcy, bool KopiaDoBiura, string temat, string tresc, string trescHTML, DateTime planowanaDataNadania, int zadanieId, int klientId)
+        //{
+        //    AddNew(web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId, BLL.Models.Marker.Ignore);
+        //}
+
+        /// <summary>
+        /// tworzy zlecenie wysyłki wiadomości bez załączników (nie przekazuje item)
+        /// </summary>
+        //public static void AddNew(SPWeb web, string nadawca, string odbiorca, string kopiaDla, bool KopiaDoNadawcy, bool KopiaDoBiura, string temat, string tresc, string trescHTML, DateTime planowanaDataNadania, int zadanieId, int klientId)
+        //{
+        //    AddNew(web, null, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, zadanieId, klientId);
+        //}
+
+        //public static void AddNew(SPListItem item, bool hasAttachements, string nadawca, string odbiorca, string kopiaDla, bool KopiaDoNadawcy, bool KopiaDoBiura, string temat, string tresc, string trescHTML, DateTime planowanaDataNadania, int zadanieId, int klientId)
+        //{
+        //    AddNew(item.Web, null, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, zadanieId, klientId);
+        //}
+
+        //private static void AddNew(SPListItem item, DateTime reminderDate, string subject, string bodyHtml)
+        //{
+        //    int klientId = Get_KlientId(item);
+        //    string nadawca = string.Empty;
+        //    string odbiorca = Get_String(item, "colEmail");
+        //    AddNew(item.Web, nadawca, odbiorca, string.Empty, false, false, subject, string.Empty, bodyHtml, reminderDate, item.ID, klientId);
+        //}
+
+
         public static void AddNew(SPWeb web, SPListItem item, string nadawca, string odbiorca, string kopiaDla, bool KopiaDoNadawcy, bool KopiaDoBiura, string temat, string tresc, string trescHTML, DateTime planowanaDataNadania, int zadanieId, int klientId, BLL.Models.Marker marker)
         {
             SPList list = web.Lists.TryGetList(targetList);
@@ -81,26 +104,7 @@ namespace BLL
             newItem.SystemUpdate();
         }
 
-        /// <summary>
-        /// tworzy zlecenie wysyłki wiadomości bez załączników (nie przekazuje item)
-        /// </summary>
-        public static void AddNew(SPWeb web, string nadawca, string odbiorca, string kopiaDla, bool KopiaDoNadawcy, bool KopiaDoBiura, string temat, string tresc, string trescHTML, DateTime planowanaDataNadania, int zadanieId, int klientId)
-        {
-            AddNew(web, null, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, zadanieId, klientId);
-        }
 
-        public static void AddNew(SPListItem item, bool hasAttachements, string nadawca, string odbiorca, string kopiaDla, bool KopiaDoNadawcy, bool KopiaDoBiura, string temat, string tresc, string trescHTML, DateTime planowanaDataNadania, int zadanieId, int klientId)
-        {
-            AddNew(item.Web, null, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, zadanieId, klientId);
-        }
-
-        //private static void AddNew(SPListItem item, DateTime reminderDate, string subject, string bodyHtml)
-        //{
-        //    int klientId = Get_KlientId(item);
-        //    string nadawca = string.Empty;
-        //    string odbiorca = Get_String(item, "colEmail");
-        //    AddNew(item.Web, nadawca, odbiorca, string.Empty, false, false, subject, string.Empty, bodyHtml, reminderDate, item.ID, klientId);
-        //}
 
         private static void Copy_Attachement(SPListItem newItem, SPFile file)
         {
