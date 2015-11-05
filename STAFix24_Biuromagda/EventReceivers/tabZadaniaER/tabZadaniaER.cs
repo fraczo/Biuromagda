@@ -1257,30 +1257,11 @@ namespace EventReceivers.tabZadaniaER
 
                         BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_PIT_TEMPLATE.Include", out temat, out trescHTML, nadawca);
 
-                        //switch (zusOpcja)
-                        //{
-                        //    case "Tylko zdrowotna":
-                        //        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_Z_PIT_TEMPLATE.Include", out temat, out trescHTML, nadawca);
-                        //        break;
-                        //    default:
-                        //        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_PIT_TEMPLATE.Include", out temat, out trescHTML, nadawca);
-                        //        break;
-                        //}
                     }
                     else
                     {
 
                         BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_TEMPLATE.Include", out temat, out trescHTML, nadawca);
-
-                        //switch (zusOpcja)
-                        //{
-                        //    case "Tylko zdrowotna":
-                        //        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_Z_TEMPLATE.Include", out temat, out trescHTML, nadawca);
-                        //        break;
-                        //    default:
-                        //        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_TEMPLATE.Include", out temat, out trescHTML, nadawca);
-                        //        break;
-                        //}
                     }
                 }
                 else
@@ -1298,7 +1279,9 @@ namespace EventReceivers.tabZadaniaER
 
                 string lt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_LEADING_TEXT", false);
                 string firma = BLL.tabKlienci.Get_NazwaFirmyById(item.Web, klientId);
-                if (item.ContentType.Name == "Osoba fizyczna")
+
+                BLL.Models.Klient iok = new Klient(item.Web, klientId);
+                if (iok.TypKlienta == "Osoba fizyczna")
                 {
                     firma = "wspólnika " + firma;
                 }
@@ -1418,14 +1401,6 @@ namespace EventReceivers.tabZadaniaER
 
                         //leading reminder text
                         string lrt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_LEADING_REMINDER_TEXT", false);
-                        if (item.ContentType.Name == "Osoba fizyczna")
-                        {
-                            firma = "wspólnika " + firma;
-                        }
-                        else
-                        {
-                            firma = "firmy " + firma;
-                        }
                         lrt = lrt.Replace("___FIRMA___", firma);
                         lrt = lrt.Replace("___OKRES___", okres);
                         trescHTML = trescHTML.Replace("___ZUS_LEADING_REMINDER_TEXT___", lrt);
@@ -1558,7 +1533,9 @@ namespace EventReceivers.tabZadaniaER
 
                 string lt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_LEADING_TEXT", false);
                 string firma = BLL.tabKlienci.Get_NazwaFirmyById(item.Web, klientId);
-                if (item.ContentType.Name == "Osoba fizyczna")
+
+                BLL.Models.Klient iok = new Klient(item.Web, klientId);
+                if (iok.TypKlienta == "Osoba fizyczna")
                 {
                     firma = "wspólnika " + firma;
                 }
