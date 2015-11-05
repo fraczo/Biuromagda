@@ -431,7 +431,9 @@ namespace GeneratorDrukow
                 XSolidBrush brush = new XSolidBrush(back);
                 formGfx.DrawRectangle(brush, -10000, -10000, 20000, 20000);
 
+                //XFont font = new XFont("Verdana", 10, XFontStyle.Bold);
                 XFont font = new XFont("Verdana", 10, XFontStyle.Bold);
+                XFont fontR = new XFont("Verdana", 10, XFontStyle.Regular);
 
                 PlotText(numerRachunku, c01, r01, ofset0, formGfx, font);
 
@@ -443,7 +445,8 @@ namespace GeneratorDrukow
                     KwotaSlownie.LiczbaSlownie(zlote),
                     grosze + "/100");
 
-                formGfx.DrawString("*" + kwota + "*", new XFont("Verdana", 10, XFontStyle.Regular), XBrushes.Navy, c01, r03, XStringFormats.TopLeft);
+                //formGfx.DrawString("*" + kwota + "*", new XFont("Verdana", 10, XFontStyle.Regular), XBrushes.Navy, c01, r03, XStringFormats.TopLeft);
+                formGfx.DrawString("*" + kwota + "*", fontR, XBrushes.Navy, c01, r03, XStringFormats.TopLeft);
 
                 string nadawca2 = string.Empty;
                 if (nadawca.Length > maxLen)
