@@ -1,0 +1,4 @@
+C:\_GitHub\v2.celonpharma\Zaliczki\bin\Debug\V2.Celonpharma.Zaliczki.dll
+C:\_GitHub\v2.celonpharma\Zaliczki\bin\Debug\V2.Celonpharma.Zaliczki.pdb
+C:\_GitHub\v2.celonpharma\Zaliczki\obj\Debug\V2.Celonpharma.Zaliczki.dll
+C:\_GitHub\v2.celonpharma\Zaliczki\obj\Debug\V2.Celonpharma.Zaliczki.pdb

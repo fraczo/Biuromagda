@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Feature xmlns="http://schemas.microsoft.com/sharepoint/" Title="V2.Celonpharma.Zaliczki Event Receivers" Id="edc8e2d8-6a88-4612-8b77-9814f8e0fe26" Scope="Site">
+  <ElementManifests>
+    <ElementManifest Location="RozliczeniaER\Elements.xml" />
+  </ElementManifests>
+</Feature>

@@ -2079,16 +2079,6 @@ namespace EventReceivers.tabZadaniaER
                 switch (opcja)
                 {
                     case "Tylko zdrowotna":
-                        BLL.Tools.Clear_Flag(item, "colZUS_PIT-4R_Zalaczony");
-                        BLL.Tools.Clear_Value(item, "colZUS_PIT-4R");
-                        BLL.Tools.Clear_Flag(item, "colZUS_PIT-8AR_Zalaczony");
-                        BLL.Tools.Clear_Value(item, "colZUS_PIT-8AR");
-
-                        if (!zpFlag)
-                        {
-                            BLL.Tools.Clear_Value(item, "colZUS_SP_Skladka");
-                            BLL.Tools.Clear_Value(item, "colZUS_FP_Skladka");
-                        }
 
                         if (GetValue(item, "colZUS_ZD_Skladka") >= 0)
                         {

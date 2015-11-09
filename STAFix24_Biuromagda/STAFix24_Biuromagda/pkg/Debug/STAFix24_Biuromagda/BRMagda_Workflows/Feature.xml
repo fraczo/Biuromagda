@@ -4,5 +4,6 @@
     <ElementManifest Location="ObslugaWiadomosci\Elements.xml" />
     <ElementManifest Location="ZatwierdzenieZadania\Elements.xml" />
     <ElementManifest Location="WyslijKopieWiadomosci\Elements.xml" />
+    <ElementManifest Location="GenerujRejestry_StratyZLatUbieglych\Elements.xml" />
   </ElementManifests>
 </Feature>

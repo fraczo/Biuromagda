@@ -42,8 +42,6 @@ namespace BLL
 
             SPList list = web.Lists.TryGetList(targetList);
 
-            //if (list != null)
-            //{
             SPListItem item = list.Items.Cast<SPListItem>()
                 .Where(i => i.Title == nazwaProcedury)
                 .ToList()
@@ -53,7 +51,6 @@ namespace BLL
             {
                 result = item.ID;
             }
-            //}
 
             if (result == 0 && createIfNotExist)
             {

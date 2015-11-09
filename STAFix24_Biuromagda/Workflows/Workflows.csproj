@@ -58,6 +58,12 @@
     <Reference Include="Microsoft.SharePoint.Security" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GenerujRejestry_StratyZLatUbieglych\GenerujRejestry_StratyZLatUbieglych.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GenerujRejestry_StratyZLatUbieglych\GenerujRejestry_StratyZLatUbieglych.Designer.cs">
+      <DependentUpon>GenerujRejestry_StratyZLatUbieglych.cs</DependentUpon>
+    </Compile>
     <Compile Include="ObslugaWiadomosci\enumStatusWysylki.cs" />
     <Compile Include="ObslugaWiadomosci\ObslugaWiadomosci.cs">
       <SubType>Component</SubType>
@@ -83,6 +89,9 @@
     <None Include="Features\Feature1\Feature1.feature">
       <FeatureId>{3e73bf1e-67b2-4c5a-9f7f-1f165df24d01}</FeatureId>
     </None>
+    <None Include="GenerujRejestry_StratyZLatUbieglych\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{2e70d26e-0859-4f13-83ec-15d54c2eb60c}</SharePointProjectItemId>
+    </None>
     <None Include="key.snk" />
     <None Include="ObslugaWiadomosci\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{d03c6008-5ea7-445d-b8ce-45b9fe070301}</SharePointProjectItemId>
@@ -105,6 +114,7 @@
     <Content Include="Features\Feature1\Feature1.Template.xml">
       <DependentUpon>Feature1.feature</DependentUpon>
     </Content>
+    <Content Include="GenerujRejestry_StratyZLatUbieglych\Elements.xml" />
     <Content Include="ObslugaWiadomosci\Elements.xml" />
     <Content Include="WyslijKopieWiadomosci\Elements.xml" />
     <Content Include="ZatwierdzenieZadania\Elements.xml" />

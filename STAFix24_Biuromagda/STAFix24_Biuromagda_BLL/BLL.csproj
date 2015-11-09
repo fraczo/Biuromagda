@@ -81,6 +81,7 @@
     <Compile Include="tabKlienci.cs" />
     <Compile Include="tabOkresy.cs" />
     <Compile Include="tabProcedury.cs" />
+    <Compile Include="tabStratyZLatUbieglych.cs" />
     <Compile Include="tabSzablonyWiadomosci.cs" />
     <Compile Include="tabUrzedySkarbowe.cs" />
     <Compile Include="tabWiadomosci.cs" />

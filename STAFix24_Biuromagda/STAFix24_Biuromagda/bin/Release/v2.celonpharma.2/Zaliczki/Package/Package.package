@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" dslVersion="1.0.0.0" Id="a0d49d84-f1e3-47c8-b2a1-5c6ce6167bb9" solutionId="a0d49d84-f1e3-47c8-b2a1-5c6ce6167bb9" resetWebServer="false" name="Zaliczki" xmlns="http://schemas.microsoft.com/VisualStudio/2008/SharePointTools/PackageModel">
+  <assemblies>
+    <projectOutputAssembly location="V2.Celonpharma.BLL.dll" deploymentTarget="GlobalAssemblyCache" projectPath="BLL\BLL.csproj" />
+  </assemblies>
+  <features>
+    <featureReference itemId="4b0222c8-7c88-414e-bf4f-d05da95d3e0e" />
+  </features>
+</package>
