@@ -117,21 +117,28 @@ namespace Workflows.ObslugaWiadomosci
                 }
                 catch (Exception ex)
                 {
-                    var result = ElasticEmail.EmailGenerator.ReportError(ex, item.ParentList.ParentWeb.Url);
+                    var r = ElasticEmail.EmailGenerator.ReportError(ex, item.ParentList.ParentWeb.Url);
                 }
 
                 
-                SPEmail.EmailGenerator.SendMailFromMessageQueue(item, mail, testMode);
+                bool result = SPEmail.EmailGenerator.SendMailFromMessageQueue(item, mail, testMode);
 
-                //ustaw flagę wysyłki
-                item["colCzyWyslana"] = true;
-                item["colDataNadania"] = DateTime.Now.ToString();
-                item.SystemUpdate();
-
-                int zadanieId = item["_ZadanieId"] != null ? int.Parse(item["_ZadanieId"].ToString()) : 0;
-                if (zadanieId > 0)
+                if (result)
                 {
-                    BLL.tabZadania.Update_StatusWysylki(item.Web, item, zadanieId, BLL.Models.StatusZadania.Zakończone);
+                    //ustaw flagę wysyłki
+                    item["colCzyWyslana"] = true;
+                    item["colDataNadania"] = DateTime.Now.ToString();
+                    item.SystemUpdate();
+
+                    int zadanieId = item["_ZadanieId"] != null ? int.Parse(item["_ZadanieId"].ToString()) : 0;
+                    if (zadanieId > 0)
+                    {
+                        BLL.tabZadania.Update_StatusWysylki(item.Web, item, zadanieId, BLL.Models.StatusZadania.Zakończone);
+                    }
+                }
+                else
+                {
+                    var r = ElasticEmail.EmailGenerator.SendMail(string.Format(@"!!! Message#{0} not sent",item.ID.ToString()),string.Empty);
                 }
             }
         }

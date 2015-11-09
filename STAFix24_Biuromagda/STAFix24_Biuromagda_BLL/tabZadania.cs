@@ -223,7 +223,7 @@ namespace BLL
                 {
                     preOkresId = BLL.tabOkresy.Get_PoprzedniOkresIdById(web, okresId);
                 }
-                
+
                 if (preOkresId > 0)
                 {
                     item["colVAT_WartoscNadwyzkiZaPoprzedniMiesiac"] = BLL.tabKartyKontrolne.Get_WartoscNadwyzkiDoPrzeniesienia(web, klientId, preOkresId);
@@ -667,29 +667,45 @@ namespace BLL
         public static void Update_PD_DataWysylki(SPListItem task, DateTime date)
         {
             SPListItem item = Get_ZadanieById(task.Web, task.ID);
-            item["colPD_DataWylaniaInformacji"] = date;
+            DateTime d = BLL.Tools.Get_Date(task, "colPD_DataWylaniaInformacji");
+            if (d <= new DateTime())
+            {
+                item["colPD_DataWylaniaInformacji"] = date;
+            }
             item.SystemUpdate();
         }
 
         public static void Update_VAT_DataWysylki(SPListItem task, DateTime date)
         {
             SPListItem item = Get_ZadanieById(task.Web, task.ID);
-            item["colVAT_DataWyslaniaInformacji"] = date;
-            item.SystemUpdate();
+            DateTime d = BLL.Tools.Get_Date(task, "colVAT_DataWyslaniaInformacji");
+            if (d <= new DateTime())
+            {
+                item["colVAT_DataWyslaniaInformacji"] = date;
+                item.SystemUpdate();
+            }
         }
 
         public static void Update_ZUS_DataWysylki(SPListItem task, DateTime date)
         {
             SPListItem item = Get_ZadanieById(task.Web, task.ID);
-            item["colZUS_DataWyslaniaInformacji"] = date;
-            item.SystemUpdate();
+            DateTime d = BLL.Tools.Get_Date(task, "colZUS_DataWyslaniaInformacji");
+            if (d <= new DateTime())
+            {
+                item["colZUS_DataWyslaniaInformacji"] = date;
+                item.SystemUpdate();
+            }
         }
 
         public static void Update_RBR_DataWysylki(SPListItem task, DateTime date)
         {
             SPListItem item = Get_ZadanieById(task.Web, task.ID);
-            item["colBR_DataPrzekazania"] = date;
-            item.SystemUpdate();
+            DateTime d = BLL.Tools.Get_Date(task, "colBR_DataPrzekazania");
+            if (d <= new DateTime())
+            {
+                item["colBR_DataPrzekazania"] = date;
+                item.SystemUpdate();
+            }
         }
 
         public static List<SPListItem> Get_ActiveTasksByContentType(SPWeb web, string ctName)
@@ -773,7 +789,7 @@ namespace BLL
         {
             SPList list = web.Lists.TryGetList(targetList);
             Array result = list.Items.Cast<SPListItem>()
-                .Where(i => i["enumStatusZadania"].ToString() == "Nowe" || i["enumStatusZadania"].ToString()=="Obsługa")
+                .Where(i => i["enumStatusZadania"].ToString() == "Nowe" || i["enumStatusZadania"].ToString() == "Obsługa")
                 .Where(i => i["selProcedura"] != null)
                 .Where(i => new SPFieldLookupValue(i["selProcedura"].ToString()).LookupId == proceduraId)
                 .ToArray();

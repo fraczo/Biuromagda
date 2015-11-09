@@ -61,8 +61,10 @@ namespace SPEmail
             SendMailWithAttachment(item, message);
         }
 
-        public static void SendMailWithAttachment(SPListItem item, MailMessage message)
+        public static bool SendMailWithAttachment(SPListItem item, MailMessage message)
         {
+            bool result = false;
+
             try
             {
                 SmtpClient client = new SmtpClient();
@@ -91,13 +93,16 @@ namespace SPEmail
                 }
 
                 client.Send(message);
+
+                result = true;
             }
             catch (Exception ex)
             {
-                var result = ElasticEmail.EmailGenerator.ReportError(ex, item.ParentList.ParentWeb.Url);
+                var r = ElasticEmail.EmailGenerator.ReportError(ex, item.ParentList.ParentWeb.Url);
+                return false;
             }
 
-
+            return result;
         }
 
         /// <summary>
@@ -125,7 +130,7 @@ namespace SPEmail
         /// <param name="item"></param>
         /// <param name="mail"></param>
         /// <param name="isTestMode"></param>
-        public static void SendMailFromMessageQueue(SPListItem item, MailMessage mail, bool isTestMode)
+        public static bool SendMailFromMessageQueue(SPListItem item, MailMessage mail, bool isTestMode)
         {
             if (isTestMode)
             {
@@ -167,9 +172,9 @@ namespace SPEmail
                 mail.Body = sb.ToString();
             }
 
-            SendMailWithAttachment(item, mail);
+            bool result = SendMailWithAttachment(item, mail);
 
-
+            return result;
         }
 
         public static void SendProcessEndConfirmationMail(string subject, string bodyHtml, SPWeb web, SPListItem item)

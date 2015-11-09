@@ -14,7 +14,7 @@ namespace BLL
         public static void Create_KartaKontrolna(SPWeb web, int klientId, int okresId)
         {
             string KEY = Create_KEY(klientId, okresId);
-            int formId = Get_KartaKontrolnaId(web,klientId, okresId, KEY);
+            int formId = Get_KartaKontrolnaId(web, klientId, okresId, KEY);
         }
 
         public static void Update_PD_Data(Microsoft.SharePoint.SPListItem item)
@@ -107,7 +107,7 @@ namespace BLL
             Copy_Field(item, "colNieWysylajDoKlienta", form, "_NieWysylajDoKlienta_VAT");
 
             Copy_Id(item, form, "_ZadanieID_VAT");
-            
+
             form.SystemUpdate();
         }
 
@@ -136,12 +136,12 @@ namespace BLL
             Copy_Field(item, form, "colUwagiKadrowe");
 
             BLL.Models.Klient k = new Models.Klient(item.Web, Get_LookupId(item, "selKlient"));
-            if (k.DataRozpoczeciaDzialalnosci!=null
-                && k.DataRozpoczeciaDzialalnosci!= new DateTime())
+            if (k.DataRozpoczeciaDzialalnosci != null
+                && k.DataRozpoczeciaDzialalnosci != new DateTime())
             {
-                form["colDataRozpoczeciaDzialalnosci"] = k.DataRozpoczeciaDzialalnosci;    
+                form["colDataRozpoczeciaDzialalnosci"] = k.DataRozpoczeciaDzialalnosci;
             }
-            
+
             Copy_Field(item, "colNieWysylajDoKlienta", form, "_NieWysylajDoKlienta_ZUS");
 
             Copy_Id(item, form, "_ZadanieID_ZUS");
@@ -172,8 +172,13 @@ namespace BLL
             int formId = Get_KartaKontrolnaId(item, KEY);
 
             SPListItem form = Get_KartaKontrolnaById(item.Web, formId);
-            form["colPD_DataWylaniaInformacji"] = dateTime;
-            form.SystemUpdate();
+
+            DateTime d = BLL.Tools.Get_Date(form, "colPD_DataWylaniaInformacji");
+            if (d <= new DateTime())
+            {
+                form["colPD_DataWylaniaInformacji"] = dateTime;
+                form.SystemUpdate();
+            }
         }
 
         public static void Update_VAT_DataWysylki(SPListItem item, DateTime dateTime)
@@ -182,8 +187,13 @@ namespace BLL
             int formId = Get_KartaKontrolnaId(item, KEY);
 
             SPListItem form = Get_KartaKontrolnaById(item.Web, formId);
-            form["colVAT_DataWyslaniaInformacji"] = dateTime;
-            form.SystemUpdate();
+
+            DateTime d = BLL.Tools.Get_Date(form, "colVAT_DataWyslaniaInformacji");
+            if (d <= new DateTime())
+            {
+                form["colVAT_DataWyslaniaInformacji"] = dateTime;
+                form.SystemUpdate();
+            }
         }
 
         public static void Update_ZUS_DataWysylki(SPListItem item, DateTime dateTime)
@@ -192,8 +202,13 @@ namespace BLL
             int formId = Get_KartaKontrolnaId(item, KEY);
 
             SPListItem form = Get_KartaKontrolnaById(item.Web, formId);
-            form["colZUS_DataWyslaniaInformacji"] = dateTime;
-            form.SystemUpdate();
+
+            DateTime d = BLL.Tools.Get_Date(form, "colZUS_DataWyslaniaInformacji");
+            if (d <= new DateTime())
+            {
+                form["colZUS_DataWyslaniaInformacji"] = dateTime;
+                form.SystemUpdate();
+            }
         }
 
         public static void Update_RBR_DataWysylki(SPListItem item, DateTime dateTime)
@@ -202,8 +217,13 @@ namespace BLL
             int formId = Get_KartaKontrolnaId(item, KEY);
 
             SPListItem form = Get_KartaKontrolnaById(item.Web, formId);
-            form["colBR_DataPrzekazania"] = dateTime;
-            form.SystemUpdate();
+
+            DateTime d = BLL.Tools.Get_Date(form, "colBR_DataPrzekazania");
+            if (d <= new DateTime())
+            {
+                form["colBR_DataPrzekazania"] = dateTime;
+                form.SystemUpdate();
+            }
         }
 
 
@@ -347,10 +367,10 @@ namespace BLL
             string KEY = BLL.tabKartyKontrolne.Create_KEY(klientId, okresId);
             int kkId = Get_KartaKontrolnaId(web, klientId, okresId, KEY);
 
-            if (kkId>0)
+            if (kkId > 0)
             {
                 SPListItem item = Get_KartaKontrolnaById(web, kkId);
-                if (item!=null)
+                if (item != null)
                 {
                     return BLL.Tools.Get_Value(item, "colVAT_WartoscDoPrzeniesienia");
                 }

@@ -35,6 +35,20 @@
           <StartOnCreate>false</StartOnCreate>
           <StartOnChange>false</StartOnChange>
         </ProjectItemStore>
+        <ProjectItemStore Id="{41cc1749-184b-459f-b8a2-120d81d87487}">
+          <DisplayName>Wyślij kopię wiadomości</DisplayName>
+          <HistoryList>Workflow History</HistoryList>
+          <HistoryListGuid>{7f19a9a1-6997-47fb-9e20-70fea625b6a9}</HistoryListGuid>
+          <TaskList>Tasks</TaskList>
+          <TaskListGuid>{ba6228e1-34d1-4827-bff7-9f0a3269471f}</TaskListGuid>
+          <AutoAssociate>true</AutoAssociate>
+          <ManualStart>true</ManualStart>
+          <ListURL>http://spf2010/sites/biuromagda/Lists/tabWiadomosci/Kolejka%20wiadomoci.aspx</ListURL>
+          <TargetList>Wiadomości</TargetList>
+          <TargetListGuid>{02b36d3d-a38e-435c-b0f8-b611e91f72d6}</TargetListGuid>
+          <StartOnCreate>false</StartOnCreate>
+          <StartOnChange>false</StartOnChange>
+        </ProjectItemStore>
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
