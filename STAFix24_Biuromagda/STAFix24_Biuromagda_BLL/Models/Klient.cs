@@ -120,6 +120,8 @@ namespace BLL.Models
                     urzadId = BLL.dicUrzedySkarbowe.Ensure(web, urzadId);
                     if (urzadId > 0)
                     {
+                        this.NumerRachunkuPIT_PD = tabUrzedySkarbowe.Get_NumerRachunkuPITById(web, urzadId);
+
                         if (this.FormaOpodatkowaniaPD=="CIT")
                             NumerRachunkuPD = tabUrzedySkarbowe.Get_NumerRachunkuCITById(web, urzadId);
                         else
@@ -130,6 +132,7 @@ namespace BLL.Models
                     }
                     else
                     {
+                        NumerRachunkuPIT_PD = string.Empty;
                         NumerRachunkuPD = string.Empty;
                         UrzadSkarbowyId = 0;
                     }
@@ -184,13 +187,6 @@ namespace BLL.Models
                     if (oddzialZUSId > 0)
                     {
                         this.OddzialZUSId = oddzialZUSId;
-                    }
-                    else
-                    {
-                        //Przyjmij parametry jak dla US od podatku PIT
-                        NumerRachunkuVAT = this.NumerRachunkuPD;
-                        NazwaUrzeduSkarbowegoVAT = this.NazwaUrzeduSkarbowego;
-                        UrzadSkarbowyVATId = this.UrzadSkarbowyId;
                     }
                 }
                 catch (Exception ex)
@@ -281,5 +277,7 @@ namespace BLL.Models
         public string ImieNazwisko { get; set; }
 
         public string Pesel { get; set; }
+
+        public string NumerRachunkuPIT_PD { get; set; }
     }
 }

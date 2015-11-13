@@ -115,7 +115,9 @@
       <DependentUpon>Feature1.feature</DependentUpon>
     </Content>
     <Content Include="GenerujRejestry_StratyZLatUbieglych\Elements.xml" />
-    <Content Include="ObslugaWiadomosci\Elements.xml" />
+    <Content Include="ObslugaWiadomosci\Elements.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="WyslijKopieWiadomosci\Elements.xml" />
     <Content Include="ZatwierdzenieZadania\Elements.xml" />
   </ItemGroup>

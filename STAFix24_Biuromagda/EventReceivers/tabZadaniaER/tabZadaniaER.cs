@@ -1260,7 +1260,6 @@ namespace EventReceivers.tabZadaniaER
                     }
                     else
                     {
-
                         BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_TEMPLATE.Include", out temat, out trescHTML, nadawca);
                     }
                 }
@@ -1312,7 +1311,7 @@ namespace EventReceivers.tabZadaniaER
 
                 Klient k = new Klient(item.Web, klientId);
 
-                sb.Replace("___colPIT_Konto___", k.NumerRachunkuPD);
+                sb.Replace("___colPIT_Konto___", k.NumerRachunkuPIT_PD);
 
                 int okresId = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupId : 0;
 
