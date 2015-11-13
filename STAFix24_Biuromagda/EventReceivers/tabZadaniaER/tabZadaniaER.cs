@@ -284,7 +284,7 @@ namespace EventReceivers.tabZadaniaER
                         if (kwota > 0)
                         {
                             
-                            konto = iok.NumerRachunkuPD;
+                            konto = iok.NumerRachunkuPIT_PD;
                             int urzadId = iok.UrzadSkarbowyId;
 
                             BLL.Models.UrzadSkarbowy us = new BLL.Models.UrzadSkarbowy(web, urzadId);
@@ -305,7 +305,7 @@ namespace EventReceivers.tabZadaniaER
                         if (kwota > 0)
                         {
                             
-                            konto = iok.NumerRachunkuPD;
+                            konto = iok.NumerRachunkuPIT_PD;
                             int urzadId = iok.UrzadSkarbowyId;
 
                             BLL.Models.UrzadSkarbowy us = new BLL.Models.UrzadSkarbowy(web, urzadId);
