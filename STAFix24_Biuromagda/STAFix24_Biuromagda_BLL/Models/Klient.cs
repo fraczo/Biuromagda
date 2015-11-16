@@ -113,7 +113,7 @@ namespace BLL.Models
                 this.DataRozpoczeciaDzialalnosci = BLL.Tools.Get_Date(item,"colDataRozpoczeciaDzialalnosci");
 
 
-                // PIT
+                // PIT i VAT
                 try
                 {
                     int urzadId = item["selUrzadSkarbowy"] != null ? new SPFieldLookupValue(item["selUrzadSkarbowy"].ToString()).LookupId : 0;
@@ -121,6 +121,7 @@ namespace BLL.Models
                     if (urzadId > 0)
                     {
                         this.NumerRachunkuPIT_PD = tabUrzedySkarbowe.Get_NumerRachunkuPITById(web, urzadId);
+                        this.NumerRachunkuVAT = tabUrzedySkarbowe.Get_NumerRachunkuVATById(web, urzadId);
 
                         if (this.FormaOpodatkowaniaPD=="CIT")
                             NumerRachunkuPD = tabUrzedySkarbowe.Get_NumerRachunkuCITById(web, urzadId);
@@ -134,6 +135,7 @@ namespace BLL.Models
                     {
                         NumerRachunkuPIT_PD = string.Empty;
                         NumerRachunkuPD = string.Empty;
+                        NumerRachunkuVAT = string.Empty;
                         UrzadSkarbowyId = 0;
                     }
                 }
@@ -148,7 +150,7 @@ namespace BLL.Models
 
                 }
 
-                //VAT
+                //VAT (update jeżeli wymagany)
 
                 try
                 {
@@ -163,7 +165,7 @@ namespace BLL.Models
                     else
                     {
                         //Przyjmij parametry jak dla US od podatku PIT
-                        NumerRachunkuVAT = this.NumerRachunkuPD;
+                        NumerRachunkuVAT = this.NumerRachunkuVAT;
                         NazwaUrzeduSkarbowegoVAT = this.NazwaUrzeduSkarbowego;
                         UrzadSkarbowyVATId = this.UrzadSkarbowyId;
                     }
