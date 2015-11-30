@@ -27,5 +27,39 @@ namespace BLL
 
             return 0;
         }
+
+        internal static void GetSzablonId(SPWeb web, int szablonId, out string subject, ref string bodyHTML)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            SPList list = web.Lists.TryGetList(targetList);
+
+            SPListItem item = list.GetItemById(szablonId);
+
+            if (item != null)
+            {
+
+                subject = BLL.Tools.Get_Text(item, "colTematWiadomosci");
+
+                switch (item.ContentType.Name)
+                {
+                    case "Szablon wiadomości HTML":
+                        sb = new StringBuilder(BLL.Tools.Get_Text(item, "colTrescHTML"));
+                        break;
+                    case "Szablon wiadomości":
+                        sb = new StringBuilder(BLL.Tools.Get_Text(item, "colTresc"));
+                        break;
+                }
+
+                sb.Append(bodyHTML);
+            }
+            else
+            {
+                subject = string.Empty;
+                sb.Append(bodyHTML);
+            }
+
+            bodyHTML = sb.ToString();
+        }
     }
 }

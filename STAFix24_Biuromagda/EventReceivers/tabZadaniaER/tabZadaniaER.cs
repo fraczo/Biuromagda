@@ -82,6 +82,14 @@ namespace EventReceivers.tabZadaniaER
                     case "Zadanie":
                         Update_Zadanie(item, web);
                         break;
+
+                    case "Wiadomość z ręki":
+                    case "Wiadomość z szablonu":
+                    case "Wiadomość grupowa":
+                    case "Wiadomość grupowa z szablonu":
+                        BLL.tabWiadomosci.CreateMailMessage(item);
+                        break;
+
                     default:
                         break;
                 }

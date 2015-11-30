@@ -10,6 +10,7 @@ namespace BLL.Models
         Ignore,
         ReminderZUS, //tylko załączniki dotyczące płatności składek ZUS
         ReminderZUS_PIT, //tylko załączniki dotyczące płatności składek ZUS_PIT
-        NoAttachements
+        NoAttachements,
+        WithAttachements
     }
 }

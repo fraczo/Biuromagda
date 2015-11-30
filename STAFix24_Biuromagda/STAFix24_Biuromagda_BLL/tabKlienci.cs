@@ -714,5 +714,203 @@ namespace BLL
 
             return result;
         }
+
+        internal static Array Get_WybraniKlienci(SPListItem item)
+        {
+            if (BLL.Tools.Get_Flag(item, "colWyslijDoWszystkich"))
+            {
+                //wybierz wszystkich aktywnych
+                return BLL.tabKlienci.Get_AktywniKlienci(item.Web);
+            }
+            else
+            {
+                //wybierz aktywnych spełniających kryteria wyboru
+                Array klientItems = BLL.tabKlienci.Get_AktywniKlienci(item.Web);
+                ArrayList results = new ArrayList();
+
+                foreach (SPListItem klientItem in klientItems)
+                {
+                    //dodaj w/g selSerwisy
+                    Append_BasedOn_ZgodneParametryWyboru(item, klientItem, ref results, "selSewisy");
+
+                    //dodaj w/g selParametry
+                    Append_BasedOn_ZgodneParametryWyboru(item, klientItem, ref results, "selParametry");
+
+                    //dodaj w/g selKlienci
+                    Append_BasedOn_ZgodneIDKlienta(item, ref results);
+                }
+
+                return results.ToArray();
+            }
+        }
+
+        private static void Append_BasedOn_ZgodneIDKlienta(SPListItem item, ref ArrayList results)
+        {
+            string col = "selKlienci";
+            Array selectedKlientItems = BLL.Tools.Get_LookupValueCollection(item, col);
+
+            foreach (SPFieldLookupValue value in selectedKlientItems)
+            {
+                bool found = false;
+
+                int klientId = value.LookupId;
+                foreach (SPListItem result in results)
+                {
+                    if (result.ID == klientId)
+                    {
+                        //klient już dodany do wyników
+                        found = true;
+                        break;
+                    }
+                }
+
+                //dodaj klienta do listy wyników
+                if (!found)
+                {
+                    results.Add(BLL.tabKlienci.Get_KlientById(item.Web, klientId));
+                }
+            }
+        }
+
+        private static void Append_BasedOn_ZgodneParametryWyboru(SPListItem item, SPListItem klientItem, ref ArrayList results, string col)
+        {
+            Array klientOptions = BLL.Tools.Get_LookupValueCollection(klientItem, col);
+            Array selectedOptions = BLL.Tools.Get_LookupValueCollection(item, col);
+
+            bool found = false;
+
+            foreach (var option in selectedOptions)
+            {
+                foreach (var kOption in klientOptions)
+                {
+                    if (option.ToString().Equals(kOption.ToString()))
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found) break;
+            }
+
+            if (found)
+            {
+                //sprawdź czy już dodany do wyników
+                if (results.Count > 0)
+                {
+                    int klientId = klientItem.ID;
+                    foreach (SPListItem result in results)
+                    {
+                        if (result.ID == klientId)
+                        {
+                            //klient już dodany do wyników
+                            return;
+                        }
+                    }
+                }
+
+                //dodaj klienta do listy wyników
+                results.Add(klientItem);
+
+                return;
+            }
+        }
+
+        public static Array Get_AktywniKlienci_ByTypKlientaMask(SPWeb web, string kmask)
+        {
+            SPList targetList = web.Lists.TryGetList(listName);
+            Array result = null;
+
+            result = targetList.Items.Cast<SPListItem>()
+                    .Where(i => i["enumStatus"].ToString().Equals("Aktywny"))
+                    .Where(i => i.ContentType.Name.Equals(kmask))
+                    .Where(i => new SPFieldLookupValueCollection(i["selSewisy"].ToString()).Count > 0)
+                    .ToArray();
+
+            return result;
+        }
+
+        public static Array Get_AktywniKlienci_ByTypKlienta_BySerwisMask(SPWeb web, string kmask, string mask)
+        {
+            SPList targetList = web.Lists.TryGetList(listName);
+            Array result = null;
+
+            if (!string.IsNullOrEmpty(kmask))
+            {
+                result = targetList.Items.Cast<SPListItem>()
+                        .Where(i => i["enumStatus"].ToString().Equals("Aktywny"))
+                        .Where(i => i.ContentType.Name.Equals(kmask))
+                        .Where(i => new SPFieldLookupValueCollection(i["selSewisy"].ToString()).Count > 0)
+                        .ToArray();
+            }
+            else
+            {
+                result = targetList.Items.Cast<SPListItem>()
+                        .Where(i => i["enumStatus"].ToString().Equals("Aktywny"))
+                        .Where(i => new SPFieldLookupValueCollection(i["selSewisy"].ToString()).Count > 0)
+                        .ToArray();
+            }
+
+            // usuń rekordy nie pasujące do wzorca
+
+            if (result.Length > 0)
+                result = Refine_KlienciBySerwisMask(mask, result);
+
+            return result;
+        }
+
+        public static Array Get_AktywniKlienci_BySerwisMask(SPWeb web, string mask)
+        {
+            SPList targetList = web.Lists.TryGetList(listName);
+
+            Array results = targetList.Items.Cast<SPListItem>()
+                                .Where(i => i["enumStatus"].ToString() == "Aktywny")
+                                .Where(i => new SPFieldLookupValueCollection(i["selSewisy"].ToString()).Count > 0)
+                                .ToArray();
+
+            if (results.Length > 0)
+                results = Refine_KlienciBySerwisMask(mask, results);
+
+            return results;
+        }
+
+        public static Array Refine_KlienciBySerwisMask(string mask, Array klienci)
+        {
+            ArrayList newResults = new ArrayList();
+
+            if (mask.EndsWith("*"))
+            {
+                string newMask = mask.Substring(0, mask.Length - 1);
+                foreach (SPListItem k in klienci)
+                {
+                    Array serwisy = BLL.Tools.Get_LookupValueCollection(k, "selSewisy");
+                    foreach (SPFieldLookupValue v in serwisy)
+                    {
+                        if (v.LookupValue.StartsWith(newMask))
+                        {
+                            newResults.Add(k);
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (SPListItem k in klienci)
+                {
+                    Array serwisy = BLL.Tools.Get_LookupValueCollection(k, "selSewisy");
+                    foreach (SPFieldLookupValue v in serwisy)
+                    {
+                        if (v.LookupValue.Equals(mask))
+                        {
+                            newResults.Add(k);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return newResults.ToArray();
+        }
     }
 }

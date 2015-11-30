@@ -39,7 +39,7 @@ namespace BLL
         /// <summary>
         /// definiuje kolumnę w razie potrzeby
         /// </summary>
-        private static void Ensure_Column(SPListItem item, string targetColumn)
+        public static void Ensure_Column(SPListItem item, string targetColumn)
         {
             bool found = false;
             SPList list = item.ParentList;
@@ -212,5 +212,49 @@ namespace BLL
                 item.SystemUpdate();
             }
         }
+
+        internal static string Get_CurrentUser(SPListItem item)
+        {
+            string result = item["Editor"] != null ? new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email : string.Empty;
+
+            if (string.IsNullOrEmpty(result))
+            {
+                //ustaw domyślnie adres biura
+                result = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+            }
+
+            if (BLL.Tools.Is_ValidEmail(result))
+            {
+                return result;
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+        public static bool Is_ValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static void Set_Text(SPListItem item, string col, string val)
+        {
+            item[col] = val.ToString();
+        }
+
+        internal static Array Get_LookupValueCollection(SPListItem item, string col)
+        {
+            return item[col] != null ? new SPFieldLookupValueCollection(item[col].ToString()).ToArray() : null;
+        }
+
     }
 }
