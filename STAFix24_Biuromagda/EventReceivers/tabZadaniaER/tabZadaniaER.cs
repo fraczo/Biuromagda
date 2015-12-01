@@ -83,13 +83,6 @@ namespace EventReceivers.tabZadaniaER
                         Update_Zadanie(item, web);
                         break;
 
-                    case "Wiadomość z ręki":
-                    case "Wiadomość z szablonu":
-                    case "Wiadomość grupowa":
-                    case "Wiadomość grupowa z szablonu":
-                        BLL.tabWiadomosci.CreateMailMessage(item);
-                        break;
-
                     default:
                         break;
                 }
@@ -797,6 +790,12 @@ namespace EventReceivers.tabZadaniaER
                     case "Rozliczenie podatku VAT":
                         break;
                     case "Rozliczenie ZUS":
+                        break;
+                    case "Wiadomość z ręki":
+                    case "Wiadomość z szablonu":
+                    case "Wiadomość grupowa":
+                    case "Wiadomość grupowa z szablonu":
+                        BLL.tabWiadomosci.CreateMailMessage(item);
                         break;
                     default:
                         break;

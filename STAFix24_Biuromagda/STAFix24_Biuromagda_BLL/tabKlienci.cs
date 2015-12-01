@@ -10,6 +10,7 @@ namespace BLL
     public static class tabKlienci
     {
         const string listName = "Klienci"; //"tabKlienci";
+        private static string _KLIENT_STATUS = "Aktywny";
 
         public static Array Get_AktywniKlienci(SPWeb web)
         {
@@ -17,7 +18,7 @@ namespace BLL
             Array result = null;
 
             result = targetList.Items.Cast<SPListItem>()
-                .Where(i => i["enumStatus"].ToString() == "Aktywny")
+                .Where(i => BLL.Tools.Get_Text(i,"enumStatus").Equals(_KLIENT_STATUS))
                 .ToArray();
 
             return result;
@@ -733,8 +734,8 @@ namespace BLL
                     //dodaj w/g selSerwisy
                     Append_BasedOn_ZgodneParametryWyboru(item, klientItem, ref results, "selSewisy");
 
-                    //dodaj w/g selParametry
-                    Append_BasedOn_ZgodneParametryWyboru(item, klientItem, ref results, "selParametry");
+                    ////dodaj w/g selParametry
+                    //Append_BasedOn_ZgodneParametryWyboru(item, klientItem, ref results, "selParametry");
 
                     //dodaj w/g selKlienci
                     Append_BasedOn_ZgodneIDKlienta(item, ref results);
