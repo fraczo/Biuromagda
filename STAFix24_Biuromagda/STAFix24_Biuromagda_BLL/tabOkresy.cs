@@ -386,5 +386,11 @@ namespace BLL
 
             return oId;
         }
+
+        public static DateTime Get_StartDate(SPWeb web, int okresId)
+        {
+            SPListItem item = web.Lists.TryGetList(targetList).GetItemById(okresId);
+            return BLL.tabOkresy.Get_Date(item, "colDataRozpoczecia");
+        }
     }
 }

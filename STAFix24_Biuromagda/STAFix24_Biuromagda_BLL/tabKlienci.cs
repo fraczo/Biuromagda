@@ -653,7 +653,6 @@ namespace BLL
             return 0;
         }
 
-
         public static string Get_EmailById(SPWeb web, int klientId)
         {
             SPList list = web.Lists.TryGetList(listName);
@@ -912,6 +911,17 @@ namespace BLL
             }
 
             return newResults.ToArray();
+        }
+
+        /// <summary>
+        /// Osoby fizyczne, Firmy, Firmy zewnętrzne
+        /// </summary>
+        public static Array Get_WspolnicyByKlientId(SPWeb web, int klientId)
+        {
+            return web.Lists.TryGetList(listName).Items.Cast<SPListItem>()
+                .Where(i => BLL.Tools.Get_LookupId(i, "selKlient_NazwaSkrocona") == klientId)
+                .Where(i => i.ContentType.Name.Equals("Osoba fizyczna") | i.ContentType.Name.Equals("Firma") | i.ContentType.Name.Equals("Firma zewnętrzna"))
+                .ToArray();
         }
     }
 }

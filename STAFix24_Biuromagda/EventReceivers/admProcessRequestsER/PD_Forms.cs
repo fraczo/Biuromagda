@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.SharePoint;
 using BLL;
+using System.Diagnostics;
 
 namespace admProcessRequests_EventReceiver
 {
@@ -87,6 +88,9 @@ namespace admProcessRequests_EventReceiver
 
         internal static void Create(SPWeb web, int klientId, int okresId, bool createKK)
         {
+
+            Debug.WriteLine("PD_Forms.Create");
+
             SPListItem item = tabKlienci.Get_KlientById(web, klientId);
 
             if (item != null)

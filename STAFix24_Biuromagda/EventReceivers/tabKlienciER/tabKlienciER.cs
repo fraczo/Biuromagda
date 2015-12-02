@@ -84,6 +84,10 @@ namespace EventReceivers.tabKlienciER
                     string nip = item["colNIP"] != null ? item["colNIP"].ToString() : string.Empty;
                     np = string.Format(@"{2}/{0} NIP:{1}", nazwa, nip, Get_LookupValue(item, "selKlient_NazwaSkrocona") );
                     break;
+                case "Firma zewnętrzna":
+                    string nazwaFirmyZewn = item["colNazwa"] != null ? item["colNazwa"].ToString() : string.Empty;
+                    np = nazwaFirmyZewn + " (firma zewnętrzna)";
+                    break;
                 case "Osoba fizyczna":
                     string npNazwsko = item["colNazwisko"] != null ? item["colNazwisko"].ToString().Trim() : string.Empty;
                     string npImie = item["colImie"] != null ? item["colImie"].ToString().Trim() : string.Empty;

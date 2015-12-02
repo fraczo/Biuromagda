@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.SharePoint;
 using BLL;
 using BLL.Models;
+using System.Diagnostics;
 
 namespace admProcessRequests_EventReceiver.admProcessRequestsER
 {
@@ -34,6 +35,8 @@ namespace admProcessRequests_EventReceiver.admProcessRequestsER
 
         internal static void Create(SPWeb web, int klientId, int okresId, bool createKK)
         {
+            Debug.WriteLine("ZUS_Forms.Create");
+
             SPListItem item = tabKlienci.Get_KlientById(web, klientId);
 
             if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
@@ -137,7 +140,9 @@ namespace admProcessRequests_EventReceiver.admProcessRequestsER
             catch (Exception ex)
             {
 #if DEBUG
-                throw ex;
+                Debug.WriteLine(ex.Message);
+                Debug.WriteLine(ex.StackTrace);
+
 #else
                 BLL.Logger.LogEvent(web.Url, ex.ToString() + " KlientId= " + klientId.ToString());
                 var result = ElasticEmail.EmailGenerator.ReportError(ex, web.Url, "KlientId=" + klientId.ToString());

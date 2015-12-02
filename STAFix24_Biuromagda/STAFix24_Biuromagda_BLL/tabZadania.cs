@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.SharePoint;
 using BLL.Models;
 using System.IO;
+using System.Diagnostics;
 
 namespace BLL
 {
@@ -46,44 +47,57 @@ namespace BLL
         //}
         public static string Define_KEY(string ct, int klientId, int okresId)
         {
-            string result;
+            string result = string.Empty;
 
-            if (ct == "Zadanie" || ct == "Element" || ct == "Folder")
+            if (ct == "Rozliczenie ZUS"
+                | ct == "Rozliczenie podatku dochodowego"
+                | ct == "Rozliczenie podatku dochodowego spółki"
+                | ct == "Rozliczenie podatku VAT"
+                | ct == "Rozliczenie z biurem rachunkowym"
+                | ct == "Prośba o dokumenty"
+                | ct == "Prośba o przesłanie wyciągu bankowego")
             {
-                return String.Empty;
+                result = String.Format(@"{0}:{1}:{2}",
+                    ct.ToString(),
+                    klientId.ToString(),
+                    okresId.ToString());
             }
-
-            result = String.Format(@"{0}:{1}:{2}",
-                ct.ToString(),
-                klientId.ToString(),
-                okresId.ToString());
 
             return result;
         }
 
         public static string Define_KEY(SPListItem item)
         {
-            string ct = item["ContentType"].ToString();
+            string ct = item.ContentType.Name;
 
-            if (ct == "Zadanie" || ct == "Element" || ct == "Folder")
+            string result = string.Empty;
+
+            if (ct == "Rozliczenie ZUS"
+                | ct == "Rozliczenie podatku dochodowego"
+                | ct == "Rozliczenie podatku dochodowego spółki"
+                | ct == "Rozliczenie podatku VAT"
+                | ct == "Rozliczenie z biurem rachunkowym"
+                | ct == "Prośba o dokumenty"
+                | ct == "Prośba o przesłanie wyciągu bankowego")
             {
-                return String.Empty;
+                int klientId = 0;
+                int okresId = 0;
+
+                if (item["selKlient"] != null)
+                {
+                    klientId = new SPFieldLookupValue(item["selKlient"].ToString()).LookupId;
+                }
+
+                if (item["selOkres"] != null)
+                {
+                    okresId = new SPFieldLookupValue(item["selOkres"].ToString()).LookupId;
+                }
+
+                result = Define_KEY(ct, klientId, okresId);
+
             }
 
-            int klientId = 0;
-            int okresId = 0;
-
-            if (item["selKlient"] != null)
-            {
-                klientId = new SPFieldLookupValue(item["selKlient"].ToString()).LookupId;
-            }
-
-            if (item["selOkres"] != null)
-            {
-                okresId = new SPFieldLookupValue(item["selOkres"].ToString()).LookupId;
-            }
-
-            return Define_KEY(ct, klientId, okresId);
+            return result;
         }
 
         public static void Update_KEY(SPListItem item, string key)
@@ -124,7 +138,7 @@ namespace BLL
             //{
             Array li = list.Items.Cast<SPListItem>()
                     .Where(i => i.ID != currentId)
-                    .Where(i => i["ContentType"].ToString() != "Zadanie" && i["ContentType"].ToString() != "Element" && i["ContentType"].ToString() != "Folder")
+                    .Where(i => i["KEY"]!=null)
                     .Where(i => i["KEY"].ToString() == key)
                     .ToArray();
 
@@ -140,6 +154,8 @@ namespace BLL
 
         public static void Create_ctVAT_Form(SPWeb web, string ct, int klientId, int okresId, string key, DateTime terminPlatnosci, DateTime terminPrzekazania, bool isKwartalnie)
         {
+            Debug.WriteLine("VAT_Forms.Create");
+
             Klient iok = new Klient(web, klientId);
 
             if (iok.FormaOpodatkowaniaVAT == "Nie podlega")
@@ -238,6 +254,8 @@ namespace BLL
 
         public static void Create_ctPD_Form(SPWeb web, string ct, int klientId, int okresId, string key, DateTime terminPlatnosci, DateTime terminPrzekazania, bool isKwartalnie)
         {
+            Debug.WriteLine("PD_Forms.Create");
+
             Klient iok = new Klient(web, klientId);
 
             SPList list = web.Lists.TryGetList(targetList);
@@ -315,6 +333,8 @@ namespace BLL
 
         public static void Create_ctPDS_Form(SPWeb web, string ct, int klientId, int okresId, string key, DateTime terminPlatnosci, DateTime terminPrzekazania, bool isKwartalnie)
         {
+            Debug.WriteLine("PDS_Forms.Create");
+
             Create_ctPD_Form(web, ct, klientId, okresId, key, terminPlatnosci, terminPrzekazania, isKwartalnie);
         }
 
@@ -371,6 +391,8 @@ namespace BLL
 
         public static void Create_ctZUS_Form(SPWeb web, string ct, int klientId, int okresId, string key, bool isTylkoZdrowotna, bool isChorobowa, bool isPracownicy, double skladkaSP, double skladkaZD, double skladkaFP, DateTime terminPlatnosci, DateTime terminPrzekazania, string zus_sp_konto, string zus_zd_konto, string zus_fp_konto, Klient iok)
         {
+            Debug.WriteLine("ZUS_Forms.Create");
+
             SPList list = web.Lists.TryGetList(targetList);
 
             Flagi fl = new Flagi(web, klientId);
@@ -445,6 +467,8 @@ namespace BLL
 
         public static void Create_ctBR_Form(SPWeb web, string ct, int klientId, int okresId, string key)
         {
+            Debug.WriteLine("RBR_Forms.Create");
+
             Klient iok = new Klient(web, klientId);
 
             SPList list = web.Lists.TryGetList(targetList);

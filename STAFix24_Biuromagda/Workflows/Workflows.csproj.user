@@ -69,7 +69,7 @@
           <ListURL>http://spf2010/sites/biuromagda/Lists/admProcessRequests/AllItems.aspx</ListURL>
           <TargetList>admProcessRequests</TargetList>
           <TargetListGuid>{4b246f89-b51b-4c05-9c3a-6f03fe15eca8}</TargetListGuid>
-          <StartOnCreate>true</StartOnCreate>
+          <StartOnCreate>false</StartOnCreate>
           <StartOnChange>false</StartOnChange>
         </ProjectItemStore>
       </FlavorProperties>
