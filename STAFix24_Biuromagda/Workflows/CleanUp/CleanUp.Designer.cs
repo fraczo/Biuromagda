@@ -43,6 +43,8 @@ namespace Workflows.CleanUp
             this.whileZadanieExist = new System.Workflow.Activities.WhileActivity();
             this.Select_ListaZadan = new System.Workflow.Activities.CodeActivity();
             this.logToHistoryListActivity3 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
+            this.faultHandlersActivity1 = new System.Workflow.ComponentModel.FaultHandlersActivity();
+            this.Update_Status = new System.Workflow.Activities.CodeActivity();
             this.ObsługaListyWiadomości = new System.Workflow.Activities.SequenceActivity();
             this.ObsługaListyZadań = new System.Workflow.Activities.SequenceActivity();
             this.onWorkflowActivated1 = new Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated();
@@ -125,6 +127,15 @@ namespace Workflows.CleanUp
             this.logToHistoryListActivity3.OtherData = "";
             this.logToHistoryListActivity3.UserId = -1;
             // 
+            // faultHandlersActivity1
+            // 
+            this.faultHandlersActivity1.Name = "faultHandlersActivity1";
+            // 
+            // Update_Status
+            // 
+            this.Update_Status.Name = "Update_Status";
+            this.Update_Status.ExecuteCode += new System.EventHandler(this.Update_Status_ExecuteCode);
+            // 
             // ObsługaListyWiadomości
             // 
             this.ObsługaListyWiadomości.Activities.Add(this.logToHistoryListActivity4);
@@ -161,12 +172,18 @@ namespace Workflows.CleanUp
             this.Activities.Add(this.onWorkflowActivated1);
             this.Activities.Add(this.ObsługaListyZadań);
             this.Activities.Add(this.ObsługaListyWiadomości);
+            this.Activities.Add(this.Update_Status);
+            this.Activities.Add(this.faultHandlersActivity1);
             this.Name = "CleanUp";
             this.CanModifyActivities = false;
 
         }
 
         #endregion
+
+        private FaultHandlersActivity faultHandlersActivity1;
+
+        private CodeActivity Update_Status;
 
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity4;
 
@@ -193,6 +210,9 @@ namespace Workflows.CleanUp
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logZadaniaCompleted;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
+
+
 
 
 

@@ -799,14 +799,28 @@ namespace BLL
             return result;
         }
 
-        public static Array Get_ZakonczoneDoArchiwizacji(SPWeb web)
+        public static Array Get_ZakonczoneDoArchiwizacji(SPWeb web, bool withAttachement = false)
         {
-            Array results = web.Lists.TryGetList(targetList).Items.Cast<SPListItem>()
-                            .Where(i => BLL.Tools.Get_Text(i, "enumStatusZadania").Equals(_ZADANIE_ZAKONCZONE)
-                                        | BLL.Tools.Get_Text(i, "enumStatusZadania").Equals(_ZADANIE_ANULOWANE))
-                            .ToArray();
-            
+            Array results;
+
+            if (withAttachement)
+            {
+                results = web.Lists.TryGetList(targetList).Items.Cast<SPListItem>()
+                    .Where(i => i.Attachments.Count > 0)
+                    .Where(i => BLL.Tools.Get_Text(i, "enumStatusZadania").Equals(_ZADANIE_ZAKONCZONE)
+                             | BLL.Tools.Get_Text(i, "enumStatusZadania").Equals(_ZADANIE_ANULOWANE))
+                 .ToArray();
+            }
+            else
+            {
+                results = web.Lists.TryGetList(targetList).Items.Cast<SPListItem>()
+                 .Where(i => BLL.Tools.Get_Text(i, "enumStatusZadania").Equals(_ZADANIE_ZAKONCZONE)
+                             | BLL.Tools.Get_Text(i, "enumStatusZadania").Equals(_ZADANIE_ANULOWANE))
+                 .ToArray();
+            }
+
             return results;
         }
+
     }
 }

@@ -256,5 +256,10 @@ namespace BLL
             return item[col] != null ? new SPFieldLookupValueCollection(item[col].ToString()).ToArray() : null;
         }
 
+
+        public static void Set_Flag(SPListItem item, string col, bool v)
+        {
+            item[col] = v;
+        }
     }
 }

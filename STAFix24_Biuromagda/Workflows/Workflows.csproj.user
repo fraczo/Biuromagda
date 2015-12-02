@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <SharePointSiteUrl>http://spf2010/sites/biuromagda/</SharePointSiteUrl>
-    <ProjectView>ProjectFiles</ProjectView>
+    <ProjectView>ShowAllFiles</ProjectView>
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>
@@ -57,6 +57,20 @@
           <TaskListGuid>{ba6228e1-34d1-4827-bff7-9f0a3269471f}</TaskListGuid>
           <AutoAssociate>true</AutoAssociate>
           <ManualStart>true</ManualStart>
+        </ProjectItemStore>
+        <ProjectItemStore Id="{e2f3be54-4e27-46fb-9239-8f317bf12664}">
+          <DisplayName>CleanUp</DisplayName>
+          <HistoryList>Workflow History</HistoryList>
+          <HistoryListGuid>{7f19a9a1-6997-47fb-9e20-70fea625b6a9}</HistoryListGuid>
+          <TaskList>Tasks</TaskList>
+          <TaskListGuid>{ba6228e1-34d1-4827-bff7-9f0a3269471f}</TaskListGuid>
+          <AutoAssociate>true</AutoAssociate>
+          <ManualStart>true</ManualStart>
+          <ListURL>http://spf2010/sites/biuromagda/Lists/admProcessRequests/AllItems.aspx</ListURL>
+          <TargetList>admProcessRequests</TargetList>
+          <TargetListGuid>{4b246f89-b51b-4c05-9c3a-6f03fe15eca8}</TargetListGuid>
+          <StartOnCreate>true</StartOnCreate>
+          <StartOnChange>false</StartOnChange>
         </ProjectItemStore>
       </FlavorProperties>
     </VisualStudio>

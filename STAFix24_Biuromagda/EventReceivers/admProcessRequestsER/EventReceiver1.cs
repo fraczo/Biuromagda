@@ -15,6 +15,7 @@ namespace admProcessRequests_EventReceiver
     /// </summary>
     public class EventReceiver1 : SPItemEventReceiver
     {
+        private bool suppresItemDeletion = false;
         /// <summary>
         /// An item was added.
         /// </summary>
@@ -118,6 +119,10 @@ namespace admProcessRequests_EventReceiver
                                 case "Obsługa zadań":
                                     ObslugaZadan.Execute(properties, web);
                                     break;
+                                case "CleanUp":
+                                    CleanUp.Execute(properties, web);
+                                    suppresItemDeletion = true;
+                                    break;
 
                                 default:
                                     //properties.ListItem["colStatus"] = "Zakończony";
@@ -141,22 +146,11 @@ namespace admProcessRequests_EventReceiver
             }
             finally
             {
-                properties.ListItem.Delete();
-//                properties.ListItem["enumStatusZlecenia"] = "Zakończony";
-//                properties.ListItem.SystemUpdate();
-
-//                //oczyszczanie listy zleceń starszych niż 1 dzień
-//                try
-//                {
-//                    BLL.admProcessRequests.List_Cleanup(properties.Web, 1);
-//                }
-//                catch (Exception)
-//                {
-//#if DEBUG
-//                    throw;
-//#endif
-//                }              
-
+                if (!suppresItemDeletion)
+                {
+                    properties.ListItem.Delete();
+                }
+                          
                 this.EventFiringEnabled = true;
             }
         }
