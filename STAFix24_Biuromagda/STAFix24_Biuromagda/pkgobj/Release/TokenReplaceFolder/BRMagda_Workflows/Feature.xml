@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Feature xmlns="http://schemas.microsoft.com/sharepoint/" Id="63d1e625-de85-48f4-ba6e-678013c289d5" Scope="Site" Title="Biuromagda_Workflows">
+<Feature xmlns="http://schemas.microsoft.com/sharepoint/" Title="Biuromagda_Workflows" Id="63d1e625-de85-48f4-ba6e-678013c289d5" Scope="Site">
   <ElementManifests>
     <ElementManifest Location="ObslugaWiadomosci\Elements.xml" />
     <ElementManifest Location="ZatwierdzenieZadania\Elements.xml" />
     <ElementManifest Location="WyslijKopieWiadomosci\Elements.xml" />
     <ElementManifest Location="GenerujRejestry_StratyZLatUbieglych\Elements.xml" />
-    <ElementManifest Location="CleanUp\Elements.xml" />
   </ElementManifests>
 </Feature>

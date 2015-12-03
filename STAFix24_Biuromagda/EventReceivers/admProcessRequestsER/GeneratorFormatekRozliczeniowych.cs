@@ -106,43 +106,90 @@ namespace admProcessRequests_EventReceiver
                     string typKlienta = wt[i];
 
                     Array klienci = tabKlienci.Get_AktywniKlienci_Serwis(web, typKlienta);
-
-                    //sprawdź czy jest ograniczona lista serwisów
-                    if (item["selSewisy"] != null 
-                        && BLL.Tools.Get_LookupValueColection(item, "selSewisy").Count > 0)
-                    {
-                        klienci = Refine_Klienci(klienci, BLL.Tools.Get_LookupValueColection(item, "selSewisy"));
-                    }
+                    Debug.WriteLine("Wybrano klientów: " + klienci.Length.ToString());
 
                     bool createKK = Get_Flag(item, "colDodajKartyKontrolne");
 
-                    switch (typKlienta)
+                    //sprawdź czy jest ograniczona lista serwisów
+                    if (item["selSewisy"] != null
+                        && BLL.Tools.Get_LookupValueColection(item, "selSewisy").Count > 0)
                     {
-                        case "KPiR":
-                            ZUS_Forms.Create(web, klienci, okresId, createKK);
-                            PD_Forms.Create(web, klienci, okresId, createKK);
-                            VAT_Forms.Create(web, klienci, okresId, createKK);
-                            BR_Forms.Create(web, klienci, okresId, createKK);
-                            Reminder_Forms.Create(web, klienci, okresId);
-                            break;
-                        case "KSH":
-                            ZUS_Forms.Create(web, klienci, okresId, createKK);
-                            PDS_Forms.Create(web, klienci, okresId, createKK);
-                            VAT_Forms.Create(web, klienci, okresId, createKK);
-                            BR_Forms.Create(web, klienci, okresId, createKK);
-                            Reminder_Forms.Create(web, klienci, okresId);
-                            break;
-                        case "Firma":
-                            PDS_Forms.Create(web, klienci, okresId, createKK);
-                            break;
-                        case "Osoba fizyczna":
-                            ZUS_Forms.Create(web, klienci, okresId, createKK);
-                            PD_Forms.Create(web, klienci, okresId, createKK);
-                            VAT_Forms.Create(web, klienci, okresId, createKK);
-                            break;
+                        SPFieldLookupValueCollection serwisy = BLL.Tools.Get_LookupValueColection(item, "selSewisy");
 
-                        default:
-                            break;
+                        klienci = Refine_Klienci(klienci, serwisy);
+                        Debug.WriteLine("Ograniczono listę do: " + klienci.Length.ToString());
+                        
+                        foreach (SPListItem klient in klienci)
+                        {
+                            Debug.WriteLine("klientId=" + klient.ID.ToString());
+
+                            foreach (SPFieldLookupValue v in serwisy)
+                            {
+                                switch (v.LookupValue)
+                                {
+                                    case "ZUS-D":
+                                    case "ZUS-D+C":
+                                    case "ZUS-M":
+                                    case "ZUS-M+C":
+                                    case "ZUS-ZD":
+                                    case "ZUS-PRAC":
+                                        ZUS_Forms.Create(web, klienci, okresId, createKK);
+                                        break;
+                                    case "PDS-M":
+                                    case "PDS-KW":
+                                        PDS_Forms.Create(web, klienci, okresId, createKK);
+                                        break;
+                                    case "PD-M":
+                                    case "PD-KW":
+                                        PD_Forms.Create(web, klienci, okresId, createKK);
+                                        break;
+                                    case "VAT-M":
+                                    case "VAT-KW":
+                                        VAT_Forms.Create(web, klienci, okresId, createKK);
+                                        break;
+                                    case "RBR":
+                                        BR_Forms.Create(web, klienci, okresId, createKK);
+                                        break;
+                                    case "POW-Dok":
+                                    case "POW-WBank":
+                                        Reminder_Forms.Create(web, klienci, okresId);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        switch (typKlienta)
+                        {
+                            case "KPiR":
+                                ZUS_Forms.Create(web, klienci, okresId, createKK);
+                                PD_Forms.Create(web, klienci, okresId, createKK);
+                                VAT_Forms.Create(web, klienci, okresId, createKK);
+                                BR_Forms.Create(web, klienci, okresId, createKK);
+                                Reminder_Forms.Create(web, klienci, okresId);
+                                break;
+                            case "KSH":
+                                ZUS_Forms.Create(web, klienci, okresId, createKK);
+                                PDS_Forms.Create(web, klienci, okresId, createKK);
+                                VAT_Forms.Create(web, klienci, okresId, createKK);
+                                BR_Forms.Create(web, klienci, okresId, createKK);
+                                Reminder_Forms.Create(web, klienci, okresId);
+                                break;
+                            case "Firma":
+                                PDS_Forms.Create(web, klienci, okresId, createKK);
+                                break;
+                            case "Osoba fizyczna":
+                                ZUS_Forms.Create(web, klienci, okresId, createKK);
+                                PD_Forms.Create(web, klienci, okresId, createKK);
+                                VAT_Forms.Create(web, klienci, okresId, createKK);
+                                break;
+
+                            default:
+                                break;
+                        }
                     }
 
                     //informacja dla operatora
@@ -176,8 +223,8 @@ namespace admProcessRequests_EventReceiver
             {
                 foreach (SPFieldLookupValue s in serwisy)
                 {
-                    if (BLL.Tools.Has_Service(klientItem, s, "selSewis")
-                        | BLL.Tools.Has_Service(klientItem, s, "selSerwisyWspolnicy"))
+                    if (BLL.Tools.Has_Service(klientItem, s.LookupValue, "selSewisy")
+                        | BLL.Tools.Has_Service(klientItem, s.LookupValue, "selSerwisyWspolnicy"))
                     {
                         results.Add(klientItem);
                         Debug.WriteLine(BLL.Tools.Get_Text(klientItem, "_NazwaPrezentowana") + " - added");

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.SharePoint;
 using BLL;
+using System.Diagnostics;
 
 namespace admProcessRequests_EventReceiver
 {
@@ -37,6 +38,8 @@ namespace admProcessRequests_EventReceiver
         {
             foreach (SPListItem item in klienci)
             {
+                Debug.WriteLine("klientId=" + item.ID.ToString());
+
                 SPFieldLookupValueCollection kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
                 foreach (SPFieldLookupValue kod in kody)
                 {

@@ -62,10 +62,10 @@
       <SharePointProjectItemId>{0d6c4967-4d43-4054-a5b0-ce9020fbf21e}</SharePointProjectItemId>
     </None>
     <None Include="Features\EventReceivers\EventReceivers.feature">
-      <FeatureId>{bf8a4528-ff15-4340-aad1-32184e54aacf}</FeatureId>
+      <FeatureId>{df0d036d-8289-4328-8e52-74484638f8d3}</FeatureId>
     </None>
     <None Include="Features\CustomActions\CustomActions.feature">
-      <FeatureId>{f2f84811-bb32-4ccd-a7ae-9f62e1338e70}</FeatureId>
+      <FeatureId>{5620fcd1-3a1b-4203-92b5-4f3c567ba51d}</FeatureId>
     </None>
     <None Include="Features\ObslugaWiadomosciTJ\ObslugaWiadomosciTJ.feature">
       <FeatureId>{af4ac181-c796-4a56-ae57-eff1625fa220}</FeatureId>
@@ -99,7 +99,6 @@
     </Content>
     <Content Include="Features\CustomActions\CustomActions.Template.xml">
       <DependentUpon>CustomActions.feature</DependentUpon>
-      <SubType>Designer</SubType>
     </Content>
     <Content Include="Features\ObslugaWiadomosciTJ\ObslugaWiadomosciTJ.Template.xml">
       <DependentUpon>ObslugaWiadomosciTJ.feature</DependentUpon>

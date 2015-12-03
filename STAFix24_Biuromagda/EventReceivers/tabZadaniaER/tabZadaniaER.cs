@@ -9,6 +9,7 @@ using System.Text;
 using BLL.Models;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace EventReceivers.tabZadaniaER
 {
@@ -49,6 +50,7 @@ namespace EventReceivers.tabZadaniaER
 
         private void Execute(SPItemEventProperties properties)
         {
+            Debug.WriteLine(string.Format("Zadanie#{0} updated",properties.ListItemId.ToString()));
             this.EventFiringEnabled = false;
             this.Execute(properties.ListItem);
             this.EventFiringEnabled = true;

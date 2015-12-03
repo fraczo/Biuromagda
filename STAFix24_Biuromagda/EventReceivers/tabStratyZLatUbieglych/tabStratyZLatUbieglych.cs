@@ -25,6 +25,8 @@ namespace EventReceivers.tabStratyZLatUbieglych
 
            try
            {
+               Update_KEY(properties);
+
                SPListItem item = properties.ListItem;
                BLL.Tools.Ensure_LinkColumn(item, "selKlient");
            }
@@ -43,6 +45,27 @@ namespace EventReceivers.tabStratyZLatUbieglych
                this.EventFiringEnabled = true;
            }
 
+       }
+
+       private static void Update_KEY(SPItemEventProperties properties)
+       {
+           SPListItem item = properties.ListItem;
+
+           string key = BLL.tabStratyZLatUbieglych.Define_KEY(
+               BLL.Tools.Get_LookupId(item, "selKlient"),
+               (int)BLL.Tools.Get_Value(item, "colRokObrachunkowy"));
+
+           if (!BLL.Tools.Get_Text(item, "KEY").Equals(key))
+           {
+               BLL.Tools.Set_Text(item, "KEY", key);
+               try
+               {
+                   item.SystemUpdate();
+               }
+               catch (Exception)
+               {}
+               
+           }
        }
 
     }

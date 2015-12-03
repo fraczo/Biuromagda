@@ -133,12 +133,12 @@
     <Folder Include="Features\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="tabZadaniaER\Elements.xml" />
     <Content Include="tabDochodyWspolnikow\Elements.xml" />
     <Content Include="tabDochodyZInnychSpolek\Elements.xml" />
     <Content Include="tabProceduryER\Elements.xml" />
     <Content Include="tabStratyZLatUbieglych\Elements.xml" />
     <Content Include="tabWiadomosciER\Elements.xml" />
-    <None Include="tabZadaniaER\Elements.xml" />
     <None Include="admProcessRequestsER\Elements.xml" />
     <None Include="dicUrzedySkarboweER\Elements.xml" />
     <Content Include="tabKlienciER\Elements.xml">

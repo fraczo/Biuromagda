@@ -17,6 +17,8 @@ namespace admProcessRequests_EventReceiver
         {
             foreach (SPListItem item in aKlienci)
             {
+                Debug.WriteLine("klientId=" + item.ID.ToString());
+
                 SPFieldLookupValueCollection kody;
 
                 switch (item.ContentType.Name)

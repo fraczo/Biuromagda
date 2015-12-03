@@ -17,8 +17,9 @@ namespace admProcessRequests_EventReceiver.admProcessRequestsER
         {
             foreach (SPListItem item in aKlienci)
             {
-                if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
+                Debug.WriteLine("klientId=" + item.ID.ToString());
 
+                if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
                 Create_ZUS_Forms(web, okresId, item);
             }
         }
@@ -81,27 +82,27 @@ namespace admProcessRequests_EventReceiver.admProcessRequestsER
                 switch (kod.LookupValue)
                 {
                     case @"ZUS-D":
-                        found=true;
+                        found = true;
                         tabOkresy.Get_ZUS_D(web, okresId, isChorobowa, isPracownicy, out skladkaSP, out skladkaZD, out skladkaFP, out terminPlatnosci, out terminPrzekazania);
                         break;
                     case @"ZUS-D+C":
-                        found=true;
+                        found = true;
                         isChorobowa = true;
                         tabOkresy.Get_ZUS_D(web, okresId, isChorobowa, isPracownicy, out skladkaSP, out skladkaZD, out skladkaFP, out terminPlatnosci, out terminPrzekazania);
                         break;
                     case @"ZUS-M":
-                        found=true;
+                        found = true;
                         tabOkresy.Get_ZUS_M(web, okresId, isChorobowa, isPracownicy, out skladkaSP, out skladkaZD, out skladkaFP, out terminPlatnosci, out terminPrzekazania);
                         break;
                     case @"ZUS-M+C":
-                        found=true;
+                        found = true;
                         isChorobowa = true;
                         tabOkresy.Get_ZUS_M(web, okresId, isChorobowa, isPracownicy, out skladkaSP, out skladkaZD, out skladkaFP, out terminPlatnosci, out terminPrzekazania);
                         break;
                     case @"ZUS-ZD":
-                        found=true;
+                        found = true;
                         isTylkoZdrowotna = true;
-                        tabOkresy.Get_ZUS_ZD(web, okresId, isChorobowa, isPracownicy, out skladkaZD,  out terminPlatnosci, out terminPrzekazania);
+                        tabOkresy.Get_ZUS_ZD(web, okresId, isChorobowa, isPracownicy, out skladkaZD, out terminPlatnosci, out terminPrzekazania);
                         break;
                     case @"ZUS-PRAC":
                         found = true;
@@ -113,14 +114,14 @@ namespace admProcessRequests_EventReceiver.admProcessRequestsER
                 }
 
                 if (found)
-	            {
-		            Create_ZUS_Form(web, item.ID, okresId, isTylkoZdrowotna , isChorobowa, isPracownicy, skladkaSP, skladkaZD, skladkaFP, terminPlatnosci, terminPrzekazania);
+                {
+                    Create_ZUS_Form(web, item.ID, okresId, isTylkoZdrowotna, isChorobowa, isPracownicy, skladkaSP, skladkaZD, skladkaFP, terminPlatnosci, terminPrzekazania);
                     break;
                 }
             }
         }
 
-        private static void Create_ZUS_Form(SPWeb web, int klientId, int okresId,bool isTylkoZdrowotna, bool isChorobowa, bool isPracownicy, double skladkaSP, double skladkaZD, double skladkaFP, DateTime terminPlatnosci, DateTime terminPrzekazania)
+        private static void Create_ZUS_Form(SPWeb web, int klientId, int okresId, bool isTylkoZdrowotna, bool isChorobowa, bool isPracownicy, double skladkaSP, double skladkaZD, double skladkaFP, DateTime terminPlatnosci, DateTime terminPrzekazania)
         {
             try
             {

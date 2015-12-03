@@ -7,10 +7,10 @@
     <projectOutputAssembly location="BRMagda.TimerJobs.dll" deploymentTarget="GlobalAssemblyCache" projectPath="..\TimerJobs\TimerJobs.csproj" />
   </assemblies>
   <features>
-    <featureReference itemId="bf8a4528-ff15-4340-aad1-32184e54aacf" />
-    <featureReference itemId="f2f84811-bb32-4ccd-a7ae-9f62e1338e70" />
     <featureReference itemId="d9f38166-637b-47ee-9dd0-3d46980d013c" />
     <featureReference itemId="af4ac181-c796-4a56-ae57-eff1625fa220" />
+    <featureReference itemId="df0d036d-8289-4328-8e52-74484638f8d3" />
+    <featureReference itemId="5620fcd1-3a1b-4203-92b5-4f3c567ba51d" />
   </features>
   <projectItems>
     <projectItemReference itemId="18be71cb-4a94-45fb-bd5f-f629f4c15954" />

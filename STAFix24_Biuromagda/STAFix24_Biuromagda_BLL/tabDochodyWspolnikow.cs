@@ -28,7 +28,7 @@ namespace BLL
         /// </summary>
         public static void Ensure_RecordInitiated(Microsoft.SharePoint.SPWeb web, Microsoft.SharePoint.SPListItem klientItem, int klientId, int okresId)
         {
-            Debug.WriteLine("Dochody wspólników - ensure record initiated");
+            Debug.WriteLine("tab.DochowyWspolnikow.Ensure_RecordInitiated, klientId=" + klientId.ToString());
 
             int result = 0;
 

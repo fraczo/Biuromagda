@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using BLL;
 using Microsoft.SharePoint;
+using System.Diagnostics;
 
 namespace admProcessRequests_EventReceiver.admProcessRequestsER
 {
@@ -15,6 +16,8 @@ namespace admProcessRequests_EventReceiver.admProcessRequestsER
         {
             foreach (SPListItem item in aKlienci)
             {
+                Debug.WriteLine("klientId=" + item.ID.ToString());
+
                 SPFieldLookupValueCollection kody;
 
                 switch (item.ContentType.Name)

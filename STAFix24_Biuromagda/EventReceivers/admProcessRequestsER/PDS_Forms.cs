@@ -69,6 +69,7 @@ namespace admProcessRequests_EventReceiver
                 {
                     case "Osoba fizyczna":
                     case "Firma":
+                    case "Firma zewnętrzna":
                         kody = new SPFieldLookupValueCollection(item["selSerwisyWspolnicy"].ToString());
                         break;
                     default:
@@ -107,6 +108,8 @@ namespace admProcessRequests_EventReceiver
                 string key = tabZadania.Define_KEY(ctPDS, klientId, okresId);
                 if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
                 {
+                    Debug.WriteLine("PDS_KW klient:" + klientId.ToString());
+                    
                     //zainicjowanie formatki PDS
 
                     DateTime terminPlatnosci;
@@ -152,6 +155,8 @@ namespace admProcessRequests_EventReceiver
                 string key = tabZadania.Define_KEY(ctPDS, klientId, okresId);
                 if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
                 {
+                    Debug.WriteLine("PDS_M klient:" + klientId.ToString());
+
                     DateTime terminPlatnosci;
                     DateTime terminPrzekazania;
 
@@ -212,6 +217,8 @@ namespace admProcessRequests_EventReceiver
 
         private static void Create_DochodyWspolnikow(SPWeb web, int klientId, int okresId)
         {
+            Debug.WriteLine("Dochody wpsólników:" + klientId.ToString());
+
             Array wspolnicy = tabKlienci.Get_WspolnicyByKlientId(web, klientId);
 
             //zainicjuj rekord na bieżący okres w tabeli wspólnicy dla każdego wspólnika niezależnie.

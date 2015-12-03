@@ -58,12 +58,6 @@
     <Reference Include="Microsoft.SharePoint.Security" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CleanUp\CleanUp.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CleanUp\CleanUp.Designer.cs">
-      <DependentUpon>CleanUp.cs</DependentUpon>
-    </Compile>
     <Compile Include="GenerujRejestry_StratyZLatUbieglych\GenerujRejestry_StratyZLatUbieglych.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -92,9 +86,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="CleanUp\SharePointProjectItem.spdata">
-      <SharePointProjectItemId>{e2f3be54-4e27-46fb-9239-8f317bf12664}</SharePointProjectItemId>
-    </None>
     <None Include="GenerujRejestry_StratyZLatUbieglych\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{2e70d26e-0859-4f13-83ec-15d54c2eb60c}</SharePointProjectItemId>
     </None>
@@ -119,7 +110,6 @@
     <Folder Include="Features\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CleanUp\Elements.xml" />
     <Content Include="GenerujRejestry_StratyZLatUbieglych\Elements.xml" />
     <Content Include="ObslugaWiadomosci\Elements.xml">
       <SubType>Designer</SubType>

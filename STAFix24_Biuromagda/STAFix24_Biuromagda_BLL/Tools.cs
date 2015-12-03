@@ -268,11 +268,11 @@ namespace BLL
         }
 
 
-        public static bool Has_Service(SPListItem item, SPFieldLookupValue s, string col)
+        public static bool Has_Service(SPListItem item, string code, string col)
         {
             foreach (SPFieldLookupValue v in BLL.Tools.Get_LookupValueColection(item, col))
             {
-                if (v.LookupId.Equals(s.LookupValue)) return true;
+                if (v.LookupValue.Equals(code)) return true;
             }
 
             return false;
