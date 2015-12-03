@@ -284,7 +284,7 @@ namespace EventReceivers.tabZadaniaER
                         kwota = item["colZUS_PIT-8AR"] != null ? Double.Parse(item["colZUS_PIT-8AR"].ToString()) : 0;
                         if (kwota > 0)
                         {
-                            
+
                             konto = iok.NumerRachunkuPIT_PD;
                             int urzadId = iok.UrzadSkarbowyId;
 
@@ -305,7 +305,7 @@ namespace EventReceivers.tabZadaniaER
                         kwota = item["colZUS_PIT-4R"] != null ? Double.Parse(item["colZUS_PIT-4R"].ToString()) : 0;
                         if (kwota > 0)
                         {
-                            
+
                             konto = iok.NumerRachunkuPIT_PD;
                             int urzadId = iok.UrzadSkarbowyId;
 
@@ -485,7 +485,7 @@ namespace EventReceivers.tabZadaniaER
                 fileName,
                 konto,
                 kwota,
-                nadawca, nip, typIdentyfikatora.Substring(0,1), regon, identyfikatorDeklaracji);
+                nadawca, nip, typIdentyfikatora.Substring(0, 1), regon, identyfikatorDeklaracji);
             }
             return result;
         }
@@ -1358,7 +1358,7 @@ namespace EventReceivers.tabZadaniaER
                     {
                         info2 = info2 + string.Format(templateR, "Druk(i) wpłaty ZUS");
                     }
-                    
+
                 }
 
                 if (!string.IsNullOrEmpty(info2))
@@ -1391,16 +1391,23 @@ namespace EventReceivers.tabZadaniaER
                     {
                         //ustaw reminder
                         nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
-                        switch (zusOpcja)
-                        {
-                            case "Tylko zdrowotna":
-                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_Z_REMINDER_TEMPLATE.Include", out temat, out trescHTML, nadawca);
-                                break;
-                            default:
-                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_REMINDER_TEMPLATE.Include", out temat, out trescHTML, nadawca);
-                                break;
-                        }
 
+                        if (Get_FlagValue(item, "colZatrudniaPracownikow"))
+                        {
+                            BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_REMINDER_TEMPLATE.Include", out temat, out trescHTML, nadawca);
+                        }
+                        else
+                        {
+                            switch (zusOpcja)
+                            {
+                                case "Tylko zdrowotna":
+                                    BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_Z_REMINDER_TEMPLATE.Include", out temat, out trescHTML, nadawca);
+                                    break;
+                                default:
+                                    BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "ZUS_S_Z_F_REMINDER_TEMPLATE.Include", out temat, out trescHTML, nadawca);
+                                    break;
+                            }
+                        }
 
                         temat = Update_Data(temat, terminPlatnosci);
                         temat = BLL.Tools.AddCompanyName(temat, item);

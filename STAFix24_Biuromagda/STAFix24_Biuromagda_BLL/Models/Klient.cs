@@ -42,6 +42,7 @@ namespace BLL.Models
                         break;
                     case "KSH":
                     case "Firma":
+                    case "Firma zewnętrzna":
                         FormaOpodatkowaniaPD = FormaOpodatkowaniaKSH;
                         break;
                     default:

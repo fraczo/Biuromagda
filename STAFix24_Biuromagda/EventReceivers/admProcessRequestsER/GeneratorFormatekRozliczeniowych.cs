@@ -7,6 +7,8 @@ using BLL;
 using admProcessRequests_EventReceiver;
 using admProcessRequests_EventReceiver.admProcessRequestsER;
 using EventReceivers.admProcessRequestsER;
+using System.Collections;
+using System.Diagnostics;
 
 namespace admProcessRequests_EventReceiver
 {
@@ -105,6 +107,13 @@ namespace admProcessRequests_EventReceiver
 
                     Array klienci = tabKlienci.Get_AktywniKlienci_Serwis(web, typKlienta);
 
+                    //sprawdź czy jest ograniczona lista serwisów
+                    if (item["selSewisy"] != null 
+                        && BLL.Tools.Get_LookupValueColection(item, "selSewisy").Count > 0)
+                    {
+                        klienci = Refine_Klienci(klienci, BLL.Tools.Get_LookupValueColection(item, "selSewisy"));
+                    }
+
                     bool createKK = Get_Flag(item, "colDodajKartyKontrolne");
 
                     switch (typKlienta)
@@ -157,6 +166,28 @@ namespace admProcessRequests_EventReceiver
             string subject = string.Format(@"Generowanie formatek rozliczeniowych dla klientów typu {0}",
                 wt.ToString());
             SPEmail.EmailGenerator.SendProcessEndConfirmationMail(subject, bodyHTML, web, item);
+        }
+
+        private static Array Refine_Klienci(Array klienci, SPFieldLookupValueCollection serwisy)
+        {
+            ArrayList results = new ArrayList();
+
+            foreach (SPListItem klientItem in klienci)
+            {
+                foreach (SPFieldLookupValue s in serwisy)
+                {
+                    if (BLL.Tools.Has_Service(klientItem, s, "selSewis")
+                        | BLL.Tools.Has_Service(klientItem, s, "selSerwisyWspolnicy"))
+                    {
+                        results.Add(klientItem);
+                        Debug.WriteLine(BLL.Tools.Get_Text(klientItem, "_NazwaPrezentowana") + " - added");
+                        break;
+                    }
+                }
+
+            }
+
+            return results.ToArray();
         }
 
         #region Helpers

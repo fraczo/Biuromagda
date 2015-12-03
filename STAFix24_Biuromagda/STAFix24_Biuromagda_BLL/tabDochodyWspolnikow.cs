@@ -54,7 +54,7 @@ namespace BLL
                 newItem["selKlient_NazwaSkrocona"] = klientId;
                 //newItem["colPD_OcenaWyniku"] =
                 BLL.Models.Klient iok = new Models.Klient(web, klientItem.ID);
-                newItem["colFormaOpodatkowaniaPD"] = iok.FormaOpodatkowaniaKSH;
+                newItem["colFormaOpodatkowaniaPD"] = iok.FormaOpodatkowaniaPD;
                 newItem["colPD_UdzialWZysku"] = BLL.Tools.Get_Value(klientItem, "colPD_UdzialWZysku");
                 //newItem["colPodatekNaliczony"] =
                 //newItem["colWplaconaSkladkaZdrowotna"] =

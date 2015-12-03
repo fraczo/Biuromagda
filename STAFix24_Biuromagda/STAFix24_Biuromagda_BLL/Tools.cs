@@ -266,5 +266,16 @@ namespace BLL
         {
             return item[col]!=null?new SPFieldLookupValueCollection(item[col].ToString()):null;
         }
+
+
+        public static bool Has_Service(SPListItem item, SPFieldLookupValue s, string col)
+        {
+            foreach (SPFieldLookupValue v in BLL.Tools.Get_LookupValueColection(item, col))
+            {
+                if (v.LookupId.Equals(s.LookupValue)) return true;
+            }
+
+            return false;
+        }
     }
 }
