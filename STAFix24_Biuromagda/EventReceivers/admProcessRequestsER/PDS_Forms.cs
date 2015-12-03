@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.SharePoint;
 using BLL;
+using System.Diagnostics;
 
 namespace admProcessRequests_EventReceiver
 {
@@ -130,7 +131,8 @@ namespace admProcessRequests_EventReceiver
             catch (Exception ex)
             {
 #if DEBUG
-                throw ex;
+                Debug.WriteLine("ERROR: " + ex.Message);
+                Debug.WriteLine(ex.StackTrace);
 #else
                 BLL.Logger.LogEvent(web.Url, ex.ToString() + " KlientId= " + klientId.ToString());
                 var result = ElasticEmail.EmailGenerator.ReportError(ex, web.Url, "KlientId=" + klientId.ToString());
@@ -172,7 +174,8 @@ namespace admProcessRequests_EventReceiver
             catch (Exception ex)
             {
 #if DEBUG
-                throw ex;
+                Debug.WriteLine("ERROR: " + ex.Message);
+                Debug.WriteLine(ex.StackTrace);
 #else
                 BLL.Logger.LogEvent(web.Url, ex.ToString() + " KlientId= " + klientId.ToString());
                 var result = ElasticEmail.EmailGenerator.ReportError(ex, web.Url, "KlientId=" + klientId.ToString());

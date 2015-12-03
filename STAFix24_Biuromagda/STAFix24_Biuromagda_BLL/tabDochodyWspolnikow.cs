@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.SharePoint;
+using System.Diagnostics;
 
 namespace BLL
 {
@@ -27,6 +28,8 @@ namespace BLL
         /// </summary>
         public static void Ensure_RecordInitiated(Microsoft.SharePoint.SPWeb web, Microsoft.SharePoint.SPListItem klientItem, int klientId, int okresId)
         {
+            Debug.WriteLine("Dochody wspólników - ensure record initiated");
+
             int result = 0;
 
             SPList list = web.Lists.TryGetList(targetList);
@@ -34,8 +37,7 @@ namespace BLL
             string key = Define_KEY(klientItem.ID, okresId);
 
             SPListItem item = list.Items.Cast<SPListItem>()
-                            .Where(i => i["KEY"] == key)
-                            .ToList()
+                            .Where(i => BLL.Tools.Get_Text(i, "KEY").Equals(key))
                             .FirstOrDefault();
             if (item != null)
             {
@@ -53,12 +55,13 @@ namespace BLL
                 //newItem["colPD_OcenaWyniku"] =
                 BLL.Models.Klient iok = new Models.Klient(web, klientItem.ID);
                 newItem["colFormaOpodatkowaniaPD"] = iok.FormaOpodatkowaniaKSH;
+                newItem["colPD_UdzialWZysku"] = BLL.Tools.Get_Value(klientItem, "colPD_UdzialWZysku");
                 //newItem["colPodatekNaliczony"] =
                 //newItem["colWplaconaSkladkaZdrowotna"] =
                 //newItem["colWplaconeZaliczki"] =
                 //newItem["colPodatekWspolnikaDoZaplaty"] = 
 
-                newItem.SystemUpdate();
+                newItem.Update();
 
                 result = newItem.ID;
             }

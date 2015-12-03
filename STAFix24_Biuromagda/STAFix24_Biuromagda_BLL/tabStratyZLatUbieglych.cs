@@ -20,8 +20,7 @@ namespace BLL
             string key = Define_KEY(klientId, targetYear);
 
             SPListItem item = list.Items.Cast<SPListItem>()
-                            .Where(i => i["KEY"] == key)
-                            .ToList()
+                            .Where(i => BLL.Tools.Get_Text(i,"KEY").Equals(key))
                             .FirstOrDefault();
             if (item != null)
             {

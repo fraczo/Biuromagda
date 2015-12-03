@@ -261,5 +261,10 @@ namespace BLL
         {
             item[col] = v;
         }
+
+        public static SPFieldLookupValueCollection Get_LookupValueColection(SPListItem item, string col)
+        {
+            return item[col]!=null?new SPFieldLookupValueCollection(item[col].ToString()):null;
+        }
     }
 }
