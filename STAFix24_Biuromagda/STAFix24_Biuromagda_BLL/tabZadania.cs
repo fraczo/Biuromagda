@@ -654,7 +654,8 @@ namespace BLL
                 int taskId = Get_ZadanieByKEY(item.Web, KEY);
                 if (taskId > 0)
                 {
-                    Set_Status(BLL.tabZadania.Get_ZadanieById(item.Web, taskId), "Zakończone");
+                    Debug.WriteLine("Complete_PrzypomnienieOWysylceDokumentow");
+                    Set_Status(BLL.tabZadania.Get_ZadanieById(item.Web, taskId), "Anulowane");
                 }
             }
         }
@@ -684,7 +685,7 @@ namespace BLL
         {
             SPList list = web.Lists.TryGetList(targetList);
             SPListItem item = list.Items.Cast<SPListItem>()
-                .Where(i => i["KEY"].ToString() == KEY)
+                .Where(i => BLL.Tools.Get_Text(i,"KEY").Equals(KEY))
                 .FirstOrDefault();
             return item != null ? item.ID : 0;
         }
