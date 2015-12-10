@@ -19,7 +19,7 @@ namespace TimerJobs
             {
                 BeginSecond = 0,
                 EndSecond = 0,
-                Interval = 15
+                Interval = 60
             };
 
             timerJob.Update();

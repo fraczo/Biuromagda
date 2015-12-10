@@ -357,7 +357,6 @@ namespace BLL
             SPListItem item = Get_KartaKontrolnaById(web, kkId);
             item[colPOTWIERDZENIE_ODBIORU_DOKUMENTOW] = true;
             item.SystemUpdate();
-
         }
 
         internal static double Get_WartoscNadwyzkiDoPrzeniesienia(SPWeb web, int klientId, int okresId)
