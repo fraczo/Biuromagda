@@ -350,7 +350,7 @@ namespace BLL
         #endregion
 
 
-        public static void Set_PotwierdzenieOdbioruDokumentow(SPWeb web, int klientId, int okresId)
+        public static void Update_PotwierdzenieOdbioruDokumentow(SPWeb web, int klientId, int okresId)
         {
             string KEY = Create_KEY(klientId, okresId);
             int kkId = Get_KartaKontrolnaId(web, klientId, okresId, KEY);

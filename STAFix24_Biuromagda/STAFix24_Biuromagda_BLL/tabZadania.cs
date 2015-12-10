@@ -100,28 +100,6 @@ namespace BLL
             return result;
         }
 
-        public static void Update_KEY(SPListItem item, string key)
-        {
-
-            string ct = item["ContentType"].ToString();
-
-            if (item["KEY"] != null)
-            {
-                if (item["KEY"].ToString() != key)
-                {
-                    item["KEY"] = key;
-                    item.SystemUpdate();
-                }
-            }
-            else
-            {
-                item["KEY"] = key;
-                item.SystemUpdate();
-            }
-
-            return;
-        }
-
         /// <summary>
         /// zwraca identyfikator rekordu w tabZadania, który zawiera szukan klucz.
         /// </summary>
@@ -846,6 +824,5 @@ namespace BLL
 
             return results;
         }
-
     }
 }

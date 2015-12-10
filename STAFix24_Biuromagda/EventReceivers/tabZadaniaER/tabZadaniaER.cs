@@ -71,15 +71,15 @@ namespace EventReceivers.tabZadaniaER
                 {
                     case "Prośba o dokumenty":
                     case "Prośba o przesłanie wyciągu bankowego":
-                        Update_KEY(item);
+                        Set_KEY(item);
                         break;
                     case "Rozliczenie ZUS":
                     case "Rozliczenie podatku dochodowego":
                     case "Rozliczenie podatku dochodowego spółki":
                     case "Rozliczenie podatku VAT":
                     case "Rozliczenie z biurem rachunkowym":
-                        Update_KEY(item);
-                        Update_GBW(web, item, ct);
+                        Set_KEY(item);
+                        //Update_GBW(web, item, ct);
                         break;
                     case "Zadanie":
                         Update_Zadanie(item, web);
@@ -92,11 +92,12 @@ namespace EventReceivers.tabZadaniaER
                 Manage_CT(item);
 
                 //aktualizacja tytułu rekordu
-                Update_Title(item);
+                Set_Title(item);
 
                 //aktualizacja pola user (_)
-                Update_OperatorUser(item, web);
+                Set_OperatorUser(item, web);
 
+                item.SystemUpdate();
             }
             catch (Exception ex)
             {
@@ -119,7 +120,7 @@ namespace EventReceivers.tabZadaniaER
 
                 if (klientId > 0 && okresId > 0) BLL.tabZadania.Complete_PrzypomnienieOWysylceDokumentow(item, klientId, okresId);
 
-                if (Get_Flag(item, "colPotwierdzenieOdbioruDokumento")) BLL.tabKartyKontrolne.Set_PotwierdzenieOdbioruDokumentow(item.Web, klientId, okresId);
+                if (Get_Flag(item, "colPotwierdzenieOdbioruDokumento")) BLL.tabKartyKontrolne.Update_PotwierdzenieOdbioruDokumentow(item.Web, klientId, okresId);
             }
         }
 
@@ -130,7 +131,7 @@ namespace EventReceivers.tabZadaniaER
         /// Jeżeli operator jest przypisany to w zadaniu aktualizuje pole _KontoOperatora, które przechowuje jego login
         /// dla celów filtrowania zadań w/g bieżącego użytkownika.
         /// </summary>
-        private static void Update_OperatorUser(SPListItem item, SPWeb web)
+        private static void Set_OperatorUser(SPListItem item, SPWeb web)
         {
             if (item["selOperator"] != null)
             {
@@ -141,14 +142,14 @@ namespace EventReceivers.tabZadaniaER
                 if (item["_KontoOperatora"] == null)
                 {
                     item["_KontoOperatora"] = userId;
-                    item.SystemUpdate();
+                    //item.SystemUpdate();
                 }
                 else
                 {
                     if (new SPFieldUserValue(web, item["_KontoOperatora"].ToString()).LookupId != userId)
                     {
                         item["_KontoOperatora"] = userId;
-                        item.SystemUpdate();
+                        //item.SystemUpdate();
                     }
                 }
             }
@@ -157,18 +158,18 @@ namespace EventReceivers.tabZadaniaER
                 if (item["_KontoOperatora"] != null)
                 {
                     item["_KontoOperatora"] = 0;
-                    item.SystemUpdate();
+                    //item.SystemUpdate();
                 }
 
             }
         }
 
-        private static void Update_Title(SPListItem item)
+        private static void Set_Title(SPListItem item)
         {
             if (String.IsNullOrEmpty(item.Title))
             {
                 item["Title"] = item["selProcedura"] != null ? new SPFieldLookupValue(item["selProcedura"].ToString()).LookupValue : "#" + item.ID.ToString();
-                item.SystemUpdate();
+                //item.SystemUpdate();
             }
         }
 
@@ -224,10 +225,10 @@ namespace EventReceivers.tabZadaniaER
             return result;
         }
 
-        private static void Update_KEY(SPListItem item)
+        private static void Set_KEY(SPListItem item)
         {
             string key = tabZadania.Define_KEY(item);
-            tabZadania.Update_KEY(item, key);
+            BLL.Tools.Set_Text(item, "KEY", key);
         }
 
         /// <summary>
@@ -235,7 +236,7 @@ namespace EventReceivers.tabZadaniaER
         ///do zadania o ile ma zdefiniowane konto operatora.
         /// </summary>
         /// <param name="item"></param>
-        private void Update_PrzypiszOperatora(SPListItem item)
+        private void Set_PrzypiszOperatora(SPListItem item)
         {
             //sprawdź czy zadanie było edytowane
             DateTime datCreated = item["Created"] != null ? DateTime.Parse(item["Created"].ToString()) : new DateTime();
@@ -256,7 +257,7 @@ namespace EventReceivers.tabZadaniaER
             {
                 //przypisz operatora do zadania
                 item["selOperator"] = targetOpId;
-                item.SystemUpdate();
+                //item.SystemUpdate();
             }
         }
 
@@ -770,8 +771,8 @@ namespace EventReceivers.tabZadaniaER
 
                 if (item["enumStatusZadania"].ToString() == StatusZadania.Nowe.ToString())
                 {
-                    Update_PrzypiszOperatora(item);
-                    Update_StatusZadania(item, StatusZadania.Obsługa);
+                    Set_PrzypiszOperatora(item);
+                    Set_StatusZadania(item, StatusZadania.Obsługa);
                 }
 
                 string ct = item.ContentType.Name;
@@ -844,7 +845,7 @@ namespace EventReceivers.tabZadaniaER
             string cmd = GetCommand(item);
             if (cmd == ANULUJ)
             {
-                Update_StatusZadania(item, StatusZadania.Anulowane);
+                Set_StatusZadania(item, StatusZadania.Anulowane);
             }
         }
 
@@ -1005,28 +1006,32 @@ namespace EventReceivers.tabZadaniaER
                 switch (ct)
                 {
                     case "Zadanie":
-                        Update_StatusZadania(item, StatusZadania.Zakończone);
+                        Set_StatusZadania(item, StatusZadania.Zakończone);
                         break;
                     case "Prośba o przesłanie wyciągu bankowego":
                         Manage_CMD_WyslijWynik_ProsbaOWyciagBankowy(item);
-                        Update_StatusZadania(item, StatusZadania.Wysyłka);
+                        Set_StatusZadania(item, StatusZadania.Wysyłka);
                         break;
                     case "Prośba o dokumenty":
                         Manage_CMD_WyslijWynik_ProsbaODokumenty(item);
-                        Update_StatusZadania(item, StatusZadania.Wysyłka);
+                        Set_StatusZadania(item, StatusZadania.Wysyłka);
                         break;
                     case "Rozliczenie ZUS":
                         if (isValidated_ZUS(item))
                         {
                             if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
                             {
+                                //!!!rekord nie jest zaktualizowany
+                                item.SystemUpdate();
+                                Update_GBW(item.Web, item, ct);
+
                                 Manage_CMD_WyslijWynik_ZUS(item);
                                 Update_KartaKlienta_ZUS(item);
-                                Update_StatusZadania(item, StatusZadania.Wysyłka);
+                                Set_StatusZadania(item, StatusZadania.Wysyłka);
                             }
                             else
                             {
-                                Update_StatusZadania(item, StatusZadania.Gotowe);
+                                Set_StatusZadania(item, StatusZadania.Gotowe);
                             }
                         }
                         break;
@@ -1035,13 +1040,17 @@ namespace EventReceivers.tabZadaniaER
                         {
                             if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
                             {
+                                //!!!rekord nie jest zaktualizowany
+                                item.SystemUpdate();
+                                Update_GBW(item.Web, item, ct);
+
                                 Manage_CMD_WyslijWynik_PD(item);
                                 Update_KartaKlienta_PD(item);
-                                Update_StatusZadania(item, StatusZadania.Wysyłka);
+                                Set_StatusZadania(item, StatusZadania.Wysyłka);
                             }
                             else
                             {
-                                Update_StatusZadania(item, StatusZadania.Gotowe);
+                                Set_StatusZadania(item, StatusZadania.Gotowe);
                             }
                         }
                         break;
@@ -1050,13 +1059,17 @@ namespace EventReceivers.tabZadaniaER
                         {
                             if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
                             {
+                                //!!!rekord nie jest zaktualizowany
+                                item.SystemUpdate();
+                                Update_GBW(item.Web, item, ct);
+
                                 Manage_CMD_WyslijWynik_PDS(item);
                                 Update_KartaKlienta_PDS(item);
-                                Update_StatusZadania(item, StatusZadania.Wysyłka);
+                                Set_StatusZadania(item, StatusZadania.Wysyłka);
                             }
                             else
                             {
-                                Update_StatusZadania(item, StatusZadania.Gotowe);
+                                Set_StatusZadania(item, StatusZadania.Gotowe);
                             }
                         }
                         break;
@@ -1065,13 +1078,17 @@ namespace EventReceivers.tabZadaniaER
                         {
                             if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
                             {
+                                //!!!rekord nie jest zaktualizowany
+                                item.SystemUpdate();
+                                Update_GBW(item.Web, item, ct);
+
                                 Manage_CMD_WyslijWynik_VAT(item);
                                 Update_KartaKlienta_VAT(item);
-                                Update_StatusZadania(item, StatusZadania.Wysyłka);
+                                Set_StatusZadania(item, StatusZadania.Wysyłka);
                             }
                             else
                             {
-                                Update_StatusZadania(item, StatusZadania.Gotowe);
+                                Set_StatusZadania(item, StatusZadania.Gotowe);
                             }
                         }
                         break;
@@ -1079,9 +1096,13 @@ namespace EventReceivers.tabZadaniaER
                     case "Rozliczenie z biurem rachunkowym":
                         if (isValidated_RBR(item))
                         {
+                            //!!!rekord nie jest zaktualizowany
+                            item.SystemUpdate();
+                            Update_GBW(item.Web, item, ct);
+
                             Manage_CMD_WyslijWynik_RBR(item);
                             Update_KartaKlienta_RBR(item);
-                            Update_StatusZadania(item, StatusZadania.Wysyłka);
+                            Set_StatusZadania(item, StatusZadania.Wysyłka);
                         }
                         break;
                     default:
@@ -2551,10 +2572,10 @@ namespace EventReceivers.tabZadaniaER
             return temat;
         }
 
-        private void Update_StatusZadania(SPListItem item, StatusZadania statusZadania)
+        private void Set_StatusZadania(SPListItem item, StatusZadania statusZadania)
         {
             item["enumStatusZadania"] = statusZadania.ToString();
-            item.SystemUpdate();
+            //item.SystemUpdate();
         }
         private static void UsunPodobneZalaczniki(SPListItem item, string targetFileNameLeading)
         {
