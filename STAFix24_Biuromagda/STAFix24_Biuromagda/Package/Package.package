@@ -5,10 +5,6 @@
     <projectOutputAssembly location="BRMagda.GeneratorDrukow.dll" deploymentTarget="GlobalAssemblyCache" projectPath="..\GeneratorDrukow\GeneratorDrukow.csproj" />
     <projectOutputAssembly location="BRMagda.PdfSharp.dll" deploymentTarget="GlobalAssemblyCache" projectPath="..\PdfSharp\PdfSharp.csproj" />
   </assemblies>
-  <features>
-    <featureReference itemId="f2a41854-3c51-489c-84ad-ca670bfdfc13" />
-    <featureReference itemId="c4891d65-0e43-40c6-9ab8-5147c1530fdc" />
-  </features>
   <projectItems>
     <projectItemReference itemId="18be71cb-4a94-45fb-bd5f-f629f4c15954" />
     <projectItemReference itemId="17c57b49-c946-4bca-b0d6-724a887a5856" />

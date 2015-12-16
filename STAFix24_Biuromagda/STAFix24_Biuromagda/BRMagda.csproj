@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="Features\TimerJob_WysylkaWiadomosci\TimerJob_WysylkaWiadomosci.EventReceiver.cs">
       <DependentUpon>TimerJob_WysylkaWiadomosci.feature</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TimerJobs\WysylkaWiadomosciTJ.cs" />
@@ -69,10 +70,7 @@
       <FeatureId>{171f5de9-1872-4a53-a030-86e55dfb4c46}</FeatureId>
     </None>
     <None Include="Features\TimerJob_WysylkaWiadomosci\TimerJob_WysylkaWiadomosci.feature">
-      <FeatureId>{f2a41854-3c51-489c-84ad-ca670bfdfc13}</FeatureId>
-    </None>
-    <None Include="Features\TimerJob_CleanUp\TimerJob_CleanUp.feature">
-      <FeatureId>{c4891d65-0e43-40c6-9ab8-5147c1530fdc}</FeatureId>
+      <FeatureId>{704cffd3-64fa-483d-928e-7839a874470d}</FeatureId>
     </None>
     <None Include="Features\Workflows\Workflows.feature">
       <FeatureId>{2f19a9b7-0a49-4600-8ce8-96fec3c931d5}</FeatureId>
@@ -106,9 +104,6 @@
     </Content>
     <Content Include="Features\TimerJob_WysylkaWiadomosci\TimerJob_WysylkaWiadomosci.Template.xml">
       <DependentUpon>TimerJob_WysylkaWiadomosci.feature</DependentUpon>
-    </Content>
-    <Content Include="Features\TimerJob_CleanUp\TimerJob_CleanUp.Template.xml">
-      <DependentUpon>TimerJob_CleanUp.feature</DependentUpon>
     </Content>
     <Content Include="Features\Workflows\Workflows.Template.xml">
       <DependentUpon>Workflows.feature</DependentUpon>

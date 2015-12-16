@@ -116,7 +116,7 @@ namespace BLL
             //{
             Array li = list.Items.Cast<SPListItem>()
                     .Where(i => i.ID != currentId)
-                    .Where(i => i["KEY"]!=null)
+                    .Where(i => i["KEY"] != null)
                     .Where(i => i["KEY"].ToString() == key)
                     .ToArray();
 
@@ -663,7 +663,7 @@ namespace BLL
         {
             SPList list = web.Lists.TryGetList(targetList);
             SPListItem item = list.Items.Cast<SPListItem>()
-                .Where(i => BLL.Tools.Get_Text(i,"KEY").Equals(KEY))
+                .Where(i => BLL.Tools.Get_Text(i, "KEY").Equals(KEY))
                 .FirstOrDefault();
             return item != null ? item.ID : 0;
         }
@@ -823,6 +823,15 @@ namespace BLL
             }
 
             return results;
+        }
+
+        public static SPListItem Get_Zadanie(SPWeb web, int klientId, int okresId, string ct)
+        {
+            return web.Lists.TryGetList(targetList).Items.Cast<SPListItem>()
+                    .Where(i => BLL.Tools.Get_LookupId(i, "selKlient").Equals(klientId)
+                                & BLL.Tools.Get_LookupId(i, "selOkres").Equals(okresId)
+                                & i.ContentType.Name.Equals(ct))
+                    .FirstOrDefault();
         }
     }
 }

@@ -377,5 +377,13 @@ namespace BLL
 
             return 0;
         }
+
+        public static SPListItem Get_KartaKontrolna(SPWeb web, int klientId, int okresId)
+        {
+            return web.Lists.TryGetList(targetList).Items.Cast<SPListItem>()
+                    .Where(i => BLL.Tools.Get_LookupId(i, "selKlient").Equals(klientId)
+                                && BLL.Tools.Get_LookupId(i, "selOkres").Equals(okresId))
+                    .FirstOrDefault();
+        }
     }
 }

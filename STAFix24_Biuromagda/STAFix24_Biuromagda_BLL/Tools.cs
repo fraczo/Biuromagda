@@ -140,7 +140,7 @@ namespace BLL
             else return emptyMarker;
         }
 
-        internal static DateTime Get_Date(SPListItem item, string col)
+        public static DateTime Get_Date(SPListItem item, string col)
         {
             return item[col] != null ? DateTime.Parse(item[col].ToString()) : new DateTime();
         }

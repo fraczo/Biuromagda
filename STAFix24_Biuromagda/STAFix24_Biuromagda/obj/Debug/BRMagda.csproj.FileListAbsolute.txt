@@ -1,0 +1,5 @@
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda\bin\Debug\BRMagda.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda\bin\Debug\BRMagda.pdb
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda\obj\Debug\BRMagda.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda\obj\Debug\BRMagda.pdb
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda\obj\Debug\BRMagda.csprojResolveAssemblyReference.cache

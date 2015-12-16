@@ -392,5 +392,22 @@ namespace BLL
             SPListItem item = web.Lists.TryGetList(targetList).GetItemById(okresId);
             return BLL.tabOkresy.Get_Date(item, "colDataRozpoczecia");
         }
+
+        public static SPListItem Get_OkresById(SPWeb web, int okresId)
+        {
+            return web.Lists.TryGetList(targetList).GetItemById(okresId);
+        }
+
+        public static SPListItem Get_OkresByStartDate(SPWeb web, DateTime startDate)
+        {
+            DateTime endDate = startDate.AddMonths(1);
+            endDate = new DateTime(endDate.Year, endDate.Month, 1).AddDays(-1);
+
+            return web.Lists.TryGetList(targetList).Items.Cast<SPListItem>()
+                    .Where(i => BLL.Tools.Get_Date(i, "colDataRozpoczecia").Equals(startDate))
+                    .Where(i => BLL.Tools.Get_Date(i, "colDataZakonczenia").Equals(endDate))
+                    .FirstOrDefault();
+
+        }
     }
 }

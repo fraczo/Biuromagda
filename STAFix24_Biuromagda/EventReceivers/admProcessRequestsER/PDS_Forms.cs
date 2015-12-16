@@ -11,7 +11,7 @@ namespace admProcessRequests_EventReceiver
     internal class PDS_Forms
     {
 
-        const string ctPDS = @"Rozliczenie podatku dochodowego spółki";
+        const string _CT_NAME_PDS = @"Rozliczenie podatku dochodowego spółki";
 
         /// <summary>
         /// Wywołuje procedurę generowania kart kontrolnych PDS dla listy klientów
@@ -105,11 +105,11 @@ namespace admProcessRequests_EventReceiver
         {
             try
             {
-                string key = tabZadania.Define_KEY(ctPDS, klientId, okresId);
+                string key = tabZadania.Define_KEY(_CT_NAME_PDS, klientId, okresId);
                 if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
                 {
                     Debug.WriteLine("PDS_KW klient:" + klientId.ToString());
-                    
+
                     //zainicjowanie formatki PDS
 
                     DateTime terminPlatnosci;
@@ -118,11 +118,13 @@ namespace admProcessRequests_EventReceiver
                     //terminy płatności VAT KSH jak dla KPiR
                     tabOkresy.Get_PD_KW(web, okresId, klientId, out terminPlatnosci, out terminPrzekazania);
 
-                    tabZadania.Create_ctPDS_Form(web, ctPDS, klientId, okresId, key, terminPlatnosci, terminPrzekazania, true);
+                    tabZadania.Create_ctPDS_Form(web, _CT_NAME_PDS, klientId, okresId, key, terminPlatnosci, terminPrzekazania, true);
+
+                    SPListItem formatka = null;
 
                     //zainicjowanie danych NKUP, WS NP
                     bool trybKwartalny = true;
-                    Copy_DaneRozszerzone(web, klientId, okresId, trybKwartalny); //tryp kwartalny
+                    Copy_DaneRozszerzone(web, klientId, okresId, trybKwartalny, ref formatka); //tryp kwartalny
 
                     //zainicjowanie sumy strat z lat ubiegłych
                     Copy_SumyStratZLatUbieglych(web, klientId, okresId);
@@ -152,7 +154,7 @@ namespace admProcessRequests_EventReceiver
         {
             try
             {
-                string key = tabZadania.Define_KEY(ctPDS, klientId, okresId);
+                string key = tabZadania.Define_KEY(_CT_NAME_PDS, klientId, okresId);
                 if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
                 {
                     Debug.WriteLine("PDS_M klient:" + klientId.ToString());
@@ -163,14 +165,19 @@ namespace admProcessRequests_EventReceiver
                     //terminy płatności VAT KSH jak dla KPiR
                     tabOkresy.Get_PD_M(web, okresId, klientId, out terminPlatnosci, out terminPrzekazania);
 
-                    tabZadania.Create_ctPDS_Form(web, ctPDS, klientId, okresId, key, terminPlatnosci, terminPrzekazania, false);
+                    tabZadania.Create_ctPDS_Form(web, _CT_NAME_PDS, klientId, okresId, key, terminPlatnosci, terminPrzekazania, false);
+
+                    SPListItem formatka = null;
 
                     //zainicjowanie danych NKUP, WS NP
                     bool trybKwartalny = false;
-                    Copy_DaneRozszerzone(web, klientId, okresId, trybKwartalny); //tryp kwartalny
+                    Copy_DaneRozszerzone(web, klientId, okresId, trybKwartalny, ref formatka); //tryp kwartalny
 
                     //zainicjowanie sumy strat z lat ubiegłych
                     Copy_SumyStratZLatUbieglych(web, klientId, okresId);
+
+                    //zapisz zmiany
+                    if (formatka != null) formatka.SystemUpdate();
 
                     //zainicjowanie kart w tabeli dochody wspólników
                     Create_DochodyWspolnikow(web, klientId, okresId);
@@ -189,9 +196,129 @@ namespace admProcessRequests_EventReceiver
             }
         }
 
-        private static void Copy_DaneRozszerzone(SPWeb web, int klientId, int okresId, bool p)
+        private static void Copy_DaneRozszerzone(SPWeb web, int klientId, int okresId, bool trybKwartalny, ref SPListItem formatka)
         {
-            //throw new NotImplementedException();
+            //jeżeli bieżący miesiąc > styczeń to kopuj dane z poprzedniej karty odpowiednio w/g trybu (miesięcznie/kwartalnie)
+
+            SPListItem okres = BLL.tabOkresy.Get_OkresById(web, okresId);
+            DateTime dataRozpoczecia = BLL.Tools.Get_Date(okres, "colDataRozpoczecia");
+            if (dataRozpoczecia.Month == 1) return;
+
+
+            //wyszukaj źródłową kartę kontrolną
+
+            DateTime targetStartDate = new DateTime();
+
+            if (trybKwartalny)
+            {
+                if (dataRozpoczecia.Month > 3)
+                {
+                    int reverse = dataRozpoczecia.Month % 3;
+                    if (reverse == 0) reverse = 3;
+
+                    targetStartDate = new DateTime(dataRozpoczecia.Year, dataRozpoczecia.Month - 1, 1).AddMonths(-1 * reverse);
+                }
+                else
+                {
+                    //dane niedostępne
+                }
+            }
+            else
+            {
+                if (dataRozpoczecia.Month > 1)
+                {
+                    targetStartDate = new DateTime(dataRozpoczecia.Year, dataRozpoczecia.Month - 1, 1);
+                }
+                else
+                {
+                    //dane niedostępne
+                }
+            }
+
+            if (targetStartDate.Equals(new DateTime())) return; //dane niedostepne
+
+            SPListItem targetOkres = BLL.tabOkresy.Get_OkresByStartDate(web, targetStartDate);
+
+            int targetOkresId = 0;
+
+            if (targetOkres != null) targetOkresId = targetOkres.ID;
+
+            if (targetOkresId.Equals(0)) return; //dane niedostępne
+
+
+            // znajdź kartę kontrolną
+
+            SPListItem kk = BLL.tabKartyKontrolne.Get_KartaKontrolna(web, klientId, targetOkresId);
+
+            if (kk == null) return; //dane niedostępne
+
+
+            // skopiuj wartości z karty kontrolnej do bieżącej formatki
+
+            Ensure_CurrentPDS(web, klientId, okresId, ref formatka);
+
+            if (formatka == null) return; // nie znaleziono formatki docelowej
+
+            // koszty NKUP
+            if (Copy(kk, formatka, "colKosztyNKUP_WynWyl")
+                || Copy(kk, formatka, "colKosztyNKUP_ZUSPlatWyl")
+                || Copy(kk, formatka, "colKosztyNKUP_FakWyl")
+                || Copy(kk, formatka, "colKosztyNKUP_PozostaleKoszty"))
+            {
+                BLL.Tools.Set_Flag(formatka, "colKosztyNKUP", true);
+            }
+
+            // koszty WS
+            if (Copy(kk, formatka, "colKosztyWS_WynWlaczone")
+                || Copy(kk, formatka, "colKosztyWS_ZUSPlatWlaczone")
+                || Copy(kk, formatka, "colKosztyWS_FakWlaczone"))
+            {
+                BLL.Tools.Set_Flag(formatka, "colKosztyWS", true);
+            }
+
+            // koszty NP
+            if (Copy(kk, formatka, "colPrzychodyNP_DywidendySpO")
+                || Copy(kk, formatka, "colPrzychodyNP_Inne"))
+            {
+                BLL.Tools.Set_Flag(formatka, "colPrzychodyNP", true);
+            }
+
+            var temp = Copy(kk, formatka, "colPrzychodyZwolnione")
+                        || Copy(kk, formatka, "colStrataDoOdliczenia")
+                        || Copy(kk, formatka, "colWplaconaSZ")
+                        || Copy(kk, formatka, "colWplaconeZaliczkiOdPoczatkuRoku")
+                        || Copy(kk, formatka, "colIleDoDoplaty")
+                        || Copy(kk, formatka, "colZyskStrataNetto")
+                        || Copy(kk, formatka, "colStronaWn")
+                        || Copy(kk, formatka, "colStronaMa");
+
+
+
+        }
+
+        private static bool Copy(SPListItem srcItem, SPListItem dstItem, string col)
+        {
+            bool result = false;
+
+            if (srcItem[col] != null)
+            {
+                dstItem[col] = srcItem[col];
+
+                if (BLL.Tools.Get_Value(dstItem, col) > 0)
+                {
+                    result = true;
+                }
+            }
+
+            return result;
+        }
+
+        private static void Ensure_CurrentPDS(SPWeb web, int klientId, int okresId, ref SPListItem formatka)
+        {
+            if (formatka == null)
+            {
+                formatka = BLL.tabZadania.Get_Zadanie(web, klientId, okresId, _CT_NAME_PDS);
+            }
         }
 
         private static void Copy_SumyStratZLatUbieglych(SPWeb web, int klientId, int okresId)
@@ -207,7 +334,7 @@ namespace admProcessRequests_EventReceiver
             {
                 int targetYear = currentYear - 1 - i;
                 int itemId = BLL.tabStratyZLatUbieglych.Ensure_RecordExist(web, klientId, targetYear);
-                
+
                 //dodaje wartości strat i odliczeń dla bieżącego rekordu
                 BLL.tabStratyZLatUbieglych.Add_StratyIOdliczenia(web, itemId, ref sumaStrat, ref sumaOdliczen);
             }

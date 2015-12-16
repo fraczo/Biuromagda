@@ -11,8 +11,4 @@
     <TemplateFile Location="Images\Biuromagda\SETTINGS16.GIF" />
     <TemplateFile Location="Images\Biuromagda\SETTINGS32.GIF" />
   </TemplateFiles>
-  <FeatureManifests>
-    <FeatureManifest Location="BRMagda_TimerJob_WysylkaWiadomosci\Feature.xml" />
-    <FeatureManifest Location="BRMagda_TimerJob_CleanUp\Feature.xml" />
-  </FeatureManifests>
 </Solution>
