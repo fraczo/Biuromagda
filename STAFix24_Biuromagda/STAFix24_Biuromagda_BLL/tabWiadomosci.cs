@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.SharePoint;
 using System.Net.Mail;
 using System.IO;
+using System.Diagnostics;
 
 namespace BLL
 {
@@ -301,5 +302,19 @@ namespace BLL
 
 
 
+
+        public static Array Select_Batch(SPWeb web)
+        {
+            Debug.WriteLine("BLL.tabWiadomosci.Select_Batch");
+
+            SPList list = web.Lists.TryGetList(targetList);
+
+            return list.Items.Cast<SPListItem>()
+                .Where(i => (bool)i["colCzyWyslana"] != true)
+                .Where(i => i["colPlanowanaDataNadania"] == null
+                    || (i["colPlanowanaDataNadania"] != null
+                       && (DateTime)i["colPlanowanaDataNadania"] <= DateTime.Now))
+                .ToArray();
+        }
     }
 }

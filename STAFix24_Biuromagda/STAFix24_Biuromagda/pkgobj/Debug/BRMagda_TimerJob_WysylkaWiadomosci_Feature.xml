@@ -1,0 +1,2 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Feature xmlns="http://schemas.microsoft.com/sharepoint/" Title="Biuromagda_TimerJob_WysylkaWiadomosci" Id="31e3137a-a213-4fe5-a661-2b59b535bc66" ReceiverAssembly="BRMagda, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cceec86e0795b19e" ReceiverClass="Biuromagda.Features.TimerJob_WysylkaWiadomosci.TimerJob_WysylkaWiadomosciEventReceiver" Scope="Site"></Feature>

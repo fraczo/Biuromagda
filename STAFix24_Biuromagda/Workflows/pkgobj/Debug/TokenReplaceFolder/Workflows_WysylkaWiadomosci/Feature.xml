@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Feature xmlns="http://schemas.microsoft.com/sharepoint/" Title="Workflows Feature2" Id="34a43788-1488-4de6-92d8-478246000c41" Scope="Site">
+  <ElementManifests>
+    <ElementManifest Location="ObslugaWiadomosci\Elements.xml" />
+    <ElementManifest Location="swfWysylkaWiadomosci\Elements.xml" />
+  </ElementManifests>
+</Feature>

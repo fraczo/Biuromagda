@@ -72,6 +72,12 @@
       <DependentUpon>ObslugaWiadomosci.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="swfWysylkaWiadomosci\swfWysylkaWiadomosci.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="swfWysylkaWiadomosci\swfWysylkaWiadomosci.Designer.cs">
+      <DependentUpon>swfWysylkaWiadomosci.cs</DependentUpon>
+    </Compile>
     <Compile Include="WyslijKopieWiadomosci\WyslijKopieWiadomosci.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -99,6 +105,9 @@
     <None Include="Package\Package.Template.xml">
       <DependentUpon>Package.package</DependentUpon>
     </None>
+    <None Include="swfWysylkaWiadomosci\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{7c1dee72-ed2b-4463-9470-decbae8ae090}</SharePointProjectItemId>
+    </None>
     <None Include="WyslijKopieWiadomosci\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{41cc1749-184b-459f-b8a2-120d81d87487}</SharePointProjectItemId>
     </None>
@@ -114,6 +123,7 @@
     <Content Include="ObslugaWiadomosci\Elements.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="swfWysylkaWiadomosci\Elements.xml" />
     <Content Include="WyslijKopieWiadomosci\Elements.xml" />
     <Content Include="ZatwierdzenieZadania\Elements.xml" />
   </ItemGroup>
