@@ -103,7 +103,7 @@ namespace BLL
                 {
                     workflowAssociation = SPWorkflowAssociation.CreateWebAssociation(workflowTemplate, workflowAssociationName, taskList, historyList);
                     workflowAssociation.AllowManual = true;
-                    workflowAssociation.Enabled = true;
+                    //workflowAssociation.Enabled = true;  - nie wiem dlaczego ale ta pozycja wywala błąd.
                     web.WorkflowAssociations.Add(workflowAssociation);
                 }
             }
