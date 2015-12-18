@@ -90,6 +90,7 @@ namespace admProcessRequests_EventReceiver
 
         internal static void Create(SPWeb web, int klientId, int okresId, bool createKK)
         {
+            Debug.WriteLine("Create PD Form");
 
             SPListItem item = tabKlienci.Get_KlientById(web, klientId);
 

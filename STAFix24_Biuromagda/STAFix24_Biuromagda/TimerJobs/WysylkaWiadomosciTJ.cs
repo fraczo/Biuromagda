@@ -12,12 +12,19 @@ namespace Biuromagda.TimerJobs
         public static void CreateTimerJob(SPSite site)
         {
             var timerJob = new WysylkaWiadomosciTJ(site);
-            timerJob.Schedule = new SPMinuteSchedule
+            //timerJob.Schedule = new SPMinuteSchedule
+            //{
+            //    BeginSecond = 0,
+            //    EndSecond = 0,
+            //    Interval = 15
+            //};
+
+            timerJob.Schedule = new SPHourlySchedule
             {
-                BeginSecond = 0,
-                EndSecond = 0,
-                Interval = 60
+                BeginMinute = 0,
+                EndMinute = 15,
             };
+
 
             timerJob.Update();
         }
@@ -31,11 +38,8 @@ namespace Biuromagda.TimerJobs
                 .ForEach(i => i.Delete());
         }
 
-        public WysylkaWiadomosciTJ()
-            : base()
-        {
-
-        }
+        public WysylkaWiadomosciTJ() : base()
+        {}
 
         public WysylkaWiadomosciTJ(SPSite site)
             : base(string.Format("Biuromagda_Wysyłka wiadomości Timer Job ({0})", site.Url), site.WebApplication, null, SPJobLockType.Job)
@@ -55,7 +59,7 @@ namespace Biuromagda.TimerJobs
             using (var site = new SPSite(SiteUrl))
             {
                 //uruchom siteWF
-
+                BLL.Workflows.StartSiteWorkflow(site, "Wysyłka wiadomości oczekujących");
             }
         }
     }

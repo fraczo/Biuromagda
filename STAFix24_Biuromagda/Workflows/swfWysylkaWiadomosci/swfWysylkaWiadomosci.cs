@@ -58,17 +58,44 @@ namespace Workflows.swfWysylkaWiadomosci
 
             //aktualizacja informacji do raportu
             sb.AppendFormat(@"<li>{0} :: {1}</li>",
-                BLL.Tools.Get_LookupValue(item, "selKlient"),
+                BLL.Tools.Get_LookupValue(item, "selKlient_NazwaSkrocona"),
                 item.Title);
 
         }
 
+        public String sendAdminConfirmation_CC1 = default(System.String);
         public String msgSubject = default(System.String);
         public String msgBody = default(System.String);
         private void sendAdminConfirmation_MethodInvoking(object sender, EventArgs e)
         {
             msgSubject = string.Format(@"Biuromagda::Wysyłka wiadomości zakończona ({0})", results.Length.ToString());
             msgBody = string.Format(@"Lista przetworzonych wiadomości<br><ol>{0}</ol>", sb.ToString());
+        }
+
+
+
+        private void cmdErrorHandler_ExecuteCode(object sender, EventArgs e)
+        {
+            FaultHandlerActivity fa = ((Activity)sender).Parent as FaultHandlerActivity;
+            if (fa != null)
+            {
+                Debug.WriteLine(fa.Fault.Source);
+                Debug.WriteLine(fa.Fault.Message);
+                Debug.WriteLine(fa.Fault.StackTrace);
+
+                logErrorMessage_HistoryDescription = string.Format("{0}::{1}",
+                    fa.Fault.Message,
+                    fa.Fault.StackTrace);
+
+                ElasticEmail.EmailGenerator.ReportErrorFromWorkflow(workflowProperties, fa.Fault.Message, fa.Fault.StackTrace);
+            }
+        }
+
+        public String logErrorMessage_HistoryDescription = default(System.String);
+
+        private void cmdObslugaBledu_ExecuteCode(object sender, EventArgs e)
+        {
+
         }
 
     }

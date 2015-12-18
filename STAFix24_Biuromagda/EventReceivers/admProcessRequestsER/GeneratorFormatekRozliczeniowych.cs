@@ -20,12 +20,16 @@ namespace admProcessRequests_EventReceiver
         /// <param name="properties"></param>
         internal static void Execute_GenFormRozlK(SPItemEventProperties properties, SPWeb web)
         {
+            Debug.WriteLine("Execute_GenFromRozl");
+
             StringBuilder msg = new StringBuilder();
 
             SPListItem item = properties.ListItem;
 
             int okresId = new SPFieldLookupValue(item["selOkres"].ToString()).LookupId;
             int klientId = new SPFieldLookupValue(item["selKlient"].ToString()).LookupId;
+
+            Debug.WriteLine(string.Format("klientId={0}, okresId={1}", klientId.ToString(), okresId.ToString()));
 
             if (okresId > 0 && klientId > 0)
             {
@@ -37,6 +41,8 @@ namespace admProcessRequests_EventReceiver
                         BLL.Tools.Get_Text(klient, "_NazwaPrezentowana"));
 
                     bool createKK = Get_Flag(item, "colDodajKartyKontrolne");
+
+                    Debug.WriteLine("Case: " + klient.ContentType.Name);
 
                     switch (klient.ContentType.Name)
                     {
@@ -90,6 +96,8 @@ namespace admProcessRequests_EventReceiver
         /// <param name="properties"></param>
         internal static void Execute_GenFormRozl(SPItemEventProperties properties, SPWeb web)
         {
+            Debug.WriteLine("Execute_GenFromRozl");
+
             StringBuilder msg = new StringBuilder();
 
             StringBuilder sb = new StringBuilder();

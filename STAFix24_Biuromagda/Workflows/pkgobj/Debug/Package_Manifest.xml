@@ -4,6 +4,6 @@
     <Assembly Location="BRMagda.Workflows.dll" DeploymentTarget="GlobalAssemblyCache" />
   </Assemblies>
   <FeatureManifests>
-    <FeatureManifest Location="Workflows_WysylkaWiadomosci\Feature.xml" />
+    <FeatureManifest Location="Workflows_Feature1\Feature.xml" />
   </FeatureManifests>
 </Solution>

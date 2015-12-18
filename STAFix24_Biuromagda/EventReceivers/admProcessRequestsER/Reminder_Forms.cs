@@ -15,6 +15,8 @@ namespace admProcessRequests_EventReceiver
 
         internal static void Create(SPWeb web, int klientId, int okresId)
         {
+            Debug.WriteLine("Create Reminder Forms");
+
             SPListItem item = tabKlienci.Get_KlientById(web, klientId);
 
             if (item != null)

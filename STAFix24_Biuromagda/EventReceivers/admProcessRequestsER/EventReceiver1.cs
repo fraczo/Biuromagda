@@ -7,6 +7,7 @@ using Microsoft.SharePoint.Workflow;
 using BLL;
 using ElasticEmail;
 using EventReceivers.admProcessRequestsER;
+using System.Diagnostics;
 
 namespace admProcessRequests_EventReceiver
 {
@@ -16,31 +17,22 @@ namespace admProcessRequests_EventReceiver
     public class EventReceiver1 : SPItemEventReceiver
     {
         private bool suppresItemDeletion = false;
-        /// <summary>
-        /// An item was added.
-        /// </summary>
+
         public override void ItemAdded(SPItemEventProperties properties)
         {
             Execute(properties);
         }
 
-        /// <summary>
-        /// An item was updated.
-        /// </summary>
-        public override void ItemUpdated(SPItemEventProperties properties)
-        {
-            Execute(properties);
-        }
-
-
         private void Execute(SPItemEventProperties properties)
         {
+            Debug.WriteLine("admProcessRequest_EventReceiver_Execute");
+
             this.EventFiringEnabled = false;
 
             properties.ListItem["enumStatusZlecenia"] = "Obsługa";
             properties.ListItem.SystemUpdate();
 
-            try 
+            try
             {
                 // na uprawnieniach operatora
 
@@ -114,14 +106,13 @@ namespace admProcessRequests_EventReceiver
                                     PotwierdzMailemZakonczenieZlecenia(properties, web, ct);
                                     break;
                                 case "Obsługa wiadomości":
-                                    ObslugaWiadomosci.Execute(properties, web);
+                                    BLL.Workflows.StartSiteWorkflow(web.Site, "Wysyłka wiadomości oczekujących");
                                     break;
                                 case "Obsługa zadań":
                                     ObslugaZadan.Execute(properties, web);
                                     break;
                                 case "CleanUp":
-                                    CleanUp.Execute(properties, web);
-                                    suppresItemDeletion = true;
+                                    BLL.Workflows.StartSiteWorkflow(web.Site, "Odchudzanie bazy danych");
                                     break;
 
                                 default:
@@ -146,16 +137,10 @@ namespace admProcessRequests_EventReceiver
             }
             finally
             {
-                if (!suppresItemDeletion)
-                {
-                    properties.ListItem.Delete();
-                }
-                          
                 this.EventFiringEnabled = true;
+                properties.ListItem.Delete();
             }
         }
-
-
 
         private static void PotwierdzMailemZakonczenieZlecenia(SPItemEventProperties properties, SPWeb web, string ct)
         {
@@ -183,5 +168,7 @@ namespace admProcessRequests_EventReceiver
                                         properties.ListItem);
 #endif
         }
+
+
     }
 }

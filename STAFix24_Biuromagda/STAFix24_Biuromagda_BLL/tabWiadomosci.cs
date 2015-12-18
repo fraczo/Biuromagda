@@ -316,5 +316,17 @@ namespace BLL
                        && (DateTime)i["colPlanowanaDataNadania"] <= DateTime.Now))
                 .ToArray();
         }
+
+        /// <summary>
+        /// zwraca listę wiadomości nie modyfikowanych w ciągu ostatniego miesiąca, zawierających załączniki
+        /// </summary>
+        public static Array Get_GotoweDoArchiwizacji(SPWeb web)
+        {
+            return web.Lists.TryGetList(targetList).Items.Cast<SPListItem>()
+                .Where(i => BLL.Tools.Get_Date(i, "Modified") <= DateTime.Now.AddMonths(-1)
+                            && i.Attachments.Count>0)
+                .ToArray();
+
+        }
     }
 }

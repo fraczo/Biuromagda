@@ -52,7 +52,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="admProcessRequestsER\BR_Forms.cs" />
-    <Compile Include="admProcessRequestsER\CleanUp.cs" />
     <Compile Include="admProcessRequestsER\ObslugaADO.cs" />
     <Compile Include="admProcessRequestsER\PDS_Forms.cs" />
     <Compile Include="admProcessRequestsER\EventReceiver1.cs" />
@@ -62,7 +61,6 @@
     <Compile Include="admProcessRequestsER\ImportFakturZaObsluge.cs" />
     <Compile Include="admProcessRequestsER\ImportKlientow.cs" />
     <Compile Include="admProcessRequestsER\ImportPrzeterminowanychNaleznosci.cs" />
-    <Compile Include="admProcessRequestsER\ObslugaWiadomosci.cs" />
     <Compile Include="admProcessRequestsER\ObslugaZadan.cs" />
     <Compile Include="admProcessRequestsER\PD_Forms.cs" />
     <Compile Include="admProcessRequestsER\Reminder_Forms.cs" />
