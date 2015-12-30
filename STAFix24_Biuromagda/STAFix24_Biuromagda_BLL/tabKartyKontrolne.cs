@@ -127,6 +127,7 @@ namespace BLL
             Copy_Field(item, form, "colZUS_SP_Skladka");
             Copy_Field(item, form, "colZUS_ZD_Skladka");
             Copy_Field(item, form, "colZUS_FP_Skladka");
+            Copy_Field(item, form, "colZUS_TerminPlatnosciSkladek");
             Copy_Field(item, form, "colZatrudniaPracownikow");
             Copy_Field(item, form, "colZUS_PIT-4R_Zalaczony");
             Copy_Field(item, form, "colZUS_PIT-4R");

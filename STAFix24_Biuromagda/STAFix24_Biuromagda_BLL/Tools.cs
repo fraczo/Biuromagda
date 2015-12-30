@@ -295,5 +295,43 @@ namespace BLL
         {
             item[col] = (double)v;
         }
+
+        /// <summary>
+        /// zwraca datę w poszukiwanym okresie rozliczeniowym (try miesięczny cofnięcie o 1 miesiąc, try miesięczny cofa do ostatniego kwartału)
+        /// </summary>
+        /// <param name="trybKwartalny">kwartalny lub miesięczny</param>
+        /// <param name="dataRozpoczecia">dowolna data z zakresu bieżącego okresu rozliczeniowego</param>
+        /// <returns></returns>
+        public static DateTime Get_TargetStartDate(bool trybKwartalny, DateTime dataRozpoczecia)
+        {
+            DateTime targetStartDate = new DateTime();
+
+            if (trybKwartalny)
+            {
+                if (dataRozpoczecia.Month > 3)
+                {
+                    int reverse = dataRozpoczecia.Month % 3;
+                    if (reverse == 0) reverse = 3;
+
+                    targetStartDate = new DateTime(dataRozpoczecia.Year, dataRozpoczecia.Month, 1).AddMonths(-1 * reverse);
+                }
+                else
+                {
+                    //dane niedostępne
+                }
+            }
+            else //tryb miesięczny
+            {
+                if (dataRozpoczecia.Month > 1)
+                {
+                    targetStartDate = new DateTime(dataRozpoczecia.Year, dataRozpoczecia.Month, 1).AddMonths(-1);
+                }
+                else
+                {
+                    //dane niedostępne
+                }
+            }
+            return targetStartDate;
+        }
     }
 }

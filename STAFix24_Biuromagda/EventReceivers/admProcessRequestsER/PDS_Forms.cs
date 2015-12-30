@@ -212,36 +212,9 @@ namespace admProcessRequests_EventReceiver
             DateTime dataRozpoczecia = BLL.Tools.Get_Date(okres, "colDataRozpoczecia");
             if (dataRozpoczecia.Month == 1) return;
 
-
             //wyszukaj źródłową kartę kontrolną
 
-            DateTime targetStartDate = new DateTime();
-
-            if (trybKwartalny)
-            {
-                if (dataRozpoczecia.Month > 3)
-                {
-                    int reverse = dataRozpoczecia.Month % 3;
-                    if (reverse == 0) reverse = 3;
-
-                    targetStartDate = new DateTime(dataRozpoczecia.Year, dataRozpoczecia.Month, 1).AddMonths(-1 * reverse);
-                }
-                else
-                {
-                    //dane niedostępne
-                }
-            }
-            else //tryb miesięczny
-            {
-                if (dataRozpoczecia.Month > 1)
-                {
-                    targetStartDate = new DateTime(dataRozpoczecia.Year, dataRozpoczecia.Month, 1).AddMonths(-1);
-                }
-                else
-                {
-                    //dane niedostępne
-                }
-            }
+            DateTime targetStartDate = BLL.Tools.Get_TargetStartDate(trybKwartalny, dataRozpoczecia);
 
             if (targetStartDate.Equals(new DateTime())) return; //dane niedostepne
 
@@ -304,6 +277,9 @@ namespace admProcessRequests_EventReceiver
 
 
         }
+
+
+
 
         private static bool Copy(SPListItem srcItem, SPListItem dstItem, string col)
         {

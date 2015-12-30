@@ -50,7 +50,7 @@ namespace EventReceivers.tabZadaniaER
 
         private void Execute(SPItemEventProperties properties)
         {
-            Debug.WriteLine(string.Format("Zadanie#{0} updated",properties.ListItemId.ToString()));
+            Debug.WriteLine(string.Format("Zadanie#{0} updated", properties.ListItemId.ToString()));
             this.EventFiringEnabled = false;
             this.Execute(properties.ListItem);
             this.EventFiringEnabled = true;
@@ -1030,6 +1030,8 @@ namespace EventReceivers.tabZadaniaER
                             }
                             else
                             {
+                                //jeżeli status gotowe to aktualizuj kartę kontrolną
+                                Update_KartaKlienta_ZUS(item);
                                 Set_StatusZadania(item, StatusZadania.Gotowe);
                             }
                         }
@@ -1049,6 +1051,8 @@ namespace EventReceivers.tabZadaniaER
                             }
                             else
                             {
+                                //jeżeli status gotowe to aktualizuj kartę kontrolną
+                                Update_KartaKlienta_PD(item);
                                 Set_StatusZadania(item, StatusZadania.Gotowe);
                             }
                         }
@@ -1068,6 +1072,8 @@ namespace EventReceivers.tabZadaniaER
                             }
                             else
                             {
+                                //jeżeli status gotowe to aktualizuj kartę kontrolną
+                                Update_KartaKlienta_PDS(item);
                                 Set_StatusZadania(item, StatusZadania.Gotowe);
                             }
                         }
@@ -1087,6 +1093,8 @@ namespace EventReceivers.tabZadaniaER
                             }
                             else
                             {
+                                //jeżeli status gotowe to aktualizuj kartę kontrolną
+                                Update_KartaKlienta_VAT(item);
                                 Set_StatusZadania(item, StatusZadania.Gotowe);
                             }
                         }
@@ -2033,6 +2041,9 @@ namespace EventReceivers.tabZadaniaER
                 //obsługa remindera
                 if (hasPrzypomnienieOTerminiePlatnosci(item))
                 {
+                    KopiaDoNadawcy = false;
+                    KopiaDoBiura = false;
+
                     DateTime terminPlatnosci = Get_Date(item, "colBR_TerminPlatnosci");
 
 
@@ -2316,9 +2327,9 @@ namespace EventReceivers.tabZadaniaER
                 if (BLL.Tools.Get_Flag(item, "colKosztyNKUP"))
                 {
                     if (GetValue(item, "colKosztyNKUP_WynWyl") < 0
-                        || GetValue(item, "colKosztyNKUP_ZUSPlatWyl") < 0
-                        || GetValue(item, "colKosztyNKUP_FakWyl") < 0
-                        || GetValue(item, "colKosztyNKUP_PozostaleKoszty") < 0)
+                        | GetValue(item, "colKosztyNKUP_ZUSPlatWyl") < 0
+                        | GetValue(item, "colKosztyNKUP_FakWyl") < 0
+                        | GetValue(item, "colKosztyNKUP_PozostaleKoszty") < 0)
                     {
                         Add_Comment(item, "Niedozolone wartości w sekcji Koszty NKUP");
                         foundError = true;
@@ -2337,8 +2348,8 @@ namespace EventReceivers.tabZadaniaER
                 if (BLL.Tools.Get_Flag(item, "colKosztyWS"))
                 {
                     if (GetValue(item, "colKosztyWS_WynWlaczone") < 0
-                        || GetValue(item, "colKosztyWS_ZUSPlatWlaczone") < 0
-                        || GetValue(item, "colKosztyWS_FakWlaczone") < 0)
+                        | GetValue(item, "colKosztyWS_ZUSPlatWlaczone") < 0
+                        | GetValue(item, "colKosztyWS_FakWlaczone") < 0)
                     {
                         Add_Comment(item, "Niedozolone wartości w sekcji Koszty WS");
                         foundError = true;
@@ -2356,7 +2367,7 @@ namespace EventReceivers.tabZadaniaER
                 if (BLL.Tools.Get_Flag(item, "colPrzychodyNP"))
                 {
                     if (GetValue(item, "colPrzychodyNP_DywidendySpO") < 0
-                        || GetValue(item, "colPrzychodyNP_Inne") < 0)
+                        | GetValue(item, "colPrzychodyNP_Inne") < 0)
                     {
                         Add_Comment(item, "Niedozolone wartości w sekcji Przychody NP");
                         foundError = true;
@@ -2370,6 +2381,65 @@ namespace EventReceivers.tabZadaniaER
 
                 // TODO: rozwinięcie walidatora
 
+                //weryfikacja kosztów z przeniesienia czy nie są mniejsze niż były
+
+                //jeżeli bieżący miesiąc > styczeń to kopuj dane z poprzedniej karty odpowiednio w/g trybu (miesięcznie/kwartalnie)
+
+                int okresId = BLL.Tools.Get_LookupId(item, "selOkres");
+
+                SPListItem okres = BLL.tabOkresy.Get_OkresById(item.Web, okresId);
+                DateTime dataRozpoczecia = BLL.Tools.Get_Date(okres, "colDataRozpoczecia");
+                if (dataRozpoczecia.Month > 1)
+                {
+                    //wyszukaj źródłową kartę kontrolną
+
+                    bool trybKwartalny = false;
+                    if (BLL.Tools.Get_Text(item, "enumRozliczeniePD").Equals("Kwartalnie")) trybKwartalny = true;
+
+                    DateTime targetStartDate = BLL.Tools.Get_TargetStartDate(trybKwartalny, dataRozpoczecia);
+
+                    if (!targetStartDate.Equals(new DateTime()))
+                    {
+                        SPListItem targetOkres = BLL.tabOkresy.Get_OkresByStartDate(item.Web, targetStartDate);
+
+                        int targetOkresId = 0;
+
+                        if (targetOkres != null) targetOkresId = targetOkres.ID;
+
+                        if (!targetOkresId.Equals(0))
+                        {
+                            //znajdź kartę kontrolną
+
+                            int klientId = BLL.Tools.Get_LookupId(item, "selKlient");
+                            SPListItem kk = BLL.tabKartyKontrolne.Get_KartaKontrolna(item.Web, klientId, targetOkresId);
+
+                            if (kk == null) { }//dane niedostępne
+                            else
+                            {
+                                //znalazł dane do porównania na karcie kk
+
+                                if (Check_IsNoLowerValue(item, kk, "colKosztyNKUP_WynWyl"))
+                                {
+                                    
+                                }
+
+                            }
+                        }
+                    }
+                }
+
+
+
+                //sprawdzenie czy zgadza się suma odliczeń z lat poprzenidnich
+
+                //oblicz "podstawa do opodatkowania
+
+                //sprawdź udziały wspólników
+
+                //rozpisz na wspólników
+
+                //oblicz/sprawdź podatek do zapłaty po odliczeniu wszytkich wartości (colIleDoDoplty ? zysk-strata)
+
                 if (foundError)
                 {
                     Set_ValidationFlag(item, true);
@@ -2380,6 +2450,20 @@ namespace EventReceivers.tabZadaniaER
             }
 
             return false;
+        }
+
+        private bool Check_IsNoLowerValue(SPListItem item, SPListItem kk, string col)
+        {
+            bool result = true;
+            if (item[col]!=null && kk[col]!=null)
+            {
+                double v1 = BLL.Tools.Get_Value(item, col);
+                double v0 = BLL.Tools.Get_Value(kk, col);
+
+                if (v1 < v0) result = false;
+            }
+
+            return result;
         }
 
         private bool isValidated_VAT(SPListItem item)
