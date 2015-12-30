@@ -312,6 +312,7 @@ namespace admProcessRequests_EventReceiver
 
             double sumaStrat = 0;
             double sumaOdliczen = 0;
+            double sumaDoOdliczenia = 0;
 
             //sprawdź 5 ostatnich lat
             int currentYear = d.Year;
@@ -321,19 +322,19 @@ namespace admProcessRequests_EventReceiver
                 int itemId = BLL.tabStratyZLatUbieglych.Ensure_RecordExist(web, klientId, targetYear);
 
                 //dodaje wartości strat i odliczeń dla bieżącego rekordu
-                BLL.tabStratyZLatUbieglych.Add_StratyIOdliczenia(web, itemId, ref sumaStrat, ref sumaOdliczen);
+                BLL.tabStratyZLatUbieglych.Add_StratyIOdliczenia(web, itemId, ref sumaStrat, ref sumaOdliczen, ref sumaDoOdliczenia);
             }
 
             //zapisz wartości sumaStrat i sumaOdliczeń na formatce PDS
 
-            if (sumaStrat-sumaOdliczen>0)
+            if (sumaDoOdliczenia>0)
             {
                 // upewnij się że docelowa formatka została zainicjowana
                 Ensure_CurrentPDS(web, klientId, okresId, ref formatka);
 
                 if (formatka == null) return; // nie znaleziono formatki docelowej
 
-                BLL.Tools.Set_Value(formatka, "colStrataDoOdliczenia", sumaStrat - sumaOdliczen);
+                BLL.Tools.Set_Value(formatka, "colStrataDoOdliczenia", sumaDoOdliczenia);
             }
         }
 

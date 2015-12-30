@@ -57,11 +57,17 @@ namespace BLL
         /// <summary>
         /// powiększa wartości strat i odliczeń o wartości z bieżącego rekordu
         /// </summary>
-        public static void Add_StratyIOdliczenia(SPWeb web, int itemId, ref double sumaStrat, ref double sumaOdliczen)
+        public static void Add_StratyIOdliczenia(SPWeb web, int itemId, ref double sumaStrat, ref double sumaOdliczen, ref double sumaDoDoliczenia)
         {
             SPListItem item = web.Lists.TryGetList(targetList).GetItemById(itemId);
             double sStrat = BLL.Tools.Get_Value(item, "colWysokoscStraty");
             double sOdliczen = BLL.Tools.Get_Value(item, "colOdliczono");
+
+            double maxOdliczenie = sStrat / 2;
+            double sDoDoliczenia = sStrat - sOdliczen;
+            if (sDoDoliczenia > maxOdliczenie) sDoDoliczenia = maxOdliczenie;
+
+            sumaDoDoliczenia = sumaDoDoliczenia + sDoDoliczenia;
             sumaStrat = sumaStrat + sStrat;
             sumaOdliczen = sumaOdliczen + sOdliczen;
         }

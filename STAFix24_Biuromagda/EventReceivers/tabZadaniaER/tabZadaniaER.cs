@@ -1412,6 +1412,9 @@ namespace EventReceivers.tabZadaniaER
                 //reminders
                 if (hasPrzypomnienieOTerminiePlatnosci(item))
                 {
+                    KopiaDoNadawcy = false;
+                    KopiaDoBiura = false;
+
                     //składki zus
                     DateTime terminPlatnosci = Get_Date(item, "colZUS_TerminPlatnosciSkladek");
 
@@ -1684,6 +1687,9 @@ namespace EventReceivers.tabZadaniaER
                 //obsługa remindera
                 if (hasPrzypomnienieOTerminiePlatnosci(item))
                 {
+                    KopiaDoNadawcy = false;
+                    KopiaDoBiura = false;
+
                     DateTime terminPlatnosci = Get_Date(item, "colPD_TerminPlatnosciPodatku");
 
                     if (Get_String(item, "colPD_OcenaWyniku") == "Dochód")
@@ -1925,6 +1931,9 @@ namespace EventReceivers.tabZadaniaER
                 //obsługa remindera
                 if (hasPrzypomnienieOTerminiePlatnosci(item))
                 {
+                    KopiaDoNadawcy = false;
+                    KopiaDoBiura = false;
+
                     DateTime terminPlatnosci = Get_Date(item, "colVAT_TerminPlatnosciPodatku");
 
                     if (Get_String(item, "colVAT_Decyzja") == "Do zapłaty")

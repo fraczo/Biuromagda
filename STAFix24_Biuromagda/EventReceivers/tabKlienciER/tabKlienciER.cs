@@ -70,6 +70,7 @@ namespace EventReceivers.tabKlienciER
                 item["_DedykowanyOperator_Audyt"] = new SPFieldLookupValue(item["selDedykowanyOperator_Audyt"].ToString()).LookupValue;
             }
 
+            //nazwa prezentowana
             string np = string.Empty;
             switch (item.ContentType.Name)
             {
@@ -96,6 +97,11 @@ namespace EventReceivers.tabKlienciER
                     break;
                 case "Klient":
                     np = item["colNazwaSkrocona"].ToString();
+                    break;
+                case "Powiązanie":
+                    np = string.Format("{0}\{1}",
+                        BLL.Tools.Get_LookupValue(item, "selKlient_NazwaSkrocona"),
+                        BLL.Tools.Get_LookupValue(item, "selKlient"));
                     break;
                 default:
                     break;
