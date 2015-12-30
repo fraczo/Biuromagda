@@ -27,6 +27,9 @@ namespace BLL
             form.SystemUpdate();
         }
 
+        /// <summary>
+        /// kopiowanie wartości PD na kartę kontrolną
+        /// </summary>
         private static void Copy_PDFields(Microsoft.SharePoint.SPListItem item, SPListItem form)
         {
             Copy_Field(item, form, "colPotwierdzenieOdbioruDokumento");
@@ -46,6 +49,9 @@ namespace BLL
             Copy_Id(item, form, "_ZadanieID_PD");
         }
 
+        /// <summary>
+        /// kopiowanie wartości PDS na kartę kontrolną
+        /// </summary>
         public static void Update_PDS_Data(SPListItem item)
         {
             string KEY = Create_KEY(item);

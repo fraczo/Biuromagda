@@ -72,11 +72,14 @@ namespace admProcessRequests_EventReceiver
                             {
                                 case "Generowanie formatek rozliczeniowych":
                                     GeneratorFormatekRozliczeniowych.Execute_GenFormRozl(properties, web);
+
                                     //PotwierdzMailemZakonczenieZlecenia(properties, web, ct);
                                     //obsługa wewnętrz porcedury
                                     break;
                                 case "Generowanie formatek rozliczeniowych dla klienta":
-                                    GeneratorFormatekRozliczeniowych.Execute_GenFormRozlK(properties, web);
+                                    //Todo: zamienić na workflow
+                                    GeneratorFormatekRozliczeniowych.Execute_GenFormRozlK(properties, web); 
+
                                     //PotwierdzMailemZakonczenieZlecenia(properties, web, ct);
                                     //obsługa wewnętrz porcedury
                                     break;

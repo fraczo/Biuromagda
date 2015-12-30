@@ -259,12 +259,12 @@ namespace BLL
 
         public static void Set_Flag(SPListItem item, string col, bool v)
         {
-            item[col] = v;
+            item[col] = (bool)v;
         }
 
         public static SPFieldLookupValueCollection Get_LookupValueColection(SPListItem item, string col)
         {
-            return item[col]!=null?new SPFieldLookupValueCollection(item[col].ToString()):null;
+            return item[col] != null ? new SPFieldLookupValueCollection(item[col].ToString()) : null;
         }
 
 
@@ -289,6 +289,11 @@ namespace BLL
             {
                 return string.Empty;
             }
+        }
+
+        public static void Set_Value(SPListItem item, string col, double v)
+        {
+            item[col] = (double)v;
         }
     }
 }
