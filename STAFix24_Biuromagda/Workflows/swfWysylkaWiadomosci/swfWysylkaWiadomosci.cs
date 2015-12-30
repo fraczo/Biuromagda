@@ -16,6 +16,7 @@ using Microsoft.SharePoint.Workflow;
 using Microsoft.SharePoint.WorkflowActions;
 using System.Diagnostics;
 using System.Text;
+using System.Threading;
 
 namespace Workflows.swfWysylkaWiadomosci
 {
@@ -40,7 +41,7 @@ namespace Workflows.swfWysylkaWiadomosci
             results = BLL.tabWiadomosci.Select_Batch(workflowProperties.Web);
             myEnum = results.GetEnumerator();
 
-            logSelected.HistoryDescription = "";
+            logSelected_HistoryOutcome = results.Length.ToString();
         }
 
         private void whileRecordExist(object sender, ConditionalEventArgs e)
@@ -60,6 +61,8 @@ namespace Workflows.swfWysylkaWiadomosci
             sb.AppendFormat(@"<li>{0} :: {1}</li>",
                 BLL.Tools.Get_LookupValue(item, "selKlient_NazwaSkrocona"),
                 item.Title);
+
+            logCurrentMessage_HistoryOutcome = item.ID.ToString();
 
         }
 
@@ -97,6 +100,15 @@ namespace Workflows.swfWysylkaWiadomosci
         {
 
         }
+
+        public String logCurrentMessage_HistoryOutcome = default(System.String);
+
+        private void cmdDelay_ExecuteCode(object sender, EventArgs e)
+        {
+            Thread.Sleep(5000);
+        }
+
+        public String logSelected_HistoryOutcome = default(System.String);
 
     }
 }

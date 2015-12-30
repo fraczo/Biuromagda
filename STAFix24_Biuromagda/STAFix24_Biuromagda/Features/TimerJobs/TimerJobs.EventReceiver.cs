@@ -17,6 +17,7 @@ namespace Biuromagda.Features.TimerJobs
             {
                 var site = properties.Feature.Parent as SPSite;
                 Biuromagda.TimerJobs.WysylkaWiadomosciTJ.CreateTimerJob(site);
+                Biuromagda.TimerJobs.CleanupTJ.CreateTimerJob(site);
             }
             catch (Exception ex)
             {
@@ -28,6 +29,7 @@ namespace Biuromagda.Features.TimerJobs
         {
             var site = properties.Feature.Parent as SPSite;
             Biuromagda.TimerJobs.WysylkaWiadomosciTJ.DelteTimerJob(site);
+            Biuromagda.TimerJobs.CleanupTJ.DelteTimerJob(site);
         }
     }
 }

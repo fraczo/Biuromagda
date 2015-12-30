@@ -36,5 +36,10 @@ namespace BLL
                 throw;
             }
         }
+
+        public static SPList Get_List(SPWeb web)
+        {
+            return web.Lists.TryGetList(targetList);
+        }
     }
 }

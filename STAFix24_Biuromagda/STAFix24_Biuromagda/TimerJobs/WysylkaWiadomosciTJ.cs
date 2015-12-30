@@ -22,7 +22,7 @@ namespace Biuromagda.TimerJobs
             timerJob.Schedule = new SPHourlySchedule
             {
                 BeginMinute = 0,
-                EndMinute = 15,
+                EndMinute = 5,
             };
 
 
@@ -59,7 +59,19 @@ namespace Biuromagda.TimerJobs
             using (var site = new SPSite(SiteUrl))
             {
                 //uruchom siteWF
-                BLL.Workflows.StartSiteWorkflow(site, "Wysyłka wiadomości oczekujących");
+
+                try
+                {
+                    //BLL.Workflows.StartSiteWorkflow(site, "Wysyłka wiadomości oczekujących");
+                    SPList list = BLL.admProcessRequests.Get_List(site.RootWeb);
+                    SPListItem item = list.AddItem();
+                    item["ContentType"] = "Obsługa wiadomości";
+                    item.SystemUpdate();
+                }
+                catch (Exception ex)
+                {
+                    ElasticEmail.EmailGenerator.ReportError(ex, site.Url);
+                }
             }
         }
     }

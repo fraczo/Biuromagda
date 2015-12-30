@@ -69,15 +69,14 @@ namespace Workflows.swfWysylkaWiadomosci
             // logCurrentMessage
             // 
             this.logCurrentMessage.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
-            this.logCurrentMessage.Enabled = false;
             this.logCurrentMessage.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
+            this.logCurrentMessage.HistoryDescription = "Zainicjowana obsługa";
             activitybind2.Name = "swfWysylkaWiadomosci";
-            activitybind2.Path = "logCurrentMessage_HistoryDescription";
-            this.logCurrentMessage.HistoryOutcome = "";
+            activitybind2.Path = "logCurrentMessage_HistoryOutcome";
             this.logCurrentMessage.Name = "logCurrentMessage";
             this.logCurrentMessage.OtherData = "";
             this.logCurrentMessage.UserId = -1;
-            this.logCurrentMessage.SetBinding(Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity.HistoryDescriptionProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind2)));
+            this.logCurrentMessage.SetBinding(Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity.HistoryOutcomeProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind2)));
             // 
             // Initialize_ChildWorkflow
             // 
@@ -135,13 +134,13 @@ namespace Workflows.swfWysylkaWiadomosci
             // 
             this.logSelected.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
             this.logSelected.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
+            this.logSelected.HistoryDescription = "Liczba wiadomości do obsługi";
             activitybind6.Name = "swfWysylkaWiadomosci";
-            activitybind6.Path = "logSelected_HistoryDescription";
-            this.logSelected.HistoryOutcome = "";
+            activitybind6.Path = "logSelected_HistoryOutcome";
             this.logSelected.Name = "logSelected";
             this.logSelected.OtherData = "";
             this.logSelected.UserId = -1;
-            this.logSelected.SetBinding(Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity.HistoryDescriptionProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind6)));
+            this.logSelected.SetBinding(Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity.HistoryOutcomeProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind6)));
             // 
             // Select_ListaWiadomosciOczekujacych
             // 
@@ -198,6 +197,15 @@ namespace Workflows.swfWysylkaWiadomosci
         private CodeActivity Select_ListaWiadomosciOczekujacych;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
+
+
+
+
+
+
+
+
 
 
 

@@ -57,6 +57,7 @@
     </Compile>
     <Compile Include="Features\TimerJobs\TimerJobs.EventReceiver.cs">
       <DependentUpon>TimerJobs.feature</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SiteWorkflows\Cleanup.cs" />
@@ -80,7 +81,7 @@
       <FeatureId>{6497f506-043c-4e8d-af05-7a78cac425cc}</FeatureId>
     </None>
     <None Include="Features\TimerJobs\TimerJobs.feature">
-      <FeatureId>{4fffc521-8c38-4595-b274-f7bcda5bce75}</FeatureId>
+      <FeatureId>{04fc01c6-2e9e-412e-95b3-d9ac150fa8c3}</FeatureId>
     </None>
     <None Include="Features\Workflows\Workflows.feature">
       <FeatureId>{2f4c26dd-e7b2-4f00-b421-08e5caf4c62e}</FeatureId>

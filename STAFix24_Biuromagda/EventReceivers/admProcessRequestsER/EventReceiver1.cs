@@ -106,7 +106,8 @@ namespace admProcessRequests_EventReceiver
                                     PotwierdzMailemZakonczenieZlecenia(properties, web, ct);
                                     break;
                                 case "Obsługa wiadomości":
-                                    BLL.Workflows.StartSiteWorkflow(web.Site, "Wysyłka wiadomości oczekujących");
+                                    ObslugaWiadomosci.Execute(properties, web);
+                                    //BLL.Workflows.StartSiteWorkflow(web.Site, "Wysyłka wiadomości oczekujących");
                                     break;
                                 case "Obsługa zadań":
                                     ObslugaZadan.Execute(properties, web);

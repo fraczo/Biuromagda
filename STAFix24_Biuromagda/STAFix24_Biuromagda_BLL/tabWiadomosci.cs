@@ -6,6 +6,7 @@ using Microsoft.SharePoint;
 using System.Net.Mail;
 using System.IO;
 using System.Diagnostics;
+using System.Collections;
 
 namespace BLL
 {
@@ -264,6 +265,13 @@ namespace BLL
             else
             {
                 Array klientListItems = BLL.tabKlienci.Get_WybraniKlienci(item);
+
+                //obsługa duplikatów
+                if (BLL.Tools.Get_Flag(item,"colUsunDuplikaty"))
+                {
+                    klientListItems = Remove_DuplicatedEmails(klientListItems);
+                }
+
                 foreach (SPListItem klientItem in klientListItems)
                 {
                     CreateMailMessage_WiadomoscZReki(item, klientItem.ID);
@@ -286,10 +294,19 @@ namespace BLL
             else
             {
                 Array klientListItems = BLL.tabKlienci.Get_WybraniKlienci(item);
+
+                //obsługa duplikatów
+                if (BLL.Tools.Get_Flag(item, "colUsunDuplikaty"))
+                {
+                    klientListItems = Remove_DuplicatedEmails(klientListItems);
+                }
+
                 foreach (SPListItem klientItem in klientListItems)
                 {
                     int klientId = BLL.Tools.Get_LookupId(item, "selKlient");
+
                     CreateMailMessage_WiadomoscZSzablonu(item, klientItem.ID);
+
                 }
             }
         }
@@ -327,6 +344,35 @@ namespace BLL
                             && i.Attachments.Count>0)
                 .ToArray();
 
+        }
+
+
+
+        private static Array Remove_DuplicatedEmails(Array klienci)
+        {
+            ArrayList results = new ArrayList();
+            foreach (SPListItem k in klienci)
+            {
+                bool isFound = false;
+
+                string email = BLL.Tools.Get_Email(k, "colEmail");
+                if (!string.IsNullOrEmpty(email))
+                {
+                    foreach (SPListItem item in results)
+                    {
+                        string email1 = BLL.Tools.Get_Email(item, "colEmail");
+                        if (!string.IsNullOrEmpty(email1) && email1.Equals(email))
+                        {
+                            isFound = true;
+                            break;
+                        }
+                    }
+
+                    if (!isFound) results.Add(k);
+                }
+            }
+
+            return results.ToArray();
         }
     }
 }

@@ -37,7 +37,7 @@ namespace EventReceivers.admProcessRequestsER
                         {
                             //uruchom proces zatwierdzenia
                             Update_msg(msg, procName, task);
-                            BLL.WorkflowHelpers.StartWorkflow(task, "Zatwierdzenie zadania");
+                            BLL.Workflows.StartWorkflow(task, "Zatwierdzenie zadania");
                         }
                     }
 
@@ -50,7 +50,7 @@ namespace EventReceivers.admProcessRequestsER
                     foreach (SPListItem task in tasks2)
                     {
                         Update_msg(msg, procName, task);
-                        BLL.WorkflowHelpers.StartWorkflow(task, "Zatwierdzenie zadania");
+                        BLL.Workflows.StartWorkflow(task, "Zatwierdzenie zadania");
                     }
                     break;
                 default:

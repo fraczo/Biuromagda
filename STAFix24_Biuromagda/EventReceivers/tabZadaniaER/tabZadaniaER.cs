@@ -806,7 +806,6 @@ namespace EventReceivers.tabZadaniaER
             }
         }
 
-
         private void Manage_CMD(SPListItem item)
         {
             //sprawdź czy wybrana jakaś komenda

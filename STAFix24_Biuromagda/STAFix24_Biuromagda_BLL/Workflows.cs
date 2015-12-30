@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.SharePoint;
 using Microsoft.SharePoint.Workflow;
 using System.Globalization;
+using System.Diagnostics;
 
 namespace BLL
 {
@@ -28,8 +29,27 @@ namespace BLL
 
                         try
                         {
-                            manager.StartWorkflow(listItem, objWorkflowAssociation, objWorkflowAssociation.AssociationData, true);
-                            //The above line will start the workflow...
+                            SPWorkflowCollection wfc = manager.GetItemActiveWorkflows(listItem);
+                            bool isActive = false;
+                            foreach (SPWorkflow wf in wfc)
+                            {
+                                if (!wf.IsCompleted && objWorkflowAssociation.Id.Equals(wf.AssociationId))
+                                {
+                                    isActive = true;
+                                    break;
+                                }
+                            }
+
+                            if (!isActive)
+                            {
+                                manager.StartWorkflow(listItem, objWorkflowAssociation, objWorkflowAssociation.AssociationData, true);
+                                //The above line will start the workflow...
+                            }
+                            else
+                            {
+                                Debug.WriteLine("WF aktualnie uruchomiony - kolejna aktywacja procesu przerwana");
+                                //ElasticEmail.EmailGenerator.SendMail("wf aktualnie uruchomiony" + listItem.ID.ToString(), string.Empty);
+                            }
                         }
                         catch (Exception)
                         { }

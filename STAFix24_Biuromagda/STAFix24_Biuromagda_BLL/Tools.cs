@@ -277,5 +277,18 @@ namespace BLL
 
             return false;
         }
+
+        public static string Get_Email(SPListItem item, string col)
+        {
+            string email = BLL.Tools.Get_Text(item, col);
+            if (Is_ValidEmail(email))
+            {
+                return email;
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
     }
 }
