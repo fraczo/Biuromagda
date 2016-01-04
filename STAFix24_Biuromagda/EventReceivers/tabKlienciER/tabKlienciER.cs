@@ -99,7 +99,7 @@ namespace EventReceivers.tabKlienciER
                     np = item["colNazwaSkrocona"].ToString();
                     break;
                 case "Powiązanie":
-                    np = string.Format("{0}\{1}",
+                    np = string.Format("{0}/{1}",
                         BLL.Tools.Get_LookupValue(item, "selKlient_NazwaSkrocona"),
                         BLL.Tools.Get_LookupValue(item, "selKlient"));
                     break;

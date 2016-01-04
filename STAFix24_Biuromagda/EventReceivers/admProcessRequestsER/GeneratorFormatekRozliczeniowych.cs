@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using Microsoft.SharePoint;
 using BLL;
-using admProcessRequests_EventReceiver;
-using admProcessRequests_EventReceiver.admProcessRequestsER;
+using EventReceivers;
+using EventReceivers.admProcessRequestsER;
 using EventReceivers.admProcessRequestsER;
 using System.Collections;
 using System.Diagnostics;
 
-namespace admProcessRequests_EventReceiver
+namespace EventReceivers
 {
     internal class GeneratorFormatekRozliczeniowych
     {
@@ -141,26 +141,30 @@ namespace admProcessRequests_EventReceiver
                                     case "ZUS-M+C":
                                     case "ZUS-ZD":
                                     case "ZUS-PRAC":
-                                        ZUS_Forms.Create(web, klienci, okresId, createKK);
+                                        ZUS_Forms.CreateAll(web, klienci, okresId, createKK);
                                         break;
                                     case "PDS-M":
                                     case "PDS-KW":
-                                        PDS_Forms.Create(web, klienci, okresId, createKK);
+                                        PDS_Forms.CreateAll(web, klienci, okresId, createKK);
+                                        break;
+                                    case "PDW-M":
+                                    case "PDW-KW":
+                                        //PDW_Forms.Create(web, klienci, okresId, createKK);
                                         break;
                                     case "PD-M":
                                     case "PD-KW":
-                                        PD_Forms.Create(web, klienci, okresId, createKK);
+                                        PD_Forms.CreateAll(web, klienci, okresId, createKK);
                                         break;
                                     case "VAT-M":
                                     case "VAT-KW":
-                                        VAT_Forms.Create(web, klienci, okresId, createKK);
+                                        VAT_Forms.CreateAll(web, klienci, okresId, createKK);
                                         break;
                                     case "RBR":
-                                        BR_Forms.Create(web, klienci, okresId, createKK);
+                                        BR_Forms.CreateAll(web, klienci, okresId, createKK);
                                         break;
                                     case "POW-Dok":
                                     case "POW-WBank":
-                                        Reminder_Forms.Create(web, klienci, okresId);
+                                        Reminder_Forms.CreateAll(web, klienci, okresId);
                                         break;
                                     default:
                                         break;
@@ -173,26 +177,28 @@ namespace admProcessRequests_EventReceiver
                         switch (typKlienta)
                         {
                             case "KPiR":
-                                ZUS_Forms.Create(web, klienci, okresId, createKK);
-                                PD_Forms.Create(web, klienci, okresId, createKK);
-                                VAT_Forms.Create(web, klienci, okresId, createKK);
-                                BR_Forms.Create(web, klienci, okresId, createKK);
-                                Reminder_Forms.Create(web, klienci, okresId);
+                                ZUS_Forms.CreateAll(web, klienci, okresId, createKK);
+                                PD_Forms.CreateAll(web, klienci, okresId, createKK);
+                                //PDW_Forms.Create(web, klienci, okresId, createKK);
+                                VAT_Forms.CreateAll(web, klienci, okresId, createKK);
+                                BR_Forms.CreateAll(web, klienci, okresId, createKK);
+                                Reminder_Forms.CreateAll(web, klienci, okresId);
                                 break;
                             case "KSH":
-                                ZUS_Forms.Create(web, klienci, okresId, createKK);
-                                PDS_Forms.Create(web, klienci, okresId, createKK);
-                                VAT_Forms.Create(web, klienci, okresId, createKK);
-                                BR_Forms.Create(web, klienci, okresId, createKK);
-                                Reminder_Forms.Create(web, klienci, okresId);
+                                ZUS_Forms.CreateAll(web, klienci, okresId, createKK);
+                                PDS_Forms.CreateAll(web, klienci, okresId, createKK);
+                                VAT_Forms.CreateAll(web, klienci, okresId, createKK);
+                                BR_Forms.CreateAll(web, klienci, okresId, createKK);
+                                Reminder_Forms.CreateAll(web, klienci, okresId);
                                 break;
                             case "Firma":
-                                PDS_Forms.Create(web, klienci, okresId, createKK);
+                                PDS_Forms.CreateAll(web, klienci, okresId, createKK);
                                 break;
                             case "Osoba fizyczna":
-                                ZUS_Forms.Create(web, klienci, okresId, createKK);
-                                PD_Forms.Create(web, klienci, okresId, createKK);
-                                VAT_Forms.Create(web, klienci, okresId, createKK);
+                                ZUS_Forms.CreateAll(web, klienci, okresId, createKK);
+                                PD_Forms.CreateAll(web, klienci, okresId, createKK);
+                                //PDW_Forms.Create(web, klienci, okresId, createKK);
+                                VAT_Forms.CreateAll(web, klienci, okresId, createKK);
                                 break;
 
                             default:

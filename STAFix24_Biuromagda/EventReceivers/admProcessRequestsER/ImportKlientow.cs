@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.SharePoint;
 using BLL;
 
-namespace admProcessRequests_EventReceiver
+namespace EventReceivers
 {
     internal class ImportKlientow
     {

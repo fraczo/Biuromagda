@@ -28,7 +28,7 @@ namespace BLL
         /// </summary>
         public static void Ensure_RecordInitiated(Microsoft.SharePoint.SPWeb web, Microsoft.SharePoint.SPListItem klientItem, int klientId, int okresId)
         {
-            Debug.WriteLine("tab.DochowyWspolnikow.Ensure_RecordInitiated, klientId=" + klientId.ToString());
+            Debug.WriteLine("tab.DochowyWspolnikow.Ensure_RecordInitiated, powiązanieId=" + klientItem.ID.ToString());
 
             int result = 0;
 
@@ -52,14 +52,7 @@ namespace BLL
                 newItem["selOkres"] = okresId;
 
                 newItem["selKlient_NazwaSkrocona"] = klientId;
-                //newItem["colPD_OcenaWyniku"] =
-                BLL.Models.Klient iok = new Models.Klient(web, klientItem.ID);
-                newItem["colFormaOpodatkowaniaPD"] = iok.FormaOpodatkowaniaPD;
                 newItem["colPD_UdzialWZysku"] = BLL.Tools.Get_Value(klientItem, "colPD_UdzialWZysku");
-                //newItem["colPodatekNaliczony"] =
-                //newItem["colWplaconaSkladkaZdrowotna"] =
-                //newItem["colWplaconeZaliczki"] =
-                //newItem["colPodatekWspolnikaDoZaplaty"] = 
 
                 newItem.Update();
 

@@ -2,4 +2,3 @@ C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\bin\Debug\BRMa
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\bin\Debug\BRMagda.BLL.pdb
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\obj\Debug\BRMagda.BLL.dll
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\obj\Debug\BRMagda.BLL.pdb
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\obj\Debug\BLL.csprojResolveAssemblyReference.cache

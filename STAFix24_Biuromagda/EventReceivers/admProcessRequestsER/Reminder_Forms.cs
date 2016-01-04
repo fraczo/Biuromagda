@@ -6,21 +6,19 @@ using Microsoft.SharePoint;
 using BLL;
 using System.Diagnostics;
 
-namespace admProcessRequests_EventReceiver
+namespace EventReceivers.admProcessRequestsER
 {
-    internal class Reminder_Forms
+    public class Reminder_Forms
     {
         const string ctPOW_DOK = @"Prośba o dokumenty";
         const string ctPOW_WBANK = @"Prośba o przesłanie wyciągu bankowego";
 
-        internal static void Create(SPWeb web, int klientId, int okresId)
+        public static void CreateAll(SPWeb web, Array klienci, int okresId)
         {
-            Debug.WriteLine("Create Reminder Forms");
-
-            SPListItem item = tabKlienci.Get_KlientById(web, klientId);
-
-            if (item != null)
+            foreach (SPListItem item in klienci)
             {
+                Debug.WriteLine("klientId=" + item.ID.ToString());
+
                 SPFieldLookupValueCollection kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
                 foreach (SPFieldLookupValue kod in kody)
                 {
@@ -36,12 +34,14 @@ namespace admProcessRequests_EventReceiver
             }
         }
 
-        internal static void Create(SPWeb web, Array klienci, int okresId)
+        public static void Create(SPWeb web, int klientId, int okresId)
         {
-            foreach (SPListItem item in klienci)
-            {
-                Debug.WriteLine("klientId=" + item.ID.ToString());
+            Debug.WriteLine("Create Reminder Forms");
 
+            SPListItem item = tabKlienci.Get_KlientById(web, klientId);
+
+            if (item != null)
+            {
                 SPFieldLookupValueCollection kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
                 foreach (SPFieldLookupValue kod in kody)
                 {

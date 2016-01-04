@@ -919,8 +919,8 @@ namespace BLL
         public static Array Get_WspolnicyByKlientId(SPWeb web, int klientId)
         {
             return web.Lists.TryGetList(listName).Items.Cast<SPListItem>()
+                .Where(i => i.ContentType.Name.Equals("Powiązanie"))
                 .Where(i => BLL.Tools.Get_LookupId(i, "selKlient_NazwaSkrocona") == klientId)
-                .Where(i => i.ContentType.Name.Equals("Osoba fizyczna") | i.ContentType.Name.Equals("Firma") | i.ContentType.Name.Equals("Firma zewnętrzna"))
                 .ToArray();
         }
     }

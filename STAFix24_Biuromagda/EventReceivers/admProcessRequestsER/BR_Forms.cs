@@ -6,13 +6,13 @@ using BLL;
 using Microsoft.SharePoint;
 using System.Diagnostics;
 
-namespace admProcessRequests_EventReceiver.admProcessRequestsER
+namespace EventReceivers.admProcessRequestsER
 {
     public class BR_Forms
     {
         const string ctBR = @"Rozliczenie z biurem rachunkowym";
 
-        internal static void Create(SPWeb web, Array aKlienci, int okresId, bool createKK)
+        public static void CreateAll(SPWeb web, Array aKlienci, int okresId, bool createKK)
         {
             foreach (SPListItem item in aKlienci)
             {
@@ -47,50 +47,7 @@ namespace admProcessRequests_EventReceiver.admProcessRequestsER
             }
         }
 
-
-        //internal static void Create(Microsoft.SharePoint.SPWeb web, int klientId, int okresId)
-        //{
-        //    SPListItem item = tabKlienci.Get_KlientById(web, klientId);
-
-        //    if (item != null)
-        //    {
-        //        SPFieldLookupValueCollection kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
-        //        foreach (SPFieldLookupValue kod in kody)
-        //        {
-        //            switch (kod.LookupValue)
-        //            {
-        //                case @"RBR":
-        //                    Create_BR_Form(web, item.ID, okresId);
-        //                    break;
-        //                default:
-        //                    break;
-        //            }
-        //        }
-        //    }
-        //}
-
-
-
-        //internal static void Create(Microsoft.SharePoint.SPWeb web, Array aKlienci, int okresId)
-        //{
-
-        //    SPFieldLookupValueCollection kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
-        //    foreach (SPFieldLookupValue kod in kody)
-        //    {
-        //        switch (kod.LookupValue)
-        //        {
-        //            case @"RBR":
-        //                Create_BR_Form(web, item.ID, okresId);
-        //                break;
-        //            default:
-        //                break;
-        //        }
-        //    }
-
-        //}
-
-
-        internal static void Create(SPWeb web, int klientId, int okresId, bool createKK)
+        public static void Create(SPWeb web, int klientId, int okresId, bool createKK)
         {
             Debug.WriteLine("Create RBR Form");
 

@@ -9,7 +9,7 @@ using ElasticEmail;
 using EventReceivers.admProcessRequestsER;
 using System.Diagnostics;
 
-namespace admProcessRequests_EventReceiver
+namespace EventReceivers
 {
     /// <summary>
     /// List Item Events
@@ -55,6 +55,7 @@ namespace admProcessRequests_EventReceiver
                 var result = ElasticEmail.EmailGenerator.ReportError(ex, properties.WebUrl.ToString());
             }
 
+            bool allowDelete = true;
 
             try
             {
@@ -78,7 +79,10 @@ namespace admProcessRequests_EventReceiver
                                     break;
                                 case "Generowanie formatek rozliczeniowych dla klienta":
                                     //Todo: zamienić na workflow
-                                    GeneratorFormatekRozliczeniowych.Execute_GenFormRozlK(properties, web); 
+                                    //GeneratorFormatekRozliczeniowych.Execute_GenFormRozlK(properties, web);
+                                    BLL.Workflows.StartWorkflow(properties.ListItem, "Generuj formatki rozliczeniowe");
+                                    BLL.Workflows.StartWorkflow(properties.ListItem, "My test");
+                                    allowDelete = false;
 
                                     //PotwierdzMailemZakonczenieZlecenia(properties, web, ct);
                                     //obsługa wewnętrz porcedury
@@ -142,7 +146,7 @@ namespace admProcessRequests_EventReceiver
             finally
             {
                 this.EventFiringEnabled = true;
-                properties.ListItem.Delete();
+                if (allowDelete) properties.ListItem.Delete();
             }
         }
 

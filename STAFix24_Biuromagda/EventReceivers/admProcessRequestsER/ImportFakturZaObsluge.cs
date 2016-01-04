@@ -6,7 +6,7 @@ using Microsoft.SharePoint;
 using BLL;
 using BLL.Models;
 
-namespace admProcessRequests_EventReceiver
+namespace EventReceivers
 {
     internal class ImportFakturZaObsluge
     {

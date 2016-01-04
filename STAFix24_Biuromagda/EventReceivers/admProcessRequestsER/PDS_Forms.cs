@@ -6,7 +6,7 @@ using Microsoft.SharePoint;
 using BLL;
 using System.Diagnostics;
 
-namespace admProcessRequests_EventReceiver
+namespace EventReceivers.admProcessRequestsER
 {
     internal class PDS_Forms
     {
@@ -16,7 +16,7 @@ namespace admProcessRequests_EventReceiver
         /// <summary>
         /// Wywołuje procedurę generowania kart kontrolnych PDS dla listy klientów
         /// </summary>
-        internal static void Create(SPWeb web, Array aKlienci, int okresId, bool createKK)
+        public static void CreateAll(SPWeb web, Array aKlienci, int okresId, bool createKK)
         {
             foreach (SPListItem item in aKlienci)
             {
@@ -57,7 +57,7 @@ namespace admProcessRequests_EventReceiver
         /// <summary>
         /// Wywołuje procedurę generowania kart kontrolnych PDS dla pojedyńczego klienta
         /// </summary>
-        internal static void Create(SPWeb web, int klientId, int okresId, bool createKK)
+        public static void Create(SPWeb web, int klientId, int okresId, bool createKK)
         {
             SPListItem item = tabKlienci.Get_KlientById(web, klientId);
 
@@ -189,14 +189,8 @@ namespace admProcessRequests_EventReceiver
             }
             catch (Exception ex)
             {
-#if DEBUG
-                Debug.WriteLine("ERROR: " + ex.Message);
-                Debug.WriteLine(ex.StackTrace);
-#else
                 BLL.Logger.LogEvent(web.Url, ex.ToString() + " KlientId= " + klientId.ToString());
                 var result = ElasticEmail.EmailGenerator.ReportError(ex, web.Url, "KlientId=" + klientId.ToString());
-#endif
-
             }
         }
 
@@ -269,7 +263,7 @@ namespace admProcessRequests_EventReceiver
                         | Copy(kk, formatka, "colStrataDoOdliczenia")
                         | Copy(kk, formatka, "colWplaconaSZ")
                         | Copy(kk, formatka, "colWplaconeZaliczkiOdPoczatkuRoku")
-                        | Copy(kk, formatka, "colIleDoDoplaty")
+                        | Copy(kk, formatka, "colPD_WartoscDoZaplaty")
                         | Copy(kk, formatka, "colZyskStrataNetto")
                         | Copy(kk, formatka, "colStronaWn")
                         | Copy(kk, formatka, "colStronaMa");
@@ -277,9 +271,6 @@ namespace admProcessRequests_EventReceiver
 
 
         }
-
-
-
 
         private static bool Copy(SPListItem srcItem, SPListItem dstItem, string col)
         {

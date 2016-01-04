@@ -6,14 +6,14 @@ using Microsoft.SharePoint;
 using BLL;
 using System.Diagnostics;
 
-namespace admProcessRequests_EventReceiver
+namespace EventReceivers.admProcessRequestsER
 {
-    internal class PD_Forms
+    public class PD_Forms
     {
 
         const string ctPD = @"Rozliczenie podatku dochodowego";
 
-        internal static void Create(SPWeb web, Array aKlienci, int okresId, bool createKK )
+        public static void CreateAll(SPWeb web, Array aKlienci, int okresId, bool createKK )
         {
             foreach (SPListItem item in aKlienci)
             {
@@ -52,43 +52,8 @@ namespace admProcessRequests_EventReceiver
                 }
             }
         }
-        //internal static void Create(SPWeb web, int klientId, int okresId)
-        //{
-        //    SPListItem item = tabKlienci.Get_KlientById(web, klientId);
 
-        //    if (item != null)
-        //    {
-        //        SPFieldLookupValueCollection kody;
-
-        //        switch (item.ContentType.Name)
-        //        {
-        //            case "Osoba fizyczna":
-        //            case "Firma":
-        //                kody = new SPFieldLookupValueCollection(item["selSerwisyWspolnicy"].ToString());
-        //                break;
-        //            default:
-        //                kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
-        //                break;
-        //        }
-
-        //        foreach (SPFieldLookupValue kod in kody)
-        //        {
-        //            switch (kod.LookupValue)
-        //            {
-        //                case @"PD-M":
-        //                    Create_PD_M_Form(web, item.ID, okresId);
-        //                    break;
-        //                case @"PD-KW":
-        //                    Create_PD_KW_Form(web, item.ID, okresId);
-        //                    break;
-        //                default:
-        //                    break;
-        //            }
-        //        }
-        //    }
-        //}
-
-        internal static void Create(SPWeb web, int klientId, int okresId, bool createKK)
+        public static void Create(SPWeb web, int klientId, int okresId, bool createKK)
         {
             Debug.WriteLine("Create PD Form");
 
