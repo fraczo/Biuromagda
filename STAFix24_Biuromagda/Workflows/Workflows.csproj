@@ -84,12 +84,6 @@
     <Compile Include="swfWysylkaWiadomosci\swfWysylkaWiadomosci.Designer.cs">
       <DependentUpon>swfWysylkaWiadomosci.cs</DependentUpon>
     </Compile>
-    <Compile Include="wfGenerujFormatkiRozliczeniowe\wfGenerujFormatkiRozliczeniowe.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="wfGenerujFormatkiRozliczeniowe\wfGenerujFormatkiRozliczeniowe.Designer.cs">
-      <DependentUpon>wfGenerujFormatkiRozliczeniowe.cs</DependentUpon>
-    </Compile>
     <Compile Include="wfGFRK\wfGFRK.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -129,9 +123,6 @@
     <None Include="swfWysylkaWiadomosci\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{7c1dee72-ed2b-4463-9470-decbae8ae090}</SharePointProjectItemId>
     </None>
-    <None Include="wfGenerujFormatkiRozliczeniowe\SharePointProjectItem.spdata">
-      <SharePointProjectItemId>{4c1f5c7c-0c9d-41d8-ba0b-6571a29ff31e}</SharePointProjectItemId>
-    </None>
     <None Include="wfGFRK\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{64d8970d-99ab-40b7-9e39-63deccf81706}</SharePointProjectItemId>
     </None>
@@ -152,7 +143,6 @@
     </Content>
     <Content Include="swfCleanup\Elements.xml" />
     <Content Include="swfWysylkaWiadomosci\Elements.xml" />
-    <Content Include="wfGenerujFormatkiRozliczeniowe\Elements.xml" />
     <Content Include="wfGFRK\Elements.xml" />
     <Content Include="WyslijKopieWiadomosci\Elements.xml" />
     <Content Include="ZatwierdzenieZadania\Elements.xml" />

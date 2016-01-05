@@ -33,7 +33,8 @@ namespace BLL
                             bool isActive = false;
                             foreach (SPWorkflow wf in wfc)
                             {
-                                if (!wf.IsCompleted && objWorkflowAssociation.Id.Equals(wf.AssociationId))
+                                // wf.IsCompleted nie używać - blokuje kolejne uruchomienie procesu jeżęli status jest "Ukończono"
+                                if (wf.IsLocked && objWorkflowAssociation.Id.Equals(wf.AssociationId))
                                 {
                                     isActive = true;
                                     break;

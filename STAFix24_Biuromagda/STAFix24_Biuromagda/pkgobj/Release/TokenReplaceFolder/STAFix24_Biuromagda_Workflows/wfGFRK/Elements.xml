@@ -8,8 +8,8 @@ Name="[NAME]" ==> Name="MyWorkflow" -->
   <Workflow
      Name="Generuj formatki rozliczeniowe"
      Description="My SharePoint Workflow"
-     Id="a0ecda15-b7b5-4aae-9e7e-4d6f9c996db6"
-     CodeBesideClass="Workflows.wfGenerujFormatki_Klient.wfGenerujFormatki_Klient"
+     Id="c94b68d2-019c-404e-843f-8ca2888053fe"
+     CodeBesideClass="Workflows.wfGFRK.wfGFRK"
      CodeBesideAssembly="BRMagda.Workflows, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7c2016d13a1c5fef">
     <Categories/>
     <MetaData>

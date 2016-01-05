@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace EventReceivers.admProcessRequestsER
 {
-    internal class PDS_Forms
+    public class PDS_Forms
     {
 
         const string _CT_NAME_PDS = @"Rozliczenie podatku dochodowego spółki";

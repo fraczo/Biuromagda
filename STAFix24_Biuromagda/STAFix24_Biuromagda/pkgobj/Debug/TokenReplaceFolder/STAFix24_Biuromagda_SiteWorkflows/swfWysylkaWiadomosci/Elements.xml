@@ -14,6 +14,7 @@ Name="[NAME]" ==> Name="MyWorkflow" -->
     <Categories/>
     <MetaData>
       <AssociationCategories>Site</AssociationCategories>
+      <AutoCleanUpDays>5</AutoCleanUpDays>
       <!-- Tags to specify InfoPath forms for the workflow; delete tags for forms that you do not have -->
       <!--<Association_FormURN>[URN FOR ASSOCIATION FORM]</Association_FormURN>
        <Instantiation_FormURN>[URN FOR INSTANTIATION FORM]</Instantiation_FormURN>

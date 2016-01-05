@@ -81,7 +81,6 @@ namespace EventReceivers
                                     //Todo: zamienić na workflow
                                     //GeneratorFormatekRozliczeniowych.Execute_GenFormRozlK(properties, web);
                                     BLL.Workflows.StartWorkflow(properties.ListItem, "Generuj formatki rozliczeniowe");
-                                    BLL.Workflows.StartWorkflow(properties.ListItem, "My test");
                                     allowDelete = false;
 
                                     //PotwierdzMailemZakonczenieZlecenia(properties, web, ct);
@@ -113,8 +112,7 @@ namespace EventReceivers
                                     PotwierdzMailemZakonczenieZlecenia(properties, web, ct);
                                     break;
                                 case "Obsługa wiadomości":
-                                    ObslugaWiadomosci.Execute(properties, web);
-                                    //BLL.Workflows.StartSiteWorkflow(web.Site, "Wysyłka wiadomości oczekujących");
+                                    BLL.Workflows.StartSiteWorkflow(web.Site, "Wysyłka wiadomości oczekujących");
                                     break;
                                 case "Obsługa zadań":
                                     ObslugaZadan.Execute(properties, web);

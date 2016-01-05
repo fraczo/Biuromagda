@@ -341,12 +341,18 @@ namespace BLL
 
         private static void Copy_Field(SPListItem item, SPListItem form, string col)
         {
-            form[col] = item[col];
+            if (item[col]!=null)
+            {
+                form[col] = item[col];
+            }
         }
 
         private static void Copy_Field(SPListItem item, SPListItem form, string col, int mnoznik)
         {
-            form[col] = double.Parse(item[col].ToString()) * mnoznik;
+            if (item[col] != null)
+            {
+                form[col] = double.Parse(item[col].ToString()) * mnoznik;
+            }
         }
 
         private static void Copy_Id(SPListItem item, SPListItem form, string col)

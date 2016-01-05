@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Feature xmlns="http://schemas.microsoft.com/sharepoint/" Id="78ef9bc6-4840-4cab-8f91-d07a82e9cacd" Scope="Site" Title="STAFix24_Biuromagda Workflows">
+<Feature xmlns="http://schemas.microsoft.com/sharepoint/" Title="STAFix24_Biuromagda Workflows" Id="78ef9bc6-4840-4cab-8f91-d07a82e9cacd" Scope="Site">
   <ElementManifests>
     <ElementManifest Location="GenerujRejestry_StratyZLatUbieglych\Elements.xml" />
     <ElementManifest Location="ObslugaWiadomosci\Elements.xml" />
     <ElementManifest Location="WyslijKopieWiadomosci\Elements.xml" />
     <ElementManifest Location="ZatwierdzenieZadania\Elements.xml" />
-    <ElementManifest Location="wfGenerujFormatkiRozliczeniowe\Elements.xml" />
     <ElementManifest Location="wfGFRK\Elements.xml" />
   </ElementManifests>
 </Feature>

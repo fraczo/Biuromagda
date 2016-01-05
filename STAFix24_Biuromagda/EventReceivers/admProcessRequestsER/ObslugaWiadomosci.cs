@@ -20,6 +20,7 @@ namespace EventReceivers.admProcessRequestsER
 
             foreach (SPListItem item in results)
             {
+                //todo: ??? obsługa pojedyńczej wiadomości - to chyba nie w tym miejscu
                 BLL.Workflows.StartWorkflow(item, "Obsługa wiadomości");
                 Debug.WriteLine("Workflow initiated for message #" + item.ID.ToString());
             }

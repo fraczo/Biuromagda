@@ -17,6 +17,7 @@ using Microsoft.SharePoint.WorkflowActions;
 using System.Text;
 using BLL;
 using System.Diagnostics;
+using EventReceivers.admProcessRequestsER;
 
 namespace Workflows.wfGFRK
 {
@@ -41,7 +42,7 @@ namespace Workflows.wfGFRK
         private string _CT_FirmaZewnętrzna = "Firma zewnętrzna";
         private string _CT_OsobaFizyczna = "Osoba fizyczna";
 
-        private void onWorkflowActivated1_Invoked(object sender, ExternalDataEventArgs e)
+        private void onWorkflowActivated1_Invoked_2(object sender, ExternalDataEventArgs e)
         {
             item = workflowProperties.Item;
         }
@@ -53,8 +54,10 @@ namespace Workflows.wfGFRK
 
         private void cmdCaptureParams_ExecuteCode(object sender, EventArgs e)
         {
-            okresId = new SPFieldLookupValue(item["selOkres"].ToString()).LookupId;
-            klientId = new SPFieldLookupValue(item["selKlient"].ToString()).LookupId;
+            //okresId = new SPFieldLookupValue(item["selOkres"].ToString()).LookupId;
+            okresId = BLL.Tools.Get_LookupId(item, "selOkres");
+            //klientId = new SPFieldLookupValue(item["selKlient"].ToString()).LookupId;
+            klientId = BLL.Tools.Get_LookupId(item, "selKlient");
 
             logOkresId_HistoryOutcome = okresId.ToString();
             logKlientId_HistoryOutcome = klientId.ToString();
@@ -113,31 +116,31 @@ namespace Workflows.wfGFRK
 
         private void Manage_ZUS_ExecuteCode(object sender, EventArgs e)
         {
-            //ZUS_Forms.Create(item.Web, klientId, okresId, true);
+            ZUS_Forms.Create(item.Web, klientId, okresId, true);
 
         }
 
         private void Manage_PD_ExecuteCode(object sender, EventArgs e)
         {
-            //PD_Forms.Create(item.Web, klientId, okresId, true);
+            PD_Forms.Create(item.Web, klientId, okresId, true);
 
         }
 
         private void Manage_VAT_ExecuteCode(object sender, EventArgs e)
         {
-            //VAT_Forms.Create(item.Web, klientId, okresId, true);
+            VAT_Forms.Create(item.Web, klientId, okresId, true);
 
         }
 
         private void Manage_RBR_ExecuteCode(object sender, EventArgs e)
         {
-            //BR_Forms.Create(item.Web, klientId, okresId, true);
+            BR_Forms.Create(item.Web, klientId, okresId, true);
 
         }
 
         private void Manage_Reminders_ExecuteCode(object sender, EventArgs e)
         {
-            //Reminder_Forms.Create(item.Web, klientId, okresId);
+            Reminder_Forms.Create(item.Web, klientId, okresId);
         }
 
         public String logKlientId_HistoryOutcome = default(System.String);
@@ -145,6 +148,8 @@ namespace Workflows.wfGFRK
         public String logKlient_HistoryOutcome = default(System.String);
         public String logErrorMessage_HistoryDescription = default(System.String);
         public String logErrorMessage_HistoryOutcome = default(System.String);
+        private string _SZ_ZAKONCZONY = "Zakończony";
+        private string _SZ_ANULOWANY = "Anulowany";
 
         private void ErrorHandler_ExecuteCode(object sender, EventArgs e)
         {
@@ -155,6 +160,9 @@ namespace Workflows.wfGFRK
                 logErrorMessage_HistoryOutcome = faultHandlerActivity.Fault.StackTrace;
 
                 ElasticEmail.EmailGenerator.ReportErrorFromWorkflow(workflowProperties, faultHandlerActivity.Fault.Message, faultHandlerActivity.Fault.StackTrace);
+
+                BLL.Tools.Set_Text(item, "enumStatusZlecenia", _SZ_ANULOWANY);
+                item.Update();
             }
         }
 
@@ -162,5 +170,61 @@ namespace Workflows.wfGFRK
         {
             //item = workflowProperties.Item;
         }
+
+        private void isElse(object sender, ConditionalEventArgs e)
+        {
+            e.Result = true;
+        }
+
+        private void Manage_PDS_ExecuteCode(object sender, EventArgs e)
+        {
+            PDS_Forms.Create(item.Web, klientId, okresId, true);
+        }
+
+        private void Manage_PDW_ExecuteCode(object sender, EventArgs e)
+        {
+
+        }
+
+        private void hasPDSerwis(object sender, ConditionalEventArgs e)
+        {
+            if (BLL.Tools.Has_Service(klient, "PD-M", "selSewisy")
+                || BLL.Tools.Has_Service(klient, "PD-KW", "selSewisy")
+                || BLL.Tools.Has_Service(klient, "PD-M", "selSerwisyWspolnicy")
+                || BLL.Tools.Has_Service(klient, "PD-KW", "selSerwisyWspolnicy"))
+            {
+                e.Result = true;
+            }
+        }
+
+        private void hasPDSSerwis(object sender, ConditionalEventArgs e)
+        {
+            if (BLL.Tools.Has_Service(klient, "PDS-M", "selSewisy")
+                || BLL.Tools.Has_Service(klient, "PDS-KW", "selSewisy")
+                || BLL.Tools.Has_Service(klient, "PDS-M", "selSerwisyWspolnicy")
+                || BLL.Tools.Has_Service(klient, "PDS-KW", "selSerwisyWspolnicy"))
+            {
+                e.Result = true;
+            }
+        }
+
+        private void hasPDWSerwis(object sender, ConditionalEventArgs e)
+        {
+            if (BLL.Tools.Has_Service(klient, "PDW-M", "selSewisy")
+                || BLL.Tools.Has_Service(klient, "PDW-KW", "selSewisy")
+                || BLL.Tools.Has_Service(klient, "PDW-M", "selSerwisyWspolnicy")
+                || BLL.Tools.Has_Service(klient, "PDW-KW", "selSerwisyWspolnicy"))
+            {
+                e.Result = true;
+            }
+        }
+
+        private void Update_Status_ExecuteCode(object sender, EventArgs e)
+        {
+            BLL.Tools.Set_Text(item, "enumStatusZlecenia", _SZ_ZAKONCZONY);
+            item.Update();
+        }
+
+
     }
 }
