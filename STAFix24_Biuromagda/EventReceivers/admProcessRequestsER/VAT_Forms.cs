@@ -158,5 +158,32 @@ namespace EventReceivers.admProcessRequestsER
         }
 
 
+
+        public static void CreateNew(SPWeb web, SPListItem item, int okresId)
+        {
+            Debug.WriteLine("Create VAT Form");
+
+            if (item != null)
+            {
+                SPFieldLookupValueCollection kody;
+
+                kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
+
+                foreach (SPFieldLookupValue kod in kody)
+                {
+                    switch (kod.LookupValue)
+                    {
+                        case @"VAT-M":
+                            Create_VAT_M_Form(web, item.ID, okresId);
+                            break;
+                        case @"VAT-KW":
+                            Create_VAT_KW_Form(web, item.ID, okresId);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
     }
 }

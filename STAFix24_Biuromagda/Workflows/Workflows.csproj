@@ -90,6 +90,12 @@
     <Compile Include="wfGFRK\wfGFRK.Designer.cs">
       <DependentUpon>wfGFRK.cs</DependentUpon>
     </Compile>
+    <Compile Include="wfGFR\wfGFR.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="wfGFR\wfGFR.Designer.cs">
+      <DependentUpon>wfGFR.cs</DependentUpon>
+    </Compile>
     <Compile Include="WyslijKopieWiadomosci\WyslijKopieWiadomosci.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -104,6 +110,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Features\Feature1\Feature1.feature">
+      <FeatureId>{912ab75b-589d-4d02-9c2b-d03e9a6a67b6}</FeatureId>
+    </None>
     <None Include="GenerujRejestry_StratyZLatUbieglych\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{2e70d26e-0859-4f13-83ec-15d54c2eb60c}</SharePointProjectItemId>
     </None>
@@ -126,6 +135,9 @@
     <None Include="wfGFRK\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{64d8970d-99ab-40b7-9e39-63deccf81706}</SharePointProjectItemId>
     </None>
+    <None Include="wfGFR\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{a38888e5-8745-4ba3-b979-ec20d507c921}</SharePointProjectItemId>
+    </None>
     <None Include="WyslijKopieWiadomosci\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{41cc1749-184b-459f-b8a2-120d81d87487}</SharePointProjectItemId>
     </None>
@@ -133,10 +145,11 @@
       <SharePointProjectItemId>{d711dbaf-91fe-4e8d-99a5-b850ec9b60b9}</SharePointProjectItemId>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Features\" />
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="Features\Feature1\Feature1.Template.xml">
+      <DependentUpon>Feature1.feature</DependentUpon>
+    </Content>
     <Content Include="GenerujRejestry_StratyZLatUbieglych\Elements.xml" />
     <Content Include="ObslugaWiadomosci\Elements.xml">
       <SubType>Designer</SubType>
@@ -144,6 +157,7 @@
     <Content Include="swfCleanup\Elements.xml" />
     <Content Include="swfWysylkaWiadomosci\Elements.xml" />
     <Content Include="wfGFRK\Elements.xml" />
+    <Content Include="wfGFR\Elements.xml" />
     <Content Include="WyslijKopieWiadomosci\Elements.xml" />
     <Content Include="ZatwierdzenieZadania\Elements.xml" />
   </ItemGroup>

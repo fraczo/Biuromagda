@@ -107,5 +107,26 @@ namespace EventReceivers.admProcessRequestsER
 
 
 
+
+        public static void CreateNew(SPWeb web, SPListItem item, int okresId)
+        {
+            Debug.WriteLine("Create RBR Form");
+
+            SPFieldLookupValueCollection kody;
+
+            kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
+
+            foreach (SPFieldLookupValue kod in kody)
+            {
+                switch (kod.LookupValue)
+                {
+                    case @"RBR":
+                        Create_BR_Form(web, item.ID, okresId);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
     }
 }

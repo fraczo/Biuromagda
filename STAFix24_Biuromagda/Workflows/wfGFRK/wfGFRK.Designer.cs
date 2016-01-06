@@ -31,41 +31,24 @@ namespace Workflows.wfGFRK
             System.Workflow.Activities.CodeCondition codecondition3 = new System.Workflow.Activities.CodeCondition();
             System.Workflow.Activities.CodeCondition codecondition4 = new System.Workflow.Activities.CodeCondition();
             System.Workflow.Activities.CodeCondition codecondition5 = new System.Workflow.Activities.CodeCondition();
-            System.Workflow.Activities.CodeCondition codecondition6 = new System.Workflow.Activities.CodeCondition();
-            System.Workflow.Activities.CodeCondition codecondition7 = new System.Workflow.Activities.CodeCondition();
-            System.Workflow.Activities.CodeCondition codecondition8 = new System.Workflow.Activities.CodeCondition();
-            System.Workflow.Activities.CodeCondition codecondition9 = new System.Workflow.Activities.CodeCondition();
             System.Workflow.ComponentModel.ActivityBind activitybind1 = new System.Workflow.ComponentModel.ActivityBind();
-            System.Workflow.Activities.CodeCondition codecondition10 = new System.Workflow.Activities.CodeCondition();
+            System.Workflow.Activities.CodeCondition codecondition6 = new System.Workflow.Activities.CodeCondition();
             System.Workflow.ComponentModel.ActivityBind activitybind2 = new System.Workflow.ComponentModel.ActivityBind();
             System.Workflow.ComponentModel.ActivityBind activitybind3 = new System.Workflow.ComponentModel.ActivityBind();
             System.Workflow.ComponentModel.ActivityBind activitybind4 = new System.Workflow.ComponentModel.ActivityBind();
             System.Workflow.ComponentModel.ActivityBind activitybind5 = new System.Workflow.ComponentModel.ActivityBind();
-            System.Workflow.Activities.CodeCondition codecondition11 = new System.Workflow.Activities.CodeCondition();
+            System.Workflow.Activities.CodeCondition codecondition7 = new System.Workflow.Activities.CodeCondition();
             System.Workflow.ComponentModel.ActivityBind activitybind7 = new System.Workflow.ComponentModel.ActivityBind();
             System.Workflow.Runtime.CorrelationToken correlationtoken1 = new System.Workflow.Runtime.CorrelationToken();
             System.Workflow.ComponentModel.ActivityBind activitybind6 = new System.Workflow.ComponentModel.ActivityBind();
-            this.logToHistoryListActivity14 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
-            this.Manage_PDW = new System.Workflow.Activities.CodeActivity();
-            this.logToHistoryListActivity7 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
-            this.Manage_PD3 = new System.Workflow.Activities.CodeActivity();
-            this.logToHistoryListActivity13 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
-            this.Manage_PDS = new System.Workflow.Activities.CodeActivity();
-            this.logToHistoryListActivity6 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
-            this.Manage_PD2 = new System.Workflow.Activities.CodeActivity();
-            this.PDW = new System.Workflow.Activities.IfElseBranchActivity();
-            this.PD2 = new System.Workflow.Activities.IfElseBranchActivity();
-            this.PDS = new System.Workflow.Activities.IfElseBranchActivity();
-            this.PD = new System.Workflow.Activities.IfElseBranchActivity();
             this.logToHistoryListActivity9 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Manage_PD5 = new System.Workflow.Activities.CodeActivity();
             this.logFirmaZewnetrzna = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.logToHistoryListActivity8 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Manage_PD4 = new System.Workflow.Activities.CodeActivity();
             this.logFirma = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
-            this.logToHistoryListActivity12 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
-            this.Manage_VAT3 = new System.Workflow.Activities.CodeActivity();
-            this.PD_Serwis2 = new System.Workflow.Activities.IfElseActivity();
+            this.logToHistoryListActivity14 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
+            this.Manage_PDW = new System.Workflow.Activities.CodeActivity();
             this.logToHistoryListActivity4 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Manage_ZUS3 = new System.Workflow.Activities.CodeActivity();
             this.logOsobaFizyczna = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
@@ -75,7 +58,8 @@ namespace Workflows.wfGFRK
             this.Manage_RBR2 = new System.Workflow.Activities.CodeActivity();
             this.logToHistoryListActivity11 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Manage_VAT2 = new System.Workflow.Activities.CodeActivity();
-            this.PD_Serwis = new System.Workflow.Activities.IfElseActivity();
+            this.logToHistoryListActivity6 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
+            this.Manage_PDS = new System.Workflow.Activities.CodeActivity();
             this.logToHistoryListActivity2 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Manage_ZUS2 = new System.Workflow.Activities.CodeActivity();
             this.logKSH = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
@@ -95,6 +79,7 @@ namespace Workflows.wfGFRK
             this.CT_OsobaFizyczna = new System.Workflow.Activities.IfElseBranchActivity();
             this.CT_KSH = new System.Workflow.Activities.IfElseBranchActivity();
             this.CT_KPIR = new System.Workflow.Activities.IfElseBranchActivity();
+            this.Manage_KK = new System.Workflow.Activities.CodeActivity();
             this.Case_CT = new System.Workflow.Activities.IfElseActivity();
             this.logKlient = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.cmdGetKlientDetails = new System.Workflow.Activities.CodeActivity();
@@ -113,98 +98,6 @@ namespace Workflows.wfGFRK
             this.cmdInitMsg = new System.Workflow.Activities.CodeActivity();
             this.logToHistoryListActivity1 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.onWorkflowActivated1 = new Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated();
-            // 
-            // logToHistoryListActivity14
-            // 
-            this.logToHistoryListActivity14.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
-            this.logToHistoryListActivity14.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
-            this.logToHistoryListActivity14.HistoryDescription = "PDW";
-            this.logToHistoryListActivity14.HistoryOutcome = "";
-            this.logToHistoryListActivity14.Name = "logToHistoryListActivity14";
-            this.logToHistoryListActivity14.OtherData = "";
-            this.logToHistoryListActivity14.UserId = -1;
-            // 
-            // Manage_PDW
-            // 
-            this.Manage_PDW.Name = "Manage_PDW";
-            this.Manage_PDW.ExecuteCode += new System.EventHandler(this.Manage_PDW_ExecuteCode);
-            // 
-            // logToHistoryListActivity7
-            // 
-            this.logToHistoryListActivity7.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
-            this.logToHistoryListActivity7.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
-            this.logToHistoryListActivity7.HistoryDescription = "PD";
-            this.logToHistoryListActivity7.HistoryOutcome = "";
-            this.logToHistoryListActivity7.Name = "logToHistoryListActivity7";
-            this.logToHistoryListActivity7.OtherData = "";
-            this.logToHistoryListActivity7.UserId = -1;
-            // 
-            // Manage_PD3
-            // 
-            this.Manage_PD3.Name = "Manage_PD3";
-            this.Manage_PD3.ExecuteCode += new System.EventHandler(this.Manage_PD_ExecuteCode);
-            // 
-            // logToHistoryListActivity13
-            // 
-            this.logToHistoryListActivity13.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
-            this.logToHistoryListActivity13.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
-            this.logToHistoryListActivity13.HistoryDescription = "PDS";
-            this.logToHistoryListActivity13.HistoryOutcome = "";
-            this.logToHistoryListActivity13.Name = "logToHistoryListActivity13";
-            this.logToHistoryListActivity13.OtherData = "";
-            this.logToHistoryListActivity13.UserId = -1;
-            // 
-            // Manage_PDS
-            // 
-            this.Manage_PDS.Name = "Manage_PDS";
-            this.Manage_PDS.ExecuteCode += new System.EventHandler(this.Manage_PDS_ExecuteCode);
-            // 
-            // logToHistoryListActivity6
-            // 
-            this.logToHistoryListActivity6.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
-            this.logToHistoryListActivity6.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
-            this.logToHistoryListActivity6.HistoryDescription = "PD";
-            this.logToHistoryListActivity6.HistoryOutcome = "";
-            this.logToHistoryListActivity6.Name = "logToHistoryListActivity6";
-            this.logToHistoryListActivity6.OtherData = "";
-            this.logToHistoryListActivity6.UserId = -1;
-            // 
-            // Manage_PD2
-            // 
-            this.Manage_PD2.Name = "Manage_PD2";
-            this.Manage_PD2.ExecuteCode += new System.EventHandler(this.Manage_PD_ExecuteCode);
-            // 
-            // PDW
-            // 
-            this.PDW.Activities.Add(this.Manage_PDW);
-            this.PDW.Activities.Add(this.logToHistoryListActivity14);
-            codecondition1.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.hasPDWSerwis);
-            this.PDW.Condition = codecondition1;
-            this.PDW.Name = "PDW";
-            // 
-            // PD2
-            // 
-            this.PD2.Activities.Add(this.Manage_PD3);
-            this.PD2.Activities.Add(this.logToHistoryListActivity7);
-            codecondition2.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.hasPDSerwis);
-            this.PD2.Condition = codecondition2;
-            this.PD2.Name = "PD2";
-            // 
-            // PDS
-            // 
-            this.PDS.Activities.Add(this.Manage_PDS);
-            this.PDS.Activities.Add(this.logToHistoryListActivity13);
-            codecondition3.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.hasPDSSerwis);
-            this.PDS.Condition = codecondition3;
-            this.PDS.Name = "PDS";
-            // 
-            // PD
-            // 
-            this.PD.Activities.Add(this.Manage_PD2);
-            this.PD.Activities.Add(this.logToHistoryListActivity6);
-            codecondition4.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.hasPDSerwis);
-            this.PD.Condition = codecondition4;
-            this.PD.Name = "PD";
             // 
             // logToHistoryListActivity9
             // 
@@ -256,26 +149,20 @@ namespace Workflows.wfGFRK
             this.logFirma.OtherData = "";
             this.logFirma.UserId = -1;
             // 
-            // logToHistoryListActivity12
+            // logToHistoryListActivity14
             // 
-            this.logToHistoryListActivity12.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
-            this.logToHistoryListActivity12.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
-            this.logToHistoryListActivity12.HistoryDescription = "VAT";
-            this.logToHistoryListActivity12.HistoryOutcome = "";
-            this.logToHistoryListActivity12.Name = "logToHistoryListActivity12";
-            this.logToHistoryListActivity12.OtherData = "";
-            this.logToHistoryListActivity12.UserId = -1;
+            this.logToHistoryListActivity14.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
+            this.logToHistoryListActivity14.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
+            this.logToHistoryListActivity14.HistoryDescription = "PDW";
+            this.logToHistoryListActivity14.HistoryOutcome = "";
+            this.logToHistoryListActivity14.Name = "logToHistoryListActivity14";
+            this.logToHistoryListActivity14.OtherData = "";
+            this.logToHistoryListActivity14.UserId = -1;
             // 
-            // Manage_VAT3
+            // Manage_PDW
             // 
-            this.Manage_VAT3.Name = "Manage_VAT3";
-            this.Manage_VAT3.ExecuteCode += new System.EventHandler(this.Manage_VAT_ExecuteCode);
-            // 
-            // PD_Serwis2
-            // 
-            this.PD_Serwis2.Activities.Add(this.PD2);
-            this.PD_Serwis2.Activities.Add(this.PDW);
-            this.PD_Serwis2.Name = "PD_Serwis2";
+            this.Manage_PDW.Name = "Manage_PDW";
+            this.Manage_PDW.ExecuteCode += new System.EventHandler(this.Manage_PDW_ExecuteCode);
             // 
             // logToHistoryListActivity4
             // 
@@ -347,11 +234,20 @@ namespace Workflows.wfGFRK
             this.Manage_VAT2.Name = "Manage_VAT2";
             this.Manage_VAT2.ExecuteCode += new System.EventHandler(this.Manage_VAT_ExecuteCode);
             // 
-            // PD_Serwis
+            // logToHistoryListActivity6
             // 
-            this.PD_Serwis.Activities.Add(this.PD);
-            this.PD_Serwis.Activities.Add(this.PDS);
-            this.PD_Serwis.Name = "PD_Serwis";
+            this.logToHistoryListActivity6.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
+            this.logToHistoryListActivity6.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
+            this.logToHistoryListActivity6.HistoryDescription = "PDS";
+            this.logToHistoryListActivity6.HistoryOutcome = "";
+            this.logToHistoryListActivity6.Name = "logToHistoryListActivity6";
+            this.logToHistoryListActivity6.OtherData = "";
+            this.logToHistoryListActivity6.UserId = -1;
+            // 
+            // Manage_PDS
+            // 
+            this.Manage_PDS.Name = "Manage_PDS";
+            this.Manage_PDS.ExecuteCode += new System.EventHandler(this.Manage_PDS_ExecuteCode);
             // 
             // logToHistoryListActivity2
             // 
@@ -468,8 +364,8 @@ namespace Workflows.wfGFRK
             this.CT_FirmaZewnetrzna.Activities.Add(this.logFirmaZewnetrzna);
             this.CT_FirmaZewnetrzna.Activities.Add(this.Manage_PD5);
             this.CT_FirmaZewnetrzna.Activities.Add(this.logToHistoryListActivity9);
-            codecondition5.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isFirmaZewnetrzna);
-            this.CT_FirmaZewnetrzna.Condition = codecondition5;
+            codecondition1.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isFirmaZewnetrzna);
+            this.CT_FirmaZewnetrzna.Condition = codecondition1;
             this.CT_FirmaZewnetrzna.Name = "CT_FirmaZewnetrzna";
             // 
             // CT_Firma
@@ -477,8 +373,8 @@ namespace Workflows.wfGFRK
             this.CT_Firma.Activities.Add(this.logFirma);
             this.CT_Firma.Activities.Add(this.Manage_PD4);
             this.CT_Firma.Activities.Add(this.logToHistoryListActivity8);
-            codecondition6.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isFirma);
-            this.CT_Firma.Condition = codecondition6;
+            codecondition2.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isFirma);
+            this.CT_Firma.Condition = codecondition2;
             this.CT_Firma.Name = "CT_Firma";
             // 
             // CT_OsobaFizyczna
@@ -486,11 +382,10 @@ namespace Workflows.wfGFRK
             this.CT_OsobaFizyczna.Activities.Add(this.logOsobaFizyczna);
             this.CT_OsobaFizyczna.Activities.Add(this.Manage_ZUS3);
             this.CT_OsobaFizyczna.Activities.Add(this.logToHistoryListActivity4);
-            this.CT_OsobaFizyczna.Activities.Add(this.PD_Serwis2);
-            this.CT_OsobaFizyczna.Activities.Add(this.Manage_VAT3);
-            this.CT_OsobaFizyczna.Activities.Add(this.logToHistoryListActivity12);
-            codecondition7.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isOsobaFizyczna);
-            this.CT_OsobaFizyczna.Condition = codecondition7;
+            this.CT_OsobaFizyczna.Activities.Add(this.Manage_PDW);
+            this.CT_OsobaFizyczna.Activities.Add(this.logToHistoryListActivity14);
+            codecondition3.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isOsobaFizyczna);
+            this.CT_OsobaFizyczna.Condition = codecondition3;
             this.CT_OsobaFizyczna.Name = "CT_OsobaFizyczna";
             // 
             // CT_KSH
@@ -498,15 +393,16 @@ namespace Workflows.wfGFRK
             this.CT_KSH.Activities.Add(this.logKSH);
             this.CT_KSH.Activities.Add(this.Manage_ZUS2);
             this.CT_KSH.Activities.Add(this.logToHistoryListActivity2);
-            this.CT_KSH.Activities.Add(this.PD_Serwis);
+            this.CT_KSH.Activities.Add(this.Manage_PDS);
+            this.CT_KSH.Activities.Add(this.logToHistoryListActivity6);
             this.CT_KSH.Activities.Add(this.Manage_VAT2);
             this.CT_KSH.Activities.Add(this.logToHistoryListActivity11);
             this.CT_KSH.Activities.Add(this.Manage_RBR2);
             this.CT_KSH.Activities.Add(this.logToHistoryListActivity16);
             this.CT_KSH.Activities.Add(this.Manage_Reminders2);
             this.CT_KSH.Activities.Add(this.logToHistoryListActivity18);
-            codecondition8.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isKSH);
-            this.CT_KSH.Condition = codecondition8;
+            codecondition4.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isKSH);
+            this.CT_KSH.Condition = codecondition4;
             this.CT_KSH.Name = "CT_KSH";
             // 
             // CT_KPIR
@@ -522,9 +418,14 @@ namespace Workflows.wfGFRK
             this.CT_KPIR.Activities.Add(this.logToHistoryListActivity15);
             this.CT_KPIR.Activities.Add(this.Manage_Reminders);
             this.CT_KPIR.Activities.Add(this.logToHistoryListActivity17);
-            codecondition9.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isKPIR);
-            this.CT_KPIR.Condition = codecondition9;
+            codecondition5.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isKPIR);
+            this.CT_KPIR.Condition = codecondition5;
             this.CT_KPIR.Name = "CT_KPIR";
+            // 
+            // Manage_KK
+            // 
+            this.Manage_KK.Name = "Manage_KK";
+            this.Manage_KK.ExecuteCode += new System.EventHandler(this.Manage_KK_ExecuteCode);
             // 
             // Case_CT
             // 
@@ -557,8 +458,9 @@ namespace Workflows.wfGFRK
             this.ifValidParams.Activities.Add(this.cmdGetKlientDetails);
             this.ifValidParams.Activities.Add(this.logKlient);
             this.ifValidParams.Activities.Add(this.Case_CT);
-            codecondition10.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isValidParams);
-            this.ifValidParams.Condition = codecondition10;
+            this.ifValidParams.Activities.Add(this.Manage_KK);
+            codecondition6.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isValidParams);
+            this.ifValidParams.Condition = codecondition6;
             this.ifValidParams.Name = "ifValidParams";
             // 
             // logErrorMessage
@@ -627,8 +529,8 @@ namespace Workflows.wfGFRK
             this.ifCT_GFRK.Activities.Add(this.logKlientId);
             this.ifCT_GFRK.Activities.Add(this.logOkresId);
             this.ifCT_GFRK.Activities.Add(this.Param_Validation);
-            codecondition11.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isCT_GFRK);
-            this.ifCT_GFRK.Condition = codecondition11;
+            codecondition7.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isCT_GFRK);
+            this.ifCT_GFRK.Condition = codecondition7;
             this.ifCT_GFRK.Name = "ifCT_GFRK";
             // 
             // faultHandlersActivity1
@@ -691,6 +593,10 @@ namespace Workflows.wfGFRK
 
         #endregion
 
+        private CodeActivity Manage_KK;
+
+        private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity6;
+
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logErrorMessage;
 
         private CodeActivity ErrorHandler;
@@ -703,17 +609,9 @@ namespace Workflows.wfGFRK
 
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity14;
 
-        private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity7;
-
-        private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity13;
-
-        private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity6;
-
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity9;
 
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity8;
-
-        private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity12;
 
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity4;
 
@@ -737,23 +635,7 @@ namespace Workflows.wfGFRK
 
         private CodeActivity Manage_PDW;
 
-        private IfElseBranchActivity PDW;
-
-        private IfElseBranchActivity PD2;
-
-        private IfElseActivity PD_Serwis2;
-
         private CodeActivity Manage_PDS;
-
-        private IfElseBranchActivity PDS;
-
-        private IfElseBranchActivity PD;
-
-        private IfElseActivity PD_Serwis;
-
-        private CodeActivity Manage_VAT3;
-
-        private CodeActivity Manage_PD3;
 
         private CodeActivity Manage_ZUS3;
 
@@ -774,8 +656,6 @@ namespace Workflows.wfGFRK
         private CodeActivity Manage_RBR2;
 
         private CodeActivity Manage_VAT2;
-
-        private CodeActivity Manage_PD2;
 
         private CodeActivity Manage_ZUS2;
 
@@ -826,6 +706,8 @@ namespace Workflows.wfGFRK
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity1;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
+
 
 
 

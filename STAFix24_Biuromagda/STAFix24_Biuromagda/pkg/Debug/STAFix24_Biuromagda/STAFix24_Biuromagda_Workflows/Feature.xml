@@ -6,5 +6,6 @@
     <ElementManifest Location="WyslijKopieWiadomosci\Elements.xml" />
     <ElementManifest Location="ZatwierdzenieZadania\Elements.xml" />
     <ElementManifest Location="wfGFRK\Elements.xml" />
+    <ElementManifest Location="wfGFR\Elements.xml" />
   </ElementManifests>
 </Feature>

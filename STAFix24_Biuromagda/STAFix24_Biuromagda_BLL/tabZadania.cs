@@ -833,5 +833,12 @@ namespace BLL
                                 & i.ContentType.Name.Equals(ct))
                     .FirstOrDefault();
         }
+
+        public static void Create_ctPDW_Form(SPWeb web, string ct, int klientId, int okresId, string key, DateTime terminPlatnosci, DateTime terminPrzekazania, bool isKwartalnie)
+        {
+            Debug.WriteLine("PDW_Forms.Create");
+
+            Create_ctPD_Form(web, ct, klientId, okresId, key, terminPlatnosci, terminPrzekazania, isKwartalnie);
+        }
     }
 }

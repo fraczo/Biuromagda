@@ -106,5 +106,26 @@ namespace EventReceivers.admProcessRequestsER
         }
 
 
+
+        public static void CreateNew(SPWeb web, SPListItem item, int okresId)
+        {
+            Debug.WriteLine("Create Reminder Forms");
+
+            if (item != null)
+            {
+                SPFieldLookupValueCollection kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
+                foreach (SPFieldLookupValue kod in kody)
+                {
+                    if (kod.LookupValue == "POW-Dok")
+                    {
+                        Create_POW_DOK_Form(web, item.ID, okresId);
+                    }
+                    if (kod.LookupValue == "POW-WBank")
+                    {
+                        Create_POW_WBANK_Form(web, item.ID, okresId);
+                    }
+                }
+            }
+        }
     }
 }

@@ -27,38 +27,24 @@ namespace BLL
         public static Array Get_AktywniKlienci_Serwis(SPWeb web, string typKlienta)
         {
             SPList targetList = web.Lists.TryGetList(listName);
-            Array result = null;
 
-            //result = targetList.Items.Cast<SPListItem>()
-            //    .Where(i => i["enumStatus"].ToString() == "Aktywny")
-            //    .Where(i => i["ContentType"].ToString() == typKlienta)
-            //    .Where(i => new SPFieldLookupValueCollection(i["selSewisy"].ToString()).Count > 0
-            //    || new SPFieldLookupValueCollection(i["selSerwisyWspolnicy"].ToString()).Count > 0)
-            //    .ToArray(); >>> zaczęła raportować błąd System.Linq.Enumrable....
-
-            result = targetList.Items.Cast<SPListItem>()
-                .Where(i => i.ContentType.Name == typKlienta
-                    && i["enumStatus"].ToString() == "Aktywny")
-                .Where(i => !string.IsNullOrEmpty(i["selSewisy"].ToString())
-                || !string.IsNullOrEmpty(i["selSerwisyWspolnicy"].ToString()))
+            return targetList.Items.Cast<SPListItem>()
+                .Where(i => i.ContentType.Name == typKlienta)
+                .Where(i => BLL.Tools.Get_Text(i, "enumStatus").Equals("Aktywny"))
+                .Where(i => BLL.Tools.Get_LookupValueColection(i,"selSewisy").Count > 0
+                            || BLL.Tools.Get_LookupValueColection(i, "selSerwisyWspolnicy").Count > 0)
                 .ToArray();
-
-
-            return result;
         }
 
         public static Array Get_AktywniKlienci_Serwis(SPWeb web)
         {
             SPList targetList = web.Lists.TryGetList(listName);
-            Array result = null;
 
-            result = targetList.Items.Cast<SPListItem>()
-                .Where(i => i["enumStatus"].ToString() == "Aktywny")
-                .Where(i => new SPFieldLookupValueCollection(i["selSewisy"].ToString()).Count > 0
-                || new SPFieldLookupValueCollection(i["selSerwisyWspolnicy"].ToString()).Count > 0)
+            return targetList.Items.Cast<SPListItem>()
+                .Where(i => BLL.Tools.Get_Text(i,"enumStatus").Equals("Aktywny"))
+                .Where(i => BLL.Tools.Get_LookupValueColection(i,"selSewisy").Count > 0
+                            || BLL.Tools.Get_LookupValueColection(i, "selSerwisyWspolnicy").Count > 0)
                 .ToArray();
-
-            return result;
         }
 
 

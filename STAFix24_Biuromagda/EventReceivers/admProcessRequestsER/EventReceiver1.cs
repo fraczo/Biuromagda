@@ -72,19 +72,23 @@ namespace EventReceivers
                             switch (ct)
                             {
                                 case "Generowanie formatek rozliczeniowych":
-                                    GeneratorFormatekRozliczeniowych.Execute_GenFormRozl(properties, web);
-
+                                    //GeneratorFormatekRozliczeniowych.Execute_GenFormRozl(properties, web);
                                     //PotwierdzMailemZakonczenieZlecenia(properties, web, ct);
                                     //obsługa wewnętrz porcedury
+
+                                    BLL.Workflows.StartWorkflow(properties.ListItem, "Generuj zbiorczo formatki rozliczeniowe");
+                                    allowDelete = false;
+
                                     break;
                                 case "Generowanie formatek rozliczeniowych dla klienta":
                                     //Todo: zamienić na workflow
                                     //GeneratorFormatekRozliczeniowych.Execute_GenFormRozlK(properties, web);
+                                    //PotwierdzMailemZakonczenieZlecenia(properties, web, ct);
+                                    //obsługa wewnętrz porcedury
+
                                     BLL.Workflows.StartWorkflow(properties.ListItem, "Generuj formatki rozliczeniowe");
                                     allowDelete = false;
 
-                                    //PotwierdzMailemZakonczenieZlecenia(properties, web, ct);
-                                    //obsługa wewnętrz porcedury
                                     break;
                                 case "Import Klientów":
                                     string message;

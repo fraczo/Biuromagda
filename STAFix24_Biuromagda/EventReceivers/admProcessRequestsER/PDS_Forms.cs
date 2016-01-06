@@ -99,6 +99,34 @@ namespace EventReceivers.admProcessRequestsER
         }
 
         /// <summary>
+        /// Wywołuje procedurę generowania kart kontrolnych PDS dla pojedyńczego klienta
+        /// </summary>
+        public static void CreateNew(SPWeb web, SPListItem item, int okresId)
+        {
+            if (item != null)
+            {
+                SPFieldLookupValueCollection kody;
+                kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
+
+
+                foreach (SPFieldLookupValue kod in kody)
+                {
+                    switch (kod.LookupValue)
+                    {
+                        case @"PDS-M":
+                            Create_PDS_M_Form(web, item.ID, okresId);
+                            break;
+                        case @"PDS-KW":
+                            Create_PDS_KW_Form(web, item.ID, okresId);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Zlecenia generowania rozliczenia kwartalnego PDS
         /// </summary>
         private static void Create_PDS_KW_Form(SPWeb web, int klientId, int okresId)

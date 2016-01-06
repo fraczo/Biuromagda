@@ -13,7 +13,7 @@ namespace EventReceivers.admProcessRequestsER
 
         const string ctPD = @"Rozliczenie podatku dochodowego";
 
-        public static void CreateAll(SPWeb web, Array aKlienci, int okresId, bool createKK )
+        public static void CreateAll(SPWeb web, Array aKlienci, int okresId, bool createKK)
         {
             foreach (SPListItem item in aKlienci)
             {
@@ -153,6 +153,34 @@ namespace EventReceivers.admProcessRequestsER
                 var result = ElasticEmail.EmailGenerator.ReportError(ex, web.Url, "KlientId=" + klientId.ToString());
 #endif
 
+            }
+        }
+
+        public static void CreateNew(SPWeb web, SPListItem item, int okresId)
+        {
+            Debug.WriteLine("Create PD Form");
+
+            if (item != null)
+            {
+                SPFieldLookupValueCollection kody;
+
+                kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
+
+
+                foreach (SPFieldLookupValue kod in kody)
+                {
+                    switch (kod.LookupValue)
+                    {
+                        case @"PD-M":
+                            Create_PD_M_Form(web, item.ID, okresId);
+                            break;
+                        case @"PD-KW":
+                            Create_PD_KW_Form(web, item.ID, okresId);
+                            break;
+                        default:
+                            break;
+                    }
+                }
             }
         }
     }

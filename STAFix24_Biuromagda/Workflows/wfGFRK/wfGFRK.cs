@@ -116,31 +116,31 @@ namespace Workflows.wfGFRK
 
         private void Manage_ZUS_ExecuteCode(object sender, EventArgs e)
         {
-            ZUS_Forms.Create(item.Web, klientId, okresId, true);
+            ZUS_Forms.CreateNew(item.Web, klient, okresId);
 
         }
 
         private void Manage_PD_ExecuteCode(object sender, EventArgs e)
         {
-            PD_Forms.Create(item.Web, klientId, okresId, true);
+            PD_Forms.CreateNew(item.Web, klient, okresId);
 
         }
 
         private void Manage_VAT_ExecuteCode(object sender, EventArgs e)
         {
-            VAT_Forms.Create(item.Web, klientId, okresId, true);
+            VAT_Forms.CreateNew(item.Web, klient, okresId);
 
         }
 
         private void Manage_RBR_ExecuteCode(object sender, EventArgs e)
         {
-            BR_Forms.Create(item.Web, klientId, okresId, true);
+            BR_Forms.CreateNew(item.Web, klient, okresId);
 
         }
 
         private void Manage_Reminders_ExecuteCode(object sender, EventArgs e)
         {
-            Reminder_Forms.Create(item.Web, klientId, okresId);
+            Reminder_Forms.CreateNew(item.Web, klient, okresId);
         }
 
         public String logKlientId_HistoryOutcome = default(System.String);
@@ -178,12 +178,12 @@ namespace Workflows.wfGFRK
 
         private void Manage_PDS_ExecuteCode(object sender, EventArgs e)
         {
-            PDS_Forms.Create(item.Web, klientId, okresId, true);
+            PDS_Forms.CreateNew(item.Web, klient, okresId);
         }
 
         private void Manage_PDW_ExecuteCode(object sender, EventArgs e)
         {
-
+            PDW_Forms.CreateNew(item.Web, klient, okresId);
         }
 
         private void hasPDSerwis(object sender, ConditionalEventArgs e)
@@ -223,6 +223,11 @@ namespace Workflows.wfGFRK
         {
             BLL.Tools.Set_Text(item, "enumStatusZlecenia", _SZ_ZAKONCZONY);
             item.Update();
+        }
+
+        private void Manage_KK_ExecuteCode(object sender, EventArgs e)
+        {
+            BLL.tabKartyKontrolne.Create_KartaKontrolna(klient.Web, klient.ID, okresId);
         }
 
 

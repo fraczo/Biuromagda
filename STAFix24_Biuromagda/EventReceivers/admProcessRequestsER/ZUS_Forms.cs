@@ -145,6 +145,73 @@ namespace EventReceivers.admProcessRequestsER
         #endregion
 
 
+        public static void CreateNew(SPWeb web, SPListItem item, int okresId)
+        {
+            Debug.WriteLine("Create ZUS Form");
 
+            bool isPracownicy = false;
+
+            SPFieldLookupValueCollection kody;
+
+            kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
+
+            if (item["colZatrudniaPracownikow0"] != null)
+            {
+                isPracownicy = (bool)item["colZatrudniaPracownikow0"];
+            }
+
+            foreach (SPFieldLookupValue kod in kody)
+            {
+                double skladkaSP = 0;
+                double skladkaZD = 0;
+                double skladkaFP = 0;
+                bool isChorobowa = false;
+                bool isTylkoZdrowotna = false;
+                DateTime terminPlatnosci = new DateTime();
+                DateTime terminPrzekazania = new DateTime();
+
+                bool found = false;
+
+                switch (kod.LookupValue)
+                {
+                    case @"ZUS-D":
+                        found = true;
+                        tabOkresy.Get_ZUS_D(web, okresId, isChorobowa, isPracownicy, out skladkaSP, out skladkaZD, out skladkaFP, out terminPlatnosci, out terminPrzekazania);
+                        break;
+                    case @"ZUS-D+C":
+                        found = true;
+                        isChorobowa = true;
+                        tabOkresy.Get_ZUS_D(web, okresId, isChorobowa, isPracownicy, out skladkaSP, out skladkaZD, out skladkaFP, out terminPlatnosci, out terminPrzekazania);
+                        break;
+                    case @"ZUS-M":
+                        found = true;
+                        tabOkresy.Get_ZUS_M(web, okresId, isChorobowa, isPracownicy, out skladkaSP, out skladkaZD, out skladkaFP, out terminPlatnosci, out terminPrzekazania);
+                        break;
+                    case @"ZUS-M+C":
+                        found = true;
+                        isChorobowa = true;
+                        tabOkresy.Get_ZUS_M(web, okresId, isChorobowa, isPracownicy, out skladkaSP, out skladkaZD, out skladkaFP, out terminPlatnosci, out terminPrzekazania);
+                        break;
+                    case @"ZUS-ZD":
+                        found = true;
+                        isTylkoZdrowotna = true;
+                        tabOkresy.Get_ZUS_ZD(web, okresId, isChorobowa, isPracownicy, out skladkaZD, out terminPlatnosci, out terminPrzekazania);
+                        break;
+                    case @"ZUS-PRAC":
+                        found = true;
+                        tabOkresy.Get_ZUS_PRAC(web, okresId, out terminPlatnosci, out terminPrzekazania);
+                        break;
+
+                    default:
+                        break;
+                }
+
+                if (found)
+                {
+                    Create_ZUS_Form(web, item.ID, okresId, isTylkoZdrowotna, isChorobowa, isPracownicy, skladkaSP, skladkaZD, skladkaFP, terminPlatnosci, terminPrzekazania);
+                    break;
+                }
+            }
+        }
     }
 }
