@@ -51,17 +51,17 @@ namespace EventReceivers.tabZadaniaER
 
         private void Execute(SPItemEventProperties properties)
         {
-            //this.EventFiringEnabled = false;
-            //Debug.WriteLine(string.Format("Zadanie#{0} updated", properties.ListItemId.ToString()));
             this.Execute(properties.ListItem);
-            //this.EventFiringEnabled = true;
         }
 
         #endregion
 
         public void Execute(SPListItem item)
         {
-            this.EventFiringEnabled = false;
+            //this.EventFiringEnabled = false;
+
+            HandleEventFiring handleEventFiring = new HandleEventFiring();
+            handleEventFiring.DisableHandleEventFiring();
 
             try
             {
@@ -113,7 +113,8 @@ namespace EventReceivers.tabZadaniaER
 
             }
 
-            this.EventFiringEnabled = true;
+            //this.EventFiringEnabled = true;
+            handleEventFiring.EnableHandleEventFiring();
         }
 
         private void Manage_PotwierdzenieOdbioruDokumentow(SPListItem item)

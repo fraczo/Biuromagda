@@ -69,6 +69,7 @@
     <Compile Include="admProcessRequestsER\VAT_Forms.cs" />
     <Compile Include="admProcessRequestsER\ZUS_Forms.cs" />
     <Compile Include="dicUrzedySkarboweER\EventReceiver1.cs" />
+    <Compile Include="HandleEventFiring.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="tabDochodyWspolnikow\tabDochodyWspolnikow.cs" />
     <Compile Include="tabDochodyZInnychSpolek\tabDochodyZInnychSpolek.cs" />
