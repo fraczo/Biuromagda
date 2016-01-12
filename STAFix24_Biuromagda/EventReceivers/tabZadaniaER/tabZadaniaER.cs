@@ -35,11 +35,12 @@ namespace EventReceivers.tabZadaniaER
 
         public override void ItemUpdating(SPItemEventProperties properties)
         {
-            Validate(properties);
+            //Validate(properties);
         }
 
         public override void ItemAdded(SPItemEventProperties properties)
         {
+
             Execute(properties);
         }
 
@@ -50,19 +51,21 @@ namespace EventReceivers.tabZadaniaER
 
         private void Execute(SPItemEventProperties properties)
         {
-            Debug.WriteLine(string.Format("Zadanie#{0} updated", properties.ListItemId.ToString()));
-            this.EventFiringEnabled = false;
+            //this.EventFiringEnabled = false;
+            //Debug.WriteLine(string.Format("Zadanie#{0} updated", properties.ListItemId.ToString()));
             this.Execute(properties.ListItem);
-            this.EventFiringEnabled = true;
+            //this.EventFiringEnabled = true;
         }
 
         #endregion
 
         public void Execute(SPListItem item)
         {
+            this.EventFiringEnabled = false;
+
             try
             {
-                //BLL.Logger.LogEvent(properties.WebUrl, properties.ListItem.Title + ".OnUpdate");
+                BLL.Logger.LogEvent(item.Web.ToString(), "*** Zadanie.OnUpdate_" + item.ID.ToString());
 
                 SPWeb web = item.Web;
 
@@ -97,18 +100,20 @@ namespace EventReceivers.tabZadaniaER
                 //aktualizacja pola user (_)
                 Set_OperatorUser(item, web);
 
+                BLL.Logger.LogEvent(item.Web.ToString(), "Zadanie.BeforeUpdate_" + item.ID.ToString());
                 item.SystemUpdate();
+                BLL.Logger.LogEvent(item.Web.ToString(), "Zadanie.AfterUpdate_" + item.ID.ToString());
             }
             catch (Exception ex)
             {
-#if DEBUG
-                throw ex;
-#else
+
                 BLL.Logger.LogEvent(item.Web.ToString(), ex.ToString());
                 var result = ElasticEmail.EmailGenerator.ReportError(ex, item.Web.ToString());
-#endif
+
 
             }
+
+            this.EventFiringEnabled = true;
         }
 
         private void Manage_PotwierdzenieOdbioruDokumentow(SPListItem item)
@@ -133,6 +138,8 @@ namespace EventReceivers.tabZadaniaER
         /// </summary>
         private static void Set_OperatorUser(SPListItem item, SPWeb web)
         {
+            BLL.Logger.LogEvent(item.Web.ToString(), "Zadanie.Set_OperatorUser_" + item.ID.ToString());
+
             if (item["selOperator"] != null)
             {
                 int operatorId = new SPFieldLookupValue(item["selOperator"].ToString()).LookupId;
@@ -761,6 +768,8 @@ namespace EventReceivers.tabZadaniaER
 
         private void Manage_CT(SPListItem item)
         {
+            BLL.Logger.LogEvent(item.Web.ToString(), "Zadanie.Manage_CT_" + item.ID.ToString());
+
             string status = item["enumStatusZadania"] != null ? item["enumStatusZadania"].ToString() : string.Empty;
 
             if (status != StatusZadania.Zakończone.ToString()
@@ -2429,7 +2438,7 @@ namespace EventReceivers.tabZadaniaER
 
                                 if (Check_IsNoLowerValue(item, kk, "colKosztyNKUP_WynWyl"))
                                 {
-                                    
+
                                 }
 
                             }
@@ -2464,7 +2473,7 @@ namespace EventReceivers.tabZadaniaER
         private bool Check_IsNoLowerValue(SPListItem item, SPListItem kk, string col)
         {
             bool result = true;
-            if (item[col]!=null && kk[col]!=null)
+            if (item[col] != null && kk[col] != null)
             {
                 double v1 = BLL.Tools.Get_Value(item, col);
                 double v0 = BLL.Tools.Get_Value(kk, col);
@@ -2697,7 +2706,7 @@ namespace EventReceivers.tabZadaniaER
         }
         private void Validate(SPItemEventProperties properties)
         {
-            this.EventFiringEnabled = false;
+            BLL.Logger.LogEvent(properties.Web.ToString(), "Zadanie.Valpidate_" + properties.ListItemId.ToString());
 
             string ct = properties.AfterProperties["ContentType"] != null ? properties.AfterProperties["ContentType"].ToString() : string.Empty;
             int klientId = properties.AfterProperties["selKlient"] != null ? new SPFieldLookupValue(properties.AfterProperties["selKlient"].ToString()).LookupId : 0;
@@ -2714,8 +2723,6 @@ namespace EventReceivers.tabZadaniaER
                     properties.ErrorMessage = "Zdublowany klucz zadania";
                 }
             }
-
-            this.EventFiringEnabled = true;
         }
 
         private void ResetCommand(SPListItem item, bool clearInformacjaDlaKlienta)

@@ -20,6 +20,5 @@ namespace BLL
                 subject.ToString() + ":  {0}",
                 new object[] { body.ToString() });
         }
-
     }
 }
