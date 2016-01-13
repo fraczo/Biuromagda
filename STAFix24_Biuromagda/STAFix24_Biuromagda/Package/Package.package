@@ -7,10 +7,10 @@
   </assemblies>
   <features>
     <featureReference itemId="8fa69f1d-77f2-4320-9141-04d95a5956c3" />
-    <featureReference itemId="d4c66a2e-a3b3-4607-9d16-2f9c0db11d52" />
     <featureReference itemId="2f4c26dd-e7b2-4f00-b421-08e5caf4c62e" />
     <featureReference itemId="6497f506-043c-4e8d-af05-7a78cac425cc" />
     <featureReference itemId="04fc01c6-2e9e-412e-95b3-d9ac150fa8c3" />
+    <featureReference itemId="0a8bee62-95f6-46c0-9b88-a80e706b28d3" />
   </features>
   <projectItems>
     <projectItemReference itemId="18be71cb-4a94-45fb-bd5f-f629f4c15954" />

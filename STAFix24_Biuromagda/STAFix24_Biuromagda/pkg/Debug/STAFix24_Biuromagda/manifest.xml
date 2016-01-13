@@ -5,8 +5,8 @@
     <Assembly Location="BRMagda.GeneratorDrukow.dll" DeploymentTarget="GlobalAssemblyCache" />
     <Assembly Location="BRMagda.PdfSharp.dll" DeploymentTarget="GlobalAssemblyCache" />
     <Assembly Location="BRMagda.dll" DeploymentTarget="GlobalAssemblyCache" />
-    <Assembly Location="BRMagda.EventReceivers.dll" DeploymentTarget="GlobalAssemblyCache" />
     <Assembly Location="BRMagda.Workflows.dll" DeploymentTarget="GlobalAssemblyCache" />
+    <Assembly Location="BRMagda.EventReceivers.dll" DeploymentTarget="GlobalAssemblyCache" />
   </Assemblies>
   <TemplateFiles>
     <TemplateFile Location="Images\Biuromagda\SETTINGS.GIF" />
@@ -15,9 +15,9 @@
   </TemplateFiles>
   <FeatureManifests>
     <FeatureManifest Location="STAFix24_Biuromagda_CustomActions\Feature.xml" />
-    <FeatureManifest Location="STAFix24_Biuromagda_EventReceivers\Feature.xml" />
     <FeatureManifest Location="STAFix24_Biuromagda_Workflows\Feature.xml" />
     <FeatureManifest Location="STAFix24_Biuromagda_SiteWorkflows\Feature.xml" />
     <FeatureManifest Location="STAFix24_Biuromagda_TimerJobs\Feature.xml" />
+    <FeatureManifest Location="STAFix24_Biuromagda_EventReceivers\Feature.xml" />
   </FeatureManifests>
 </Solution>

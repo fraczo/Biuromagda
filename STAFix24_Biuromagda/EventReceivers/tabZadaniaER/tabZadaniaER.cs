@@ -30,27 +30,69 @@ namespace EventReceivers.tabZadaniaER
 
         public override void ItemAdding(SPItemEventProperties properties)
         {
+            base.ItemAdding(properties);
+
+            //BLL.Logger.LogEvent(properties.Web.ToString(), "@ Zadanie.ItemAddding" + properties.ListItemId.ToString());
             Validate(properties);
         }
 
         public override void ItemUpdating(SPItemEventProperties properties)
         {
+            base.ItemUpdating(properties);
+
+            //BLL.Logger.LogEvent(properties.Web.ToString(), "@ Zadanie.ItemUpdating" + properties.ListItemId.ToString());
             //Validate(properties);
+
+            Debug.WriteLine("ITEM UPDATING");
+
+            TestLock(properties);
         }
+
+        private void TestLock(SPItemEventProperties properties)
+        {
+            DateTime lastModifiedDate = BLL.Tools.Get_Date(properties.ListItem, "Modified");
+            TimeSpan ts = new TimeSpan(0, 0, -15);
+            DateTime targetLockDate = DateTime.Now.Add(ts);
+
+            if (lastModifiedDate.CompareTo(targetLockDate) > 0)
+            {
+                
+                String errorMessage = "Edycja rekordu zablokowana do " + targetLockDate.ToString();
+
+                BLL.Logger.LogEvent(properties.Web.ToString(), errorMessage + "_" + properties.ListItemId.ToString());
+                Debug.WriteLine("Record Locked - " + errorMessage);
+
+                properties.Status = SPEventReceiverStatus.CancelNoError;
+
+                //properties.Status = SPEventReceiverStatus.CancelWithError;
+                //properties.ErrorMessage = errorMessage;
+
+                //properties.Status = SPEventReceiverStatus.CancelWithRedirectUrl;
+                //properties.RedirectUrl = SPUtility.GetServerRelativeUrlFromPrefixedUrl("~site/_layouts/CustomErrorPage/DueDateErrorPage.aspx");
+            }
+            else
+            {
+                Debug.WriteLine("Record Unlocked");
+            }
+        }
+
 
         public override void ItemAdded(SPItemEventProperties properties)
         {
-
+            //BLL.Logger.LogEvent(properties.Web.ToString(), "@ Zadanie.ItemAdded" + properties.ListItemId.ToString());
             Execute(properties);
         }
 
         public override void ItemUpdated(SPItemEventProperties properties)
         {
+            //BLL.Logger.LogEvent(properties.Web.ToString(), "@ Zadanie.ItemUpdated" + properties.ListItemId.ToString());
             Execute(properties);
         }
 
         private void Execute(SPItemEventProperties properties)
         {
+            Debug.WriteLine("EXECUTE");
+            BLL.Logger.LogEvent(properties.Web.ToString(), "@ Zadanie.Execute(private)" + properties.ListItemId.ToString());
             this.Execute(properties.ListItem);
         }
 
@@ -58,15 +100,14 @@ namespace EventReceivers.tabZadaniaER
 
         public void Execute(SPListItem item)
         {
-            //this.EventFiringEnabled = false;
+            BLL.Logger.LogEvent(item.Web.ToString(), "@ Zadanie.Execute" + item.ID.ToString());
+            this.EventFiringEnabled = false;
 
-            HandleEventFiring handleEventFiring = new HandleEventFiring();
-            handleEventFiring.DisableHandleEventFiring();
+            //HandleEventFiring handleEventFiring = new HandleEventFiring();
+            //handleEventFiring.DisableHandleEventFiring();
 
             try
             {
-                BLL.Logger.LogEvent(item.Web.ToString(), "*** Zadanie.OnUpdate_" + item.ID.ToString());
-
                 SPWeb web = item.Web;
 
                 string ct = item.ContentType.Name;
@@ -100,9 +141,8 @@ namespace EventReceivers.tabZadaniaER
                 //aktualizacja pola user (_)
                 Set_OperatorUser(item, web);
 
-                BLL.Logger.LogEvent(item.Web.ToString(), "Zadanie.BeforeUpdate_" + item.ID.ToString());
-                item.SystemUpdate();
-                BLL.Logger.LogEvent(item.Web.ToString(), "Zadanie.AfterUpdate_" + item.ID.ToString());
+                item.SystemUpdate(false);
+                BLL.Logger.LogEvent(item.Web.ToString(), "Zadanie.Updated" + item.ID.ToString());
             }
             catch (Exception ex)
             {
@@ -113,8 +153,8 @@ namespace EventReceivers.tabZadaniaER
 
             }
 
-            //this.EventFiringEnabled = true;
-            handleEventFiring.EnableHandleEventFiring();
+            this.EventFiringEnabled = true;
+            //handleEventFiring.EnableHandleEventFiring();
         }
 
         private void Manage_PotwierdzenieOdbioruDokumentow(SPListItem item)

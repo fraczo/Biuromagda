@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Feature xmlns="http://schemas.microsoft.com/sharepoint/" Title="STAFix24_Biuromagda Event Receivers" Id="53f15bfc-5c35-424e-a52d-894af1118dc0" Scope="Web">
+<Feature xmlns="http://schemas.microsoft.com/sharepoint/" Title="STAFix24_Biuromagda Event Receivers" Id="af22d8b1-808b-441d-afd5-23d39e3dfd1a" Scope="Web">
   <ElementManifests>
-    <ElementManifest Location="dicUrzedySkarboweER\Elements.xml" />
-    <ElementManifest Location="tabDochodyWspolnikow\Elements.xml" />
-    <ElementManifest Location="tabKlienciER\Elements.xml" />
-    <ElementManifest Location="tabProceduryER\Elements.xml" />
-    <ElementManifest Location="tabStratyZLatUbieglych\Elements.xml" />
-    <ElementManifest Location="tabWiadomosciER\Elements.xml" />
-    <ElementManifest Location="tabZadaniaER\Elements.xml" />
     <ElementManifest Location="SiteAssets\Elements.xml" />
     <ElementFile Location="SiteAssets\Templates\DW-Przelew.pdf" />
     <ElementFile Location="SiteAssets\Templates\DW-Przelew-color.pdf" />
     <ElementFile Location="SiteAssets\Templates\DW-ZUS.pdf" />
     <ElementFile Location="SiteAssets\Templates\DW-Podatek.pdf" />
+    <ElementManifest Location="tabZadaniaER\Elements.xml" />
+    <ElementManifest Location="tabWiadomosciER\Elements.xml" />
+    <ElementManifest Location="tabProceduryER\Elements.xml" />
+    <ElementManifest Location="tabKlienciER\Elements.xml" />
+    <ElementManifest Location="dicUrzedySkarboweER\Elements.xml" />
+    <ElementManifest Location="tabStratyZLatUbieglych\Elements.xml" />
+    <ElementManifest Location="tabDochodyWspolnikow\Elements.xml" />
     <ElementManifest Location="admProcessRequestsER\Elements.xml" />
   </ElementManifests>
 </Feature>
