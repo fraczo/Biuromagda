@@ -58,6 +58,13 @@
     <Reference Include="Microsoft.SharePoint.Security" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="admProcessRequestsWF\admProcessRequestsWF.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="admProcessRequestsWF\admProcessRequestsWF.Designer.cs">
+      <DependentUpon>admProcessRequestsWF.cs</DependentUpon>
+    </Compile>
+    <Compile Include="admProcessRequestsWF\ImportFaktur.cs" />
     <Compile Include="GenerujRejestry_StratyZLatUbieglych\GenerujRejestry_StratyZLatUbieglych.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -83,6 +90,12 @@
     </Compile>
     <Compile Include="swfWysylkaWiadomosci\swfWysylkaWiadomosci.Designer.cs">
       <DependentUpon>swfWysylkaWiadomosci.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tabZadaniaWF\tabZadaniaWF.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tabZadaniaWF\tabZadaniaWF.Designer.cs">
+      <DependentUpon>tabZadaniaWF.cs</DependentUpon>
     </Compile>
     <Compile Include="wfGFRK\wfGFRK.cs">
       <SubType>Component</SubType>
@@ -110,8 +123,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Features\Feature1\Feature1.feature">
-      <FeatureId>{912ab75b-589d-4d02-9c2b-d03e9a6a67b6}</FeatureId>
+    <None Include="admProcessRequestsWF\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{9906cb78-d9f8-452b-a90b-d6dde1d5870a}</SharePointProjectItemId>
     </None>
     <None Include="GenerujRejestry_StratyZLatUbieglych\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{2e70d26e-0859-4f13-83ec-15d54c2eb60c}</SharePointProjectItemId>
@@ -132,6 +145,9 @@
     <None Include="swfWysylkaWiadomosci\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{7c1dee72-ed2b-4463-9470-decbae8ae090}</SharePointProjectItemId>
     </None>
+    <None Include="tabZadaniaWF\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{a9d1ee1e-15d9-442b-bd18-8104a172bd1c}</SharePointProjectItemId>
+    </None>
     <None Include="wfGFRK\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{64d8970d-99ab-40b7-9e39-63deccf81706}</SharePointProjectItemId>
     </None>
@@ -145,17 +161,20 @@
       <SharePointProjectItemId>{d711dbaf-91fe-4e8d-99a5-b850ec9b60b9}</SharePointProjectItemId>
     </None>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Content Include="Features\Feature1\Feature1.Template.xml">
-      <DependentUpon>Feature1.feature</DependentUpon>
-    </Content>
+    <Folder Include="Features\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="admProcessRequestsWF\Elements.xml" />
     <Content Include="GenerujRejestry_StratyZLatUbieglych\Elements.xml" />
     <Content Include="ObslugaWiadomosci\Elements.xml">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="swfCleanup\Elements.xml" />
     <Content Include="swfWysylkaWiadomosci\Elements.xml" />
+    <Content Include="tabZadaniaWF\Elements.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="wfGFRK\Elements.xml" />
     <Content Include="wfGFR\Elements.xml" />
     <Content Include="WyslijKopieWiadomosci\Elements.xml" />
@@ -165,6 +184,10 @@
     <ProjectReference Include="..\EventReceivers\EventReceivers.csproj">
       <Project>{55BA1847-ED27-481D-B213-C6A4C8BCC3ED}</Project>
       <Name>EventReceivers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GeneratorDrukow\GeneratorDrukow.csproj">
+      <Project>{811788E7-E265-42E7-B3AF-04EFF78717F8}</Project>
+      <Name>GeneratorDrukow</Name>
     </ProjectReference>
     <ProjectReference Include="..\STAFix24_Biuromagda_BLL\BLL.csproj">
       <Project>{2C8ECD80-A047-4795-99B3-C0EFC6961A9E}</Project>

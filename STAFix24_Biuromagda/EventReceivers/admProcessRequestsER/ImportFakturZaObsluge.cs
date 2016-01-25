@@ -6,24 +6,23 @@ using Microsoft.SharePoint;
 using BLL;
 using BLL.Models;
 
-namespace EventReceivers
+namespace EventReceivers.admProcessRequestsER
 {
-    internal class ImportFakturZaObsluge
+    public class ImportFakturZaObsluge
     {
         const string targetList = @"Faktury za obsługę - import"; //"intFakturyZaObsluge";
 
-        internal static void Execute(Microsoft.SharePoint.SPItemEventProperties properties, Microsoft.SharePoint.SPWeb web)
+        public static void Execute(SPListItem item, Microsoft.SharePoint.SPWeb web)
         {
-            SPListItem sItem = properties.ListItem;
-            int okresId = new SPFieldLookupValue(sItem["selOkres"].ToString()).LookupId;
+            int okresId = new SPFieldLookupValue(item["selOkres"].ToString()).LookupId;
 
             SPList list = web.Lists.TryGetList(targetList);
 
             list.Items.Cast<SPListItem>()
                 .ToList()
-                .ForEach(item =>
+                .ForEach(oItem =>
                 {
-                    Import_DaneOFakturze(web, item, okresId);
+                    Import_DaneOFakturze(web, oItem, okresId);
                 });
 
         }

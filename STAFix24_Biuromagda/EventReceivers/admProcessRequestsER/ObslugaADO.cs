@@ -4,13 +4,11 @@ using System.Text;
 
 namespace EventReceivers.admProcessRequestsER
 {
-    class ObslugaADO
+    public class ObslugaADO
     {
-        internal static void Execute(Microsoft.SharePoint.SPItemEventProperties properties, Microsoft.SharePoint.SPWeb web)
+        public static void Execute(SPListItem item, Microsoft.SharePoint.SPWeb web)
         {
             StringBuilder msg = new StringBuilder();
-
-            SPListItem item = properties.ListItem;
 
             // sprawdź czy wybrana procedura jest obsługiwana
             string procName = string.Empty;

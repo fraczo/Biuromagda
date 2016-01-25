@@ -328,6 +328,7 @@ namespace Workflows.wfGFR
             sbForms = new StringBuilder();
 
             logKlient_HistoryOutcome = BLL.Tools.Get_Text(klient, "_NazwaPrezentowana");
+            Debug.WriteLine("Klient: " + logKlient_HistoryOutcome);
         }
 
 
@@ -365,13 +366,7 @@ namespace Workflows.wfGFR
 
         }
 
-        private void Preset_ExecuteCode(object sender, EventArgs e)
-        {
-            item = workflowProperties.Item;
-            selTypyKlientow = new SPFieldMultiChoiceValue(BLL.Tools.Get_Text(item, "enumTypKlienta"));
-            selSerwisy = BLL.Tools.Get_LookupValueColection(item, "selSewisy");
-            okresId = BLL.Tools.Get_LookupId(item, "selOkres");
-        }
+
 
         private void Preset_ot_ExecuteCode(object sender, EventArgs e)
         {
@@ -396,6 +391,30 @@ namespace Workflows.wfGFR
 
         public String logManagedForms_HistoryOutcome = default(System.String);
         public String logManagedForms_HistoryDescription = default(System.String);
+        private string _ANULOWANE = "Anulowane";
+        private DateTime startTime;
+
+        private void Status_Anulowane_ExecuteCode(object sender, EventArgs e)
+        {
+            BLL.Tools.Set_Text(item, "enumZtatusZlecenia", _ANULOWANE);
+        }
+
+        private void onWorkflowActivated1_Invoked(object sender, ExternalDataEventArgs e)
+        {
+            item = workflowProperties.Item;
+
+            Debug.WriteLine("wfGFRWF:{" + workflowProperties.WorkflowId + "} initiated");
+            startTime = DateTime.Now;
+
+            selTypyKlientow = new SPFieldMultiChoiceValue(BLL.Tools.Get_Text(item, "enumTypKlienta"));
+            selSerwisy = BLL.Tools.Get_LookupValueColection(item, "selSewisy");
+            okresId = BLL.Tools.Get_LookupId(item, "selOkres");
+        }
+
+        private void ReportTime_ExecuteCode(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Processing time:" + TimeSpan.FromTicks(DateTime.Now.Ticks - startTime.Ticks).ToString());
+        }
 
 
     }

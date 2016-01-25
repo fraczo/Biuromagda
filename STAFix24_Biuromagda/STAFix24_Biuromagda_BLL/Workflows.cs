@@ -21,12 +21,6 @@ namespace BLL
                 {
                     if (String.Compare(objWorkflowAssociation.Name, workflowName, true) == 0)
                     {
-
-                        //We found our workflow association that we want to trigger.
-
-                        //Replace the workflow_GUID with the GUID of the workflow feature that you
-                        //have deployed.
-
                         try
                         {
                             SPWorkflowCollection wfc = manager.GetItemActiveWorkflows(listItem);
@@ -44,6 +38,65 @@ namespace BLL
                             if (!isActive)
                             {
                                 manager.StartWorkflow(listItem, objWorkflowAssociation, objWorkflowAssociation.AssociationData, true);
+                                //The above line will start the workflow...
+                            }
+                            else
+                            {
+                                Debug.WriteLine("WF aktualnie uruchomiony - kolejna aktywacja procesu przerwana");
+                                //ElasticEmail.EmailGenerator.SendMail("wf aktualnie uruchomiony" + listItem.ID.ToString(), string.Empty);
+                            }
+                        }
+                        catch (Exception)
+                        { }
+
+
+                        break;
+                    }
+                }
+            }
+            catch (Exception)
+            { }
+        }
+
+        public static void StartWorkflow(SPListItem listItem, string workflowName, SPWorkflowRunOptions runOption)
+        {
+            try
+            {
+                SPWorkflowManager manager = listItem.Web.Site.WorkflowManager;
+                SPWorkflowAssociationCollection objWorkflowAssociationCollection = listItem.ParentList.WorkflowAssociations;
+                Debug.WriteLine("WF.Count=" + objWorkflowAssociationCollection.Count.ToString());
+
+                foreach (SPWorkflowAssociation objWorkflowAssociation in objWorkflowAssociationCollection)
+                {
+                    Debug.WriteLine("WF.InternalName=" + objWorkflowAssociation.InternalName);
+                    Debug.WriteLine("WF.Id=" + objWorkflowAssociation.Id.ToString());
+
+                    if (String.Compare(objWorkflowAssociation.Name, workflowName, true) == 0)
+                    {
+                        Debug.WriteLine("WF.Selected");
+                            
+                        try
+                        {
+                            SPWorkflowCollection wfc = manager.GetItemActiveWorkflows(listItem);
+                            bool isActive = false;
+                            foreach (SPWorkflow wf in wfc)
+                            {
+                                Debug.WriteLine("WF.InternalName=" + wf.ItemName);
+
+                                // wf.IsCompleted nie używać - blokuje kolejne uruchomienie procesu jeżęli status jest "Ukończono"
+                                if (wf.IsLocked && objWorkflowAssociation.Id.Equals(wf.AssociationId))
+                                {
+                                    isActive = true;
+                                    Debug.WriteLine("WF.IsLocked=" + wf.IsLocked.ToString());
+                                    Debug.WriteLine("WF.AssociationId=" + wf.AssociationId.ToString());
+                                    break;
+                                }
+                            }
+
+                            if (!isActive)
+                            {
+                                SPWorkflow spw = manager.StartWorkflow(listItem, objWorkflowAssociation, objWorkflowAssociation.AssociationData, runOption);
+                                Debug.WriteLine("Workflow: "+workflowName + " Internal State: " + spw.InternalState);
                                 //The above line will start the workflow...
                             }
                             else

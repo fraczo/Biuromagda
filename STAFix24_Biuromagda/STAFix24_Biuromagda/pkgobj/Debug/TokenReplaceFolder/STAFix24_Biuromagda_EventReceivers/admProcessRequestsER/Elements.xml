@@ -8,5 +8,5 @@
       <Class>EventReceivers.EventReceiver1</Class>
       <SequenceNumber>1000</SequenceNumber>
     </Receiver>
-  </Receivers>
+</Receivers>
 </Elements>

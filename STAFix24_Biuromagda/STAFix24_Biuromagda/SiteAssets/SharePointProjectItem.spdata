@@ -3,8 +3,10 @@
   <Files>
     <ProjectItemFile Source="Elements.xml" Target="SiteAssets\" Type="ElementManifest" />
     <ProjectItemFile Source="Templates\DW-Przelew.pdf" Target="SiteAssets\Templates\" Type="ElementFile" />
-    <ProjectItemFile Source="Templates\DW-Przelew-color.pdf" Target="SiteAssets\Templates\" Type="ElementFile" />
     <ProjectItemFile Source="Templates\DW-ZUS.pdf" Target="SiteAssets\Templates\" Type="ElementFile" />
     <ProjectItemFile Source="Templates\DW-Podatek.pdf" Target="SiteAssets\Templates\" Type="ElementFile" />
+    <ProjectItemFile Source="Templates\Szablon_DrukWplaty.pdf" Target="SiteAssets\Templates\" Type="ElementFile" />
+    <ProjectItemFile Source="Templates\Szablon_DrukWplaty_ZUS.pdf" Target="SiteAssets\Templates\" Type="ElementFile" />
+    <ProjectItemFile Source="Templates\Szablon_DrukWplaty_PD.pdf" Target="SiteAssets\Templates\" Type="ElementFile" />
   </Files>
 </ProjectItem>

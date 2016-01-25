@@ -1,2 +1,2 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Feature xmlns="http://schemas.microsoft.com/sharepoint/" Title="STAFix24_Biuromagda Timer Jobs" Id="cfe0bf26-5315-4879-8a4f-a8b34cafaa35" ReceiverAssembly="BRMagda, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cceec86e0795b19e" ReceiverClass="Biuromagda.Features.TimerJobs.TimerJobsEventReceiver" Scope="Site"></Feature>
+<Feature xmlns="http://schemas.microsoft.com/sharepoint/" Id="cfe0bf26-5315-4879-8a4f-a8b34cafaa35" ReceiverAssembly="BRMagda, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cceec86e0795b19e" ReceiverClass="Biuromagda.Features.TimerJobs.TimerJobsEventReceiver" Scope="Site" Title="STAFix24_Biuromagda Timer Jobs"></Feature>

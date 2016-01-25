@@ -14,6 +14,7 @@ using System.Workflow.Activities.Rules;
 using Microsoft.SharePoint;
 using Microsoft.SharePoint.Workflow;
 using Microsoft.SharePoint.WorkflowActions;
+using System.Diagnostics;
 
 namespace Workflows.ZatwierdzenieZadania
 {
@@ -26,12 +27,41 @@ namespace Workflows.ZatwierdzenieZadania
 
         public Guid workflowId = default(System.Guid);
         public SPWorkflowActivationProperties workflowProperties = new SPWorkflowActivationProperties();
+        private SPListItem item;
+        DateTime startTime;
 
-        private void codeExecute_ExecuteCode(object sender, EventArgs e)
+        #region Error Handler
+        public String logErrorMessage_HistoryDescription = default(System.String);
+
+        private void ErrorHandler_ExecuteCode(object sender, EventArgs e)
         {
-            //SPListItem item = workflowProperties.Item;
-            SPListItem item = workflowProperties.List.GetItemById(workflowProperties.ItemId); //Może to pomoże wymusić obsługę zdarzeń
+            FaultHandlerActivity fa = ((Activity)sender).Parent as FaultHandlerActivity;
+            if (fa != null)
+            {
+                Debug.WriteLine(fa.Fault.Source);
+                Debug.WriteLine(fa.Fault.Message);
+                Debug.WriteLine(fa.Fault.StackTrace);
 
+                logErrorMessage_HistoryDescription = string.Format("{0}::{1}",
+                    fa.Fault.Message,
+                    fa.Fault.StackTrace);
+
+                ElasticEmail.EmailGenerator.ReportErrorFromWorkflow(workflowProperties, fa.Fault.Message, fa.Fault.StackTrace);
+            }
+        }
+        #endregion
+
+        private void onWorkflowActivated1_Invoked(object sender, ExternalDataEventArgs e)
+        {
+            Debug.WriteLine("ZatwierdzenieZadaniaWF:{" + workflowProperties.WorkflowId + "} initiated");
+            item = workflowProperties.Item;
+
+            Debug.WriteLine("Workflow created:" + workflowProperties.Workflow.Created.ToString());
+            startTime = DateTime.Now;
+        }
+
+        private void Main_ExecuteCode(object sender, EventArgs e)
+        {
             string status = BLL.Tools.Get_Text(item, "enumStatusZadania");
             switch (status)
             {
@@ -52,37 +82,32 @@ namespace Workflows.ZatwierdzenieZadania
                 default:
                     break;
             }
-
         }
 
-        private static void Zatwierdz_Zadanie(SPListItem item)
+        private void UpdateItem_ExecuteCode(object sender, EventArgs e)
+        {
+            BLL.Tools.DoWithRetry(() => item.Update());
+        }
+
+        private void InitWorkflow_ExecuteCode(object sender, EventArgs e)
+        {
+            BLL.Workflows.StartWorkflow(item, "tabZadaniaWF", SPWorkflowRunOptions.SynchronousAllowPostpone);
+        }
+
+        private void Reporting_ExecuteCode(object sender, EventArgs e)
+        {
+            Debug.WriteLine(new TimeSpan(DateTime.Now.Ticks - startTime.Ticks).ToString());
+        }
+
+        #region Helpers
+        private void Zatwierdz_Zadanie(SPListItem item)
         {
             string cmd = BLL.Tools.Get_Text(item, "cmdFormatka");
             if (string.IsNullOrEmpty(cmd))
             {
                 item["cmdFormatka"] = "Zatwierdź";
-                item.SystemUpdate();
             }
-
-            EventReceivers.tabZadaniaER.tabZadaniaER o = new EventReceivers.tabZadaniaER.tabZadaniaER();
-            o.Execute(item);
-
-        }
-
-        private void codeTriggerItemEventReceiver_ExecuteCode(object sender, EventArgs e)
-        {
-            try
-            {
-                //EventReceivers.tabZadaniaER.tabZadaniaER o = new EventReceivers.tabZadaniaER.tabZadaniaER();
-                //o.Execute(workflowProperties.Item);
-            }
-            catch (Exception)
-            {
-#if DEBUG
-                throw;
-#endif
-            }
-
-        }
+        } 
+        #endregion
     }
 }

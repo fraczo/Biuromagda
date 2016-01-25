@@ -5,15 +5,15 @@ using System.Text;
 using Microsoft.SharePoint;
 using BLL;
 
-namespace EventReceivers
+namespace EventReceivers.admProcessRequestsER
 {
-    internal class ImportPrzeterminowanychNaleznosci
+    public class ImportPrzeterminowanychNaleznosci
     {
         const string targetList = @"Przeterminowane należności - import"; //"intPrzeterminowaneNaleznosci";
 
-        internal static void Execute(Microsoft.SharePoint.SPItemEventProperties properties, Microsoft.SharePoint.SPWeb web)
+        public static void Execute(SPListItem item, Microsoft.SharePoint.SPWeb web)
         {
-            string mode = properties.ListItem["cmdPrzeterminowaneNaleznosci"] != null ? properties.ListItem["cmdPrzeterminowaneNaleznosci"].ToString() : string.Empty;
+            string mode = item["cmdPrzeterminowaneNaleznosci"] != null ? item["cmdPrzeterminowaneNaleznosci"].ToString() : string.Empty;
 
             SPList list = web.Lists.TryGetList(targetList);
 
@@ -30,9 +30,9 @@ namespace EventReceivers
             {
                 string klient = string.Empty;
                 string klient0 = string.Empty;
-                foreach (SPListItem item in aRekordy)
+                foreach (SPListItem oItem in aRekordy)
                 {
-                    string dluznik = item["Title"].ToString();
+                    string dluznik = oItem["Title"].ToString();
 
                     if (!lstDluznicy.Exists(i => i == dluznik))
                     {
@@ -56,23 +56,23 @@ namespace EventReceivers
                     double value2total = 0;
 
 
-                    foreach (SPListItem item in items)
+                    foreach (SPListItem oItem in items)
                     {
-                        item["selKlient"] = klientId;
-                        item.SystemUpdate();
+                        oItem["selKlient"] = klientId;
+                        oItem.SystemUpdate();
 
 
                         StringBuilder sbRow = new StringBuilder(rowTemplate);
-                        sbRow.Replace("___colNumerFaktury___", item["colNumerFaktury"].ToString());
-                        sbRow.Replace("___colDataSprzedazy___", item["colDataSprzedazy"].ToString());
-                        sbRow.Replace("___colDataWystawienia___", item["colDataWystawienia"].ToString());
-                        sbRow.Replace("___colTerminPlatnosci___", item["colTerminPlatnosci"].ToString());
+                        sbRow.Replace("___colNumerFaktury___", oItem["colNumerFaktury"].ToString());
+                        sbRow.Replace("___colDataSprzedazy___", oItem["colDataSprzedazy"].ToString());
+                        sbRow.Replace("___colDataWystawienia___", oItem["colDataWystawienia"].ToString());
+                        sbRow.Replace("___colTerminPlatnosci___", oItem["colTerminPlatnosci"].ToString());
 
-                        //int dniZwloki = (DateTime.Today - DateTime.Parse(item["colTerminPlatnosci"].ToString())).Days;
+                        //int dniZwloki = (DateTime.Today - DateTime.Parse(oItem["colTerminPlatnosci"].ToString())).Days;
 
-                        double value1 = Double.Parse(item["colKwotaFaktury"].ToString());
+                        double value1 = Double.Parse(oItem["colKwotaFaktury"].ToString());
                         value1total = value1total + value1;
-                        double value2 = Double.Parse(item["colKwotaDlugu"].ToString());
+                        double value2 = Double.Parse(oItem["colKwotaDlugu"].ToString());
                         value2total = value2total + value2;
 
                         sbRow.Replace("___colKwotaFaktury___", BLL.Tools.Format_Currency(value1));
@@ -113,7 +113,7 @@ namespace EventReceivers
 
                         string nadawca = BLL.admSetup.GetValue(web, "EMAIL_BIURA");
                         string odbiorca = BLL.tabKlienci.Get_EmailById(web, klientId);
-                        string kopiaDla = BLL.dicOperatorzy.EmailByUserId(web, properties.CurrentUserId);
+                        string kopiaDla = BLL.dicOperatorzy.EmailByUserId(web, item.Web.CurrentUser.ID);
 
                         //dodanie nazwy firmy do tematu
                         temat = BLL.Tools.AddCompanyName(web, temat, klientId);
@@ -122,12 +122,12 @@ namespace EventReceivers
 
                         BLL.tabWiadomosci.AddNew(web, null, nadawca, odbiorca, kopiaDla, false, true, temat, string.Empty, trescHTML, new DateTime(), 0, klientId, BLL.Models.Marker.NoAttachements);
 
-                        foreach (SPListItem item in items)
+                        foreach (SPListItem oItem in items)
                         {
 #if DEBUG
                             // w trybie debugowania przetworzony rekord nie jest usówany z tablicy źródłowej
 #else
-                            item.Delete();
+                            oItem.Delete();
 #endif
 
                         }

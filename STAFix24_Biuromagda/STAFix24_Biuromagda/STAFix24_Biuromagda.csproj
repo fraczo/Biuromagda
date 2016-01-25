@@ -103,6 +103,9 @@
     <None Include="SiteAssets\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{a31d9042-e86a-4d68-88d9-8e7b7b2cc9f8}</SharePointProjectItemId>
     </None>
+    <None Include="SiteAssets\Templates\Szablon_DrukWplaty.pdf" />
+    <None Include="SiteAssets\Templates\Szablon_DrukWplaty_PD.pdf" />
+    <None Include="SiteAssets\Templates\Szablon_DrukWplaty_ZUS.pdf" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="CustomActions\SiteMenuActions\Elements.xml">
@@ -127,7 +130,6 @@
     <Content Include="Images\Biuromagda\SETTINGS16.GIF" />
     <Content Include="Images\Biuromagda\SETTINGS32.GIF" />
     <Content Include="SiteAssets\Templates\DW-Podatek.pdf" />
-    <Content Include="SiteAssets\Templates\DW-Przelew-color.pdf" />
     <Content Include="SiteAssets\Templates\DW-Przelew.pdf" />
     <Content Include="SiteAssets\Templates\DW-ZUS.pdf" />
     <Content Include="SiteAssets\Elements.xml" />

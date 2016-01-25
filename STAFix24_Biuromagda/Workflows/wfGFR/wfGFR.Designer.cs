@@ -109,6 +109,8 @@ namespace Workflows.wfGFR
             this.Serwis = new System.Workflow.Activities.IfElseBranchActivity();
             this.TypK = new System.Workflow.Activities.IfElseBranchActivity();
             this.TypK_Serwis = new System.Workflow.Activities.IfElseBranchActivity();
+            this.logToHistoryListActivity7 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
+            this.Status_Anulowany = new System.Workflow.Activities.CodeActivity();
             this.logErrorMessage = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.ErrorHandler = new System.Workflow.Activities.CodeActivity();
             this.whileKlient = new System.Workflow.Activities.WhileActivity();
@@ -118,10 +120,10 @@ namespace Workflows.wfGFR
             this.faultHandlerActivity1 = new System.Workflow.ComponentModel.FaultHandlerActivity();
             this.ifValidRequest = new System.Workflow.Activities.IfElseBranchActivity();
             this.faultHandlersActivity1 = new System.Workflow.ComponentModel.FaultHandlersActivity();
+            this.ReportTime = new System.Workflow.Activities.CodeActivity();
             this.send_CtrlMsg2 = new Microsoft.SharePoint.WorkflowActions.SendEmail();
             this.ValidateRequest = new System.Workflow.Activities.IfElseActivity();
             this.send_CtrMsg = new Microsoft.SharePoint.WorkflowActions.SendEmail();
-            this.Preset = new System.Workflow.Activities.CodeActivity();
             this.onWorkflowActivated1 = new Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated();
             // 
             // logManagedForms
@@ -539,6 +541,21 @@ namespace Workflows.wfGFR
             this.TypK_Serwis.Condition = codecondition9;
             this.TypK_Serwis.Name = "TypK_Serwis";
             // 
+            // logToHistoryListActivity7
+            // 
+            this.logToHistoryListActivity7.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
+            this.logToHistoryListActivity7.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
+            this.logToHistoryListActivity7.HistoryDescription = "Status";
+            this.logToHistoryListActivity7.HistoryOutcome = "Anulowane";
+            this.logToHistoryListActivity7.Name = "logToHistoryListActivity7";
+            this.logToHistoryListActivity7.OtherData = "";
+            this.logToHistoryListActivity7.UserId = -1;
+            // 
+            // Status_Anulowany
+            // 
+            this.Status_Anulowany.Name = "Status_Anulowany";
+            this.Status_Anulowany.ExecuteCode += new System.EventHandler(this.Status_Anulowane_ExecuteCode);
+            // 
             // logErrorMessage
             // 
             this.logErrorMessage.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
@@ -587,6 +604,8 @@ namespace Workflows.wfGFR
             // 
             this.faultHandlerActivity1.Activities.Add(this.ErrorHandler);
             this.faultHandlerActivity1.Activities.Add(this.logErrorMessage);
+            this.faultHandlerActivity1.Activities.Add(this.Status_Anulowany);
+            this.faultHandlerActivity1.Activities.Add(this.logToHistoryListActivity7);
             this.faultHandlerActivity1.FaultType = typeof(System.SystemException);
             this.faultHandlerActivity1.Name = "faultHandlerActivity1";
             // 
@@ -604,6 +623,11 @@ namespace Workflows.wfGFR
             // 
             this.faultHandlersActivity1.Activities.Add(this.faultHandlerActivity1);
             this.faultHandlersActivity1.Name = "faultHandlersActivity1";
+            // 
+            // ReportTime
+            // 
+            this.ReportTime.Name = "ReportTime";
+            this.ReportTime.ExecuteCode += new System.EventHandler(this.ReportTime_ExecuteCode);
             // 
             // send_CtrlMsg2
             // 
@@ -651,11 +675,6 @@ namespace Workflows.wfGFR
             this.send_CtrMsg.SetBinding(Microsoft.SharePoint.WorkflowActions.SendEmail.ToProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind17)));
             this.send_CtrMsg.SetBinding(Microsoft.SharePoint.WorkflowActions.SendEmail.BodyProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind15)));
             this.send_CtrMsg.SetBinding(Microsoft.SharePoint.WorkflowActions.SendEmail.SubjectProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind16)));
-            // 
-            // Preset
-            // 
-            this.Preset.Name = "Preset";
-            this.Preset.ExecuteCode += new System.EventHandler(this.Preset_ExecuteCode);
             activitybind19.Name = "wfGFR";
             activitybind19.Path = "workflowId";
             // 
@@ -666,16 +685,17 @@ namespace Workflows.wfGFR
             this.onWorkflowActivated1.Name = "onWorkflowActivated1";
             activitybind18.Name = "wfGFR";
             activitybind18.Path = "workflowProperties";
+            this.onWorkflowActivated1.Invoked += new System.EventHandler<System.Workflow.Activities.ExternalDataEventArgs>(this.onWorkflowActivated1_Invoked);
             this.onWorkflowActivated1.SetBinding(Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated.WorkflowIdProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind19)));
             this.onWorkflowActivated1.SetBinding(Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated.WorkflowPropertiesProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind18)));
             // 
             // wfGFR
             // 
             this.Activities.Add(this.onWorkflowActivated1);
-            this.Activities.Add(this.Preset);
             this.Activities.Add(this.send_CtrMsg);
             this.Activities.Add(this.ValidateRequest);
             this.Activities.Add(this.send_CtrlMsg2);
+            this.Activities.Add(this.ReportTime);
             this.Activities.Add(this.faultHandlersActivity1);
             this.Name = "wfGFR";
             this.CanModifyActivities = false;
@@ -683,6 +703,12 @@ namespace Workflows.wfGFR
         }
 
         #endregion
+
+        private CodeActivity ReportTime;
+
+        private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity7;
+
+        private CodeActivity Status_Anulowany;
 
         private CodeActivity UpdateMessage;
 
@@ -693,8 +719,6 @@ namespace Workflows.wfGFR
         private IfElseActivity ManagedForms;
 
         private CodeActivity Preset_ot;
-
-        private CodeActivity Preset;
 
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logErrorMessage;
 
@@ -815,6 +839,12 @@ namespace Workflows.wfGFR
         private CodeActivity Select_Klienci;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
+
+
+
+
+
 
 
 

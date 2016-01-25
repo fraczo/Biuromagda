@@ -7,5 +7,7 @@
     <projectItemReference itemId="d711dbaf-91fe-4e8d-99a5-b850ec9b60b9" projectPath="..\Workflows\Workflows.csproj" />
     <projectItemReference itemId="64d8970d-99ab-40b7-9e39-63deccf81706" projectPath="..\Workflows\Workflows.csproj" />
     <projectItemReference itemId="a38888e5-8745-4ba3-b979-ec20d507c921" projectPath="..\Workflows\Workflows.csproj" />
+    <projectItemReference itemId="a9d1ee1e-15d9-442b-bd18-8104a172bd1c" projectPath="..\Workflows\Workflows.csproj" />
+    <projectItemReference itemId="9906cb78-d9f8-452b-a90b-d6dde1d5870a" projectPath="..\Workflows\Workflows.csproj" />
   </projectItems>
 </feature>

@@ -84,6 +84,8 @@ namespace Workflows.wfGFRK
             this.logKlient = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.cmdGetKlientDetails = new System.Workflow.Activities.CodeActivity();
             this.ifValidParams = new System.Workflow.Activities.IfElseBranchActivity();
+            this.logToHistoryListActivity12 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
+            this.Status_Anulowany = new System.Workflow.Activities.CodeActivity();
             this.logErrorMessage = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.ErrorHandler = new System.Workflow.Activities.CodeActivity();
             this.Param_Validation = new System.Workflow.Activities.IfElseActivity();
@@ -93,6 +95,7 @@ namespace Workflows.wfGFRK
             this.faultHandlerActivity1 = new System.Workflow.ComponentModel.FaultHandlerActivity();
             this.ifCT_GFRK = new System.Workflow.Activities.IfElseBranchActivity();
             this.faultHandlersActivity1 = new System.Workflow.ComponentModel.FaultHandlersActivity();
+            this.logToHistoryListActivity7 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Update_Status = new System.Workflow.Activities.CodeActivity();
             this.Test_CT = new System.Workflow.Activities.IfElseActivity();
             this.cmdInitMsg = new System.Workflow.Activities.CodeActivity();
@@ -463,6 +466,21 @@ namespace Workflows.wfGFRK
             this.ifValidParams.Condition = codecondition6;
             this.ifValidParams.Name = "ifValidParams";
             // 
+            // logToHistoryListActivity12
+            // 
+            this.logToHistoryListActivity12.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
+            this.logToHistoryListActivity12.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
+            this.logToHistoryListActivity12.HistoryDescription = "";
+            this.logToHistoryListActivity12.HistoryOutcome = "";
+            this.logToHistoryListActivity12.Name = "logToHistoryListActivity12";
+            this.logToHistoryListActivity12.OtherData = "";
+            this.logToHistoryListActivity12.UserId = -1;
+            // 
+            // Status_Anulowany
+            // 
+            this.Status_Anulowany.Name = "Status_Anulowany";
+            this.Status_Anulowany.ExecuteCode += new System.EventHandler(this.Status_Anulowany_ExecuteCode);
+            // 
             // logErrorMessage
             // 
             this.logErrorMessage.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
@@ -520,6 +538,8 @@ namespace Workflows.wfGFRK
             // 
             this.faultHandlerActivity1.Activities.Add(this.ErrorHandler);
             this.faultHandlerActivity1.Activities.Add(this.logErrorMessage);
+            this.faultHandlerActivity1.Activities.Add(this.Status_Anulowany);
+            this.faultHandlerActivity1.Activities.Add(this.logToHistoryListActivity12);
             this.faultHandlerActivity1.FaultType = typeof(System.SystemException);
             this.faultHandlerActivity1.Name = "faultHandlerActivity1";
             // 
@@ -537,6 +557,16 @@ namespace Workflows.wfGFRK
             // 
             this.faultHandlersActivity1.Activities.Add(this.faultHandlerActivity1);
             this.faultHandlersActivity1.Name = "faultHandlersActivity1";
+            // 
+            // logToHistoryListActivity7
+            // 
+            this.logToHistoryListActivity7.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
+            this.logToHistoryListActivity7.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
+            this.logToHistoryListActivity7.HistoryDescription = "Status";
+            this.logToHistoryListActivity7.HistoryOutcome = "Zakończony";
+            this.logToHistoryListActivity7.Name = "logToHistoryListActivity7";
+            this.logToHistoryListActivity7.OtherData = "";
+            this.logToHistoryListActivity7.UserId = -1;
             // 
             // Update_Status
             // 
@@ -585,6 +615,7 @@ namespace Workflows.wfGFRK
             this.Activities.Add(this.cmdInitMsg);
             this.Activities.Add(this.Test_CT);
             this.Activities.Add(this.Update_Status);
+            this.Activities.Add(this.logToHistoryListActivity7);
             this.Activities.Add(this.faultHandlersActivity1);
             this.Name = "wfGFRK";
             this.CanModifyActivities = false;
@@ -592,6 +623,12 @@ namespace Workflows.wfGFRK
         }
 
         #endregion
+
+        private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity12;
+
+        private CodeActivity Status_Anulowany;
+
+        private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity7;
 
         private CodeActivity Manage_KK;
 
@@ -706,6 +743,8 @@ namespace Workflows.wfGFRK
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity1;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
+
 
 
 

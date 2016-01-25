@@ -83,7 +83,7 @@
     <UrlAction Url="~site/Lists/admProcessRequests/NewForm.aspx?ContentTypeId=0x010012C56DEF8E3B1A45B66E8FB2ED3FFC130400E4650226B89B4B4DA2AB66E302443A8D"/>
   </CustomAction>-->
 
-  <CustomAction Description="Importuje klientów zakładając nowe kartoteki i słowniki"
+  <!--<CustomAction Description="Importuje klientów zakładając nowe kartoteki i słowniki"
               Id="STAFIX.IK"
               GroupId="SiteActions"
               ImageUrl="/_layouts/images/Settings.gif"
@@ -91,6 +91,6 @@
               Sequence="550"
               Title="Import listy klientów" >
     <UrlAction Url="~site/Lists/admProcessRequests/NewForm.aspx?ContentTypeId=0x010012C56DEF8E3B1A45B66E8FB2ED3FFC130300FA662D15DFD48A4AACD149B751A021E8"/>
-  </CustomAction>
+  </CustomAction>-->
   
 </Elements>

@@ -6,19 +6,19 @@ using Microsoft.SharePoint;
 
 namespace EventReceivers.admProcessRequestsER
 {
-    class ObslugaZadan
+    public class ObslugaZadan
     {
-        internal static void Execute(Microsoft.SharePoint.SPItemEventProperties properties, Microsoft.SharePoint.SPWeb web)
+        public static void Execute(SPListItem item, Microsoft.SharePoint.SPWeb web)
         {
-            ManageTasks_WorkingHours(properties);
-            ManageTasks(properties);
+            ManageTasks_WorkingHours(item);
+            ManageTasks(item);
         }
 
-        private static void ManageTasks_WorkingHours(Microsoft.SharePoint.SPItemEventProperties properties)
+        private static void ManageTasks_WorkingHours(SPListItem item)
         {
 
-            TimeSpan startTS = TimeSpan.Parse(BLL.admSetup.GetValue(properties.Web, "PROC_TASK_START"));
-            TimeSpan endTS = TimeSpan.Parse(BLL.admSetup.GetValue(properties.Web, "PROC_TASK_END"));
+            TimeSpan startTS = TimeSpan.Parse(BLL.admSetup.GetValue(item.Web, "PROC_TASK_START"));
+            TimeSpan endTS = TimeSpan.Parse(BLL.admSetup.GetValue(item.Web, "PROC_TASK_END"));
             TimeSpan currentTime = DateTime.Now.TimeOfDay;
 
             if (currentTime.CompareTo(startTS) < 0 || currentTime.CompareTo(endTS) > 0)
@@ -31,20 +31,21 @@ namespace EventReceivers.admProcessRequestsER
             }
         }
 
-        private static void ManageTasks(Microsoft.SharePoint.SPItemEventProperties properties)
+        private static void ManageTasks(SPListItem item)
         {
             // TODO:obsługa zadań nie podlegających restrykcjom czasowym
 
-            Manage_ProsbaOPrzeslanieWyciaguBankowego(properties);
-            Manage_ProsbaODokumenty(properties);
+            Manage_ProsbaOPrzeslanieWyciaguBankowego(item);
+            Manage_ProsbaODokumenty(item);
         }
 
-        private static void Manage_ProsbaOPrzeslanieWyciaguBankowego(Microsoft.SharePoint.SPItemEventProperties properties)
+        private static void Manage_ProsbaOPrzeslanieWyciaguBankowego(SPListItem item)
         {
-            List<SPListItem> list = BLL.tabZadania.Get_ActiveTasksByContentType(properties.Web, "Prośba o przesłanie wyciągu bankowego");
-            foreach (SPListItem item in list)
+            List<SPListItem> list = BLL.tabZadania.Get_ActiveTasksByContentType(item.Web, "Prośba o przesłanie wyciągu bankowego");
+            foreach (SPListItem oItem in list)
             {
-                Set_StatusZadania(item, "Gotowe");
+                Set_StatusZadania(oItem, "Gotowe");
+                //uruchoma proces
             }
         }
 
@@ -57,12 +58,13 @@ namespace EventReceivers.admProcessRequestsER
             }
         }
 
-        private static void Manage_ProsbaODokumenty(SPItemEventProperties properties)
+        private static void Manage_ProsbaODokumenty(SPListItem item)
         {
-            List<SPListItem> list = BLL.tabZadania.Get_ActiveTasksByContentType(properties.Web, "Prośba o dokumenty");
-            foreach (SPListItem item in list)
+            List<SPListItem> list = BLL.tabZadania.Get_ActiveTasksByContentType(item.Web, "Prośba o dokumenty");
+            foreach (SPListItem oItem in list)
             {
-                Set_StatusZadania(item, "Gotowe");
+                Set_StatusZadania(oItem, "Gotowe");
+                //uruchom proces
             }
         } 
     }

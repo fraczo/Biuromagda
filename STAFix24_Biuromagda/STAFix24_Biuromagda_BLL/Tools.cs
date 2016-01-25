@@ -5,6 +5,8 @@ using System.Text;
 using Microsoft.SharePoint;
 using BLL.Models;
 using System.Globalization;
+using System.Diagnostics;
+using System.Threading;
 
 namespace BLL
 {
@@ -332,6 +334,39 @@ namespace BLL
                 }
             }
             return targetStartDate;
+        }
+
+        /// <summary>
+        /// Wywołanie funkcji:
+        /// DoWithRetry(DoSomething)
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="sleepPeriod"></param>
+        /// <param name="retryCount"></param>
+        //public void DoWithRetry(Action action)
+        public static void DoWithRetry(Action action)
+        {
+            TimeSpan sleepPeriod = TimeSpan.FromSeconds(2);
+            int retryCount = 3;
+
+            Debug.WriteLine("DoWithRetry activated");
+
+            while (true)
+            {
+                try
+                {
+                    action();
+                    break; // success!      
+                }
+                catch (Exception ex)
+                {
+                    if (--retryCount == 0)
+                        throw;
+                    else Thread.Sleep(sleepPeriod);
+
+                    var r = ElasticEmail.EmailGenerator.ReportError(ex, "No of retries left: " + retryCount.ToString());
+                }
+            }
         }
     }
 }

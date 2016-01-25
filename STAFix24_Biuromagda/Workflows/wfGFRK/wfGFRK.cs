@@ -44,6 +44,7 @@ namespace Workflows.wfGFRK
 
         private void onWorkflowActivated1_Invoked_2(object sender, ExternalDataEventArgs e)
         {
+            Debug.WriteLine("wfGFRKWF:{" + workflowProperties.WorkflowId + "} initiated");
             item = workflowProperties.Item;
         }
 
@@ -160,9 +161,6 @@ namespace Workflows.wfGFRK
                 logErrorMessage_HistoryOutcome = faultHandlerActivity.Fault.StackTrace;
 
                 ElasticEmail.EmailGenerator.ReportErrorFromWorkflow(workflowProperties, faultHandlerActivity.Fault.Message, faultHandlerActivity.Fault.StackTrace);
-
-                BLL.Tools.Set_Text(item, "enumStatusZlecenia", _SZ_ANULOWANY);
-                item.Update();
             }
         }
 
@@ -228,6 +226,12 @@ namespace Workflows.wfGFRK
         private void Manage_KK_ExecuteCode(object sender, EventArgs e)
         {
             BLL.tabKartyKontrolne.Create_KartaKontrolna(klient.Web, klient.ID, okresId);
+        }
+
+        private void Status_Anulowany_ExecuteCode(object sender, EventArgs e)
+        {
+            BLL.Tools.Set_Text(item, "enumStatusZlecenia", _SZ_ANULOWANY);
+            item.Update();
         }
 
 

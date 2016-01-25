@@ -7,16 +7,16 @@ using BLL;
 
 namespace EventReceivers
 {
-    internal class ImportKlientow
+    public class ImportKlientow
     {
         const string targetList = @"Klienci - import";
 
-        internal static void Execute(Microsoft.SharePoint.SPItemEventProperties properties, Microsoft.SharePoint.SPWeb web, out string message)
+        public static void Execute(SPListItem item, Microsoft.SharePoint.SPWeb web, out string message)
         {
             StringBuilder sb = new StringBuilder();
 
             //sprawdź parametry wywołania
-            SPFieldMultiChoiceValue wt = new SPFieldMultiChoiceValue(properties.ListItem["enumTypKlienta"].ToString());
+            SPFieldMultiChoiceValue wt = new SPFieldMultiChoiceValue(item["enumTypKlienta"].ToString());
 
             SPList list = web.Lists.TryGetList(targetList);
 

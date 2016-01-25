@@ -42,9 +42,11 @@ namespace GeneratorDrukow
                 }
             }
 
-            string pdfFilePath = @"SiteAssets/Templates/DW-Przelew.pdf";
-            int x0 = 89;
-            int y0 = 76;
+            //string pdfFilePath = @"SiteAssets/Templates/DW-Przelew.pdf";
+            string pdfFilePath = @"SiteAssets/Templates/Szablon_DrukWplaty.pdf";
+
+            int x0 = 20; // 89;
+            int y0 = 7; // 76;
 
             //string pdfFilePath = @"SiteAssets/Templates/PolecenieWplaty-Template.pdf";
             //int x0 = 95;
@@ -77,7 +79,12 @@ namespace GeneratorDrukow
                 XGraphics formGfx = XGraphics.FromForm(form);
 
                 // Draw a large transparent rectangle to visualize the area the form occupies
+#if DEBUG
                 XColor back = XColors.Orange;
+#else
+                XColor back = XColors.White;
+#endif
+
                 back.A = 0.2;
                 XSolidBrush brush = new XSolidBrush(back);
                 formGfx.DrawRectangle(brush, -10000, -10000, 20000, 20000);
@@ -162,7 +169,7 @@ namespace GeneratorDrukow
 
                 // Draw the form on the page of the document in its original size
                 gfx.DrawImage(form, x0, y0);
-                gfx.DrawImage(form, x0, y0 + 300);
+                gfx.DrawImage(form, x0, y0 + 310);
 
                 MemoryStream ms = new MemoryStream();
                 document.Save(ms);
@@ -207,23 +214,25 @@ namespace GeneratorDrukow
                 }
             }
 
-            string pdfFilePath = @"SiteAssets/Templates/DW-Podatek.pdf";
-            int x0 = 90;
+            //string pdfFilePath = @"SiteAssets/Templates/DW-Podatek.pdf";
+            string pdfFilePath = @"SiteAssets/Templates/Szablon_DrukWplaty_PD.pdf";
+
+            int x0 = 85; 
             int dx = 136;
-            int y0 = 74;
+            int y0 = 35; 
             int dy = 76;
-            double ofset0 = 14.3;
+            double ofset0 = 14.5; 
             int c01 = 3;
-            int r01 = 7;
-            int r02 = 31;
+            int r01 = 10;
+            int r02 = 32;
             int r03 = 55;
-            int c02 = 218;
-            int r04 = 81;
-            int r05 = 103;
-            int r06 = 127;
-            int r07 = 152;
-            int r08 = 176;
-            int r09 = 200;
+            int c02 = 220;
+            int r04 = 76; 
+            int r05 = 98;
+            int r06 = 122;
+            int r07 = 146;
+            int r08 = 169;
+            int r09 = 193;
 
 
             SPFile file = web.GetFile(pdfFilePath);
@@ -313,7 +322,7 @@ namespace GeneratorDrukow
 
                 // Draw the form on the page of the document in its original size
                 gfx.DrawImage(form, x0, y0);
-                gfx.DrawImage(form, x0, y0 + 300);
+                gfx.DrawImage(form, x0, y0 + 292);
 
                 MemoryStream ms = new MemoryStream();
                 document.Save(ms);
@@ -358,6 +367,8 @@ namespace GeneratorDrukow
 
         public static bool Attach_DrukWplatyZUS(SPWeb web, SPListItem item, string nazwaPliku, string numerRachunku, double kwotaDoZaplaty, string nadawca, string nip, string typIdentyfikatora, string drugiIdentyfikator, string identyfikatorDeklaracji)
         {
+            nadawca = nadawca.ToUpper();
+
             const int maxLen = 27;
 
             nazwaPliku = CleanupFileName(nazwaPliku);
@@ -383,21 +394,24 @@ namespace GeneratorDrukow
                 }
             }
 
-            string pdfFilePath = @"SiteAssets/Templates/DW-ZUS.pdf";
-            int x0 = 92;
-            int dx = 135;
-            int y0 = 76;
-            int dy = 78;
-            int formoffset = 304;
+            //string pdfFilePath = @"SiteAssets/Templates/DW-ZUS.pdf";
+            string pdfFilePath = @"SiteAssets/Templates/Szablon_DrukWplaty_ZUS.pdf";
 
-            double ofset0 = 14.15; //odstępo pomiędzy znakami
-            double ofset1 = 24.1; //odstęp pomiędzy liniami
+
+            int x0 = 25; 
+            int dx = 135;
+            int y0 = 2; 
+            int dy = 78;
+            int formoffset = 301;
+
+            double ofset0 = 14.45; //odstępo pomiędzy znakami
+            double ofset1 = 22.9; //odstęp pomiędzy liniami
 
             int c01 = 3;
             int r01 = 58;
             int r02 = r01 + (int)(ofset1 * 1);
             int r03 = r01 + (int)(ofset1 * 2);
-            int c02 = 215;
+            int c02 = 221;
             int r04 = r01 + (int)(ofset1 * 3);
             int r05 = r01 + (int)(ofset1 * 4);
             int r06 = r01 + (int)(ofset1 * 5);
@@ -420,7 +434,7 @@ namespace GeneratorDrukow
                 PdfDocument document = PdfReader.Open(coverSheetContent);
                 PdfPage page = document.Pages[0];
 
-                XForm form = new XForm(document, XUnit.FromMillimeter(dx), XUnit.FromMillimeter(dy));
+                XForm form = new XForm(document, XUnit.FromMillimeter(dx+10), XUnit.FromMillimeter(dy));
                 XGraphics formGfx = XGraphics.FromForm(form);
 #if DEBUG
                 XColor back = XColors.Orange;

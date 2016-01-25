@@ -5,23 +5,23 @@ using System.Text;
 using Microsoft.SharePoint;
 using BLL;
 
-namespace EventReceivers
+namespace EventReceivers.admProcessRequestsER
 {
-    internal class ImportFakturElektronicznych
+    public class ImportFakturElektronicznych
     {
         const string targetList = @"Faktury elektroniczne - import"; //"intFakturyElektroniczne";
 
-        internal static void Execute(SPItemEventProperties properties, SPWeb web)
+        public static void Execute(SPListItem item, SPWeb web)
         {
-            int okresId = new SPFieldLookupValue(properties.ListItem["selOkres"].ToString()).LookupId;
+            int okresId = new SPFieldLookupValue(item["selOkres"].ToString()).LookupId;
 
             SPList list = web.Lists.TryGetList(targetList);
 
             list.Items.Cast<SPListItem>()
                 .ToList()
-                .ForEach(item =>
+                .ForEach(oItem =>
                 {
-                    Import_Faktura(item, okresId);
+                    Import_Faktura(oItem, okresId);
                 });
         }
 
@@ -62,7 +62,7 @@ namespace EventReceivers
                 item["selZadanie"] = 0;
             }
 
-            item.SystemUpdate();
+            item.Update();
         }
 
         private static string Extract_NazwaSkrocona(string fileName)
@@ -84,11 +84,9 @@ namespace EventReceivers
 
         }
 
-
-
         #endregion
 
-        internal static void Remove_Completed(SPItemEventProperties properties, SPWeb web)
+        public static void Remove_Completed(SPListItem item, SPWeb web)
         {
             SPList list = web.Lists.TryGetList(targetList);
 
@@ -97,9 +95,9 @@ namespace EventReceivers
                 .Where(i => (i["selOkres"] != null ? new SPFieldLookupValue(i["selOkres"].ToString()).LookupId : 0) > 0)
                 .Where(i => (i["selKlient"]!=null?new SPFieldLookupValue(i["selKlient"].ToString()).LookupId:0) > 0)
                 .ToList()
-                .ForEach(item =>
+                .ForEach(oItem =>
                 {
-                    item.Delete();
+                    oItem.Delete();
                 });
         }
     }

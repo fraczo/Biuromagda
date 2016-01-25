@@ -57,10 +57,8 @@
     <Compile Include="admProcessRequestsER\PDS_Forms.cs" />
     <Compile Include="admProcessRequestsER\EventReceiver1.cs" />
     <Compile Include="admProcessRequestsER\GeneratorFormatekRozliczeniowych.cs" />
-    <Compile Include="admProcessRequestsER\ImportBuforaWiadomosci.cs" />
     <Compile Include="admProcessRequestsER\ImportFakturElektronicznych.cs" />
     <Compile Include="admProcessRequestsER\ImportFakturZaObsluge.cs" />
-    <Compile Include="admProcessRequestsER\ImportKlientow.cs" />
     <Compile Include="admProcessRequestsER\ImportPrzeterminowanychNaleznosci.cs" />
     <Compile Include="admProcessRequestsER\ObslugaZadan.cs" />
     <Compile Include="admProcessRequestsER\PDW_Forms.cs" />
@@ -86,6 +84,9 @@
     <None Include="dicUrzedySkarboweER\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{95c6a07b-c9ed-4adb-bd85-f16c5275766b}</SharePointProjectItemId>
       <SubType>Designer</SubType>
+    </None>
+    <None Include="Features\Feature1\Feature1.feature">
+      <FeatureId>{57a4a832-a91c-44a5-bfe4-a69aedef062f}</FeatureId>
     </None>
     <None Include="key.snk" />
     <None Include="Package\Package.package">
@@ -113,7 +114,7 @@
       <SharePointProjectItemId>{729bc35d-6d4d-4042-b489-7c02051fe584}</SharePointProjectItemId>
     </None>
     <None Include="tabZadaniaER\SharePointProjectItem.spdata">
-      <SharePointProjectItemId>{bc9550aa-9739-41a7-a4ca-8e86069d2a66}</SharePointProjectItemId>
+      <SharePointProjectItemId>{80e15fe5-7284-43ca-a1f7-ae72cc33f6cc}</SharePointProjectItemId>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -130,16 +131,17 @@
       <Name>BLL</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Features\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="tabZadaniaER\Elements.xml" />
+    <Content Include="Features\Feature1\Feature1.Template.xml">
+      <DependentUpon>Feature1.feature</DependentUpon>
+    </Content>
     <Content Include="tabDochodyWspolnikow\Elements.xml" />
     <Content Include="tabDochodyZInnychSpolek\Elements.xml" />
     <Content Include="tabProceduryER\Elements.xml" />
     <Content Include="tabStratyZLatUbieglych\Elements.xml" />
     <Content Include="tabWiadomosciER\Elements.xml" />
+    <Content Include="tabZadaniaER\Elements.xml" />
     <None Include="admProcessRequestsER\Elements.xml" />
     <None Include="dicUrzedySkarboweER\Elements.xml" />
     <Content Include="tabKlienciER\Elements.xml">
