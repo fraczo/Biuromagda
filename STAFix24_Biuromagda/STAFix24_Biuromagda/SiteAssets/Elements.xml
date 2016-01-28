@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Elements xmlns="http://schemas.microsoft.com/sharepoint/">
   <Module Name="SiteAssets" Url="SiteAssets">
-  <File Path="SiteAssets\Templates\DW-Przelew.pdf" Url="Templates/DW-Przelew.pdf"/>
-<File Path="SiteAssets\Templates\DW-ZUS.pdf" Url="Templates/DW-ZUS.pdf"  /> 
-<File Path="SiteAssets\Templates\DW-Podatek.pdf" Url="Templates/DW-Podatek.pdf" />
 <File Path="SiteAssets\Templates\Szablon_DrukWplaty.pdf" Url="Templates/Szablon_DrukWplaty.pdf" />
 <File Path="SiteAssets\Templates\Szablon_DrukWplaty_ZUS.pdf" Url="Templates/Szablon_DrukWplaty_ZUS.pdf" />
 <File Path="SiteAssets\Templates\Szablon_DrukWplaty_PD.pdf" Url="Templates/Szablon_DrukWplaty_PD.pdf" />

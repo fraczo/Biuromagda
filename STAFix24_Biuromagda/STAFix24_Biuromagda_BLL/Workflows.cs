@@ -119,13 +119,18 @@ namespace BLL
 
         public static void StartSiteWorkflow(SPSite site, string workflowName)
         {
+            StartSiteWorkflow(site, workflowName, string.Empty);
+        }
+
+        public static void StartSiteWorkflow(SPSite site, string workflowName, string initiationData)
+        {
             using (SPWeb web = site.OpenWeb()) // get the web
             {
                 //find workflow to start
                 var assoc = web.WorkflowAssociations.GetAssociationByName(workflowName, CultureInfo.InvariantCulture);
 
                 //this is the call to start the workflow
-                var result = site.WorkflowManager.StartWorkflow(null, assoc, string.Empty, SPWorkflowRunOptions.Synchronous);
+                var result = site.WorkflowManager.StartWorkflow(null, assoc, initiationData, SPWorkflowRunOptions.Synchronous);
 
             }
         }
@@ -182,5 +187,7 @@ namespace BLL
                 }
             }
         }
+
+
     }
 }

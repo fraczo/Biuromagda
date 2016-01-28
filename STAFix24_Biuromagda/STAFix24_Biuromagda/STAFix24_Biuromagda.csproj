@@ -108,6 +108,7 @@
     <None Include="SiteAssets\Templates\Szablon_DrukWplaty_ZUS.pdf" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CodeFragments.txt" />
     <Content Include="CustomActions\SiteMenuActions\Elements.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -129,9 +130,6 @@
     <Content Include="Images\Biuromagda\SETTINGS.GIF" />
     <Content Include="Images\Biuromagda\SETTINGS16.GIF" />
     <Content Include="Images\Biuromagda\SETTINGS32.GIF" />
-    <Content Include="SiteAssets\Templates\DW-Podatek.pdf" />
-    <Content Include="SiteAssets\Templates\DW-Przelew.pdf" />
-    <Content Include="SiteAssets\Templates\DW-ZUS.pdf" />
     <Content Include="SiteAssets\Elements.xml" />
   </ItemGroup>
   <ItemGroup>

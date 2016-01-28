@@ -15,11 +15,6 @@ namespace Biuromagda.Features.SiteWorkflows
             {
                 var site = properties.Feature.Parent as SPSite;
 
-                // swfCleanup
-                //string workflowTemplateBaseGuid = "0b5d7c6b-2764-45dc-8fc1-33fa98145d1c";
-                //string workflowAssociationName = "Odchudzanie bazy danych";
-                //BLL.Workflows.AssociateWorflow(site.RootWeb, workflowTemplateBaseGuid, workflowAssociationName);
-
                 // swfWysylkaWiadomosci
                 string workflowTemplateBaseGuid = "40c09700-4459-415c-88f4-8ba8a7dd5f5d";
                 string workflowAssociationName = "Wysyłka wiadomości oczekujących";
@@ -28,6 +23,11 @@ namespace Biuromagda.Features.SiteWorkflows
                 // swfCleanup
                 workflowTemplateBaseGuid = "0b5d7c6b-2764-45dc-8fc1-33fa98145d1c";
                 workflowAssociationName = "Odchudzanie bazy danych";
+                BLL.Workflows.AssociateWorflow(site.RootWeb, workflowTemplateBaseGuid, workflowAssociationName);
+
+                // ImportFakturSWF
+                workflowTemplateBaseGuid = "C6916B84-C75A-4FC9-9A6F-0F06E6F54FFF";
+                workflowAssociationName = "ImportFakturSWF";
                 BLL.Workflows.AssociateWorflow(site.RootWeb, workflowTemplateBaseGuid, workflowAssociationName);
             }
             catch (Exception ex)

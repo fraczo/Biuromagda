@@ -2,9 +2,6 @@
 <ProjectItem Type="Microsoft.VisualStudio.SharePoint.Module" DefaultFile="Elements.xml" SupportedTrustLevels="All" SupportedDeploymentScopes="Web, Site" xmlns="http://schemas.microsoft.com/VisualStudio/2010/SharePointTools/SharePointProjectItemModel">
   <Files>
     <ProjectItemFile Source="Elements.xml" Target="SiteAssets\" Type="ElementManifest" />
-    <ProjectItemFile Source="Templates\DW-Przelew.pdf" Target="SiteAssets\Templates\" Type="ElementFile" />
-    <ProjectItemFile Source="Templates\DW-ZUS.pdf" Target="SiteAssets\Templates\" Type="ElementFile" />
-    <ProjectItemFile Source="Templates\DW-Podatek.pdf" Target="SiteAssets\Templates\" Type="ElementFile" />
     <ProjectItemFile Source="Templates\Szablon_DrukWplaty.pdf" Target="SiteAssets\Templates\" Type="ElementFile" />
     <ProjectItemFile Source="Templates\Szablon_DrukWplaty_ZUS.pdf" Target="SiteAssets\Templates\" Type="ElementFile" />
     <ProjectItemFile Source="Templates\Szablon_DrukWplaty_PD.pdf" Target="SiteAssets\Templates\" Type="ElementFile" />

@@ -3,5 +3,6 @@
   <ElementManifests>
     <ElementManifest Location="swfWysylkaWiadomosci\Elements.xml" />
     <ElementManifest Location="swfCleanup\Elements.xml" />
+    <ElementManifest Location="ImportFakturSWF\Elements.xml" />
   </ElementManifests>
 </Feature>

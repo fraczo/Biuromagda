@@ -268,6 +268,7 @@ namespace Workflows.admProcessRequestsWF
             this.ifImportFakturZaObslugę.Activities.Add(this.Manage_ImportFakturZaObsluge);
             codecondition4.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isImportFakturZaObsluge);
             this.ifImportFakturZaObslugę.Condition = codecondition4;
+            this.ifImportFakturZaObslugę.Enabled = false;
             this.ifImportFakturZaObslugę.Name = "ifImportFakturZaObslugę";
             // 
             // ifUsunPrzetworzoneFaktury
@@ -286,6 +287,7 @@ namespace Workflows.admProcessRequestsWF
             this.ifImportFakturElektroniczny.Activities.Add(this.whileIFE);
             codecondition6.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isImportFakturElektronicznych);
             this.ifImportFakturElektroniczny.Condition = codecondition6;
+            this.ifImportFakturElektroniczny.Enabled = false;
             this.ifImportFakturElektroniczny.Name = "ifImportFakturElektroniczny";
             // 
             // ifObsługaADO
@@ -459,6 +461,7 @@ namespace Workflows.admProcessRequestsWF
         private FaultHandlersActivity faultHandlersActivity1;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
 
 
 

@@ -95,12 +95,12 @@ namespace Workflows.admProcessRequestsWF
                 item);
 
 #else
-                                    //send via SPUtility
-                                    SPEmail.EmailGenerator.SendProcessEndConfirmationMail(
-                                        subject,
-                                        bodyHtml,
-                                        web,
-                                        item);
+            //send via SPUtility
+            SPEmail.EmailGenerator.SendProcessEndConfirmationMail(
+                subject,
+                bodyHtml,
+                web,
+                item);
 #endif
         }
         #endregion

@@ -71,6 +71,12 @@
     <Compile Include="GenerujRejestry_StratyZLatUbieglych\GenerujRejestry_StratyZLatUbieglych.Designer.cs">
       <DependentUpon>GenerujRejestry_StratyZLatUbieglych.cs</DependentUpon>
     </Compile>
+    <Compile Include="ImportFakturSWF\ImportFakturSWF.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ImportFakturSWF\ImportFakturSWF.Designer.cs">
+      <DependentUpon>ImportFakturSWF.cs</DependentUpon>
+    </Compile>
     <Compile Include="ObslugaWiadomosci\enumStatusWysylki.cs" />
     <Compile Include="ObslugaWiadomosci\ObslugaWiadomosci.cs">
       <SubType>Component</SubType>
@@ -129,6 +135,9 @@
     <None Include="GenerujRejestry_StratyZLatUbieglych\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{2e70d26e-0859-4f13-83ec-15d54c2eb60c}</SharePointProjectItemId>
     </None>
+    <None Include="ImportFakturSWF\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{c44d4ea5-0f62-4a47-929e-8d9d2e75c654}</SharePointProjectItemId>
+    </None>
     <None Include="key.snk" />
     <None Include="ObslugaWiadomosci\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{d03c6008-5ea7-445d-b8ce-45b9fe070301}</SharePointProjectItemId>
@@ -167,6 +176,7 @@
   <ItemGroup>
     <Content Include="admProcessRequestsWF\Elements.xml" />
     <Content Include="GenerujRejestry_StratyZLatUbieglych\Elements.xml" />
+    <Content Include="ImportFakturSWF\Elements.xml" />
     <Content Include="ObslugaWiadomosci\Elements.xml">
       <SubType>Designer</SubType>
     </Content>

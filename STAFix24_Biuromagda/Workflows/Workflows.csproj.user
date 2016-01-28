@@ -132,6 +132,15 @@
           <StartOnCreate>false</StartOnCreate>
           <StartOnChange>false</StartOnChange>
         </ProjectItemStore>
+        <ProjectItemStore Id="{c44d4ea5-0f62-4a47-929e-8d9d2e75c654}">
+          <DisplayName>ImportFakturSWF</DisplayName>
+          <HistoryList>Workflow History</HistoryList>
+          <HistoryListGuid>{7f19a9a1-6997-47fb-9e20-70fea625b6a9}</HistoryListGuid>
+          <TaskList>Workflow Tasks</TaskList>
+          <TaskListGuid>{9a1597d8-19f7-4a91-bc6c-93afe1d73764}</TaskListGuid>
+          <AutoAssociate>true</AutoAssociate>
+          <ManualStart>false</ManualStart>
+        </ProjectItemStore>
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>

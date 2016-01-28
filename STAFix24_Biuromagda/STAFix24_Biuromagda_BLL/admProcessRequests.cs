@@ -41,5 +41,10 @@ namespace BLL
         {
             return web.Lists.TryGetList(targetList);
         }
+
+        public static SPListItem GetItemById(SPWeb web, int itemId)
+        {
+            return web.Lists.TryGetList(targetList).GetItemById(itemId);
+        }
     }
 }
