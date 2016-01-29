@@ -21,6 +21,11 @@ namespace BLL.Models
 
             if (item != null)
             {
+
+                this.DrukWplatyWymagany = BLL.Tools.Has_Service(item, "GBW", "selSewisy");
+
+                this.PrzypomnienieOTerminiePlatnosciWymagane = BLL.Tools.Has_Service(item, "POT", "selSewisy");
+
                 this.TypKlienta = item.ContentType.Name;
                 OddzialZUSId = item["selOddzialZUS"] != null ? new SPFieldLookupValue(item["selOddzialZUS"].ToString()).LookupId : 0;
                 FormaOpodatkowaniaZUS = item["colFormaOpodakowania_ZUS"] != null ? item["colFormaOpodakowania_ZUS"].ToString() : string.Empty;
@@ -282,5 +287,9 @@ namespace BLL.Models
         public string Pesel { get; set; }
 
         public string NumerRachunkuPIT_PD { get; set; }
+
+        public bool DrukWplatyWymagany { get; set; }
+
+        public bool PrzypomnienieOTerminiePlatnosciWymagane { get; set; }
     }
 }

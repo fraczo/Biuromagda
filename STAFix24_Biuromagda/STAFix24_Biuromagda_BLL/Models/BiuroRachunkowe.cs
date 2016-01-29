@@ -59,6 +59,9 @@ namespace BLL.Models
                             case @"BR_KONTO":
                                 Konto = item["VALUE"].ToString();
                                 break;
+                            case @"EMAIL_BIURA":
+                                this.Email = item["VALUE"].ToString();
+                                break;
 
                             default:
                                 break;
@@ -90,5 +93,7 @@ namespace BLL.Models
         public string  Miejscowosc { get; set; }
         public string Konto { get; set; }
         public DateTime TerminPrzekazania { get; set; }
+
+        public string Email { get; set; }
     }
 }

@@ -325,6 +325,9 @@ namespace Workflows.wfGFR
             klient = (SPListItem)myEnum.Current;
             klientId = klient.ID;
 
+            //zainicjuj kartę kontrolną
+            BLL.tabKartyKontrolne.Create_KartaKontrolna(klient.Web, klient.ID, okresId);
+
             sbForms = new StringBuilder();
 
             logKlient_HistoryOutcome = BLL.Tools.Get_Text(klient, "_NazwaPrezentowana");

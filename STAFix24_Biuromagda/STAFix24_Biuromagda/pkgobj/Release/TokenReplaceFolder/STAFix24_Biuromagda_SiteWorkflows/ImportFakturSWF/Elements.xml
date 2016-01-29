@@ -8,7 +8,7 @@ Name="[NAME]" ==> Name="MyWorkflow" -->
   <Workflow
      Name="ImportFakturSWF"
      Description="Na podstawie zawartości listy 'Faktury za obsługę' oraz zawartości biblioteki 'Faktury elektroniczne' przygotowuje wiadomości o fakturach do zapłacenia dla klienta."
-     Id="1cd9509a-14ff-4236-9672-b931b43a30f1"
+     Id="C6916B84-C75A-4FC9-9A6F-0F06E6F54FFF"
      CodeBesideClass="Workflows.ImportFakturSWF.ImportFakturSWF"
      CodeBesideAssembly="BRMagda.Workflows, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7c2016d13a1c5fef">
     <Categories/>

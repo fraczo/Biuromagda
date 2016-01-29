@@ -117,12 +117,12 @@ namespace BLL
             { }
         }
 
-        public static void StartSiteWorkflow(SPSite site, string workflowName)
+        public static void StartSiteWorkflow(SPSite site, string workflowName, SPWorkflowRunOptions runOption)
         {
-            StartSiteWorkflow(site, workflowName, string.Empty);
+            StartSiteWorkflow(site, workflowName, runOption, string.Empty);
         }
 
-        public static void StartSiteWorkflow(SPSite site, string workflowName, string initiationData)
+        public static void StartSiteWorkflow(SPSite site, string workflowName, SPWorkflowRunOptions runOption, string initiationData)
         {
             using (SPWeb web = site.OpenWeb()) // get the web
             {
@@ -130,7 +130,7 @@ namespace BLL
                 var assoc = web.WorkflowAssociations.GetAssociationByName(workflowName, CultureInfo.InvariantCulture);
 
                 //this is the call to start the workflow
-                var result = site.WorkflowManager.StartWorkflow(null, assoc, initiationData, SPWorkflowRunOptions.Synchronous);
+                var result = site.WorkflowManager.StartWorkflow(null, assoc, initiationData, runOption);
 
             }
         }

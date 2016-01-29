@@ -13,6 +13,7 @@ namespace BLL
     public class tabWiadomosci
     {
         const string targetList = "Wiadomości";
+        private static string targetFileNameLeading = "DRUK WPŁATY__";
 
         public static void AddNew_NoAtt(SPListItem item, string nadawca, string odbiorca, string kopiaDla, bool KopiaDoNadawcy, bool KopiaDoBiura, string temat, string tresc, string trescHTML, DateTime planowanaDataNadania, int zadanieId, int klientId)
         {
@@ -346,8 +347,6 @@ namespace BLL
 
         }
 
-
-
         private static Array Remove_DuplicatedEmails(Array klienci)
         {
             ArrayList results = new ArrayList();
@@ -374,5 +373,74 @@ namespace BLL
 
             return results.ToArray();
         }
+
+        public static void AddNew_FakturaDoZaplaty(SPWeb web, BLL.Models.FakturaDoZaplaty faktura, BLL.Models.BiuroRachunkowe biuroRachunkowe, bool KopiaDoNadawcy, bool KopiaDoBiura, string temat, string tresc, string trescHTML, string attachementUrl, bool drukWplatyWymagany, DateTime planowanaDataNadania, int klientId)
+        {
+            Debug.WriteLine("AddNew_FakturaDoZaplaty");
+
+            SPList list = web.Lists.TryGetList(targetList);
+            SPListItem newItem = list.AddItem();
+            newItem["Title"] = temat;
+
+            string nadawca = faktura.EmailNadawcy;
+            if (string.IsNullOrEmpty(nadawca)) nadawca = BLL.admSetup.GetValue(web, "EMAIL_BIURA");
+
+            newItem["colNadawca"] = nadawca;
+            newItem["colOdbiorca"] = faktura.EmailOdbiorcy;
+            //newItem["colKopiaDla"] = string.Empty;
+            newItem["colTresc"] = tresc;
+            newItem["colTrescHTML"] = trescHTML;
+            if (!string.IsNullOrEmpty(planowanaDataNadania.ToString()) && planowanaDataNadania != new DateTime())
+            {
+                newItem["colPlanowanaDataNadania"] = planowanaDataNadania.ToString();
+            }
+            newItem["colKopiaDoNadawcy"] = KopiaDoNadawcy;
+            newItem["colKopiaDoBiura"] = KopiaDoBiura;
+
+            if (klientId > 0) newItem["selKlient_NazwaSkrocona"] = klientId;
+
+
+            //dodanie obrazu faktury PDF do wiadomości
+            if (!string.IsNullOrEmpty(attachementUrl))
+            {
+                SPFile file = web.GetFile(attachementUrl);
+                if (file.Exists) Copy_Attachement(newItem, file);
+            }
+
+            newItem.Update();
+
+            //dodanie druku wpłaty do wiadomości
+            if (drukWplatyWymagany)
+            {
+                Debug.WriteLine("DW wymagany");
+                string fileName = String.Format(@"{0}do faktury_{1}.pdf", targetFileNameLeading, faktura.NumerFaktury);
+
+
+                //string odbiorca = admSetup.GetValue(web, "BR_NAZWA");
+                string odbiorca = BLL.admSetup.Get_NazwaBiura(web);
+                string numerFaktury = faktura.NumerFaktury;
+                string tytulem = String.Format("Zapłata za {0}", numerFaktury);
+
+                if (GeneratorDrukow.DrukWplaty.Attach_DrukWplaty(web,
+                                                                newItem,
+                                                                fileName,
+                                                                odbiorca,
+                                                                biuroRachunkowe.Konto,
+                                                                faktura.WartoscDoZaplaty,
+                                                                faktura.NazwaKlienta,
+                                                                tytulem))
+                {
+                    Debug.WriteLine("DW załączony");
+                }
+                else
+                {
+                    Debug.WriteLine("ERR: DW nie załączony");
+                    ElasticEmail.EmailGenerator.SendMail("ERR: DW nie dołączony do wiadomości: " + newItem.ID, "");
+                }
+            }
+
+            faktura.Wyslana = true;
+        }
+    
     }
 }

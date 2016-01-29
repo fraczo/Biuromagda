@@ -56,7 +56,7 @@ namespace Biuromagda.TimerJobs
             using (var site = new SPSite(SiteUrl))
             {
                 //uruchom siteWF
-                BLL.Workflows.StartSiteWorkflow(site, "Odchudzanie bazy danych");
+                BLL.Workflows.StartSiteWorkflow(site, "Odchudzanie bazy danych", Microsoft.SharePoint.Workflow.SPWorkflowRunOptions.Asynchronous );
             }
         }
     }

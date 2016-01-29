@@ -40,10 +40,10 @@ namespace EventReceivers
                         BLL.Workflows.StartWorkflow(item, "Generuj formatki rozliczeniowe");
                         break;
                     case "Obsługa wiadomości":
-                        BLL.Workflows.StartSiteWorkflow(item.ParentList.ParentWeb.Site, "Wysyłka wiadomości oczekujących");
+                        BLL.Workflows.StartSiteWorkflow(item.ParentList.ParentWeb.Site, "Wysyłka wiadomości oczekujących", SPWorkflowRunOptions.SynchronousAllowPostpone);
                         break;
                     case "CleanUp":
-                        BLL.Workflows.StartSiteWorkflow(item.ParentList.ParentWeb.Site, "Odchudzanie bazy danych");
+                        BLL.Workflows.StartSiteWorkflow(item.ParentList.ParentWeb.Site, "Odchudzanie bazy danych", SPWorkflowRunOptions.Asynchronous);
                         break;
                     case "Import faktur za obsługę":
                         Debug.WriteLine("Event: Import faktur za obsługę");
@@ -53,7 +53,7 @@ namespace EventReceivers
                         p[1] = item.ID.ToString();
                         string initParams = BLL.Tools.ConvertStringArrayToString(p);
 
-                        BLL.Workflows.StartSiteWorkflow(item.ParentList.ParentWeb.Site, "ImportFakturSWF", initParams);
+                        BLL.Workflows.StartSiteWorkflow(item.ParentList.ParentWeb.Site, "ImportFakturSWF",SPWorkflowRunOptions.SynchronousAllowPostpone, initParams);
                         Debug.WriteLine("Workflow: ImportFakturSWF - started");
                         break;
                     default:

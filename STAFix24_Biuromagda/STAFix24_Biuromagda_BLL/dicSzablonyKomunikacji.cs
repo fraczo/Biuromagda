@@ -15,6 +15,11 @@ namespace BLL
             Get_TemplateByKod(item, kod, out temat, out trescHTML, string.Empty);
         }
 
+        public static void Get_TemplateByKod(SPWeb web, string kod, out string temat, out string trescHTML)
+        {
+            Get_TemplateByKod(web, kod, out temat, out trescHTML, string.Empty);
+        }
+
         public static void Get_TemplateByKod(SPListItem item, string kod, out string temat, out string trescHTML, string nadawcaEmail)
         {
             switch (item.ParentList.Title)
@@ -49,12 +54,54 @@ namespace BLL
             }
         }
 
+        /// <summary>
+        /// obsługuje szablon faktury w procesie ImportFakurySWF
+        /// </summary>
+        public static void Get_TemplateByKod(SPWeb web, string kod, out string temat, out string trescHTML, string nadawcaEmail)
+        {
+            string temp = string.Empty;
+            string footerTR = string.Empty;
+            Get_TemplateByKod(web, "EMAIL_FOOTER_TR", out temp, out footerTR, false);
+
+            if (string.IsNullOrEmpty(nadawcaEmail))
+            {
+                Get_TemplateByKod(web, kod, out temat, out trescHTML, true);
+            }
+            else
+            {
+                int operatorId = BLL.dicOperatorzy.Get_OperatorIdByEmail(web, nadawcaEmail);
+                footerTR = Format_FooterTR(web, footerTR, operatorId);
+            }
+
+            Get_TemplateByKod(web, kod, out temat, out trescHTML, true);
+            trescHTML = trescHTML.Replace("___FOOTER___", footerTR);
+        }
+
+
         private static string Format_FooterTR(SPListItem item, string footerTR, int operatorId)
         {
             if (operatorId > 0)
             {
                 //użyj stopki konkretnego operatora
                 BLL.Models.Operator op = new Models.Operator(item.Web, operatorId);
+
+                footerTR = footerTR.Replace("___NAME___", op.Name);
+                footerTR = footerTR.Replace("___CONTACT___", string.Format(@"email: {0}<br>tel.: {1}", op.Email, op.Telefon));
+            }
+            else
+            {
+                footerTR = string.Empty;
+            }
+
+            return footerTR;
+        }
+
+        private static string Format_FooterTR(SPWeb web, string footerTR, int operatorId)
+        {
+            if (operatorId > 0)
+            {
+                //użyj stopki konkretnego operatora
+                BLL.Models.Operator op = new Models.Operator(web, operatorId);
 
                 footerTR = footerTR.Replace("___NAME___", op.Name);
                 footerTR = footerTR.Replace("___CONTACT___", string.Format(@"email: {0}<br>tel.: {1}", op.Email, op.Telefon));
@@ -105,24 +152,18 @@ namespace BLL
             return trescHTML;
         }
 
-        private static int Get_LookupId(SPListItem item, string col)
-        {
-            return item[col] != null ? new SPFieldLookupValue(item[col].ToString()).LookupId : 0;
-        }
-
-
-
-
-
         public static string Get_TemplateByKod(SPWeb web, string kod, bool hasFooter)
         {
             string temp;
             string trescHTML = string.Empty;
-            SPList list = web.Lists.TryGetList(targetList);
-            SPListItem item = list.AddItem(); //tylko fikcyjnie tworzy rekod żeby mieć referencję ale go nie zapisuje
-            Get_TemplateByKod(item, kod, out temp, out trescHTML);
+            Get_TemplateByKod(web, kod, out temp, out trescHTML);
 
             return trescHTML;
+        }
+
+        private static int Get_LookupId(SPListItem item, string col)
+        {
+            return item[col] != null ? new SPFieldLookupValue(item[col].ToString()).LookupId : 0;
         }
     }
 }

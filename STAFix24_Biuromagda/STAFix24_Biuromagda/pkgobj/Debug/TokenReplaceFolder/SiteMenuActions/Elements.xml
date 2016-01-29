@@ -53,7 +53,7 @@
     <UrlAction Url="~site/Lists/admProcessRequests/NewForm.aspx?ContentTypeId=0x010012C56DEF8E3B1A45B66E8FB2ED3FFC130700BF6BE6369EB2604F939F6D5DEF7091A1"/>
   </CustomAction>
   
-  <CustomAction Description="Importuje pliki z fakturami do formatek RBR"
+  <!--<CustomAction Description="Importuje pliki z fakturami do formatek RBR"
           Id="STAFIX.IFE"
           GroupId="SiteActions"
           ImageUrl="/_layouts/images/Settings.gif"
@@ -61,7 +61,7 @@
           Sequence="511"
           Title="Import faktur elektronicznych" >
     <UrlAction Url="~site/Lists/admProcessRequests/NewForm.aspx?ContentTypeId=0x010012C56DEF8E3B1A45B66E8FB2ED3FFC130500B80483F07C99C44BB0D517448DC9D740"/>
-  </CustomAction>
+  </CustomAction>-->
 
   <CustomAction Description="Przygotowuje informacje o zadłużeniu w buforze wiadomości"
       Id="STAFIX.IFZO"

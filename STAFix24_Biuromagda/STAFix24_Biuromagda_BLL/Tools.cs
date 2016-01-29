@@ -7,6 +7,7 @@ using BLL.Models;
 using System.Globalization;
 using System.Diagnostics;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace BLL
 {
@@ -390,6 +391,50 @@ namespace BLL
             //
             string result = string.Join(";", array);
             return result;
+        }
+
+        public static string Format_Date(DateTime date)
+        {
+            return date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        }
+
+        public static string Format_Konto(string s)
+        {
+            if (!string.IsNullOrEmpty(s))
+            {
+                Regex rgx = new Regex("[^0-9]");
+                s = rgx.Replace(s, "");
+                if (s.Length == 26)
+                {
+                    s = "1" + s;
+                    string r = Convert.ToDecimal(s).ToString("### #### #### #### #### #### ####");
+                    return r.Substring(1, r.Length - 1);
+                }
+            }
+
+            return "nieprawidłowy numer rachunku";
+        }
+
+        public static string Format_KontoBezSpacji(string s)
+        {
+            if (!string.IsNullOrEmpty(s))
+            {
+                Regex rgx = new Regex("[^0-9]");
+                s = rgx.Replace(s, "");
+                if (s.Length == 26)
+                {
+                    s = "1" + s;
+                    string r = Convert.ToDecimal(s).ToString("###########################");
+                    return r.Substring(1, r.Length - 1);
+                }
+            }
+
+            return "nieprawidłowy numer rachunku";
+        }
+
+        public static void Set_Date(SPListItem item, string col, DateTime date)
+        {
+            item[col] = date;
         }
     }
 }

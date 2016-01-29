@@ -25,6 +25,8 @@ namespace GeneratorDrukow
             //unormowanie nazwy pliku
             nazwaPliku = CleanupFileName(nazwaPliku);
 
+            numerRachunku = Format_KontoBezSpacji(numerRachunku);
+
             if (numerRachunku.Length != 26)
             {
                 return false;
@@ -187,6 +189,24 @@ namespace GeneratorDrukow
 
 
         }
+
+        public static string Format_KontoBezSpacji(string s)
+        {
+            if (!string.IsNullOrEmpty(s))
+            {
+                Regex rgx = new Regex("[^0-9]");
+                s = rgx.Replace(s, "");
+                if (s.Length == 26)
+                {
+                    s = "1" + s;
+                    string r = Convert.ToDecimal(s).ToString("###########################");
+                    return r.Substring(1, r.Length - 1);
+                }
+            }
+
+            return "nieprawidłowy numer rachunku";
+        }
+
 
         public static bool Attach_DrukWplatyPD(SPWeb web, SPListItem item, string nazwaPliku, string odbiorca, string numerRachunku, double kwotaDoZaplaty, string zleceniodawca, string nip, string typIdentyfikatora, string okres, string symbolFormularza, string identyfikacjaZobowiazania)
         {
