@@ -909,5 +909,10 @@ namespace BLL
                 .Where(i => BLL.Tools.Get_LookupId(i, "selKlient_NazwaSkrocona") == klientId)
                 .ToArray();
         }
+
+        public static Array Get_ListItems(SPWeb web)
+        {
+            return web.Lists.TryGetList(listName).Items.Cast<SPListItem>().ToArray();
+        }
     }
 }

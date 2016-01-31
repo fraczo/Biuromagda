@@ -141,6 +141,20 @@
           <AutoAssociate>true</AutoAssociate>
           <ManualStart>false</ManualStart>
         </ProjectItemStore>
+        <ProjectItemStore Id="{bec91e3c-8dae-469c-9ad8-5e13e7b0e842}">
+          <DisplayName>GeneratorZadanWF</DisplayName>
+          <HistoryList>Workflow History</HistoryList>
+          <HistoryListGuid>{7f19a9a1-6997-47fb-9e20-70fea625b6a9}</HistoryListGuid>
+          <TaskList>Workflow Tasks</TaskList>
+          <TaskListGuid>{9a1597d8-19f7-4a91-bc6c-93afe1d73764}</TaskListGuid>
+          <AutoAssociate>true</AutoAssociate>
+          <ManualStart>false</ManualStart>
+          <ListURL>http://spf2010/sites/biuromagda/Lists/admProcessRequests/AllItems.aspx</ListURL>
+          <TargetList>admProcessRequests</TargetList>
+          <TargetListGuid>{4b246f89-b51b-4c05-9c3a-6f03fe15eca8}</TargetListGuid>
+          <StartOnCreate>false</StartOnCreate>
+          <StartOnChange>false</StartOnChange>
+        </ProjectItemStore>
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>

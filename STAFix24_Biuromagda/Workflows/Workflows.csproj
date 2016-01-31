@@ -65,6 +65,12 @@
       <DependentUpon>admProcessRequestsWF.cs</DependentUpon>
     </Compile>
     <Compile Include="admProcessRequestsWF\ImportFaktur.cs" />
+    <Compile Include="GeneratorZadanWF\GeneratorZadanWF.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GeneratorZadanWF\GeneratorZadanWF.Designer.cs">
+      <DependentUpon>GeneratorZadanWF.cs</DependentUpon>
+    </Compile>
     <Compile Include="GenerujRejestry_StratyZLatUbieglych\GenerujRejestry_StratyZLatUbieglych.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -133,6 +139,9 @@
     <None Include="admProcessRequestsWF\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{9906cb78-d9f8-452b-a90b-d6dde1d5870a}</SharePointProjectItemId>
     </None>
+    <None Include="GeneratorZadanWF\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{bec91e3c-8dae-469c-9ad8-5e13e7b0e842}</SharePointProjectItemId>
+    </None>
     <None Include="GenerujRejestry_StratyZLatUbieglych\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{2e70d26e-0859-4f13-83ec-15d54c2eb60c}</SharePointProjectItemId>
     </None>
@@ -176,6 +185,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="admProcessRequestsWF\Elements.xml" />
+    <Content Include="GeneratorZadanWF\Elements.xml" />
     <Content Include="GenerujRejestry_StratyZLatUbieglych\Elements.xml" />
     <Content Include="ImportFakturSWF\Elements.xml" />
     <Content Include="ObslugaWiadomosci\Elements.xml">

@@ -25,6 +25,7 @@ namespace Workflows.tabZadaniaWF
     public sealed partial class tabZadaniaWF : SequentialWorkflowActivity
     {
         const string WYSLIJ_INFORMACJE_DO_KLIENTA = "Wyślij informację do Klienta";
+        const string ZATWIERDZ_I_WYSLIJ_INFORMACJE_DO_KLIENTA = "Zatwierdź i wyślij informację do Klienta";
         const string ZATWIERDZ = "Zatwierdź";
         const string ANULUJ = "Anuluj";
 
@@ -149,6 +150,11 @@ namespace Workflows.tabZadaniaWF
                     //wyczyść informacje dla klienta po wysyłce
                     ResetCommand(item, true);
                     break;
+                case ZATWIERDZ_I_WYSLIJ_INFORMACJE_DO_KLIENTA:
+                    Manage_CMD_Zatwierdz_WyslijInfo_Zadanie(item);
+                    //wyczyść informacje dla klienta po wysyłce
+                    ResetCommand(item, false);
+                    break;
                 case ANULUJ:
                     Manage_CMD_Anuluj(item);
                     //wyczyść informacje dla klienta po wysyłce
@@ -157,6 +163,57 @@ namespace Workflows.tabZadaniaWF
                 default:
                     break;
 
+            }
+        }
+
+        private void Manage_CMD_Zatwierdz_WyslijInfo_Zadanie(SPListItem item)
+        {
+            string cmd = GetCommand(item);
+            string notatka = item["colInformacjaDlaKlienta"] != null ? item["colInformacjaDlaKlienta"].ToString() : string.Empty;
+            int klientId = item["selKlient"] != null ? new SPFieldLookupValue(item["selKlient"].ToString()).LookupId : 0;
+
+            if (klientId > 0
+                && cmd == ZATWIERDZ_I_WYSLIJ_INFORMACJE_DO_KLIENTA
+                && !string.IsNullOrEmpty(notatka))
+            {
+                string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
+                string odbiorca = BLL.tabKlienci.Get_EmailById(item.Web, klientId);
+
+                string kopiaDla = Get_KopiaDlaOperatora(item);
+
+                bool KopiaDoNadawcy = true;
+                bool KopiaDoBiura = false;
+                string temat = string.Empty;
+                string tresc = string.Empty;
+                string trescHTML = string.Empty;
+                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "EMAIL_DEFAULT_BODY.Include", out temat, out trescHTML, nadawca);
+                if (item["selProcedura"] != null)
+                {
+                    temat = string.Format("{0} :{1}",
+                        new SPFieldLookupValue(item["selProcedura"].ToString()).LookupValue,
+                        item.Title);
+                }
+                else
+                {
+                    temat = item.Title;
+                }
+                if (!temat.StartsWith(":"))
+                {
+                    temat = ": " + temat.Trim();
+                }
+
+                temat = AddSygnatura(temat, item);
+                temat = BLL.Tools.AddCompanyName(temat, item);
+
+                StringBuilder sb = new StringBuilder(trescHTML);
+                sb.Replace("___BODY___", notatka);
+                trescHTML = sb.ToString();
+
+                DateTime planowanaDataNadania = item["colTerminWyslaniaInformacji"] != null ? DateTime.Parse(item["colTerminWyslaniaInformacji"].ToString()) : new DateTime();
+
+                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId, Marker.Ignore);
+
+                Set_StatusZadania(item, StatusZadania.Wysyłka);
             }
         }
 

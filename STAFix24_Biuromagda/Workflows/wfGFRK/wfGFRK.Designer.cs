@@ -210,6 +210,7 @@ namespace Workflows.wfGFRK
             // logToHistoryListActivity16
             // 
             this.logToHistoryListActivity16.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
+            this.logToHistoryListActivity16.Enabled = false;
             this.logToHistoryListActivity16.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
             this.logToHistoryListActivity16.HistoryDescription = "RBR";
             this.logToHistoryListActivity16.HistoryOutcome = "";
@@ -219,6 +220,7 @@ namespace Workflows.wfGFRK
             // 
             // Manage_RBR2
             // 
+            this.Manage_RBR2.Enabled = false;
             this.Manage_RBR2.Name = "Manage_RBR2";
             this.Manage_RBR2.ExecuteCode += new System.EventHandler(this.Manage_RBR_ExecuteCode);
             // 
@@ -295,6 +297,7 @@ namespace Workflows.wfGFRK
             // logToHistoryListActivity15
             // 
             this.logToHistoryListActivity15.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
+            this.logToHistoryListActivity15.Enabled = false;
             this.logToHistoryListActivity15.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
             this.logToHistoryListActivity15.HistoryDescription = "RBR";
             this.logToHistoryListActivity15.HistoryOutcome = "";
@@ -304,6 +307,7 @@ namespace Workflows.wfGFRK
             // 
             // Manage_RBR
             // 
+            this.Manage_RBR.Enabled = false;
             this.Manage_RBR.Name = "Manage_RBR";
             this.Manage_RBR.ExecuteCode += new System.EventHandler(this.Manage_RBR_ExecuteCode);
             // 
@@ -743,6 +747,7 @@ namespace Workflows.wfGFRK
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity1;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
 
 
 

@@ -20,10 +20,11 @@ namespace EventReceivers
 
         public override void ItemAdded(SPItemEventProperties properties)
         {
-            Run_admProcessRequestsWF(properties);
+            Debug.WriteLine("admProcessRequestsER.ItemAdded");
+            Execute(properties);
         }
 
-        private void Run_admProcessRequestsWF(SPItemEventProperties properties)
+        private void Execute(SPItemEventProperties properties)
         {
             this.EventFiringEnabled = false;
 
@@ -44,6 +45,10 @@ namespace EventReceivers
                         break;
                     case "CleanUp":
                         BLL.Workflows.StartSiteWorkflow(item.ParentList.ParentWeb.Site, "Odchudzanie bazy danych", SPWorkflowRunOptions.Asynchronous);
+                        break;
+                    case "Generator zadań":
+                        Debug.WriteLine("Event: Generator zadań");
+                        BLL.Workflows.StartWorkflow(item, "GeneratorZadanWF");
                         break;
                     case "Import faktur za obsługę":
                         Debug.WriteLine("Event: Import faktur za obsługę");

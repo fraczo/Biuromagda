@@ -65,7 +65,9 @@
     <Compile Include="Models\FakturaDoZaplaty.cs" />
     <Compile Include="Models\Markery.cs" />
     <Compile Include="Models\Operator.cs" />
+    <Compile Include="Models\StatusKlienta.cs" />
     <Compile Include="Models\StatusZadania.cs" />
+    <Compile Include="Models\StatusZlecenia.cs" />
     <Compile Include="SPEmail.cs" />
     <Compile Include="intBuforWiadomosci.cs" />
     <Compile Include="libDokumenty.cs" />

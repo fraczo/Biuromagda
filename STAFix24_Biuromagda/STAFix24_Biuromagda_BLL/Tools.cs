@@ -251,7 +251,8 @@ namespace BLL
 
         public static void Set_Text(SPListItem item, string col, string val)
         {
-            item[col] = val.ToString();
+            if (val != null) item[col] = val.ToString();
+            else item[col] = string.Empty;
         }
 
         internal static Array Get_LookupValueCollection(SPListItem item, string col)
@@ -434,7 +435,7 @@ namespace BLL
 
         public static void Set_Date(SPListItem item, string col, DateTime date)
         {
-            item[col] = date;
+           if (date!=null && date!=new DateTime()) item[col] = date;
         }
     }
 }

@@ -202,6 +202,7 @@ namespace Workflows.wfGFR
             // 
             // Manage_RBR2
             // 
+            this.Manage_RBR2.Enabled = false;
             this.Manage_RBR2.Name = "Manage_RBR2";
             this.Manage_RBR2.ExecuteCode += new System.EventHandler(this.Manage_RBR_ExecuteCode);
             // 
@@ -237,6 +238,7 @@ namespace Workflows.wfGFR
             // 
             // Manage_RBR
             // 
+            this.Manage_RBR.Enabled = false;
             this.Manage_RBR.Name = "Manage_RBR";
             this.Manage_RBR.ExecuteCode += new System.EventHandler(this.Manage_RBR_ExecuteCode);
             // 
@@ -839,6 +841,7 @@ namespace Workflows.wfGFR
         private CodeActivity Select_Klienci;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
 
 
 

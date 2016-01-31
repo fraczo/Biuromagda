@@ -840,5 +840,33 @@ namespace BLL
 
             Create_ctPD_Form(web, ct, klientId, okresId, key, terminPlatnosci, terminPrzekazania, isKwartalnie);
         }
+
+
+
+        public static int Create_Task(SPWeb web, int klientId, string tytul, int proceduraId, string opis, string uwagi, DateTime terminRealizacji, int operatorId, string informacjaDlaKlienta)
+        {
+            SPList list = web.Lists.TryGetList(targetList);
+            SPListItem newItem = list.AddItem();
+
+            newItem["ContentType"] = "Zadanie";
+
+            BLL.Tools.Set_Value(newItem, "selKlient", klientId);
+            BLL.Tools.Set_Value(newItem, "selProcedura", proceduraId);
+            BLL.Tools.Set_Value(newItem, "selOperator", operatorId);
+
+            BLL.Tools.Set_Text(newItem, "Title", tytul);
+            BLL.Tools.Set_Text(newItem, "colOpis", opis);
+            BLL.Tools.Set_Text(newItem, "colUwagi", uwagi);
+            BLL.Tools.Set_Text(newItem, "colInformacjaDlaKlienta", informacjaDlaKlienta);
+
+            BLL.Tools.Set_Date(newItem, "colTerminRealizacji", terminRealizacji);
+
+            newItem.Update();
+
+            Debug.WriteLine("Zadanie #" + newItem.ID.ToString() + " - utworzone");
+
+            return newItem.ID;
+            
+        }
     }
 }

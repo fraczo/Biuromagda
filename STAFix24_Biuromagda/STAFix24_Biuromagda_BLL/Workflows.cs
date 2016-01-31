@@ -37,7 +37,9 @@ namespace BLL
 
                             if (!isActive)
                             {
-                                manager.StartWorkflow(listItem, objWorkflowAssociation, objWorkflowAssociation.AssociationData, true);
+                                //manager.StartWorkflow(listItem, objWorkflowAssociation, objWorkflowAssociation.AssociationData, true);
+                                SPWorkflow wf = manager.StartWorkflow(listItem, objWorkflowAssociation, objWorkflowAssociation.AssociationData,SPWorkflowRunOptions.SynchronousAllowPostpone);
+                                Debug.WriteLine("Workflow InternalState:" + wf.InternalState.ToString());
                                 //The above line will start the workflow...
                             }
                             else
