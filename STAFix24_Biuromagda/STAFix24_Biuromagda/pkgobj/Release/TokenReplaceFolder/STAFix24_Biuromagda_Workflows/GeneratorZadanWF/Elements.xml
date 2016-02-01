@@ -7,9 +7,9 @@ Name="[NAME]" ==> Name="MyWorkflow" -->
 <Elements xmlns="http://schemas.microsoft.com/sharepoint/">
   <Workflow
      Name="GeneratorZadanWF"
-     Description="Generuje serię zadań dla wybranej grupy klientów"
-     Id="6a443c97-d5cb-452c-ba7f-ff5424f85a29"
-     CodeBesideClass="Workflows.GeneratorDokumentowWF.GeneratorDokumentowWF"
+     Description="My SharePoint Workflow"
+     Id="93927d45-95b2-49f3-87d3-c116f99168c2"
+     CodeBesideClass="Workflows.GeneratorZadanWF.GeneratorZadanWF"
      CodeBesideAssembly="BRMagda.Workflows, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7c2016d13a1c5fef">
     <Categories/>
     <MetaData>

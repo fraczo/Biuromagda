@@ -25,7 +25,8 @@ namespace Workflows.tabZadaniaWF
     public sealed partial class tabZadaniaWF : SequentialWorkflowActivity
     {
         const string WYSLIJ_INFORMACJE_DO_KLIENTA = "Wyślij informację do Klienta";
-        const string ZATWIERDZ_I_WYSLIJ_INFORMACJE_DO_KLIENTA = "Zatwierdź i wyślij informację do Klienta";
+        const string WYSLIJ_INFORMACJE_I_ZAKONCZ_ZADANIE = "Wyślij informację i zakończ zadanie";
+        public String logErrorMessage_HistoryDescription = default(System.String);
         const string ZATWIERDZ = "Zatwierdź";
         const string ANULUJ = "Anuluj";
 
@@ -150,7 +151,7 @@ namespace Workflows.tabZadaniaWF
                     //wyczyść informacje dla klienta po wysyłce
                     ResetCommand(item, true);
                     break;
-                case ZATWIERDZ_I_WYSLIJ_INFORMACJE_DO_KLIENTA:
+                case WYSLIJ_INFORMACJE_I_ZAKONCZ_ZADANIE:
                     Manage_CMD_Zatwierdz_WyslijInfo_Zadanie(item);
                     //wyczyść informacje dla klienta po wysyłce
                     ResetCommand(item, false);
@@ -173,7 +174,7 @@ namespace Workflows.tabZadaniaWF
             int klientId = item["selKlient"] != null ? new SPFieldLookupValue(item["selKlient"].ToString()).LookupId : 0;
 
             if (klientId > 0
-                && cmd == ZATWIERDZ_I_WYSLIJ_INFORMACJE_DO_KLIENTA
+                && cmd == WYSLIJ_INFORMACJE_I_ZAKONCZ_ZADANIE
                 && !string.IsNullOrEmpty(notatka))
             {
                 string nadawca = new SPFieldUserValue(item.Web, item["Editor"].ToString()).User.Email;
@@ -1494,8 +1495,11 @@ namespace Workflows.tabZadaniaWF
 
                         planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
 
-
-                        BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId, Marker.ReminderZUS);
+                        //nie wysyłaj przypomnienia jeżeli krócej niż 3 dni do terminu
+                        if (planowanaDataNadania.CompareTo(DateTime.Now.AddDays(3)) > 0)
+                        {
+                            BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId, Marker.ReminderZUS);
+                        }
                     }
 
                     //podatek za pracowników
@@ -1534,8 +1538,11 @@ namespace Workflows.tabZadaniaWF
 
                         planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
 
-
-                        BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId, Marker.ReminderZUS_PIT);
+                        //nie wysyłaj przypomnienia jeżeli krócej niż 3 dni do terminu
+                        if (planowanaDataNadania.CompareTo(DateTime.Now.AddDays(3)) > 0)
+                        {
+                            BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId, Marker.ReminderZUS_PIT);
+                        }
                     }
                 }
 
@@ -1755,8 +1762,11 @@ namespace Workflows.tabZadaniaWF
 
                             planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
 
-
-                            BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId, Marker.Ignore);
+                            //nie wysyłaj przypomnienia jeżeli krócej niż 3 dni do terminu
+                            if (planowanaDataNadania.CompareTo(DateTime.Now.AddDays(3)) > 0)
+                            {
+                                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId, Marker.Ignore);
+                            }
                         }
                     }
                 }
@@ -1991,8 +2001,11 @@ namespace Workflows.tabZadaniaWF
 
                             planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
 
-
-                            BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId, Marker.Ignore);
+                            //nie wysyłaj przypomnienia jeżeli krócej niż 3 dni do terminu
+                            if (planowanaDataNadania.CompareTo(DateTime.Now.AddDays(3)) > 0)
+                            {
+                                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId, Marker.Ignore);
+                            }
                         }
                     }
                 }
@@ -2798,7 +2811,7 @@ namespace Workflows.tabZadaniaWF
         #endregion
 
         #region Error Handlers
-        public String logErrorMessage_HistoryDescription = default(System.String);
+
 
         private void ErrorHandler_ExecuteCode(object sender, EventArgs e)
         {
