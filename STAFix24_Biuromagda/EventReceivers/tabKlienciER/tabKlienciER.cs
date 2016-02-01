@@ -49,7 +49,6 @@ namespace EventReceivers.tabKlienciER
         /// <summary>
         /// aktualizuje pole _NazwaPrezentowana
         /// </summary>
-        /// <param name="item"></param>
         private static void Update_LookupRefFields(SPListItem item)
         {
             // aktualizacja odwołań do lookupów
@@ -83,23 +82,23 @@ namespace EventReceivers.tabKlienciER
                 case "Firma":
                     string nazwa = item["colNazwa"]!=null?item["colNazwa"].ToString():string.Empty;
                     string nip = item["colNIP"] != null ? item["colNIP"].ToString() : string.Empty;
-                    np = string.Format(@"{2}/{0} NIP:{1}", nazwa, nip, Get_LookupValue(item, "selKlient_NazwaSkrocona") );
+                    np = string.Format(@"::{0} NIP:{1}", nazwa, nip );
                     break;
                 case "Firma zewnętrzna":
                     string nazwaFirmyZewn = item["colNazwa"] != null ? item["colNazwa"].ToString() : string.Empty;
-                    np = nazwaFirmyZewn + " (firma zewnętrzna)";
+                    np = ":::" + nazwaFirmyZewn;
                     break;
                 case "Osoba fizyczna":
                     string npNazwsko = item["colNazwisko"] != null ? item["colNazwisko"].ToString().Trim() : string.Empty;
                     string npImie = item["colImie"] != null ? item["colImie"].ToString().Trim() : string.Empty;
                     string npPESEL = item["colPESEL"] != null ? item["colPESEL"].ToString().Trim() : string.Empty;
-                    np = string.Format(@"{3}/{0} {1} PESEL:{2}", npNazwsko, npImie, npPESEL, Get_LookupValue(item, "selKlient_NazwaSkrocona"));
+                    np = string.Format(@":{0} {1} PESEL:{2}", npNazwsko, npImie, npPESEL);
                     break;
                 case "Klient":
-                    np = item["colNazwaSkrocona"].ToString();
+                    np = "?"+item["colNazwaSkrocona"].ToString();
                     break;
                 case "Powiązanie":
-                    np = string.Format("{0}/{1}",
+                    np = string.Format("{0}\{1}",
                         BLL.Tools.Get_LookupValue(item, "selKlient_NazwaSkrocona"),
                         BLL.Tools.Get_LookupValue(item, "selKlient"));
                     break;
@@ -109,7 +108,6 @@ namespace EventReceivers.tabKlienciER
             item["_NazwaPrezentowana"] = np;
             item.SystemUpdate();
         }
-
 
         private static void Update_FolderInLibrary(SPListItem item, SPWeb web)
         {
