@@ -86,7 +86,7 @@ namespace EventReceivers.tabKlienciER
                     break;
                 case "Firma zewnętrzna":
                     string nazwaFirmyZewn = item["colNazwa"] != null ? item["colNazwa"].ToString() : string.Empty;
-                    np = ":::" + nazwaFirmyZewn;
+                    np = "::" + nazwaFirmyZewn.Trim() + "::";
                     break;
                 case "Osoba fizyczna":
                     string npNazwsko = item["colNazwisko"] != null ? item["colNazwisko"].ToString().Trim() : string.Empty;
@@ -98,7 +98,7 @@ namespace EventReceivers.tabKlienciER
                     np = "?"+item["colNazwaSkrocona"].ToString();
                     break;
                 case "Powiązanie":
-                    np = string.Format("{0}\{1}",
+                    np = string.Format(@"{0}\{1}",
                         BLL.Tools.Get_LookupValue(item, "selKlient_NazwaSkrocona"),
                         BLL.Tools.Get_LookupValue(item, "selKlient"));
                     break;

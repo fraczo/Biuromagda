@@ -31,6 +31,8 @@ namespace EventReceivers
             try
             {
                 SPListItem item = properties.ListItem;
+                string initParams;
+                string[] p;
 
                 switch (properties.ListItem.ContentType.Name)
                 {
@@ -41,7 +43,15 @@ namespace EventReceivers
                         BLL.Workflows.StartWorkflow(item, "Generuj formatki rozliczeniowe");
                         break;
                     case "Obsługa wiadomości":
-                        BLL.Workflows.StartSiteWorkflow(item.ParentList.ParentWeb.Site, "Wysyłka wiadomości oczekujących", SPWorkflowRunOptions.SynchronousAllowPostpone);
+                        Debug.WriteLine("Event: Obsługa wiadomości");
+
+                        p = new string[1];
+                        p[0] = item.ID.ToString();
+                        initParams = BLL.Tools.ConvertStringArrayToString(p);
+                        
+                        BLL.Workflows.StartSiteWorkflow(item.ParentList.ParentWeb.Site, "Wysyłka wiadomości oczekujących", SPWorkflowRunOptions.SynchronousAllowPostpone, initParams);
+                        
+                        Debug.WriteLine("Workflow: Obsługa wiadomości - started");
                         break;
                     case "CleanUp":
                         BLL.Workflows.StartSiteWorkflow(item.ParentList.ParentWeb.Site, "Odchudzanie bazy danych", SPWorkflowRunOptions.Asynchronous);
@@ -53,12 +63,13 @@ namespace EventReceivers
                     case "Import faktur za obsługę":
                         Debug.WriteLine("Event: Import faktur za obsługę");
 
-                        string[] p = new string[2];
+                        p = new string[2];
                         p[0] = BLL.Tools.Get_LookupId(item, "selOkres").ToString();
                         p[1] = item.ID.ToString();
-                        string initParams = BLL.Tools.ConvertStringArrayToString(p);
+                        initParams = BLL.Tools.ConvertStringArrayToString(p);
 
                         BLL.Workflows.StartSiteWorkflow(item.ParentList.ParentWeb.Site, "ImportFakturSWF",SPWorkflowRunOptions.SynchronousAllowPostpone, initParams);
+                        
                         Debug.WriteLine("Workflow: ImportFakturSWF - started");
                         break;
                     default:

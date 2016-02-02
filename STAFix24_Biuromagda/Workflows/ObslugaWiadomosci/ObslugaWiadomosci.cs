@@ -18,6 +18,7 @@ using System.Net.Mail;
 using System.Net;
 using System.Collections.Specialized;
 using System.Text;
+using System.Diagnostics;
 
 namespace Workflows.ObslugaWiadomosci
 {
@@ -33,6 +34,12 @@ namespace Workflows.ObslugaWiadomosci
         public SPListItem item;
         public MailMessage mail;
         private bool isMailReadyToSend;
+        private int sourceItemId;
+        public String logParams_HistoryOutcome = default(System.String);
+        private string _ZAKONCZONY = "Zakończony";
+        private string _ANULOWANY = "Anulowany";
+        public String logErrorMessage_HistoryDescription = default(System.String);
+
 
         private void onWorkflowActivated1_Invoked(object sender, ExternalDataEventArgs e)
         {
@@ -89,7 +96,7 @@ namespace Workflows.ObslugaWiadomosci
                     {
                         string body = item["colTresc"].ToString();
 
-                        StringBuilder sb = new StringBuilder(BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item,"EMAIL_DEFAULT_BODY",true));
+                        StringBuilder sb = new StringBuilder(BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "EMAIL_DEFAULT_BODY", true));
                         sb.Replace(@"___BODY___", body);
                         sb.Replace(@"___FOOTER___", string.Empty);
                         mail.Body = sb.ToString();
@@ -120,7 +127,7 @@ namespace Workflows.ObslugaWiadomosci
                     var r = ElasticEmail.EmailGenerator.ReportError(ex, item.ParentList.ParentWeb.Url);
                 }
 
-                
+
                 bool result = SPEmail.EmailGenerator.SendMailFromMessageQueue(item, mail, testMode);
 
                 if (result)
@@ -138,7 +145,7 @@ namespace Workflows.ObslugaWiadomosci
                 }
                 else
                 {
-                    var r = ElasticEmail.EmailGenerator.SendMail(string.Format(@"!!! Message#{0} not sent",item.ID.ToString()),string.Empty);
+                    var r = ElasticEmail.EmailGenerator.SendMail(string.Format(@"!!! Message#{0} not sent", item.ID.ToString()), string.Empty);
                 }
             }
         }
@@ -210,6 +217,66 @@ namespace Workflows.ObslugaWiadomosci
             item["enumStatusWysylki"] = status;
             item["colDataNadania"] = DateTime.Now;
             item.SystemUpdate();
+        }
+
+        private void GetParams_ExecuteCode(object sender, EventArgs e)
+        {
+            if (workflowProperties.InitiationData.Length > 0)
+            {
+                string[] param = workflowProperties.InitiationData.Split(new string[] { ";" }, StringSplitOptions.None);
+
+                sourceItemId = int.Parse(param.GetValue(1).ToString());
+
+                logParams_HistoryOutcome = string.Format("SourceItemId={0}", sourceItemId.ToString());
+
+
+            }
+            else
+            {
+                logParams_HistoryOutcome = "brak";
+            }
+        }
+
+
+
+        private void UpdateSourceItem_ExecuteCode(object sender, EventArgs e)
+        {
+            Update_SourceItem(_ZAKONCZONY);
+        }
+
+        private void Update_SourceItem(string statusZlecenia)
+        {
+            SPListItem sourceItem = BLL.admProcessRequests.GetItemById(workflowProperties.Web, sourceItemId);
+            if (sourceItem != null)
+            {
+                BLL.Tools.Set_Text(sourceItem, "enumStatusZlecenia", statusZlecenia);
+                sourceItem.Update();
+            }
+        }
+
+        private void ErrorHandler_ExecuteCode(object sender, EventArgs e)
+        {
+            FaultHandlerActivity fa = ((Activity)sender).Parent as FaultHandlerActivity;
+            if (fa != null)
+            {
+                Debug.WriteLine(fa.Fault.Source);
+                Debug.WriteLine(fa.Fault.Message);
+                Debug.WriteLine(fa.Fault.StackTrace);
+
+                logErrorMessage_HistoryDescription = string.Format("{0}::{1}",
+                    fa.Fault.Message,
+                    fa.Fault.StackTrace);
+
+
+                ElasticEmail.EmailGenerator.ReportErrorFromWorkflow(workflowProperties, fa.Fault.Message, fa.Fault.StackTrace);
+            }
+        }
+
+
+
+        private void UpdateSourceItem_Anulowany_ExecuteCode(object sender, EventArgs e)
+        {
+            Update_SourceItem(_ANULOWANY);
         }
 
 

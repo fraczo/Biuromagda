@@ -26,10 +26,15 @@ namespace Workflows.ObslugaWiadomosci
         private void InitializeComponent()
         {
             this.CanModifyActivities = true;
+            System.Workflow.ComponentModel.ActivityBind activitybind1 = new System.Workflow.ComponentModel.ActivityBind();
             System.Workflow.Activities.CodeCondition codecondition1 = new System.Workflow.Activities.CodeCondition();
             System.Workflow.ComponentModel.ActivityBind activitybind2 = new System.Workflow.ComponentModel.ActivityBind();
+            System.Workflow.ComponentModel.ActivityBind activitybind4 = new System.Workflow.ComponentModel.ActivityBind();
             System.Workflow.Runtime.CorrelationToken correlationtoken1 = new System.Workflow.Runtime.CorrelationToken();
-            System.Workflow.ComponentModel.ActivityBind activitybind1 = new System.Workflow.ComponentModel.ActivityBind();
+            System.Workflow.ComponentModel.ActivityBind activitybind3 = new System.Workflow.ComponentModel.ActivityBind();
+            this.UpdateSourceItem_Anulowany = new System.Workflow.Activities.CodeActivity();
+            this.logErrorMessage = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
+            this.ErrorHandler = new System.Workflow.Activities.CodeActivity();
             this.logToHistoryListActivity6 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Update_tabKartyKontrolne = new System.Workflow.Activities.CodeActivity();
             this.logToHistoryListActivity5 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
@@ -38,12 +43,39 @@ namespace Workflows.ObslugaWiadomosci
             this.Mail_Setup = new System.Workflow.Activities.CodeActivity();
             this.logToHistoryListActivity3 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.logToHistoryListActivity1 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
+            this.faultHandlerActivity1 = new System.Workflow.ComponentModel.FaultHandlerActivity();
             this.Else = new System.Workflow.Activities.IfElseBranchActivity();
             this.isMailSent = new System.Workflow.Activities.IfElseBranchActivity();
+            this.faultHandlersActivity1 = new System.Workflow.ComponentModel.FaultHandlersActivity();
             this.cancellationHandlerActivity1 = new System.Workflow.ComponentModel.CancellationHandlerActivity();
+            this.UpdateSourceItem = new System.Workflow.Activities.CodeActivity();
             this.CzyWiadomośćWysłana = new System.Workflow.Activities.IfElseActivity();
             this.logToHistoryListActivity2 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
+            this.logParams = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
+            this.GetParams = new System.Workflow.Activities.CodeActivity();
             this.onWorkflowActivated1 = new Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated();
+            // 
+            // UpdateSourceItem_Anulowany
+            // 
+            this.UpdateSourceItem_Anulowany.Name = "UpdateSourceItem_Anulowany";
+            this.UpdateSourceItem_Anulowany.ExecuteCode += new System.EventHandler(this.UpdateSourceItem_Anulowany_ExecuteCode);
+            // 
+            // logErrorMessage
+            // 
+            this.logErrorMessage.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
+            this.logErrorMessage.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
+            activitybind1.Name = "ObslugaWiadomosci";
+            activitybind1.Path = "logErrorMessage_HistoryDescription";
+            this.logErrorMessage.HistoryOutcome = "";
+            this.logErrorMessage.Name = "logErrorMessage";
+            this.logErrorMessage.OtherData = "";
+            this.logErrorMessage.UserId = -1;
+            this.logErrorMessage.SetBinding(Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity.HistoryDescriptionProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind1)));
+            // 
+            // ErrorHandler
+            // 
+            this.ErrorHandler.Name = "ErrorHandler";
+            this.ErrorHandler.ExecuteCode += new System.EventHandler(this.ErrorHandler_ExecuteCode);
             // 
             // logToHistoryListActivity6
             // 
@@ -110,6 +142,14 @@ namespace Workflows.ObslugaWiadomosci
             this.logToHistoryListActivity1.OtherData = "";
             this.logToHistoryListActivity1.UserId = -1;
             // 
+            // faultHandlerActivity1
+            // 
+            this.faultHandlerActivity1.Activities.Add(this.ErrorHandler);
+            this.faultHandlerActivity1.Activities.Add(this.logErrorMessage);
+            this.faultHandlerActivity1.Activities.Add(this.UpdateSourceItem_Anulowany);
+            this.faultHandlerActivity1.FaultType = typeof(System.Exception);
+            this.faultHandlerActivity1.Name = "faultHandlerActivity1";
+            // 
             // Else
             // 
             this.Else.Activities.Add(this.logToHistoryListActivity3);
@@ -128,9 +168,19 @@ namespace Workflows.ObslugaWiadomosci
             this.isMailSent.Condition = codecondition1;
             this.isMailSent.Name = "isMailSent";
             // 
+            // faultHandlersActivity1
+            // 
+            this.faultHandlersActivity1.Activities.Add(this.faultHandlerActivity1);
+            this.faultHandlersActivity1.Name = "faultHandlersActivity1";
+            // 
             // cancellationHandlerActivity1
             // 
             this.cancellationHandlerActivity1.Name = "cancellationHandlerActivity1";
+            // 
+            // UpdateSourceItem
+            // 
+            this.UpdateSourceItem.Name = "UpdateSourceItem";
+            this.UpdateSourceItem.ExecuteCode += new System.EventHandler(this.UpdateSourceItem_ExecuteCode);
             // 
             // CzyWiadomośćWysłana
             // 
@@ -147,8 +197,25 @@ namespace Workflows.ObslugaWiadomosci
             this.logToHistoryListActivity2.Name = "logToHistoryListActivity2";
             this.logToHistoryListActivity2.OtherData = "";
             this.logToHistoryListActivity2.UserId = -1;
+            // 
+            // logParams
+            // 
+            this.logParams.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
+            this.logParams.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
+            this.logParams.HistoryDescription = "Parametry";
             activitybind2.Name = "ObslugaWiadomosci";
-            activitybind2.Path = "workflowId";
+            activitybind2.Path = "logParams_HistoryOutcome";
+            this.logParams.Name = "logParams";
+            this.logParams.OtherData = "";
+            this.logParams.UserId = -1;
+            this.logParams.SetBinding(Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity.HistoryOutcomeProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind2)));
+            // 
+            // GetParams
+            // 
+            this.GetParams.Name = "GetParams";
+            this.GetParams.ExecuteCode += new System.EventHandler(this.GetParams_ExecuteCode);
+            activitybind4.Name = "ObslugaWiadomosci";
+            activitybind4.Path = "workflowId";
             // 
             // onWorkflowActivated1
             // 
@@ -157,24 +224,44 @@ namespace Workflows.ObslugaWiadomosci
             this.onWorkflowActivated1.CorrelationToken = correlationtoken1;
             this.onWorkflowActivated1.EventName = "OnWorkflowActivated";
             this.onWorkflowActivated1.Name = "onWorkflowActivated1";
-            activitybind1.Name = "ObslugaWiadomosci";
-            activitybind1.Path = "workflowProperties";
+            activitybind3.Name = "ObslugaWiadomosci";
+            activitybind3.Path = "workflowProperties";
             this.onWorkflowActivated1.Invoked += new System.EventHandler<System.Workflow.Activities.ExternalDataEventArgs>(this.onWorkflowActivated1_Invoked);
-            this.onWorkflowActivated1.SetBinding(Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated.WorkflowIdProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind2)));
-            this.onWorkflowActivated1.SetBinding(Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated.WorkflowPropertiesProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind1)));
+            this.onWorkflowActivated1.SetBinding(Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated.WorkflowIdProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind4)));
+            this.onWorkflowActivated1.SetBinding(Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated.WorkflowPropertiesProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind3)));
             // 
             // ObslugaWiadomosci
             // 
             this.Activities.Add(this.onWorkflowActivated1);
+            this.Activities.Add(this.GetParams);
+            this.Activities.Add(this.logParams);
             this.Activities.Add(this.logToHistoryListActivity2);
             this.Activities.Add(this.CzyWiadomośćWysłana);
+            this.Activities.Add(this.UpdateSourceItem);
             this.Activities.Add(this.cancellationHandlerActivity1);
+            this.Activities.Add(this.faultHandlersActivity1);
             this.Name = "ObslugaWiadomosci";
             this.CanModifyActivities = false;
 
         }
 
         #endregion
+
+        private CodeActivity UpdateSourceItem_Anulowany;
+
+        private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logErrorMessage;
+
+        private CodeActivity ErrorHandler;
+
+        private FaultHandlerActivity faultHandlerActivity1;
+
+        private FaultHandlersActivity faultHandlersActivity1;
+
+        private CodeActivity UpdateSourceItem;
+
+        private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logParams;
+
+        private CodeActivity GetParams;
 
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity6;
 
@@ -203,6 +290,16 @@ namespace Workflows.ObslugaWiadomosci
         private IfElseActivity CzyWiadomośćWysłana;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
+
+
+
+
+
+
+
+
+
 
 
 
