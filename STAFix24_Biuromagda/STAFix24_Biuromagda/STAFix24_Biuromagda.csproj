@@ -103,9 +103,15 @@
     <None Include="SiteAssets\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{a31d9042-e86a-4d68-88d9-8e7b7b2cc9f8}</SharePointProjectItemId>
     </None>
-    <None Include="SiteAssets\Templates\Szablon_DrukWplaty.pdf" />
-    <None Include="SiteAssets\Templates\Szablon_DrukWplaty_PD.pdf" />
-    <None Include="SiteAssets\Templates\Szablon_DrukWplaty_ZUS.pdf" />
+    <None Include="SiteAssets\Templates\Szablon_DWBW300.pdf" />
+    <None Include="SiteAssets\Templates\Szablon_DWBW300h.pdf" />
+    <None Include="SiteAssets\Templates\Szablon_DWBW300hh.pdf" />
+    <None Include="SiteAssets\Templates\Szablon_DW_PDBW300.pdf" />
+    <None Include="SiteAssets\Templates\Szablon_DW_PDBW300h.pdf" />
+    <None Include="SiteAssets\Templates\Szablon_DW_PDBW300hh.pdf" />
+    <None Include="SiteAssets\Templates\Szablon_DW_ZUSBW300.pdf" />
+    <None Include="SiteAssets\Templates\Szablon_DW_ZUSBW300h.pdf" />
+    <None Include="SiteAssets\Templates\Szablon_DW_ZUSBW300hh.pdf" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="CodeFragments.txt" />

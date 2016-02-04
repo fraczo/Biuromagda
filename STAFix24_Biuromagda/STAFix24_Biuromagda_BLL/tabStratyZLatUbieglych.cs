@@ -53,11 +53,10 @@ namespace BLL
             return result;
         }
 
-
         /// <summary>
         /// powiększa wartości strat i odliczeń o wartości z bieżącego rekordu
         /// </summary>
-        public static void Add_StratyIOdliczenia(SPWeb web, int itemId, ref double sumaStrat, ref double sumaOdliczen, ref double sumaDoDoliczenia)
+        private static void Add_StratyIOdliczenia(SPWeb web, int itemId, ref double sumaStrat, ref double sumaOdliczen, ref double sumaDoDoliczenia)
         {
             SPListItem item = web.Lists.TryGetList(targetList).GetItemById(itemId);
             double sStrat = BLL.Tools.Get_Value(item, "colWysokoscStraty");
@@ -70,6 +69,34 @@ namespace BLL
             sumaDoDoliczenia = sumaDoDoliczenia + sDoDoliczenia;
             sumaStrat = sumaStrat + sStrat;
             sumaOdliczen = sumaOdliczen + sOdliczen;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="web"></param>
+        /// <param name="klientId"></param>
+        /// <param name="okresId">wskazuje na biżący okres na podstawie którego ustalany jest bieżący rok</param>
+        /// <returns></returns>
+        public static double Get_SumaDoOdliczenia(SPWeb web, int klientId, int okresId)
+        {
+            DateTime d = BLL.tabOkresy.Get_StartDate(web, okresId);
+
+            double sumaStrat = 0;
+            double sumaOdliczen = 0;
+            double sumaDoOdliczenia = 0;
+
+            //sprawdź 5 ostatnich lat
+            int currentYear = d.Year;
+            for (int i = 0; i < 5; i++)
+            {
+                int targetYear = currentYear - 1 - i;
+                int itemId = Ensure_RecordExist(web, klientId, targetYear);
+
+                //dodaje wartości strat i odliczeń dla bieżącego rekordu
+                Add_StratyIOdliczenia(web, itemId, ref sumaStrat, ref sumaOdliczen, ref sumaDoOdliczenia);
+            }
+            return sumaDoOdliczenia;
         }
     }
 }

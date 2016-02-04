@@ -44,17 +44,11 @@ namespace GeneratorDrukow
                 }
             }
 
-            //string pdfFilePath = @"SiteAssets/Templates/DW-Przelew.pdf";
-            string pdfFilePath = @"SiteAssets/Templates/Szablon_DrukWplaty.pdf";
+            string pdfFilePath = @"SiteAssets/Templates/Szablon_DWBW300h.pdf";
 
-            int x0 = 20; // 89;
-            int y0 = 7; // 76;
-
-            //string pdfFilePath = @"SiteAssets/Templates/PolecenieWplaty-Template.pdf";
-            //int x0 = 95;
-            //int y0 = 115;
-
-            //string pdfFilePath = @"SiteAssets/Templates/MyTemplate.pdf";
+            //koordynaty ramki
+            int x0 = 92;
+            int y0 = 34; 
 
             SPFile file = web.GetFile(pdfFilePath);
 
@@ -75,7 +69,7 @@ namespace GeneratorDrukow
                 // Create an empty XForm object with the specified width and height
                 // A form is bound to its target document when it is created. The reason is that the form can 
                 // share fonts and other objects with its target document.
-                XForm form = new XForm(document, XUnit.FromMillimeter(138), XUnit.FromMillimeter(77));
+                XForm form = new XForm(document, XUnit.FromMillimeter(133), XUnit.FromMillimeter(75));
 
                 // Create an XGraphics object for drawing the contents of the form.
                 XGraphics formGfx = XGraphics.FromForm(form);
@@ -108,24 +102,28 @@ namespace GeneratorDrukow
                     odbiorca = odbiorca.Substring(0, maxLen);
                 }
 
-                formGfx.DrawString(odbiorca, font, XBrushes.Navy, 8, 8, XStringFormats.TopLeft);
-                formGfx.DrawString(odbiorca2, font, XBrushes.Navy, 8, 33, XStringFormats.TopLeft);
+                var r = 8;
+                var offsetR = 23.3;
+
+                formGfx.DrawString(odbiorca, font, XBrushes.Navy, 8, r, XStringFormats.TopLeft);
+                formGfx.DrawString(odbiorca2, font, XBrushes.Navy, 8, r+offsetR, XStringFormats.TopLeft);
                 //formGfx.DrawString("Numer rachunku odbiorcy przekazu pocztowego", new XFont("Verdana", 10, XFontStyle.Regular), XBrushes.Navy, 8, 57, XStringFormats.TopLeft);
 
                 int n = 0;
-                formGfx.DrawString(numerRachunku.Substring(n, 2), font, XBrushes.Navy, 13, 57, XStringFormats.TopLeft); n = n + 2;
+                formGfx.DrawString(numerRachunku.Substring(n, 2), font, XBrushes.Navy, 13, r+offsetR*2, XStringFormats.TopLeft); n = n + 2;
 
-                int offset = 57;
-                int targetX = 48;
+                int offset = 57; // 57; - odstęp pomiędzy liczbami w rachunku bankowym
+                int targetX = 40;
 
-                formGfx.DrawString(numerRachunku.Substring(n, 4), font, XBrushes.Navy, targetX, 57, XStringFormats.TopLeft); n = n + 4;
-                formGfx.DrawString(numerRachunku.Substring(n, 4), font, XBrushes.Navy, targetX + 1 * offset, 57, XStringFormats.TopLeft); n = n + 4;
-                formGfx.DrawString(numerRachunku.Substring(n, 4), font, XBrushes.Navy, targetX + 2 * offset, 57, XStringFormats.TopLeft); n = n + 4;
-                formGfx.DrawString(numerRachunku.Substring(n, 4), font, XBrushes.Navy, targetX + 3 * offset, 57, XStringFormats.TopLeft); n = n + 4;
-                formGfx.DrawString(numerRachunku.Substring(n, 4), font, XBrushes.Navy, targetX + 4 * offset, 57, XStringFormats.TopLeft); n = n + 4;
-                formGfx.DrawString(numerRachunku.Substring(n, 4), font, XBrushes.Navy, targetX + 5 * offset, 57, XStringFormats.TopLeft);
+                formGfx.DrawString(numerRachunku.Substring(n, 4), font, XBrushes.Navy, targetX, r + offsetR * 2, XStringFormats.TopLeft); n = n + 4;
+                formGfx.DrawString(numerRachunku.Substring(n, 4), font, XBrushes.Navy, targetX + 1 * offset, r + offsetR * 2, XStringFormats.TopLeft); n = n + 4;
+                formGfx.DrawString(numerRachunku.Substring(n, 4), font, XBrushes.Navy, targetX + 2 * offset, r + offsetR * 2, XStringFormats.TopLeft); n = n + 4;
+                formGfx.DrawString(numerRachunku.Substring(n, 4), font, XBrushes.Navy, targetX + 3 * offset, r + offsetR * 2, XStringFormats.TopLeft); n = n + 4;
+                formGfx.DrawString(numerRachunku.Substring(n, 4), font, XBrushes.Navy, targetX + 4 * offset, r + offsetR * 2, XStringFormats.TopLeft); n = n + 4;
+                formGfx.DrawString(numerRachunku.Substring(n, 4), font, XBrushes.Navy, targetX + 5 * offset, r + offsetR * 2, XStringFormats.TopLeft);
 
-                formGfx.DrawString("***" + String.Format("{0:#,0.00}", kwotaDoZaplaty) + "***", font, XBrushes.Navy, 220, 81, XStringFormats.TopLeft);
+                formGfx.DrawString("X", new XFont("Verdana", 10, XFontStyle.Regular), XBrushes.Navy, 125, r + offsetR * 3, XStringFormats.TopLeft);
+                formGfx.DrawString("***" + String.Format("{0:#,0.00}", kwotaDoZaplaty) + "***", font, XBrushes.Navy, 220, r + offsetR * 3, XStringFormats.TopLeft);
 
                 int zlote = (int)kwotaDoZaplaty;
                 int grosze = (int)(100 * kwotaDoZaplaty) % 100;
@@ -133,7 +131,8 @@ namespace GeneratorDrukow
                     KwotaSlownie.LiczbaSlownie(zlote),
                     grosze + "/100");
 
-                formGfx.DrawString("***" + kwota + "***", new XFont("Verdana", 10, XFontStyle.Regular), XBrushes.Navy, 8, 106, XStringFormats.TopLeft);
+                formGfx.DrawString("***" + kwota + "***", new XFont("Verdana", 10, XFontStyle.Regular), XBrushes.Navy, 8, r + offsetR * 4, XStringFormats.TopLeft);
+
 
                 string zleceniodawca2 = string.Empty;
                 if (zleceniodawca.Length > maxLen)
@@ -145,8 +144,8 @@ namespace GeneratorDrukow
                     }
                     zleceniodawca = zleceniodawca.Substring(0, maxLen);
                 }
-                formGfx.DrawString(zleceniodawca, font, XBrushes.Navy, 8, 130, XStringFormats.TopLeft);
-                formGfx.DrawString(zleceniodawca2, font, XBrushes.Navy, 8, 154, XStringFormats.TopLeft);
+                formGfx.DrawString(zleceniodawca, font, XBrushes.Navy, 8, r + offsetR * 5, XStringFormats.TopLeft);
+                formGfx.DrawString(zleceniodawca2, font, XBrushes.Navy, 8, r + offsetR * 6, XStringFormats.TopLeft);
 
                 string tytulem2 = string.Empty;
                 if (tytulem.Length > maxLen)
@@ -158,8 +157,8 @@ namespace GeneratorDrukow
                     }
                     tytulem = tytulem.Substring(0, maxLen);
                 }
-                formGfx.DrawString(tytulem, font, XBrushes.Navy, 8, 178, XStringFormats.TopLeft);
-                formGfx.DrawString(tytulem2, font, XBrushes.Navy, 8, 201, XStringFormats.TopLeft);
+                formGfx.DrawString(tytulem, font, XBrushes.Navy, 8, r + offsetR * 7, XStringFormats.TopLeft);
+                formGfx.DrawString(tytulem2, font, XBrushes.Navy, 8, r + offsetR * 8, XStringFormats.TopLeft);
 
 
 
@@ -171,13 +170,13 @@ namespace GeneratorDrukow
 
                 // Draw the form on the page of the document in its original size
                 gfx.DrawImage(form, x0, y0);
-                gfx.DrawImage(form, x0, y0 + 310);
+                gfx.DrawImage(form, x0, y0 + 296);
 
                 MemoryStream ms = new MemoryStream();
                 document.Save(ms);
 
-                item.Attachments.AddNow(nazwaPliku, ms.GetBuffer());
-                //item.SystemUpdate();
+                item.Attachments.Add(nazwaPliku, ms.GetBuffer());
+                item.SystemUpdate();
 
                 return true;
             }
@@ -234,25 +233,29 @@ namespace GeneratorDrukow
                 }
             }
 
-            //string pdfFilePath = @"SiteAssets/Templates/DW-Podatek.pdf";
-            string pdfFilePath = @"SiteAssets/Templates/Szablon_DrukWplaty_PD.pdf";
+            string pdfFilePath = @"SiteAssets/Templates/Szablon_DW_PDBW300h.pdf";
 
-            int x0 = 85; 
+            int x0 = 88; //85
             int dx = 136;
+
             int y0 = 35; 
             int dy = 76;
-            double ofset0 = 14.5; 
-            int c01 = 3;
-            int r01 = 10;
-            int r02 = 32;
-            int r03 = 55;
-            int c02 = 220;
-            int r04 = 76; 
-            int r05 = 98;
-            int r06 = 122;
-            int r07 = 146;
-            int r08 = 169;
-            int r09 = 193;
+            double ofset0 = 14.18; //14.5 dotyczy numeru rachunku
+
+            var r = 5;
+            var rOffset = 23.8; //23.2
+
+            int c01 = 5;
+            int r01 = r;
+            int r02 = (int)(r + rOffset * 1);
+            int r03 = (int)(r + rOffset * 2);
+            int c02 = 217; //220
+            int r04 = (int)(r + rOffset * 3);
+            int r05 = (int)(r + rOffset * 4);
+            int r06 = (int)(r + rOffset * 5);
+            int r07 = (int)(r + rOffset * 6);
+            int r08 = (int)(r + rOffset * 7);
+            int r09 = (int)(r + rOffset * 8);
 
 
             SPFile file = web.GetFile(pdfFilePath);
@@ -342,13 +345,13 @@ namespace GeneratorDrukow
 
                 // Draw the form on the page of the document in its original size
                 gfx.DrawImage(form, x0, y0);
-                gfx.DrawImage(form, x0, y0 + 292);
+                gfx.DrawImage(form, x0, y0 + 297);  //294
 
                 MemoryStream ms = new MemoryStream();
                 document.Save(ms);
 
-                item.Attachments.AddNow(nazwaPliku, ms.GetBuffer());
-                //item.SystemUpdate();
+                item.Attachments.Add(nazwaPliku, ms.GetBuffer());
+                item.SystemUpdate();
 
                 return true;
             }
@@ -415,23 +418,26 @@ namespace GeneratorDrukow
             }
 
             //string pdfFilePath = @"SiteAssets/Templates/DW-ZUS.pdf";
-            string pdfFilePath = @"SiteAssets/Templates/Szablon_DrukWplaty_ZUS.pdf";
+            string pdfFilePath = @"SiteAssets/Templates/Szablon_DW_ZUSBW300hh.pdf";
 
 
-            int x0 = 25; 
-            int dx = 135;
-            int y0 = 2; 
-            int dy = 78;
-            int formoffset = 301;
+            int x0 = 90;
+            int dx = 136;
 
-            double ofset0 = 14.45; //odstępo pomiędzy znakami
-            double ofset1 = 22.9; //odstęp pomiędzy liniami
+            int y0 = 35;
+            int dy = 76;
+
+            int formoffset = 297;
+            
+
+            double ofset0 = 14; //odstępo pomiędzy znakami ?14.18
+            double ofset1 = 23.6; //odstęp pomiędzy liniami ?23.2
 
             int c01 = 3;
-            int r01 = 58;
+            int r01 = 52;
             int r02 = r01 + (int)(ofset1 * 1);
             int r03 = r01 + (int)(ofset1 * 2);
-            int c02 = 221;
+            int c02 = 215; //221
             int r04 = r01 + (int)(ofset1 * 3);
             int r05 = r01 + (int)(ofset1 * 4);
             int r06 = r01 + (int)(ofset1 * 5);
@@ -471,7 +477,9 @@ namespace GeneratorDrukow
 
                 PlotText(numerRachunku, c01, r01, ofset0, formGfx, font);
 
-                PlotText((string)(String.Format("{0:#0.00}", kwotaDoZaplaty) + "************").Substring(0, 12), c02, r02, ofset0, formGfx, font);
+                PlotText("         X", c01, r02, ofset0, formGfx, font);
+
+                PlotText("               "+(string)(String.Format("{0:#0.00}", kwotaDoZaplaty) + "************").Substring(0, 12), c01, r02, ofset0, formGfx, font);
 
                 int zlote = (int)kwotaDoZaplaty;
                 int grosze = (int)(100 * kwotaDoZaplaty) % 100;
@@ -514,8 +522,8 @@ namespace GeneratorDrukow
                 MemoryStream ms = new MemoryStream();
                 document.Save(ms);
 
-                item.Attachments.AddNow(nazwaPliku, ms.GetBuffer());
-                //item.SystemUpdate();
+                item.Attachments.Add(nazwaPliku, ms.GetBuffer());
+                item.SystemUpdate();
 
                 return true;
             }

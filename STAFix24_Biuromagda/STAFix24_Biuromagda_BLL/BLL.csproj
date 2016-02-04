@@ -64,6 +64,7 @@
     <Compile Include="Logger.cs" />
     <Compile Include="Models\FakturaDoZaplaty.cs" />
     <Compile Include="Models\Markery.cs" />
+    <Compile Include="Models\OpcjaWysylkiPD.cs" />
     <Compile Include="Models\Operator.cs" />
     <Compile Include="Models\StatusKlienta.cs" />
     <Compile Include="Models\StatusZadania.cs" />

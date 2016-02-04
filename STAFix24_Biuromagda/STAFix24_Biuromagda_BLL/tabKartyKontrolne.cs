@@ -398,5 +398,10 @@ namespace BLL
                                 && BLL.Tools.Get_LookupId(i, "selOkres").Equals(okresId))
                     .FirstOrDefault();
         }
+
+        public static void Update_PDW_Data(SPListItem item)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

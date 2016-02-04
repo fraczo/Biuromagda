@@ -37,10 +37,14 @@ namespace EventReceivers
                 switch (properties.ListItem.ContentType.Name)
                 {
                     case "Generowanie formatek rozliczeniowych":
-                        BLL.Workflows.StartWorkflow(item, "Generuj zbiorczo formatki rozliczeniowe");
+                        Debug.WriteLine("Event: Generowanie formatek rozliczeniowych");
+
+                        BLL.Workflows.StartWorkflow(item, "Generuj formatki rozliczeniowe");
                         break;
                     case "Generowanie formatek rozliczeniowych dla klienta":
-                        BLL.Workflows.StartWorkflow(item, "Generuj formatki rozliczeniowe");
+                        Debug.WriteLine("Event: Generowanie formatek rozliczeniowych dla klienta");
+
+                        BLL.Workflows.StartWorkflow(item, "Generuj formatki rozliczeniowe dla klienta");
                         break;
                     case "Obsługa wiadomości":
                         Debug.WriteLine("Event: Obsługa wiadomości");
@@ -58,6 +62,7 @@ namespace EventReceivers
                         break;
                     case "Generator zadań":
                         Debug.WriteLine("Event: Generator zadań");
+
                         BLL.Workflows.StartWorkflow(item, "GeneratorZadanWF");
                         break;
                     case "Import faktur za obsługę":

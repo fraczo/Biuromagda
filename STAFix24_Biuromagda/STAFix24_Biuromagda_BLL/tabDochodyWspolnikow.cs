@@ -59,5 +59,21 @@ namespace BLL
                 result = newItem.ID;
             }
         }
+
+        public static double Sum_UdzalyWspolnikow(SPWeb web, int klientId, int okresId)
+        {
+            Array results = web.Lists.TryGetList(targetList).Items.Cast<SPListItem>()
+                .Where(i => BLL.Tools.Get_LookupId(i, "selKlient_NazwaSkrocona").Equals(klientId))
+                .Where(i => BLL.Tools.Get_LookupId(i, "selOkres").Equals(okresId))
+                .ToArray();
+
+            double s = 0;
+            foreach (SPListItem item in results)
+            {
+                s = s + BLL.Tools.Get_Value(item, "colPD_UdzialWZysku");
+            }
+
+            return s;
+        }
     }
 }

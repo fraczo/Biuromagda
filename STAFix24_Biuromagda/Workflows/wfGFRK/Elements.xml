@@ -6,7 +6,7 @@ Name="[NAME]" ==> Name="MyWorkflow" -->
 
 <Elements xmlns="http://schemas.microsoft.com/sharepoint/">
   <Workflow
-     Name="Generuj formatki rozliczeniowe"
+     Name="Generuj formatki rozliczeniowe dla klienta"
      Description="My SharePoint Workflow"
      Id="c94b68d2-019c-404e-843f-8ca2888053fe"
      CodeBesideClass="Workflows.wfGFRK.wfGFRK"

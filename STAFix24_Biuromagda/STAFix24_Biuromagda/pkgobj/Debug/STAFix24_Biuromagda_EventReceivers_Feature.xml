@@ -2,9 +2,15 @@
 <Feature xmlns="http://schemas.microsoft.com/sharepoint/" Id="af22d8b1-808b-441d-afd5-23d39e3dfd1a" Scope="Web" Title="STAFix24_Biuromagda Event Receivers">
   <ElementManifests>
     <ElementManifest Location="SiteAssets\Elements.xml" />
-    <ElementFile Location="SiteAssets\Templates\Szablon_DrukWplaty.pdf" />
-    <ElementFile Location="SiteAssets\Templates\Szablon_DrukWplaty_ZUS.pdf" />
-    <ElementFile Location="SiteAssets\Templates\Szablon_DrukWplaty_PD.pdf" />
+    <ElementFile Location="SiteAssets\Templates\Szablon_DWBW300.pdf" />
+    <ElementFile Location="SiteAssets\Templates\Szablon_DW_PDBW300.pdf" />
+    <ElementFile Location="SiteAssets\Templates\Szablon_DWBW300hh.pdf" />
+    <ElementFile Location="SiteAssets\Templates\Szablon_DW_PDBW300h.pdf" />
+    <ElementFile Location="SiteAssets\Templates\Szablon_DW_PDBW300hh.pdf" />
+    <ElementFile Location="SiteAssets\Templates\Szablon_DW_ZUSBW300.pdf" />
+    <ElementFile Location="SiteAssets\Templates\Szablon_DW_ZUSBW300h.pdf" />
+    <ElementFile Location="SiteAssets\Templates\Szablon_DW_ZUSBW300hh.pdf" />
+    <ElementFile Location="SiteAssets\Templates\Szablon_DWBW300h.pdf" />
     <ElementManifest Location="tabWiadomosciER\Elements.xml" />
     <ElementManifest Location="tabProceduryER\Elements.xml" />
     <ElementManifest Location="tabKlienciER\Elements.xml" />

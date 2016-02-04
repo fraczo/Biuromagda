@@ -327,22 +327,7 @@ namespace EventReceivers.admProcessRequestsER
 
         private static void Copy_SumyStratZLatUbieglych(SPWeb web, int klientId, int okresId, ref SPListItem formatka)
         {
-            DateTime d = BLL.tabOkresy.Get_StartDate(web, okresId);
-
-            double sumaStrat = 0;
-            double sumaOdliczen = 0;
-            double sumaDoOdliczenia = 0;
-
-            //sprawdź 5 ostatnich lat
-            int currentYear = d.Year;
-            for (int i = 0; i < 5; i++)
-            {
-                int targetYear = currentYear - 1 - i;
-                int itemId = BLL.tabStratyZLatUbieglych.Ensure_RecordExist(web, klientId, targetYear);
-
-                //dodaje wartości strat i odliczeń dla bieżącego rekordu
-                BLL.tabStratyZLatUbieglych.Add_StratyIOdliczenia(web, itemId, ref sumaStrat, ref sumaOdliczen, ref sumaDoOdliczenia);
-            }
+            double sumaDoOdliczenia = BLL.tabStratyZLatUbieglych.Get_SumaDoOdliczenia(web, klientId, okresId);
 
             //zapisz wartości sumaStrat i sumaOdliczeń na formatce PDS
 
@@ -356,6 +341,8 @@ namespace EventReceivers.admProcessRequestsER
                 BLL.Tools.Set_Value(formatka, "colStrataDoOdliczenia", sumaDoOdliczenia);
             }
         }
+
+
 
         private static void Create_DochodyWspolnikow(SPWeb web, int klientId, int okresId)
         {
