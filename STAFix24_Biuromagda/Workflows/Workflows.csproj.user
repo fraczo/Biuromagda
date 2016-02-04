@@ -77,7 +77,7 @@
           <ManualStart>true</ManualStart>
         </ProjectItemStore>
         <ProjectItemStore Id="{64d8970d-99ab-40b7-9e39-63deccf81706}">
-          <DisplayName>Generuj formatki rozliczeniowe</DisplayName>
+          <DisplayName>Generuj formatki rozliczeniowe dla klienta</DisplayName>
           <HistoryList>Workflow History</HistoryList>
           <HistoryListGuid>{7f19a9a1-6997-47fb-9e20-70fea625b6a9}</HistoryListGuid>
           <TaskList>Workflow Tasks</TaskList>
@@ -91,7 +91,7 @@
           <StartOnChange>false</StartOnChange>
         </ProjectItemStore>
         <ProjectItemStore Id="{a38888e5-8745-4ba3-b979-ec20d507c921}">
-          <DisplayName>Generuj zbiorczo formatki rozliczeniowe</DisplayName>
+          <DisplayName>Generuj formatki rozliczeniowe</DisplayName>
           <HistoryList>Workflow History</HistoryList>
           <HistoryListGuid>{7f19a9a1-6997-47fb-9e20-70fea625b6a9}</HistoryListGuid>
           <TaskList>Workflow Tasks</TaskList>
