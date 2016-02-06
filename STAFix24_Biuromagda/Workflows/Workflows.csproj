@@ -92,10 +92,10 @@
       <DependentUpon>ObslugaWiadomosci.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="swfWysylkaWiadomosci\swfCleanup\swfCleanup.cs">
+    <Compile Include="swfCleanup\swfCleanup.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="swfWysylkaWiadomosci\swfCleanup\swfCleanup.Designer.cs">
+    <Compile Include="swfCleanup\swfCleanup.Designer.cs">
       <DependentUpon>swfCleanup.cs</DependentUpon>
     </Compile>
     <Compile Include="swfWysylkaWiadomosci\swfWysylkaWiadomosci.cs">
@@ -158,7 +158,7 @@
     <None Include="Package\Package.Template.xml">
       <DependentUpon>Package.package</DependentUpon>
     </None>
-    <None Include="swfWysylkaWiadomosci\swfCleanup\SharePointProjectItem.spdata">
+    <None Include="swfCleanup\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{15f71063-c432-4331-ae8e-d07303fc0785}</SharePointProjectItemId>
     </None>
     <None Include="swfWysylkaWiadomosci\SharePointProjectItem.spdata">
@@ -191,12 +191,14 @@
     <Content Include="ObslugaWiadomosci\Elements.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="swfWysylkaWiadomosci\swfCleanup\Elements.xml" />
+    <Content Include="swfCleanup\Elements.xml" />
     <Content Include="swfWysylkaWiadomosci\Elements.xml" />
     <Content Include="tabZadaniaWF\Elements.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="wfGFRK\Elements.xml" />
+    <Content Include="wfGFRK\Elements.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="wfGFR\Elements.xml" />
     <Content Include="WyslijKopieWiadomosci\Elements.xml" />
     <Content Include="ZatwierdzenieZadania\Elements.xml" />

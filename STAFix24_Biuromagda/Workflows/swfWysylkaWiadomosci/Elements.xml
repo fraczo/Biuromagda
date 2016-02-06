@@ -7,7 +7,7 @@ Name="[NAME]" ==> Name="MyWorkflow" -->
 <Elements xmlns="http://schemas.microsoft.com/sharepoint/">
   <Workflow
      Name="Wysyłka wiadomości oczekujących"
-     Description="My SharePoint Workflow"
+     Description="Inicjuje procesy obsługi wiadomości w kolejce wiadomości, które spełniają kryteria daty nadania."
      Id="40c09700-4459-415c-88f4-8ba8a7dd5f5d"
      CodeBesideClass="Workflows.swfWysylkaWiadomosci.swfWysylkaWiadomosci"
      CodeBesideAssembly="$assemblyname$">

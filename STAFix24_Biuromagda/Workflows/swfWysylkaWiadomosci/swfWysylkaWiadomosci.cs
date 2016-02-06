@@ -35,6 +35,9 @@ namespace Workflows.swfWysylkaWiadomosci
         private IEnumerator myEnum;
         private StringBuilder sb = new StringBuilder();
         public String adminEmail = "stafix24@hotmail.com";
+        private string _ZAKONCZONY = "Zakończony";
+        private string _ANULOWANY = "Anulowany";
+
 
         private void Select_ListaWiadomosciOczekujacych_ExecuteCode(object sender, EventArgs e)
         {
@@ -71,7 +74,7 @@ namespace Workflows.swfWysylkaWiadomosci
         public String msgBody = default(System.String);
         private void sendAdminConfirmation_MethodInvoking(object sender, EventArgs e)
         {
-            msgSubject = string.Format(@"Biuromagda::Wysyłka wiadomości zakończona ({0})", results.Length.ToString());
+            msgSubject = string.Format(@"Wysyłka wiadomości zakończona ({0})", results.Length.ToString());
             msgBody = string.Format(@"Lista przetworzonych wiadomości<br><ol>{0}</ol>", sb.ToString());
         }
 
@@ -109,6 +112,41 @@ namespace Workflows.swfWysylkaWiadomosci
         }
 
         public String logSelected_HistoryOutcome = default(System.String);
+
+
+
+        private void Update_Request_Completed_ExecuteCode(object sender, EventArgs e)
+        {
+            Update_Request(_ZAKONCZONY);
+        }
+
+        private void Update_Request(string status)
+        {
+            if (!string.IsNullOrEmpty(workflowProperties.InitiationData))
+            {
+                if (workflowProperties.InitiationData.Length > 0)
+                {
+                    string[] param = workflowProperties.InitiationData.Split(new string[] { ";" }, StringSplitOptions.None);
+
+                    int sourceItemId = int.Parse(param.GetValue(1).ToString());
+
+                    if (sourceItemId > 0)
+                    {
+                        SPListItem rItem = BLL.admProcessRequests.GetItemById(workflowProperties.Web, sourceItemId);
+                        if (rItem != null)
+                        {
+                            BLL.Tools.Set_Text(rItem, "enumStatusZlecenia", status);
+                            rItem.SystemUpdate();
+                        }
+                    }
+                }
+            }
+        }
+
+        private void Update_Request_Canceled_ExecuteCode(object sender, EventArgs e)
+        {
+            Update_Request(_ANULOWANY);
+        }
 
     }
 }

@@ -34,7 +34,7 @@ namespace Workflows.ObslugaWiadomosci
         public SPListItem item;
         public MailMessage mail;
         private bool isMailReadyToSend;
-        private int sourceItemId;
+        private int sourceItemId = -1;
         public String logParams_HistoryOutcome = default(System.String);
         private string _ZAKONCZONY = "Zakończony";
         private string _ANULOWANY = "Anulowany";
@@ -219,41 +219,6 @@ namespace Workflows.ObslugaWiadomosci
             item.SystemUpdate();
         }
 
-        private void GetParams_ExecuteCode(object sender, EventArgs e)
-        {
-            if (workflowProperties.InitiationData.Length > 0)
-            {
-                string[] param = workflowProperties.InitiationData.Split(new string[] { ";" }, StringSplitOptions.None);
-
-                sourceItemId = int.Parse(param.GetValue(1).ToString());
-
-                logParams_HistoryOutcome = string.Format("SourceItemId={0}", sourceItemId.ToString());
-
-
-            }
-            else
-            {
-                logParams_HistoryOutcome = "brak";
-            }
-        }
-
-
-
-        private void UpdateSourceItem_ExecuteCode(object sender, EventArgs e)
-        {
-            Update_SourceItem(_ZAKONCZONY);
-        }
-
-        private void Update_SourceItem(string statusZlecenia)
-        {
-            SPListItem sourceItem = BLL.admProcessRequests.GetItemById(workflowProperties.Web, sourceItemId);
-            if (sourceItem != null)
-            {
-                BLL.Tools.Set_Text(sourceItem, "enumStatusZlecenia", statusZlecenia);
-                sourceItem.Update();
-            }
-        }
-
         private void ErrorHandler_ExecuteCode(object sender, EventArgs e)
         {
             FaultHandlerActivity fa = ((Activity)sender).Parent as FaultHandlerActivity;
@@ -271,18 +236,5 @@ namespace Workflows.ObslugaWiadomosci
                 ElasticEmail.EmailGenerator.ReportErrorFromWorkflow(workflowProperties, fa.Fault.Message, fa.Fault.StackTrace);
             }
         }
-
-
-
-        private void UpdateSourceItem_Anulowany_ExecuteCode(object sender, EventArgs e)
-        {
-            Update_SourceItem(_ANULOWANY);
-        }
-
-
-
-
-
-
     }
 }

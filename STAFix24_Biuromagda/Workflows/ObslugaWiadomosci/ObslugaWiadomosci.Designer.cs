@@ -48,11 +48,9 @@ namespace Workflows.ObslugaWiadomosci
             this.isMailSent = new System.Workflow.Activities.IfElseBranchActivity();
             this.faultHandlersActivity1 = new System.Workflow.ComponentModel.FaultHandlersActivity();
             this.cancellationHandlerActivity1 = new System.Workflow.ComponentModel.CancellationHandlerActivity();
-            this.UpdateSourceItem = new System.Workflow.Activities.CodeActivity();
             this.CzyWiadomośćWysłana = new System.Workflow.Activities.IfElseActivity();
             this.logToHistoryListActivity2 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.logParams = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
-            this.GetParams = new System.Workflow.Activities.CodeActivity();
             this.onWorkflowActivated1 = new Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated();
             // 
             // UpdateSourceItem_Anulowany
@@ -177,11 +175,6 @@ namespace Workflows.ObslugaWiadomosci
             // 
             this.cancellationHandlerActivity1.Name = "cancellationHandlerActivity1";
             // 
-            // UpdateSourceItem
-            // 
-            this.UpdateSourceItem.Name = "UpdateSourceItem";
-            this.UpdateSourceItem.ExecuteCode += new System.EventHandler(this.UpdateSourceItem_ExecuteCode);
-            // 
             // CzyWiadomośćWysłana
             // 
             this.CzyWiadomośćWysłana.Activities.Add(this.isMailSent);
@@ -209,11 +202,6 @@ namespace Workflows.ObslugaWiadomosci
             this.logParams.OtherData = "";
             this.logParams.UserId = -1;
             this.logParams.SetBinding(Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity.HistoryOutcomeProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind2)));
-            // 
-            // GetParams
-            // 
-            this.GetParams.Name = "GetParams";
-            this.GetParams.ExecuteCode += new System.EventHandler(this.GetParams_ExecuteCode);
             activitybind4.Name = "ObslugaWiadomosci";
             activitybind4.Path = "workflowId";
             // 
@@ -233,11 +221,9 @@ namespace Workflows.ObslugaWiadomosci
             // ObslugaWiadomosci
             // 
             this.Activities.Add(this.onWorkflowActivated1);
-            this.Activities.Add(this.GetParams);
             this.Activities.Add(this.logParams);
             this.Activities.Add(this.logToHistoryListActivity2);
             this.Activities.Add(this.CzyWiadomośćWysłana);
-            this.Activities.Add(this.UpdateSourceItem);
             this.Activities.Add(this.cancellationHandlerActivity1);
             this.Activities.Add(this.faultHandlersActivity1);
             this.Name = "ObslugaWiadomosci";
@@ -257,11 +243,7 @@ namespace Workflows.ObslugaWiadomosci
 
         private FaultHandlersActivity faultHandlersActivity1;
 
-        private CodeActivity UpdateSourceItem;
-
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logParams;
-
-        private CodeActivity GetParams;
 
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity6;
 
@@ -290,6 +272,8 @@ namespace Workflows.ObslugaWiadomosci
         private IfElseActivity CzyWiadomośćWysłana;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
+
 
 
 
