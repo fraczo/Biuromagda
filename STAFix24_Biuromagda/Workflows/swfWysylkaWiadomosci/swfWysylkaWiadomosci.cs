@@ -128,7 +128,7 @@ namespace Workflows.swfWysylkaWiadomosci
                 {
                     string[] param = workflowProperties.InitiationData.Split(new string[] { ";" }, StringSplitOptions.None);
 
-                    int sourceItemId = int.Parse(param.GetValue(1).ToString());
+                    int sourceItemId = int.Parse(param.GetValue(0).ToString());
 
                     if (sourceItemId > 0)
                     {
