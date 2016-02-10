@@ -24,11 +24,13 @@ namespace Workflows.tabZadaniaWF
 {
     public sealed partial class tabZadaniaWF : SequentialWorkflowActivity
     {
+
         const string WYSLIJ_INFORMACJE_DO_KLIENTA = "Wyślij informację do Klienta";
         const string WYSLIJ_INFORMACJE_I_ZAKONCZ_ZADANIE = "Wyślij informację i zakończ zadanie";
         public String logErrorMessage_HistoryDescription = default(System.String);
         const string ZATWIERDZ = "Zatwierdź";
         const string ANULUJ = "Anuluj";
+        private TaskCommands taskCMD;
 
         const string emptyMarker = "---";
 
@@ -44,128 +46,18 @@ namespace Workflows.tabZadaniaWF
         public Guid workflowId = default(System.Guid);
         public SPWorkflowActivationProperties workflowProperties = new SPWorkflowActivationProperties();
         public SPListItem item;
+        public BLL.Models.ZadanieCT zadanieCT;
 
         DateTime startTime;
+        private StatusZadania status;
 
         private void onWorkflowActivated1_Invoked(object sender, ExternalDataEventArgs e)
         {
             Debug.WriteLine("tabZadaniaWF:{" + workflowProperties.WorkflowId + "} initiated");
 
             item = workflowProperties.Item;
-
-            startTime = DateTime.Now;
         }
 
-        private void Preset_ExecuteCode(object sender, EventArgs e)
-        {
-            SPWeb web = item.Web;
-
-            string ct = item.ContentType.Name;
-            switch (ct)
-            {
-                case "Prośba o dokumenty":
-                case "Prośba o przesłanie wyciągu bankowego":
-                    Set_KEY(item);
-                    break;
-                case "Rozliczenie ZUS":
-                case "Rozliczenie podatku dochodowego":
-                case "Rozliczenie podatku dochodowego spółki":
-                case "Rozliczenie podatku VAT":
-                case "Rozliczenie z biurem rachunkowym":
-                    Set_KEY(item);
-                    break;
-                case "Zadanie":
-                    Set_Zadanie(item, web);
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private void ManageCT_ExecuteCode(object sender, EventArgs e)
-        {
-            BLL.Logger.LogEvent(item.Web.ToString(), "Zadanie.Manage_CT_" + item.ID.ToString());
-
-            string status = BLL.Tools.Get_Text(item, "enumStatusZadania");
-
-            if (status != StatusZadania.Zakończone.ToString()
-                && status != StatusZadania.Anulowane.ToString())
-            {
-                //Obsługa poleceń cmdFormatka - może zmieniać statusy zadania.
-                Manage_CMD(item);
-
-                if (item["enumStatusZadania"].ToString() == StatusZadania.Nowe.ToString())
-                {
-                    Set_PrzypiszOperatora(item);
-                    Set_StatusZadania(item, StatusZadania.Obsługa);
-                }
-
-                string ct = item.ContentType.Name;
-                switch (ct)
-                {
-                    case "Zadanie":
-                        break;
-                    case "Prośba o dokumenty":
-                        break;
-                    case "Prośba o przesłanie wyciągu bankowego":
-                        break;
-                    case "Rozliczenie z biurem rachunkowym":
-                        break;
-                    case "Rozliczenie podatku dochodowego":
-                    case "Rozliczenie podatku dochodowego spółki":
-                        Manage_PotwierdzenieOdbioruDokumentow(item);
-                        break;
-                    case "Rozliczenie podatku VAT":
-                        break;
-                    case "Rozliczenie ZUS":
-                        break;
-                    case "Wiadomość z ręki":
-                    case "Wiadomość z szablonu":
-                    case "Wiadomość grupowa":
-                    case "Wiadomość grupowa z szablonu":
-                        BLL.tabWiadomosci.CreateMailMessage(item);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-
-        private void Manage_CMD(SPListItem item)
-        {
-            //sprawdź czy wybrana jakaś komenda
-            string cmd = GetCommand(item);
-
-            if (string.IsNullOrEmpty(cmd)) return;
-
-            //obsługa komend
-            switch (cmd)
-            {
-                case ZATWIERDZ:
-                    Manage_CMD_Zatwierdz(item);
-                    //nie usówaj informacji z pola informacje dla klienta
-                    ResetCommand(item, false);
-                    break;
-                case WYSLIJ_INFORMACJE_DO_KLIENTA:
-                    Manage_CMD_WyslijInfo(item);
-                    //wyczyść informacje dla klienta po wysyłce
-                    ResetCommand(item, true);
-                    break;
-                case WYSLIJ_INFORMACJE_I_ZAKONCZ_ZADANIE:
-                    Manage_CMD_Zatwierdz_WyslijInfo_Zadanie(item);
-                    //wyczyść informacje dla klienta po wysyłce
-                    ResetCommand(item, false);
-                    break;
-                case ANULUJ:
-                    Manage_CMD_Anuluj(item);
-                    //wyczyść informacje dla klienta po wysyłce
-                    ResetCommand(item, false);
-                    break;
-                default:
-                    break;
-
-            }
-        }
 
         private void Manage_CMD_Zatwierdz_WyslijInfo_Zadanie(SPListItem item)
         {
@@ -223,7 +115,6 @@ namespace Workflows.tabZadaniaWF
             if (String.IsNullOrEmpty(item.Title))
             {
                 item["Title"] = item["selProcedura"] != null ? new SPFieldLookupValue(item["selProcedura"].ToString()).LookupValue : "#" + item.ID.ToString();
-                //item.SystemUpdate();
             }
         }
 
@@ -231,7 +122,7 @@ namespace Workflows.tabZadaniaWF
         /// Jeżeli operator jest przypisany to w zadaniu aktualizuje pole _KontoOperatora, które przechowuje jego login
         /// dla celów filtrowania zadań w/g bieżącego użytkownika.
         /// </summary>
-        private void SetOperator_ExecuteCode(object sender, EventArgs e)
+        private void Set_KontoOperatora_ExecuteCode(object sender, EventArgs e)
         {
             BLL.Logger.LogEvent(item.Web.ToString(), "Zadanie.Set_OperatorUser_" + item.ID.ToString());
 
@@ -244,7 +135,6 @@ namespace Workflows.tabZadaniaWF
                 if (item["_KontoOperatora"] == null)
                 {
                     item["_KontoOperatora"] = userId;
-                    //item.SystemUpdate();
                 }
                 else
                 {
@@ -269,11 +159,6 @@ namespace Workflows.tabZadaniaWF
         private void UpdateItem_ExecuteCode(object sender, EventArgs e)
         {
             item.SystemUpdate();
-        }
-
-        private void Reporting_ExecuteCode(object sender, EventArgs e)
-        {
-            Debug.WriteLine("Workflow processing: " + new TimeSpan(DateTime.Now.Ticks - startTime.Ticks).ToString());
         }
 
         #region Updates
@@ -343,27 +228,7 @@ namespace Workflows.tabZadaniaWF
         /// <param name="item"></param>
         private void Set_PrzypiszOperatora(SPListItem item)
         {
-            //sprawdź czy zadanie było edytowane
-            DateTime datCreated = item["Created"] != null ? DateTime.Parse(item["Created"].ToString()) : new DateTime();
-            DateTime datModified = item["Modified"] != null ? DateTime.Parse(item["Modified"].ToString()) : new DateTime();
 
-            if (datCreated == datModified) return;
-
-            //sprawdź czy przypisany operator
-            int operatorId = item["selOperator"] != null ? new SPFieldLookupValue(item["selOperator"].ToString()).LookupId : 0;
-
-            if (operatorId > 0) return;
-
-            //sprawdź czy bieżący operator jest zdefiniowane konto operatora
-            SPUser currentUser = item["Editor"] != null ? new SPFieldUserValue(item.Web, item["Editor"].ToString()).User : null;
-            int targetOpId = BLL.dicOperatorzy.Get_OperatorIdByLoginName(item.Web, currentUser.LoginName);
-
-            if (targetOpId > 0)
-            {
-                //przypisz operatora do zadania
-                item["selOperator"] = targetOpId;
-                //item.SystemUpdate();
-            }
         }
 
         #endregion
@@ -1019,146 +884,148 @@ namespace Workflows.tabZadaniaWF
 
         private void Manage_CMD_Zatwierdz(SPListItem item)
         {
-            string cmd = GetCommand(item);
-            if (cmd == ZATWIERDZ)
+
+
+        }
+
+        private void Manage_Cmd_Zatwierdz1_ExecuteCode(object sender, EventArgs e)
+        {
+            string ct = item.ContentType.Name;
+
+            switch (ct)
             {
-                string ct = item.ContentType.Name;
-
-                switch (ct)
-                {
-                    case "Zadanie":
-                        Set_StatusZadania(item, StatusZadania.Zakończone);
-                        break;
-                    case "Prośba o przesłanie wyciągu bankowego":
-                        Manage_CMD_WyslijWynik_ProsbaOWyciagBankowy(item);
-                        Set_StatusZadania(item, StatusZadania.Wysyłka);
-                        break;
-                    case "Prośba o dokumenty":
-                        Manage_CMD_WyslijWynik_ProsbaODokumenty(item);
-                        Set_StatusZadania(item, StatusZadania.Wysyłka);
-                        break;
-                    case "Rozliczenie ZUS":
-                        if (isValidated_ZUS(item))
-                        {
-                            if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
-                            {
-                                //!!!rekord nie jest zaktualizowany
-                                //item.SystemUpdate();
-                                Update_GBW(item.Web, item, ct);
-
-                                Manage_CMD_WyslijWynik_ZUS(item);
-                                Update_KartaKlienta_ZUS(item);
-                                Set_StatusZadania(item, StatusZadania.Wysyłka);
-                            }
-                            else
-                            {
-                                //jeżeli status gotowe to aktualizuj kartę kontrolną
-                                Update_KartaKlienta_ZUS(item);
-                                Set_StatusZadania(item, StatusZadania.Gotowe);
-                            }
-                        }
-                        break;
-                    case "Rozliczenie podatku dochodowego":
-                        if (isValidated_PD(item))
-                        {
-                            if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
-                            {
-                                //!!!rekord nie jest zaktualizowany
-                                //item.SystemUpdate();
-                                Update_GBW(item.Web, item, ct);
-
-                                Manage_CMD_WyslijWynik_PD(item, OpcjaWysylkiPD.PD);
-                                Update_KartaKlienta_PD(item);
-                                Set_StatusZadania(item, StatusZadania.Wysyłka);
-                            }
-                            else
-                            {
-                                //jeżeli status gotowe to aktualizuj kartę kontrolną
-                                Update_KartaKlienta_PD(item);
-                                Set_StatusZadania(item, StatusZadania.Gotowe);
-                            }
-                        }
-                        break;
-                    case "Rozliczenie podatku dochodowego spółki":
-                        if (isValidated_PDS(item))
-                        {
-                            if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
-                            {
-                                //!!!rekord nie jest zaktualizowany
-                                //item.SystemUpdate();
-                                Update_GBW(item.Web, item, ct);
-
-                                Manage_CMD_WyslijWynik_PDS(item);
-                                Update_KartaKlienta_PDS(item);
-                                Set_StatusZadania(item, StatusZadania.Wysyłka);
-                            }
-                            else
-                            {
-                                //jeżeli status gotowe to aktualizuj kartę kontrolną
-                                Update_KartaKlienta_PDS(item);
-                                Set_StatusZadania(item, StatusZadania.Gotowe);
-                            }
-                        }
-                        break;
-
-                    case "Rozliczenie podatku dochodowego wspólnika":
-                        if (isValidated_PDW(item))
-                        {
-                            if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
-                            {
-                                //!!!rekord nie jest zaktualizowany
-                                //item.SystemUpdate();
-                                Update_GBW(item.Web, item, ct);
-
-                                Manage_CMD_WyslijWynik_PDW(item);
-                                Update_KartaKlienta_PDW(item);
-                                Set_StatusZadania(item, StatusZadania.Wysyłka);
-                            }
-                            else
-                            {
-                                //jeżeli status gotowe to aktualizuj kartę kontrolną
-                                Update_KartaKlienta_PDW(item);
-                                Set_StatusZadania(item, StatusZadania.Gotowe);
-                            }
-                        }
-                        break;
-                    case "Rozliczenie podatku VAT":
-                        if (isValidated_VAT(item))
-                        {
-                            if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
-                            {
-                                //!!!rekord nie jest zaktualizowany
-                                //item.SystemUpdate();
-                                Update_GBW(item.Web, item, ct);
-
-                                Manage_CMD_WyslijWynik_VAT(item);
-                                Update_KartaKlienta_VAT(item);
-                                Set_StatusZadania(item, StatusZadania.Wysyłka);
-                            }
-                            else
-                            {
-                                //jeżeli status gotowe to aktualizuj kartę kontrolną
-                                Update_KartaKlienta_VAT(item);
-                                Set_StatusZadania(item, StatusZadania.Gotowe);
-                            }
-                        }
-                        break;
-
-                    case "Rozliczenie z biurem rachunkowym":
-                        if (isValidated_RBR(item))
+                case "Zadanie":
+                    Set_StatusZadania(item, StatusZadania.Zakończone);
+                    break;
+                case "Prośba o przesłanie wyciągu bankowego":
+                    Manage_CMD_WyslijWynik_ProsbaOWyciagBankowy(item);
+                    Set_StatusZadania(item, StatusZadania.Wysyłka);
+                    break;
+                case "Prośba o dokumenty":
+                    Manage_CMD_WyslijWynik_ProsbaODokumenty(item);
+                    Set_StatusZadania(item, StatusZadania.Wysyłka);
+                    break;
+                case "Rozliczenie ZUS":
+                    if (isValidated_ZUS(item))
+                    {
+                        if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
                         {
                             //!!!rekord nie jest zaktualizowany
                             //item.SystemUpdate();
                             Update_GBW(item.Web, item, ct);
 
-                            Manage_CMD_WyslijWynik_RBR(item);
-                            Update_KartaKlienta_RBR(item);
+                            Manage_CMD_WyslijWynik_ZUS(item);
+                            Update_KartaKlienta_ZUS(item);
                             Set_StatusZadania(item, StatusZadania.Wysyłka);
                         }
-                        break;
-                    default:
-                        break;
-                }
+                        else
+                        {
+                            //jeżeli status gotowe to aktualizuj kartę kontrolną
+                            Update_KartaKlienta_ZUS(item);
+                            Set_StatusZadania(item, StatusZadania.Gotowe);
+                        }
+                    }
+                    break;
+                case "Rozliczenie podatku dochodowego":
+                    if (isValidated_PD(item))
+                    {
+                        if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
+                        {
+                            //!!!rekord nie jest zaktualizowany
+                            //item.SystemUpdate();
+                            Update_GBW(item.Web, item, ct);
+
+                            Manage_CMD_WyslijWynik_PD(item, OpcjaWysylkiPD.PD);
+                            Update_KartaKlienta_PD(item);
+                            Set_StatusZadania(item, StatusZadania.Wysyłka);
+                        }
+                        else
+                        {
+                            //jeżeli status gotowe to aktualizuj kartę kontrolną
+                            Update_KartaKlienta_PD(item);
+                            Set_StatusZadania(item, StatusZadania.Gotowe);
+                        }
+                    }
+                    break;
+                case "Rozliczenie podatku dochodowego spółki":
+                    if (isValidated_PDS(item))
+                    {
+                        if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
+                        {
+                            //!!!rekord nie jest zaktualizowany
+                            //item.SystemUpdate();
+                            Update_GBW(item.Web, item, ct);
+
+                            Manage_CMD_WyslijWynik_PDS(item);
+                            Update_KartaKlienta_PDS(item);
+                            Set_StatusZadania(item, StatusZadania.Wysyłka);
+                        }
+                        else
+                        {
+                            //jeżeli status gotowe to aktualizuj kartę kontrolną
+                            Update_KartaKlienta_PDS(item);
+                            Set_StatusZadania(item, StatusZadania.Gotowe);
+                        }
+                    }
+                    break;
+
+                case "Rozliczenie podatku dochodowego wspólnika":
+                    if (isValidated_PDW(item))
+                    {
+                        if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
+                        {
+                            //!!!rekord nie jest zaktualizowany
+                            //item.SystemUpdate();
+                            Update_GBW(item.Web, item, ct);
+
+                            Manage_CMD_WyslijWynik_PDW(item);
+                            Update_KartaKlienta_PDW(item);
+                            Set_StatusZadania(item, StatusZadania.Wysyłka);
+                        }
+                        else
+                        {
+                            //jeżeli status gotowe to aktualizuj kartę kontrolną
+                            Update_KartaKlienta_PDW(item);
+                            Set_StatusZadania(item, StatusZadania.Gotowe);
+                        }
+                    }
+                    break;
+                case "Rozliczenie podatku VAT":
+                    if (isValidated_VAT(item))
+                    {
+                        if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
+                        {
+                            //!!!rekord nie jest zaktualizowany
+                            //item.SystemUpdate();
+                            Update_GBW(item.Web, item, ct);
+
+                            Manage_CMD_WyslijWynik_VAT(item);
+                            Update_KartaKlienta_VAT(item);
+                            Set_StatusZadania(item, StatusZadania.Wysyłka);
+                        }
+                        else
+                        {
+                            //jeżeli status gotowe to aktualizuj kartę kontrolną
+                            Update_KartaKlienta_VAT(item);
+                            Set_StatusZadania(item, StatusZadania.Gotowe);
+                        }
+                    }
+                    break;
+
+                case "Rozliczenie z biurem rachunkowym":
+                    if (isValidated_RBR(item))
+                    {
+                        //!!!rekord nie jest zaktualizowany
+                        //item.SystemUpdate();
+                        Update_GBW(item.Web, item, ct);
+
+                        Manage_CMD_WyslijWynik_RBR(item);
+                        Update_KartaKlienta_RBR(item);
+                        Set_StatusZadania(item, StatusZadania.Wysyłka);
+                    }
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -2577,7 +2444,7 @@ namespace Workflows.tabZadaniaWF
 
                 if (sumaDoOdliczenia != BLL.Tools.Get_Value(item, "colStrataDoOdliczenia"))
                 {
-                    Add_Comment(item, "Wartość w pozycji 'Suma do odliczenia' nie zgadza się z rejestrem (" + sumaDoOdliczenia.ToString() +")");
+                    Add_Comment(item, "Wartość w pozycji 'Suma do odliczenia' nie zgadza się z rejestrem (" + sumaDoOdliczenia.ToString() + ")");
                     foundError = true;
                 }
 
@@ -2595,8 +2462,8 @@ namespace Workflows.tabZadaniaWF
                 //rozpisz na wspólników
 
                 #region Validacja dotyczy wyłącznie PDS
-                
-                              //oblicz/sprawdź podatek do zapłaty po odliczeniu wszytkich wartości (colIleDoDoplty ? zysk-strata)
+
+                //oblicz/sprawdź podatek do zapłaty po odliczeniu wszytkich wartości (colIleDoDoplty ? zysk-strata)
 
                 double ileDoDoplaty = BLL.Tools.Get_Value(item, "colIleDoDoplaty");
                 double zysk = BLL.Tools.Get_Value(item, "");
@@ -2638,7 +2505,7 @@ namespace Workflows.tabZadaniaWF
 
                 if (v1 < v0) return true;
             }
-            
+
             return false;
         }
 
@@ -2793,15 +2660,7 @@ namespace Workflows.tabZadaniaWF
         #region Potwierdzenie odbioru dokumentów
         private void Manage_PotwierdzenieOdbioruDokumentow(SPListItem item)
         {
-            if (Get_FlagValue(item, "colPotwierdzenieOdbioruDokumento"))
-            {
-                int klientId = Get_LookupId(item, "selKlient");
-                int okresId = Get_LookupId(item, "selOkres");
 
-                if (klientId > 0 && okresId > 0) BLL.tabZadania.Complete_PrzypomnienieOWysylceDokumentow(item, klientId, okresId);
-
-                if (Get_Flag(item, "colPotwierdzenieOdbioruDokumento")) BLL.tabKartyKontrolne.Update_PotwierdzenieOdbioruDokumentow(item.Web, klientId, okresId);
-            }
         }
         #endregion
 
@@ -2849,7 +2708,6 @@ namespace Workflows.tabZadaniaWF
         private void Set_StatusZadania(SPListItem item, StatusZadania statusZadania)
         {
             item["enumStatusZadania"] = statusZadania.ToString();
-            //item.SystemUpdate();
         }
         private static void UsunPodobneZalaczniki(SPListItem item, string targetFileNameLeading)
         {
@@ -2960,5 +2818,317 @@ namespace Workflows.tabZadaniaWF
         }
         #endregion
 
+        private void Get_CT_ExecuteCode(object sender, EventArgs e)
+        {
+            switch (item.ContentType.Name)
+            {
+                case "Prośba o dokumenty":
+                    zadanieCT = ZadanieCT.POD;
+                    break;
+                case "Prośba o przesłanie wyciągu bankowego":
+                    zadanieCT = ZadanieCT.POPWB;
+                    break;
+                case "Rozliczenie ZUS":
+                    zadanieCT = ZadanieCT.RZ;
+                    break;
+                case "Rozliczenie podatku dochodowego":
+                    zadanieCT = ZadanieCT.RPD;
+                    break;
+                case "Rozliczenie podatku dochodowego spółki":
+                    zadanieCT = ZadanieCT.RPDS;
+                    break;
+                case "Rozliczenie podatku dochodowego wspólnika":
+                    zadanieCT = ZadanieCT.RPDW;
+                    break;
+                case "Rozliczenie podatku VAT":
+                    zadanieCT = ZadanieCT.RPV;
+                    break;
+                case "Rozliczenie z biurem rachunkowym":
+                    zadanieCT = ZadanieCT.RZBR;
+                    break;
+                case "Zadanie":
+                    zadanieCT = ZadanieCT.Z;
+                    break;
+                case "Wiadomość z ręki":
+                    zadanieCT = ZadanieCT.WZR;
+                    break;
+                case "Wiadomość z szablonu":
+                    zadanieCT = ZadanieCT.WZS;
+                    break;
+                case "Wiadomość grupowa":
+                    zadanieCT = ZadanieCT.WG;
+                    break;
+                case "Wiadomość grupowa z szablonu":
+                    zadanieCT = ZadanieCT.WGZS;
+                    break;
+            }
+        }
+
+        private void ifZ(object sender, ConditionalEventArgs e)
+        {
+            if (zadanieCT.Equals(ZadanieCT.Z)) e.Result = true;
+        }
+
+        private void ifKomunikat(object sender, ConditionalEventArgs e)
+        {
+            if (zadanieCT.Equals(ZadanieCT.POD)
+                | zadanieCT.Equals(ZadanieCT.POPWB)) e.Result = true;
+        }
+
+        private void ifPOD(object sender, ConditionalEventArgs e)
+        {
+            if (zadanieCT.Equals(ZadanieCT.POD)) e.Result = true;
+        }
+
+        private void ifPOPWB(object sender, ConditionalEventArgs e)
+        {
+            if (zadanieCT.Equals(ZadanieCT.POPWB)) e.Result = true;
+        }
+
+        private void ifFormatki(object sender, ConditionalEventArgs e)
+        {
+            if (zadanieCT.Equals(ZadanieCT.RZ)
+                | zadanieCT.Equals(ZadanieCT.RPD)
+                | zadanieCT.Equals(ZadanieCT.RPDS)
+                | zadanieCT.Equals(ZadanieCT.RPDW)
+                | zadanieCT.Equals(ZadanieCT.RPV)
+                | zadanieCT.Equals(ZadanieCT.RZBR)) e.Result = true;
+        }
+
+        private void ifRZ(object sender, ConditionalEventArgs e)
+        {
+            if (zadanieCT.Equals(ZadanieCT.RZ)) e.Result = true;
+        }
+
+        private void ifRPD(object sender, ConditionalEventArgs e)
+        {
+            if (zadanieCT.Equals(ZadanieCT.RPD)) e.Result = true;
+        }
+
+        private void ifRPDS(object sender, ConditionalEventArgs e)
+        {
+            if (zadanieCT.Equals(ZadanieCT.RPDS)) e.Result = true;
+        }
+
+        private void ifRPDW(object sender, ConditionalEventArgs e)
+        {
+            if (zadanieCT.Equals(ZadanieCT.RPDW)) e.Result = true;
+        }
+
+        private void ifRPV(object sender, ConditionalEventArgs e)
+        {
+            if (zadanieCT.Equals(ZadanieCT.RPV)) e.Result = true;
+        }
+
+        private void ifRZBR(object sender, ConditionalEventArgs e)
+        {
+            if (zadanieCT.Equals(ZadanieCT.RZBR)) e.Result = true;
+        }
+
+        private void ifWiadomosci(object sender, ConditionalEventArgs e)
+        {
+            if (zadanieCT.Equals(ZadanieCT.WZR)
+                | zadanieCT.Equals(ZadanieCT.WZS)
+                | zadanieCT.Equals(ZadanieCT.WG)
+                | zadanieCT.Equals(ZadanieCT.WGZS)) e.Result = true;
+        }
+
+        private void Set_KEY_ExecuteCode(object sender, EventArgs e)
+        {
+            string key = BLL.tabZadania.Define_KEY(item);
+            BLL.Tools.Set_Text(item, "KEY", key);
+        }
+
+        private void Set_Zadanie_ExecuteCode(object sender, EventArgs e)
+        {
+            //przypisz procedurę na podstawie tematu
+            int procId = Assign_ProceduraBasedOnTitle(item, item.Web);
+
+            //update termin realizacji
+            Assign_TerminRealizacjiBasedOnProcedura(item, item.Web, procId);
+
+            //update operatora
+            Assign_OperatorBasedOnProcedura(item, item.Web, procId);
+        }
+
+        private void Get_Status_ExecuteCode(object sender, EventArgs e)
+        {
+            string s = BLL.Tools.Get_Text(item, "enumStatusZadania");
+            switch (s)
+            {
+                case "Nowe":
+                    status = StatusZadania.Nowe;
+                    break;
+                case "Obsługa":
+                    status = StatusZadania.Obsługa;
+                    break;
+                case "Gotowe":
+                    status = StatusZadania.Gotowe;
+                    break;
+                case "Wysyłka":
+                    status = StatusZadania.Wysyłka;
+                    break;
+                case "Zakończone":
+                    status = StatusZadania.Zakończone;
+                    break;
+                case "Anulowane":
+                    status = StatusZadania.Anulowane;
+                    break;
+            }
+        }
+
+        private void isActive(object sender, ConditionalEventArgs e)
+        {
+            if (!status.Equals(StatusZadania.Zakończone)
+                && !status.Equals(StatusZadania.Anulowane)) e.Result = true;
+        }
+
+
+        private void isStatus_Nowe(object sender, ConditionalEventArgs e)
+        {
+            if (status.Equals(StatusZadania.Nowe)) e.Result = true;
+        }
+
+        private void Set_Status_Obsluga_ExecuteCode(object sender, EventArgs e)
+        {
+            Set_StatusZadania(item, StatusZadania.Obsługa);
+        }
+
+        private void Set_Operator_ExecuteCode(object sender, EventArgs e)
+        {
+            //sprawdź czy zadanie było edytowane
+            DateTime datCreated = item["Created"] != null ? DateTime.Parse(item["Created"].ToString()) : new DateTime();
+            DateTime datModified = item["Modified"] != null ? DateTime.Parse(item["Modified"].ToString()) : new DateTime();
+
+            if (datCreated == datModified) return;
+
+            //sprawdź czy przypisany operator
+            int operatorId = item["selOperator"] != null ? new SPFieldLookupValue(item["selOperator"].ToString()).LookupId : 0;
+
+            if (operatorId > 0) return;
+
+            //sprawdź czy bieżący operator jest zdefiniowane konto operatora
+            SPUser currentUser = item["Editor"] != null ? new SPFieldUserValue(item.Web, item["Editor"].ToString()).User : null;
+            int targetOpId = BLL.dicOperatorzy.Get_OperatorIdByLoginName(item.Web, currentUser.LoginName);
+
+            if (targetOpId > 0)
+            {
+                //przypisz operatora do zadania
+                item["selOperator"] = targetOpId;
+                //item.SystemUpdate();
+            }
+        }
+
+        private void Manage_POD_ExecuteCode(object sender, EventArgs e)
+        {
+            if (Get_FlagValue(item, "colPotwierdzenieOdbioruDokumento"))
+            {
+                int klientId = Get_LookupId(item, "selKlient");
+                int okresId = Get_LookupId(item, "selOkres");
+
+                if (klientId > 0 && okresId > 0) BLL.tabZadania.Complete_PrzypomnienieOWysylceDokumentow(item, klientId, okresId);
+
+                if (Get_Flag(item, "colPotwierdzenieOdbioruDokumento")) BLL.tabKartyKontrolne.Update_PotwierdzenieOdbioruDokumentow(item.Web, klientId, okresId);
+            }
+        }
+
+        private void Create_Message_ExecuteCode(object sender, EventArgs e)
+        {
+            BLL.tabWiadomosci.CreateMailMessage(item);
+        }
+
+        private void isCommandExist(object sender, ConditionalEventArgs e)
+        {
+            if (taskCMD != null) e.Result = true;
+        }
+
+        private void Get_Command_ExecuteCode(object sender, EventArgs e)
+        {
+            switch (GetCommand(item))
+            {
+                case ZATWIERDZ:
+                    taskCMD = TaskCommands.Zatwiedz;
+                    Manage_CMD_Zatwierdz(item);
+                    //nie usówaj informacji z pola informacje dla klienta
+                    ResetCommand(item, false);
+                    break;
+                case WYSLIJ_INFORMACJE_DO_KLIENTA:
+                    taskCMD = TaskCommands.WyslijInfo;
+                    Manage_CMD_WyslijInfo(item);
+                    //wyczyść informacje dla klienta po wysyłce
+                    ResetCommand(item, true);
+                    break;
+                case WYSLIJ_INFORMACJE_I_ZAKONCZ_ZADANIE:
+                    taskCMD = TaskCommands.WyslijInfoIZakoncz;
+                    Manage_CMD_Zatwierdz_WyslijInfo_Zadanie(item);
+                    //wyczyść informacje dla klienta po wysyłce
+                    ResetCommand(item, false);
+                    break;
+                case ANULUJ:
+                    taskCMD = TaskCommands.Anuluj;
+                    Manage_CMD_Anuluj(item);
+                    //wyczyść informacje dla klienta po wysyłce
+                    ResetCommand(item, false);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void isCmd_Zatwierdz(object sender, ConditionalEventArgs e)
+        {
+            if (taskCMD.Equals(TaskCommands.Zatwiedz)) e.Result = true;
+        }
+
+        private void isCmd_WyslijInfo(object sender, ConditionalEventArgs e)
+        {
+            if (taskCMD.Equals(TaskCommands.WyslijInfo)) e.Result = true;
+        }
+
+        private void isCmd_WyslijInfoIZakoncz(object sender, ConditionalEventArgs e)
+        {
+            if (taskCMD.Equals(TaskCommands.WyslijInfoIZakoncz)) e.Result = true;
+        }
+
+        private void isCmd_Anuluj(object sender, ConditionalEventArgs e)
+        {
+            if (taskCMD.Equals(TaskCommands.Anuluj)) e.Result = true;
+        }
+
+        private void Manage_Cmd_Zatwierdz_ExecuteCode(object sender, EventArgs e)
+        {
+            Manage_CMD_Zatwierdz(item);
+            //nie usówaj informacji z pola informacje dla klienta
+            ResetCommand(item, false);
+        }
+
+        private void Mange_Cmd_WyslijInfo_ExecuteCode(object sender, EventArgs e)
+        {
+            Manage_CMD_WyslijInfo(item);
+            //wyczyść informacje dla klienta po wysyłce
+            ResetCommand(item, true);
+        }
+
+        private void Manage_Cmd_WyslijInfoIZakoncz_ExecuteCode(object sender, EventArgs e)
+        {
+            Manage_CMD_Zatwierdz_WyslijInfo_Zadanie(item);
+            //wyczyść informacje dla klienta po wysyłce
+            ResetCommand(item, false);
+        }
+
+        private void Manage_Cmd_Anuluj_ExecuteCode(object sender, EventArgs e)
+        {
+            Manage_CMD_Anuluj(item);
+            //wyczyść informacje dla klienta po wysyłce
+            ResetCommand(item, false);
+        }
+    }
+
+    public enum TaskCommands
+    {
+        Zatwiedz,
+        WyslijInfo,
+        WyslijInfoIZakoncz,
+        Anuluj
     }
 }

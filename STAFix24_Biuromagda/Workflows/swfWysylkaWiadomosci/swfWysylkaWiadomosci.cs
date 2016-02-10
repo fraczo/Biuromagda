@@ -148,5 +148,10 @@ namespace Workflows.swfWysylkaWiadomosci
             Update_Request(_ANULOWANY);
         }
 
+        private void hasResults(object sender, ConditionalEventArgs e)
+        {
+            if (results.Length > 0) e.Result = true;
+        }
+
     }
 }

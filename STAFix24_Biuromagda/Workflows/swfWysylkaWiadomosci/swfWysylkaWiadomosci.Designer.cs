@@ -32,6 +32,7 @@ namespace Workflows.swfWysylkaWiadomosci
             System.Workflow.ComponentModel.ActivityBind activitybind3 = new System.Workflow.ComponentModel.ActivityBind();
             System.Workflow.ComponentModel.ActivityBind activitybind4 = new System.Workflow.ComponentModel.ActivityBind();
             System.Workflow.Activities.CodeCondition codecondition1 = new System.Workflow.Activities.CodeCondition();
+            System.Workflow.Activities.CodeCondition codecondition2 = new System.Workflow.Activities.CodeCondition();
             System.Workflow.ComponentModel.ActivityBind activitybind5 = new System.Workflow.ComponentModel.ActivityBind();
             System.Workflow.ComponentModel.ActivityBind activitybind7 = new System.Workflow.ComponentModel.ActivityBind();
             System.Workflow.ComponentModel.ActivityBind activitybind6 = new System.Workflow.ComponentModel.ActivityBind();
@@ -39,15 +40,16 @@ namespace Workflows.swfWysylkaWiadomosci
             this.Update_Request_Canceled = new System.Workflow.Activities.CodeActivity();
             this.logErrorMessage = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.cmdErrorHandler = new System.Workflow.Activities.CodeActivity();
+            this.logReport = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
+            this.sendAdminConfirmation = new Microsoft.SharePoint.WorkflowActions.SendEmail();
             this.Initialize_ChildWorkflow = new System.Workflow.Activities.CodeActivity();
             this.faultHandlerActivity1 = new System.Workflow.ComponentModel.FaultHandlerActivity();
+            this.ifResultsExists = new System.Workflow.Activities.IfElseBranchActivity();
             this.ObsługaPojedynczejWiadomości = new System.Workflow.Activities.SequenceActivity();
             this.faultHandlersActivity1 = new System.Workflow.ComponentModel.FaultHandlersActivity();
             this.logRequestCompleted = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Update_Request_Completed = new System.Workflow.Activities.CodeActivity();
-            this.logReport = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
-            this.sendAdminConfirmation = new Microsoft.SharePoint.WorkflowActions.SendEmail();
-            this.logWorkflowsInitiated = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
+            this.ReportResults = new System.Workflow.Activities.IfElseActivity();
             this.whileActivity1 = new System.Workflow.Activities.WhileActivity();
             this.logSelected = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Select_ListaWiadomosciOczekujacych = new System.Workflow.Activities.CodeActivity();
@@ -85,45 +87,6 @@ namespace Workflows.swfWysylkaWiadomosci
             this.cmdErrorHandler.Name = "cmdErrorHandler";
             this.cmdErrorHandler.ExecuteCode += new System.EventHandler(this.cmdErrorHandler_ExecuteCode);
             // 
-            // Initialize_ChildWorkflow
-            // 
-            this.Initialize_ChildWorkflow.Name = "Initialize_ChildWorkflow";
-            this.Initialize_ChildWorkflow.ExecuteCode += new System.EventHandler(this.Initialize_ChildWorkflow_ExecuteCode);
-            // 
-            // faultHandlerActivity1
-            // 
-            this.faultHandlerActivity1.Activities.Add(this.cmdErrorHandler);
-            this.faultHandlerActivity1.Activities.Add(this.logErrorMessage);
-            this.faultHandlerActivity1.Activities.Add(this.Update_Request_Canceled);
-            this.faultHandlerActivity1.Activities.Add(this.logRequestCanceled);
-            this.faultHandlerActivity1.FaultType = typeof(System.Exception);
-            this.faultHandlerActivity1.Name = "faultHandlerActivity1";
-            // 
-            // ObsługaPojedynczejWiadomości
-            // 
-            this.ObsługaPojedynczejWiadomości.Activities.Add(this.Initialize_ChildWorkflow);
-            this.ObsługaPojedynczejWiadomości.Name = "ObsługaPojedynczejWiadomości";
-            // 
-            // faultHandlersActivity1
-            // 
-            this.faultHandlersActivity1.Activities.Add(this.faultHandlerActivity1);
-            this.faultHandlersActivity1.Name = "faultHandlersActivity1";
-            // 
-            // logRequestCompleted
-            // 
-            this.logRequestCompleted.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
-            this.logRequestCompleted.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
-            this.logRequestCompleted.HistoryDescription = "Request";
-            this.logRequestCompleted.HistoryOutcome = "Completed";
-            this.logRequestCompleted.Name = "logRequestCompleted";
-            this.logRequestCompleted.OtherData = "";
-            this.logRequestCompleted.UserId = -1;
-            // 
-            // Update_Request_Completed
-            // 
-            this.Update_Request_Completed.Name = "Update_Request_Completed";
-            this.Update_Request_Completed.ExecuteCode += new System.EventHandler(this.Update_Request_Completed_ExecuteCode);
-            // 
             // logReport
             // 
             this.logReport.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
@@ -156,21 +119,63 @@ namespace Workflows.swfWysylkaWiadomosci
             this.sendAdminConfirmation.SetBinding(Microsoft.SharePoint.WorkflowActions.SendEmail.ToProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind4)));
             this.sendAdminConfirmation.SetBinding(Microsoft.SharePoint.WorkflowActions.SendEmail.SubjectProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind3)));
             // 
-            // logWorkflowsInitiated
+            // Initialize_ChildWorkflow
             // 
-            this.logWorkflowsInitiated.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
-            this.logWorkflowsInitiated.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
-            this.logWorkflowsInitiated.HistoryDescription = "Workflows (Obsługa wiadomości)";
-            this.logWorkflowsInitiated.HistoryOutcome = "Initiated";
-            this.logWorkflowsInitiated.Name = "logWorkflowsInitiated";
-            this.logWorkflowsInitiated.OtherData = "";
-            this.logWorkflowsInitiated.UserId = -1;
+            this.Initialize_ChildWorkflow.Name = "Initialize_ChildWorkflow";
+            this.Initialize_ChildWorkflow.ExecuteCode += new System.EventHandler(this.Initialize_ChildWorkflow_ExecuteCode);
+            // 
+            // faultHandlerActivity1
+            // 
+            this.faultHandlerActivity1.Activities.Add(this.cmdErrorHandler);
+            this.faultHandlerActivity1.Activities.Add(this.logErrorMessage);
+            this.faultHandlerActivity1.Activities.Add(this.Update_Request_Canceled);
+            this.faultHandlerActivity1.Activities.Add(this.logRequestCanceled);
+            this.faultHandlerActivity1.FaultType = typeof(System.Exception);
+            this.faultHandlerActivity1.Name = "faultHandlerActivity1";
+            // 
+            // ifResultsExists
+            // 
+            this.ifResultsExists.Activities.Add(this.sendAdminConfirmation);
+            this.ifResultsExists.Activities.Add(this.logReport);
+            codecondition1.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.hasResults);
+            this.ifResultsExists.Condition = codecondition1;
+            this.ifResultsExists.Name = "ifResultsExists";
+            // 
+            // ObsługaPojedynczejWiadomości
+            // 
+            this.ObsługaPojedynczejWiadomości.Activities.Add(this.Initialize_ChildWorkflow);
+            this.ObsługaPojedynczejWiadomości.Name = "ObsługaPojedynczejWiadomości";
+            // 
+            // faultHandlersActivity1
+            // 
+            this.faultHandlersActivity1.Activities.Add(this.faultHandlerActivity1);
+            this.faultHandlersActivity1.Name = "faultHandlersActivity1";
+            // 
+            // logRequestCompleted
+            // 
+            this.logRequestCompleted.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
+            this.logRequestCompleted.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
+            this.logRequestCompleted.HistoryDescription = "Request";
+            this.logRequestCompleted.HistoryOutcome = "Completed";
+            this.logRequestCompleted.Name = "logRequestCompleted";
+            this.logRequestCompleted.OtherData = "";
+            this.logRequestCompleted.UserId = -1;
+            // 
+            // Update_Request_Completed
+            // 
+            this.Update_Request_Completed.Name = "Update_Request_Completed";
+            this.Update_Request_Completed.ExecuteCode += new System.EventHandler(this.Update_Request_Completed_ExecuteCode);
+            // 
+            // ReportResults
+            // 
+            this.ReportResults.Activities.Add(this.ifResultsExists);
+            this.ReportResults.Name = "ReportResults";
             // 
             // whileActivity1
             // 
             this.whileActivity1.Activities.Add(this.ObsługaPojedynczejWiadomości);
-            codecondition1.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.whileRecordExist);
-            this.whileActivity1.Condition = codecondition1;
+            codecondition2.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.whileRecordExist);
+            this.whileActivity1.Condition = codecondition2;
             this.whileActivity1.Name = "whileActivity1";
             // 
             // logSelected
@@ -208,9 +213,7 @@ namespace Workflows.swfWysylkaWiadomosci
             this.Activities.Add(this.Select_ListaWiadomosciOczekujacych);
             this.Activities.Add(this.logSelected);
             this.Activities.Add(this.whileActivity1);
-            this.Activities.Add(this.logWorkflowsInitiated);
-            this.Activities.Add(this.sendAdminConfirmation);
-            this.Activities.Add(this.logReport);
+            this.Activities.Add(this.ReportResults);
             this.Activities.Add(this.Update_Request_Completed);
             this.Activities.Add(this.logRequestCompleted);
             this.Activities.Add(this.faultHandlersActivity1);
@@ -221,7 +224,9 @@ namespace Workflows.swfWysylkaWiadomosci
 
         #endregion
 
-        private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logWorkflowsInitiated;
+        private IfElseBranchActivity ifResultsExists;
+
+        private IfElseActivity ReportResults;
 
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logRequestCanceled;
 
@@ -254,6 +259,13 @@ namespace Workflows.swfWysylkaWiadomosci
         private CodeActivity Select_ListaWiadomosciOczekujacych;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
+
+
+
+
+
+
 
 
 

@@ -441,6 +441,11 @@ namespace BLL
 
             faktura.Wyslana = true;
         }
-    
+
+
+        public static SPList Get_List(SPWeb web)
+        {
+            return web.Lists.TryGetList(targetList);
+        }
     }
 }

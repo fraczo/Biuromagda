@@ -11,6 +11,9 @@ namespace BLL
 {
     public class Workflows
     {
+        public const string workflowHistoryListName = "Workflow History";
+        public const string workflowTaskListName = "Workflow Tasks";
+
         public static void StartWorkflow(SPListItem listItem, string workflowName)
         {
             try
@@ -38,7 +41,7 @@ namespace BLL
                             if (!isActive)
                             {
                                 //manager.StartWorkflow(listItem, objWorkflowAssociation, objWorkflowAssociation.AssociationData, true);
-                                SPWorkflow wf = manager.StartWorkflow(listItem, objWorkflowAssociation, objWorkflowAssociation.AssociationData,SPWorkflowRunOptions.SynchronousAllowPostpone);
+                                SPWorkflow wf = manager.StartWorkflow(listItem, objWorkflowAssociation, objWorkflowAssociation.AssociationData, SPWorkflowRunOptions.SynchronousAllowPostpone);
                                 Debug.WriteLine("Workflow InternalState:" + wf.InternalState.ToString());
                                 //The above line will start the workflow...
                             }
@@ -76,7 +79,7 @@ namespace BLL
                     if (String.Compare(objWorkflowAssociation.Name, workflowName, true) == 0)
                     {
                         Debug.WriteLine("WF.Selected");
-                            
+
                         try
                         {
                             SPWorkflowCollection wfc = manager.GetItemActiveWorkflows(listItem);
@@ -98,7 +101,7 @@ namespace BLL
                             if (!isActive)
                             {
                                 SPWorkflow spw = manager.StartWorkflow(listItem, objWorkflowAssociation, objWorkflowAssociation.AssociationData, runOption);
-                                Debug.WriteLine("Workflow: "+workflowName + " Internal State: " + spw.InternalState);
+                                Debug.WriteLine("Workflow: " + workflowName + " Internal State: " + spw.InternalState);
                                 //The above line will start the workflow...
                             }
                             else
@@ -159,8 +162,6 @@ namespace BLL
         {
             //string workflowTemplateBaseGuid = "0b5d7c6b-2764-45dc-8fc1-33fa98145d1c";
             //string workflowAssociationName = "Odchudzanie bazy danych";
-            string workFlowHistoryListName = "Workflow History";
-            string workFlowTaskListName = "Workflow Tasks";
 
             SPWorkflowTemplateCollection workflowTemplates = web.WorkflowTemplates;
             SPWorkflowTemplate workflowTemplate = workflowTemplates.GetTemplateByBaseID(new Guid(workflowTemplateBaseGuid));
@@ -168,16 +169,9 @@ namespace BLL
             if (workflowTemplate != null)
             {
                 // Create the workflow association
-                SPList taskList = web.Lists.TryGetList(workFlowTaskListName);
-                if (taskList == null)
-                {
-                    taskList = BLL.Workflows.CreateTaskList(web, workFlowTaskListName);
-                }
-                SPList historyList = web.Lists.TryGetList(workFlowHistoryListName);
-                if (historyList == null)
-                {
-                    historyList = BLL.Workflows.CreateHistoryListy(web, workFlowHistoryListName);
-                }
+                SPList taskList = EnsureListExist(web, workflowTaskListName);
+                SPList historyList = EnsureListExist(web, workflowHistoryListName);
+
                 SPWorkflowAssociation workflowAssociation = web.WorkflowAssociations.GetAssociationByName(workflowAssociationName, CultureInfo.InvariantCulture);
 
                 if (workflowAssociation == null)
@@ -188,6 +182,91 @@ namespace BLL
                     web.WorkflowAssociations.Add(workflowAssociation);
                 }
             }
+        }
+
+        private static SPList EnsureListExist(SPWeb web, string listName)
+        {
+            SPList list = web.Lists.TryGetList(listName);
+            if (list == null)
+            {
+                list = BLL.Workflows.CreateTaskList(web, listName);
+            }
+            return list;
+        }
+
+
+        // nie używana procedura
+
+        //public static void AssociateWorkflowWithList(SPWeb web, string listName, string workflowTemplateBaseGuid, string workflowAssociationName)
+        //{
+        //    SPList list = web.Lists.TryGetList(listName);
+        //    if (list != null)
+        //    {
+        //        var existingAssociation = list.WorkflowAssociations.GetAssociationByName(workflowAssociationName, CultureInfo.CurrentCulture);
+        //        if (existingAssociation == null)
+        //        {
+        //            // Create the workflow association
+        //            SPList taskList = EnsureListExist(web, workflowTaskListName);
+        //            SPList historyList = EnsureListExist(web, workflowHistoryListName);
+
+        //            //Create a worklow manager and associate the Workflow template to the list
+
+        //            SPWorkflowManager workflowManager = web.Site.WorkflowManager;
+        //            SPWorkflowTemplateCollection templates = workflowManager.GetWorkflowTemplatesByCategory(web, null);
+        //            SPWorkflowTemplate template = templates.GetTemplateByBaseID(new Guid(workflowTemplateBaseGuid));
+        //            SPWorkflowAssociation association = SPWorkflowAssociation.CreateListAssociation(template, template.Name, taskList, historyList);
+        //            association.AllowManual = true;
+        //            association.AutoStartCreate = true;
+        //            list.WorkflowAssociations.Add(association);
+        //            list.Update();
+        //            association.Enabled = true;
+
+        //            Debug.WriteLine("List.Workflow: " + workflowAssociationName + " associated");
+                    
+        //        }
+        //    }
+        //}
+
+
+        public static void EnsureWorkflowAssociation(SPList list, string workflowTemplateName, string associationName, bool allowManual, bool startCreate, bool startUpdate)
+        {
+            var web = list.ParentWeb;
+            var lcid = (int)web.Language;
+            var defaultCulture = new CultureInfo(lcid);
+
+            // Create the workflow association
+            SPList taskList = EnsureListExist(web, workflowTaskListName);
+            SPList historyList = EnsureListExist(web, workflowHistoryListName);
+
+            var workflowAssociation =
+                list.WorkflowAssociations.Cast<SPWorkflowAssociation>().FirstOrDefault(i => i.Name == associationName);
+            if (workflowAssociation != null)
+            {
+                list.WorkflowAssociations.Remove(workflowAssociation);
+                list.Update();
+            }
+
+            var template = web.WorkflowTemplates.GetTemplateByName(workflowTemplateName, defaultCulture);
+            var association = SPWorkflowAssociation.CreateListAssociation(template, associationName, taskList, historyList);
+
+            association.AllowManual = true;
+            association.AutoStartChange = true;
+            association.AutoStartCreate = true;
+
+            list.WorkflowAssociations.Add(association);
+            list.Update();
+
+            association = list.WorkflowAssociations[association.Id];
+            association.AllowManual = allowManual;
+            association.AutoStartChange = startUpdate;
+            association.AutoStartCreate = startCreate;
+            association.AssociationData = "<Dummy></Dummy>";
+            association.Enabled = true;
+            list.WorkflowAssociations.Update(association);
+            list.Update();
+
+            Debug.WriteLine("Ensure.List.Workflow: " + associationName + " associated");
+
         }
 
 

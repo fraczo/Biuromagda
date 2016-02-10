@@ -60,6 +60,9 @@
       <DependentUpon>TimerJobs.feature</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Features\Workflows\Workflows.EventReceiver.cs">
+      <DependentUpon>Workflows.feature</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SiteWorkflows\Cleanup.cs" />
     <Compile Include="SiteWorkflows\WysylkaWiadomosci.cs" />

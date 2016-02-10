@@ -274,9 +274,20 @@ namespace BLL
 
         public static bool Has_Service(SPListItem item, string code, string col)
         {
+            if (code.EndsWith("*"))
+            {
+                code = code.Substring(0, code.Length - 1);
+                foreach (SPFieldLookupValue v in BLL.Tools.Get_LookupValueColection(item, col))
+                {
+                    if (v.LookupValue.StartsWith(code)) return true;
+                }
+            } 
+            else
+            {
             foreach (SPFieldLookupValue v in BLL.Tools.Get_LookupValueColection(item, col))
             {
                 if (v.LookupValue.Equals(code)) return true;
+            }
             }
 
             return false;
@@ -436,6 +447,21 @@ namespace BLL
         public static void Set_Date(SPListItem item, string col, DateTime date)
         {
            if (date!=null && date!=new DateTime()) item[col] = date;
+        }
+
+        public static bool Has_ServiceMask(SPListItem item, string mask)
+        {
+            string col = "colMaskaSerwisu";
+            if (mask.EndsWith("*")) mask = mask.Substring(0, mask.Length - 1);
+
+            SPFieldMultiChoiceValue choices = item[col] != null ? new SPFieldMultiChoiceValue(item[col].ToString()) : null;
+            for (int i = 0; i < choices.Count; i++)
+            {
+                string s = choices[i];
+                if (s.StartsWith(mask)) return true;
+            }
+
+            return false;
         }
     }
 }

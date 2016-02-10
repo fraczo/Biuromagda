@@ -32,7 +32,8 @@ namespace Workflows.wfGFR
         private SPListItem item;
         private int okresId;
         private SPFieldMultiChoiceValue selTypyKlientow;
-        private SPFieldLookupValueCollection selSerwisy;
+        //private SPFieldLookupValueCollection selSerwisy;
+        private SPFieldMultiChoiceValue colMaskaSerwisu;
         private opType ot;
         private Array klienci;
         private SPListItem klient;
@@ -56,6 +57,14 @@ namespace Workflows.wfGFR
         public String logErrorMessage_HistoryOutcome = default(System.String);
         private StringBuilder sbForms;
 
+        public String logManagedForms_HistoryOutcome = default(System.String);
+        public String logManagedForms_HistoryDescription = default(System.String);
+        private string _ANULOWANY = "Anulowany";
+        private string _ZAKONCZONY = "Zakończony";
+        private string _OBSLUGA = "Obsługa";
+
+        private DateTime startTime;
+
 
         private void isValidRequest(object sender, ConditionalEventArgs e)
         {
@@ -65,7 +74,7 @@ namespace Workflows.wfGFR
         private void isTypK_Serwis(object sender, ConditionalEventArgs e)
         {
 
-            if (selTypyKlientow.Count > 0 && selSerwisy.Count > 0)
+            if (selTypyKlientow.Count > 0 && colMaskaSerwisu.Count > 0)
             {
                 ot = opType.TKandS;
                 e.Result = true;
@@ -83,7 +92,7 @@ namespace Workflows.wfGFR
 
         private void isSerwis(object sender, ConditionalEventArgs e)
         {
-            if (selSerwisy.Count > 0)
+            if (colMaskaSerwisu.Count > 0)
             {
                 ot = opType.S;
                 e.Result = true;
@@ -117,6 +126,29 @@ namespace Workflows.wfGFR
             logKlientCounter_HistoryOutcome = klienci.Length.ToString();
         }
 
+        private static Array Refine_Klienci_MaskaSerwisu(Array klienci, SPFieldMultiChoiceValue maski)
+        {
+            ArrayList results = new ArrayList();
+
+            foreach (SPListItem klientItem in klienci)
+            {
+                for (int i = 0; i < maski.Count; i++)
+                {
+                    string s = maski[i];
+                    if (BLL.Tools.Has_Service(klientItem, s, "selSewisy"))
+                    {
+                        results.Add(klientItem);
+                        Debug.WriteLine(BLL.Tools.Get_Text(klientItem, "_NazwaPrezentowana") + " - added");
+                        break;
+                    }
+                }
+
+            }
+
+            return results.ToArray();
+        }
+
+
         private static Array Refine_Klienci_Serwis(Array klienci, SPFieldLookupValueCollection serwisy)
         {
             ArrayList results = new ArrayList();
@@ -141,7 +173,8 @@ namespace Workflows.wfGFR
 
         private void Refine_Klienci_ExecuteCode(object sender, EventArgs e)
         {
-            klienci = Refine_Klienci_Serwis(klienci, selSerwisy);
+            //klienci = Refine_Klienci_Serwis(klienci, selSerwisy);
+            klienci = Refine_Klienci_MaskaSerwisu(klienci, colMaskaSerwisu);
 
             logKlientCounter_HistoryOutcome = klienci.Length.ToString();
         }
@@ -189,12 +222,16 @@ namespace Workflows.wfGFR
 
         private void Manage_ZUS_ExecuteCode(object sender, EventArgs e)
         {
+
             if (ot.Equals(opType.TKandS) || ot.Equals(opType.S))
             {
-                if (BLL.Tools.Has_Service(klient, "ZUS-*", "selSewisy"))
+                if (colMaskaSerwisu.Count > 0 && BLL.Tools.Has_ServiceMask(item, "ZUS-*"))
                 {
-                    ZUS_Forms.CreateNew(item.Web, klient, okresId);
-                    sbForms.AppendFormat("<li>{0}</li>", "ZUS");
+                    if (BLL.Tools.Has_Service(klient, "ZUS-*", "selSewisy"))
+                    {
+                        ZUS_Forms.CreateNew(item.Web, klient, okresId);
+                        sbForms.AppendFormat("<li>{0}</li>", "ZUS");
+                    }
                 }
             }
             else
@@ -209,10 +246,14 @@ namespace Workflows.wfGFR
         {
             if (ot.Equals(opType.TKandS) || ot.Equals(opType.S))
             {
-                if (BLL.Tools.Has_Service(klient, "PD-*", "selSewisy"))
+                if (colMaskaSerwisu.Count > 0
+                    && (BLL.Tools.Has_ServiceMask(item, "PD-*") | BLL.Tools.Has_ServiceMask(item, "PD*")))
                 {
-                    PD_Forms.CreateNew(item.Web, klient, okresId);
-                    sbForms.AppendFormat("<li>{0}</li>", "PD");
+                    if (BLL.Tools.Has_Service(klient, "PD-*", "selSewisy"))
+                    {
+                        PD_Forms.CreateNew(item.Web, klient, okresId);
+                        sbForms.AppendFormat("<li>{0}</li>", "PD");
+                    }
                 }
             }
             else
@@ -229,10 +270,14 @@ namespace Workflows.wfGFR
         {
             if (ot.Equals(opType.TKandS) || ot.Equals(opType.S))
             {
-                if (BLL.Tools.Has_Service(klient, "PDS-*", "selSewisy"))
+                if (colMaskaSerwisu.Count > 0
+                    && (BLL.Tools.Has_ServiceMask(item, "POS-*") | BLL.Tools.Has_ServiceMask(item, "PD*")))
                 {
-                    PDS_Forms.CreateNew(item.Web, klient, okresId);
-                    sbForms.AppendFormat("<li>{0}</li>", "PDS");
+                    if (BLL.Tools.Has_Service(klient, "PDS-*", "selSewisy"))
+                    {
+                        PDS_Forms.CreateNew(item.Web, klient, okresId);
+                        sbForms.AppendFormat("<li>{0}</li>", "PDS");
+                    }
                 }
             }
             else
@@ -248,10 +293,14 @@ namespace Workflows.wfGFR
         {
             if (ot.Equals(opType.TKandS) || ot.Equals(opType.S))
             {
-                if (BLL.Tools.Has_Service(klient, "PDW-*", "selSewisy"))
+                if (colMaskaSerwisu.Count > 0
+                    && (BLL.Tools.Has_ServiceMask(item, "PDW-*") | BLL.Tools.Has_ServiceMask(item, "PD*")))
                 {
-                    PDW_Forms.CreateNew(item.Web, klient, okresId);
-                    sbForms.AppendFormat("<li>{0}</li>", "PDW");
+                    if (BLL.Tools.Has_Service(klient, "PDW-*", "selSewisy"))
+                    {
+                        PDW_Forms.CreateNew(item.Web, klient, okresId);
+                        sbForms.AppendFormat("<li>{0}</li>", "PDW");
+                    }
                 }
             }
             else
@@ -267,10 +316,13 @@ namespace Workflows.wfGFR
         {
             if (ot.Equals(opType.TKandS) || ot.Equals(opType.S))
             {
-                if (BLL.Tools.Has_Service(klient, "VAT-*", "selSewisy"))
+                if (colMaskaSerwisu.Count > 0 && BLL.Tools.Has_ServiceMask(item, "VAT-*"))
                 {
-                    VAT_Forms.CreateNew(item.Web, klient, okresId);
-                    sbForms.AppendFormat("<li>{0}</li>", "VAT");
+                    if (BLL.Tools.Has_Service(klient, "VAT-*", "selSewisy"))
+                    {
+                        VAT_Forms.CreateNew(item.Web, klient, okresId);
+                        sbForms.AppendFormat("<li>{0}</li>", "VAT");
+                    }
                 }
             }
             else
@@ -286,10 +338,13 @@ namespace Workflows.wfGFR
         {
             if (ot.Equals(opType.TKandS) || ot.Equals(opType.S))
             {
-                if (BLL.Tools.Has_Service(klient, "RBR*", "selSewisy"))
+                if (colMaskaSerwisu.Count > 0 && BLL.Tools.Has_ServiceMask(item, "RBR-*"))
                 {
-                    BR_Forms.CreateNew(item.Web, klient, okresId);
-                    sbForms.AppendFormat("<li>{0}</li>", "RBR");
+                    if (BLL.Tools.Has_Service(klient, "RBR*", "selSewisy"))
+                    {
+                        BR_Forms.CreateNew(item.Web, klient, okresId);
+                        sbForms.AppendFormat("<li>{0}</li>", "RBR");
+                    }
                 }
             }
             else
@@ -306,10 +361,13 @@ namespace Workflows.wfGFR
         {
             if (ot.Equals(opType.TKandS) || ot.Equals(opType.S))
             {
-                if (BLL.Tools.Has_Service(klient, "POW-*", "selSewisy"))
+                if (colMaskaSerwisu.Count > 0 && BLL.Tools.Has_ServiceMask(item, "POW-*"))
                 {
-                    Reminder_Forms.CreateNew(item.Web, klient, okresId);
-                    sbForms.AppendFormat("<li>{0}</li>", "POW");
+                    if (BLL.Tools.Has_Service(klient, "POW-*", "selSewisy"))
+                    {
+                        Reminder_Forms.CreateNew(item.Web, klient, okresId);
+                        sbForms.AppendFormat("<li>{0}</li>", "POW");
+                    }
                 }
             }
             else
@@ -392,14 +450,12 @@ namespace Workflows.wfGFR
             sb.AppendFormat(_LINE_TEMPLATE, strKlient + strManagedForms);
         }
 
-        public String logManagedForms_HistoryOutcome = default(System.String);
-        public String logManagedForms_HistoryDescription = default(System.String);
-        private string _ANULOWANE = "Anulowane";
-        private DateTime startTime;
+
+
 
         private void Status_Anulowane_ExecuteCode(object sender, EventArgs e)
         {
-            BLL.Tools.Set_Text(item, "enumZtatusZlecenia", _ANULOWANE);
+            BLL.Tools.Set_Text(item, "enumZtatusZlecenia", _ANULOWANY);
         }
 
         private void onWorkflowActivated1_Invoked(object sender, ExternalDataEventArgs e)
@@ -410,13 +466,29 @@ namespace Workflows.wfGFR
             startTime = DateTime.Now;
 
             selTypyKlientow = new SPFieldMultiChoiceValue(BLL.Tools.Get_Text(item, "enumTypKlienta"));
-            selSerwisy = BLL.Tools.Get_LookupValueColection(item, "selSewisy");
+            //selSerwisy = BLL.Tools.Get_LookupValueColection(item, "selSewisy");
+            colMaskaSerwisu = new SPFieldMultiChoiceValue(BLL.Tools.Get_Text(item, "colMaskaSerwisu"));
             okresId = BLL.Tools.Get_LookupId(item, "selOkres");
         }
 
         private void ReportTime_ExecuteCode(object sender, EventArgs e)
         {
             Debug.WriteLine("Processing time:" + TimeSpan.FromTicks(DateTime.Now.Ticks - startTime.Ticks).ToString());
+        }
+
+        private void Set_Status_Zakonczony_ExecuteCode(object sender, EventArgs e)
+        {
+            BLL.Tools.Set_Text(item, "enumStatusZlecenia", _ZAKONCZONY);
+        }
+
+        private void UpdateItem_ExecuteCode(object sender, EventArgs e)
+        {
+            item.SystemUpdate();
+        }
+
+        private void Set_Status_Obsluga_ExecuteCode(object sender, EventArgs e)
+        {
+            BLL.Tools.Set_Text(item, "enumStatusZlecenia", _OBSLUGA);
         }
 
 
