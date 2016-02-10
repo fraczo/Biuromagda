@@ -50,6 +50,7 @@ namespace Workflows.tabZadaniaWF
 
         DateTime startTime;
         private StatusZadania status;
+        private StringBuilder vm; // validation message
 
         private void onWorkflowActivated1_Invoked(object sender, ExternalDataEventArgs e)
         {
@@ -884,12 +885,6 @@ namespace Workflows.tabZadaniaWF
 
         private void Manage_CMD_Zatwierdz(SPListItem item)
         {
-
-
-        }
-
-        private void Manage_Cmd_Zatwierdz1_ExecuteCode(object sender, EventArgs e)
-        {
             string ct = item.ContentType.Name;
 
             switch (ct)
@@ -931,8 +926,6 @@ namespace Workflows.tabZadaniaWF
                     {
                         if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
                         {
-                            //!!!rekord nie jest zaktualizowany
-                            //item.SystemUpdate();
                             Update_GBW(item.Web, item, ct);
 
                             Manage_CMD_WyslijWynik_PD(item, OpcjaWysylkiPD.PD);
@@ -952,8 +945,6 @@ namespace Workflows.tabZadaniaWF
                     {
                         if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
                         {
-                            //!!!rekord nie jest zaktualizowany
-                            //item.SystemUpdate();
                             Update_GBW(item.Web, item, ct);
 
                             Manage_CMD_WyslijWynik_PDS(item);
@@ -2807,6 +2798,7 @@ namespace Workflows.tabZadaniaWF
             FaultHandlerActivity fa = ((Activity)sender).Parent as FaultHandlerActivity;
             if (fa != null)
             {
+                Debug.WriteLine("*********************************************");
                 Debug.WriteLine(fa.Fault.Source);
                 Debug.WriteLine(fa.Fault.Message);
                 Debug.WriteLine(fa.Fault.StackTrace);
@@ -2814,6 +2806,8 @@ namespace Workflows.tabZadaniaWF
                 logErrorMessage_HistoryDescription = string.Format("{0}::{1}",
                     fa.Fault.Message,
                     fa.Fault.StackTrace);
+
+                ElasticEmail.EmailGenerator.ReportErrorFromWorkflow(workflowProperties, fa.Fault.Message, fa.Fault.StackTrace);
             }
         }
         #endregion
@@ -3122,6 +3116,42 @@ namespace Workflows.tabZadaniaWF
             //wyczyść informacje dla klienta po wysyłce
             ResetCommand(item, false);
         }
+
+        private void Reset_ValidationMessage_ExecuteCode(object sender, EventArgs e)
+        {
+            vm = new StringBuilder();
+        }
+
+        private void isValidationMessageExist(object sender, ConditionalEventArgs e)
+        {
+            if (vm.Length > 0) e.Result = true;
+        }
+
+        public String msgSubject = default(System.String);
+        public String msgTo = default(System.String);
+        public String msgBody = default(System.String);
+        private string _VALIDATION_MESSAGE_TEMPLATE = @"<p>Klient: [[NazwaKlienta]]</p><p>Wynik weryfikacji zadania <a href=""[[Url]]"">[[NumerZadania]]</a> negatywny</p><p>Lista zdiagnozowanych niezgodności:</p><ol>[[ListItems]] </ol>";
+
+        private void Setup_ValidationMessage_ExecuteCode(object sender, EventArgs e)
+        {
+            BLL.Models.Klient iok = new Klient(item.Web, BLL.Tools.Get_LookupId(item, "selKlient"));
+
+            StringBuilder vmt = new StringBuilder(_VALIDATION_MESSAGE_TEMPLATE);
+            vmt.Replace("[[NazwaKlienta]]", iok.NazwaFirmy);
+            vmt.Replace("[[NumerZadania]]", item.ID.ToString());
+            vmt.Replace("[[Url]]", item.ParentList.ParentWeb.Url + item.Url);
+            vmt.Replace("[[ListItems]]", vm.ToString());
+
+            msgBody = vmt.ToString();
+            msgSubject = string.Format(@"Wynik weryfikacji zadania {0} negatywny", item.ID.ToString());
+        }
+
+        private void sendValidationResults_MethodInvoking(object sender, EventArgs e)
+        {
+            msgTo = (item["ModifiedBy"] as SPUser).Email;
+        }
+
+
     }
 
     public enum TaskCommands

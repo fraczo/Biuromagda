@@ -13,7 +13,7 @@
           <HistoryListGuid>{be47a895-7c8e-40c2-884f-32b6a1eed32b}</HistoryListGuid>
           <TaskList>Tasks</TaskList>
           <TaskListGuid>{33dea7f3-7394-40d9-82c0-09c586b26ab7}</TaskListGuid>
-          <AutoAssociate>true</AutoAssociate>
+          <AutoAssociate>false</AutoAssociate>
           <ManualStart>true</ManualStart>
           <ListURL>http://spf2010/sites/biuromagda/Lists/tabWiadomosci/AllItems.aspx</ListURL>
           <TargetList>Wiadomości</TargetList>
@@ -27,7 +27,7 @@
           <HistoryListGuid>{7f19a9a1-6997-47fb-9e20-70fea625b6a9}</HistoryListGuid>
           <TaskList>Tasks</TaskList>
           <TaskListGuid>{ba6228e1-34d1-4827-bff7-9f0a3269471f}</TaskListGuid>
-          <AutoAssociate>true</AutoAssociate>
+          <AutoAssociate>false</AutoAssociate>
           <ManualStart>true</ManualStart>
           <ListURL>http://spf2010/sites/biuromagda/Lists/tabZadania/AllItems.aspx</ListURL>
           <TargetList>Zadania</TargetList>
@@ -82,7 +82,7 @@
           <HistoryListGuid>{7f19a9a1-6997-47fb-9e20-70fea625b6a9}</HistoryListGuid>
           <TaskList>Workflow Tasks</TaskList>
           <TaskListGuid>{9a1597d8-19f7-4a91-bc6c-93afe1d73764}</TaskListGuid>
-          <AutoAssociate>true</AutoAssociate>
+          <AutoAssociate>false</AutoAssociate>
           <ManualStart>false</ManualStart>
           <ListURL>http://spf2010/sites/biuromagda/Lists/admProcessRequests/AllItems.aspx</ListURL>
           <TargetList>admProcessRequests</TargetList>
@@ -96,7 +96,7 @@
           <HistoryListGuid>{7f19a9a1-6997-47fb-9e20-70fea625b6a9}</HistoryListGuid>
           <TaskList>Workflow Tasks</TaskList>
           <TaskListGuid>{9a1597d8-19f7-4a91-bc6c-93afe1d73764}</TaskListGuid>
-          <AutoAssociate>true</AutoAssociate>
+          <AutoAssociate>false</AutoAssociate>
           <ManualStart>false</ManualStart>
           <ListURL>http://spf2010/sites/biuromagda/Lists/admProcessRequests/AllItems.aspx</ListURL>
           <TargetList>admProcessRequests</TargetList>
@@ -110,7 +110,7 @@
           <HistoryListGuid>{7f19a9a1-6997-47fb-9e20-70fea625b6a9}</HistoryListGuid>
           <TaskList>Workflow Tasks</TaskList>
           <TaskListGuid>{9a1597d8-19f7-4a91-bc6c-93afe1d73764}</TaskListGuid>
-          <AutoAssociate>true</AutoAssociate>
+          <AutoAssociate>false</AutoAssociate>
           <ManualStart>false</ManualStart>
           <ListURL>http://spf2010/sites/biuromagda/Lists/tabZadania/Aktywne%20zadania.aspx</ListURL>
           <TargetList>Zadania</TargetList>
@@ -124,7 +124,7 @@
           <HistoryListGuid>{7f19a9a1-6997-47fb-9e20-70fea625b6a9}</HistoryListGuid>
           <TaskList>Workflow Tasks</TaskList>
           <TaskListGuid>{9a1597d8-19f7-4a91-bc6c-93afe1d73764}</TaskListGuid>
-          <AutoAssociate>true</AutoAssociate>
+          <AutoAssociate>false</AutoAssociate>
           <ManualStart>false</ManualStart>
           <ListURL>http://spf2010/sites/biuromagda/Lists/admProcessRequests/AllItems.aspx</ListURL>
           <TargetList>admProcessRequests</TargetList>
@@ -147,7 +147,7 @@
           <HistoryListGuid>{7f19a9a1-6997-47fb-9e20-70fea625b6a9}</HistoryListGuid>
           <TaskList>Workflow Tasks</TaskList>
           <TaskListGuid>{9a1597d8-19f7-4a91-bc6c-93afe1d73764}</TaskListGuid>
-          <AutoAssociate>true</AutoAssociate>
+          <AutoAssociate>false</AutoAssociate>
           <ManualStart>false</ManualStart>
           <ListURL>http://spf2010/sites/biuromagda/Lists/admProcessRequests/AllItems.aspx</ListURL>
           <TargetList>admProcessRequests</TargetList>
