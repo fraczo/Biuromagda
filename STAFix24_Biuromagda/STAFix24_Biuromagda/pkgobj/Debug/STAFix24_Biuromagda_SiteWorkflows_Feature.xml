@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Feature xmlns="http://schemas.microsoft.com/sharepoint/" Title="STAFix24_Biuromagda Site Workflows" Id="80efad39-dcb3-453f-8dad-9e5c2b90b043" ReceiverAssembly="BRMagda, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cceec86e0795b19e" ReceiverClass="Biuromagda.Features.SiteWorkflows.SiteWorkflowsEventReceiver" Scope="Site">
+<Feature xmlns="http://schemas.microsoft.com/sharepoint/" Id="80efad39-dcb3-453f-8dad-9e5c2b90b043" ReceiverAssembly="BRMagda, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cceec86e0795b19e" ReceiverClass="Biuromagda.Features.SiteWorkflows.SiteWorkflowsEventReceiver" Scope="Site" Title="STAFix24_Biuromagda Site Workflows">
   <ElementManifests>
     <ElementManifest Location="swfWysylkaWiadomosci\Elements.xml" />
     <ElementManifest Location="swfCleanup\Elements.xml" />

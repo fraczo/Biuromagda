@@ -19,6 +19,8 @@ using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using Microsoft.SharePoint.Utilities;
+using System.Collections.Specialized;
 
 namespace Workflows.tabZadaniaWF
 {
@@ -2456,19 +2458,29 @@ namespace Workflows.tabZadaniaWF
 
                 //oblicz/sprawdź podatek do zapłaty po odliczeniu wszytkich wartości (colIleDoDoplty ? zysk-strata)
 
-                double ileDoDoplaty = BLL.Tools.Get_Value(item, "colIleDoDoplaty");
-                double zysk = BLL.Tools.Get_Value(item, "");
-                double strata = BLL.Tools.Get_Value(item, "");
+                //double ileDoDoplaty = BLL.Tools.Get_Value(item, "colIleDoDoplaty");
+                //double zysk = BLL.Tools.Get_Value(item, "");
+                //double strata = BLL.Tools.Get_Value(item, "");
 
-                if (ileDoDoplaty != zysk - strata)
-                {
-                    Add_Comment(item, "Wartość do dopłaty nie zgadza się z różnicą zysk-strata");
-                    foundError = true;
-                }
+                //if (ileDoDoplaty != zysk - strata)
+                //{
+                //    Add_Comment(item, "Wartość do dopłaty nie zgadza się z różnicą zysk-strata");
+                //    foundError = true;
+                //}
 
                 #endregion
 
                 // sprawdź czy zysk-strata netto = strona winien - strona ma >> podać różnice
+
+                double zyskStrataNetto = BLL.Tools.Get_Value(item, "colZyskStrataNetto");
+                double stronaWn = BLL.Tools.Get_Value(item, "colStronaWn");
+                double stronaMa = BLL.Tools.Get_Value(item, "colStronaMa");
+
+                if (zyskStrataNetto != stronaWn - stronaMa)
+                {
+                    Add_Comment(item, string.Format("Zysk-Strata Netto ({0}) nie równa się różnicy między strona Winien i strona Ma ({1})", zyskStrataNetto.ToString(), (stronaWn - stronaMa).ToString()));
+                    foundError = true;
+                }
 
                 if (foundError)
                 {
@@ -2570,10 +2582,11 @@ namespace Workflows.tabZadaniaWF
 
         private void Add_Comment(SPListItem item, string comment)
         {
+            if (vm != null) vm.AppendFormat(@"<li>{0}</li>", comment);
+
             string uwagi = Get_String(item, "colUwagi");
             uwagi = uwagi + "\n" + DateTime.Now.ToString() + "\n" + comment;
             item["colUwagi"] = uwagi.Trim();
-            //item.SystemUpdate();
         }
 
         private string Get_String(SPListItem item, string colName)
@@ -3139,7 +3152,7 @@ namespace Workflows.tabZadaniaWF
             StringBuilder vmt = new StringBuilder(_VALIDATION_MESSAGE_TEMPLATE);
             vmt.Replace("[[NazwaKlienta]]", iok.NazwaFirmy);
             vmt.Replace("[[NumerZadania]]", item.ID.ToString());
-            vmt.Replace("[[Url]]", item.ParentList.ParentWeb.Url + item.Url);
+            vmt.Replace("[[Url]]", SPUtility.ConcatUrls(workflowProperties.Site.Protocol + "//" + workflowProperties.Site.HostName, item.ParentList.DefaultEditFormUrl + "?ID=" + item.ID.ToString()));
             vmt.Replace("[[ListItems]]", vm.ToString());
 
             msgBody = vmt.ToString();
@@ -3148,8 +3161,27 @@ namespace Workflows.tabZadaniaWF
 
         private void sendValidationResults_MethodInvoking(object sender, EventArgs e)
         {
-            msgTo = (item["ModifiedBy"] as SPUser).Email;
+            msgTo = workflowProperties.OriginatorEmail;
+
+            StringDictionary headers = new StringDictionary();
+            headers.Add("o:tag", "Validation Results");
+            headers.Add("Importance", "high");
+            headers.Add("X-Priority", "1");
+            headers.Add("X-MSMail-Priority", "High");
+            //headers.Add("Expiry-Date", "Wed, 10 Feb 2016 17:15:00 +0100");
+            //headers.Add("Expiry-Date2", SPUtility.CreateISO8601DateTimeFromSystemDateTime(DateTime.Now.AddMinutes(5)));
+            //headers.Add("X-Message-Flag", "=?iso-8859-2?Q?Flaga_monituj=B1ca?=");
+
+            CultureInfo ci = CultureInfo.CreateSpecificCulture("en-US");
+            headers.Add("Reply-By", DateTime.Now.ToString("ddd, dd MMM yyyy HH:mm:ss +0100", ci));
+            //headers.Add("Reply-By", "Wed, 10 Feb 2016 15:00:00 +0000");
+
+
+
+            msgHeaders = headers;
         }
+
+        public StringDictionary msgHeaders = new System.Collections.Specialized.StringDictionary();
 
 
     }
