@@ -32,7 +32,7 @@ namespace Workflows.tabZadaniaWF
         public String logErrorMessage_HistoryDescription = default(System.String);
         const string ZATWIERDZ = "Zatwierdź";
         const string ANULUJ = "Anuluj";
-        private TaskCommands taskCMD;
+        private TaskCommands taskCMD = TaskCommands.NotDefined;
 
         const string emptyMarker = "---";
 
@@ -60,7 +60,6 @@ namespace Workflows.tabZadaniaWF
 
             item = workflowProperties.Item;
         }
-
 
         private void Manage_CMD_Zatwierdz_WyslijInfo_Zadanie(SPListItem item)
         {
@@ -907,8 +906,6 @@ namespace Workflows.tabZadaniaWF
                     {
                         if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
                         {
-                            //!!!rekord nie jest zaktualizowany
-                            //item.SystemUpdate();
                             Update_GBW(item.Web, item, ct);
 
                             Manage_CMD_WyslijWynik_ZUS(item);
@@ -931,13 +928,13 @@ namespace Workflows.tabZadaniaWF
                             Update_GBW(item.Web, item, ct);
 
                             Manage_CMD_WyslijWynik_PD(item, OpcjaWysylkiPD.PD);
-                            Update_KartaKlienta_PD(item);
+                            BLL.Tools.DoWithRetry(() => Update_KartaKlienta_PD(item));
                             Set_StatusZadania(item, StatusZadania.Wysyłka);
                         }
                         else
                         {
                             //jeżeli status gotowe to aktualizuj kartę kontrolną
-                            Update_KartaKlienta_PD(item);
+                            BLL.Tools.DoWithRetry(() => Update_KartaKlienta_PD(item));
                             Set_StatusZadania(item, StatusZadania.Gotowe);
                         }
                     }
@@ -948,15 +945,21 @@ namespace Workflows.tabZadaniaWF
                         if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
                         {
                             Update_GBW(item.Web, item, ct);
+                            
+                            Update_DochodyWspolnikow(item);
 
+                            // chyba wyników nie trzeba wysyłać?
                             Manage_CMD_WyslijWynik_PDS(item);
-                            Update_KartaKlienta_PDS(item);
+
+                            BLL.Tools.DoWithRetry(() => Update_KartaKlienta_PDS(item));
                             Set_StatusZadania(item, StatusZadania.Wysyłka);
                         }
                         else
                         {
+                            Update_DochodyWspolnikow(item);
+
                             //jeżeli status gotowe to aktualizuj kartę kontrolną
-                            Update_KartaKlienta_PDS(item);
+                            BLL.Tools.DoWithRetry(() => Update_KartaKlienta_PDS(item));
                             Set_StatusZadania(item, StatusZadania.Gotowe);
                         }
                     }
@@ -967,18 +970,17 @@ namespace Workflows.tabZadaniaWF
                     {
                         if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
                         {
-                            //!!!rekord nie jest zaktualizowany
-                            //item.SystemUpdate();
-                            Update_GBW(item.Web, item, ct);
+                            //ToDo: dla wspólników jako dochód bierzemy wartość colPD_WartoscDoZaplaty
+                            //Update_GBW(item.Web, item, ct); 
 
                             Manage_CMD_WyslijWynik_PDW(item);
-                            Update_KartaKlienta_PDW(item);
+                            //ToDo: BLL.Tools.DoWithRetry(() => Update_KartaKlienta_PDW(item));
                             Set_StatusZadania(item, StatusZadania.Wysyłka);
                         }
                         else
                         {
                             //jeżeli status gotowe to aktualizuj kartę kontrolną
-                            Update_KartaKlienta_PDW(item);
+                            //BLL.Tools.DoWithRetry(() => Update_KartaKlienta_PDW(item));
                             Set_StatusZadania(item, StatusZadania.Gotowe);
                         }
                     }
@@ -993,13 +995,13 @@ namespace Workflows.tabZadaniaWF
                             Update_GBW(item.Web, item, ct);
 
                             Manage_CMD_WyslijWynik_VAT(item);
-                            Update_KartaKlienta_VAT(item);
+                            BLL.Tools.DoWithRetry(() => Update_KartaKlienta_VAT(item));
                             Set_StatusZadania(item, StatusZadania.Wysyłka);
                         }
                         else
                         {
                             //jeżeli status gotowe to aktualizuj kartę kontrolną
-                            Update_KartaKlienta_VAT(item);
+                            BLL.Tools.DoWithRetry(() => Update_KartaKlienta_VAT(item));
                             Set_StatusZadania(item, StatusZadania.Gotowe);
                         }
                     }
@@ -1020,6 +1022,18 @@ namespace Workflows.tabZadaniaWF
                 default:
                     break;
             }
+        }
+
+        private void Update_DochodyWspolnikow(SPListItem item)
+        {
+            int klientId = BLL.Tools.Get_LookupId(item, "selKlient");
+            int okresId = BLL.Tools.Get_LookupId(item, "selOkres");
+
+            double colZyskStrataNetto = BLL.Tools.Get_Value(item, "colZyskStrataNetto");
+
+            //rozpisz na wspólników
+
+            double variance = BLL.tabDochodyWspolnikow.Update_OcenaWyniku(item.Web, klientId, okresId, colZyskStrataNetto);
         }
 
 
@@ -2433,52 +2447,88 @@ namespace Workflows.tabZadaniaWF
 
                 //sprawdzenie czy zgadza się suma odliczeń z lat poprzenidnich
 
-                double sumaDoOdliczenia = BLL.tabStratyZLatUbieglych.Get_SumaDoOdliczenia(item.Web, klientId, okresId);
+                double sumaDoOdliczeniaZRejestru = BLL.tabStratyZLatUbieglych.Get_SumaDoOdliczenia(item.Web, klientId, okresId);
+                double sumaDoOdliczenia = BLL.Tools.Get_Value(item, "colStrataDoOdliczenia");
 
-                if (sumaDoOdliczenia != BLL.Tools.Get_Value(item, "colStrataDoOdliczenia"))
+                if (sumaDoOdliczenia != sumaDoOdliczeniaZRejestru)
                 {
-                    Add_Comment(item, "Wartość w pozycji 'Suma do odliczenia' nie zgadza się z rejestrem (" + sumaDoOdliczenia.ToString() + ")");
+                    Add_Comment(item, "Suma do odliczenia (" + sumaDoOdliczenia.ToString() + ") nie zgadza się z rejestrem (" + sumaDoOdliczeniaZRejestru.ToString() + ")");
                     foundError = true;
                 }
 
                 //oblicz "podstawa do opodatkowania
 
-                //sprawdź udziały wspólników
-                double sumaUdzialow = BLL.tabDochodyWspolnikow.Sum_UdzalyWspolnikow(item.Web, klientId, okresId);
+                double sumNKUP = BLL.Tools.Get_Value(item, "colKosztyNKUP_WynWyl")
+                    + BLL.Tools.Get_Value(item, "colKosztyNKUP_ZUSPlatWyl")
+                    + BLL.Tools.Get_Value(item, "colKosztyNKUP_FakWyl")
+                    + BLL.Tools.Get_Value(item, "colKosztyNKUP_PozostaleKoszty");
 
-                if (sumaUdzialow != 100)
+                double sumWS = BLL.Tools.Get_Value(item, "colKosztyWS_WynWlaczone")
+                    + BLL.Tools.Get_Value(item, "colKosztyWS_ZUSPlatWlaczone")
+                    + BLL.Tools.Get_Value(item, "colKosztyWS_FakWlaczone");
+
+                double sumPN = BLL.Tools.Get_Value(item, "colPrzychodyNP_DywidendySpO")
+                    + BLL.Tools.Get_Value(item, "colPrzychodyNP_Inne");
+
+                double colDochodStrataZInnychSp = BLL.Tools.Get_Value(item, "colDochodStrataZInnychSp");
+
+                double colPrzychodyZwolnione = BLL.Tools.Get_Value(item, "colPrzychodyZwolnione"); //czy to do czegoś jest potrzebne?
+
+                double zsn = 0;
+                if (BLL.Tools.Get_Text(item, "colPD_OcenaWyniku").Equals("Dochód")) zsn = zsn + BLL.Tools.Get_Value(item, "colPD_WartoscDochodu");
+                if (BLL.Tools.Get_Text(item, "colPD_OcenaWyniku").Equals("Strata")) zsn = zsn - 1 * BLL.Tools.Get_Value(item, "colPD_WartoscStraty");
+
+                double zyskStrataNetto = zsn - sumNKUP + sumWS + sumPN - colDochodStrataZInnychSp;
+
+                if (!BLL.Tools.Get_Value(item, "colZyskStrataNetto").Equals(zyskStrataNetto))
                 {
-                    Add_Comment(item, "Suma udziałów wspólników nie jest równa 100%");
+                    Add_Comment(item, string.Format(@"Nieprawidłowo obliczona wartość ZyskStrata Netto. Powinno być {0}, jest {1}",
+                                        zyskStrataNetto.ToString(),
+                                        BLL.Tools.Get_Value(item, "colZyskStrataNetto").ToString()));
                     foundError = true;
+
+                    //ustaw prawidłową wartość - roboczo
+                    BLL.Tools.Set_Value(item, "colZyskStrataNetto", zyskStrataNetto);
                 }
 
-                //rozpisz na wspólników
+                //sprawdź udziały wspólników
+                double sumaUdzialow = BLL.tabDochodyWspolnikow.Sum_UdzalyWspolnikow(item.Web, klientId, okresId) * 100;
 
-                #region Validacja dotyczy wyłącznie PDS
+                if (sumaUdzialow==0)
+                {
+                    // ta spółka nie ma wspólników - zignoruj walidację.
+                }
+                else
+                {
+                    // ta spółka ma wspólników - weryfikuj
+                    if (sumaUdzialow != 100)
+                    {
+                        Add_Comment(item, "Suma udziałów wspólników (" + sumaUdzialow.ToString() + "%) nie jest równa 100%");
+                        foundError = true;
+                    }
+                }
 
-                //oblicz/sprawdź podatek do zapłaty po odliczeniu wszytkich wartości (colIleDoDoplty ? zysk-strata)
-
-                //double ileDoDoplaty = BLL.Tools.Get_Value(item, "colIleDoDoplaty");
-                //double zysk = BLL.Tools.Get_Value(item, "");
-                //double strata = BLL.Tools.Get_Value(item, "");
-
-                //if (ileDoDoplaty != zysk - strata)
-                //{
-                //    Add_Comment(item, "Wartość do dopłaty nie zgadza się z różnicą zysk-strata");
-                //    foundError = true;
-                //}
-
-                #endregion
 
                 // sprawdź czy zysk-strata netto = strona winien - strona ma >> podać różnice
 
-                double zyskStrataNetto = BLL.Tools.Get_Value(item, "colZyskStrataNetto");
                 double stronaWn = BLL.Tools.Get_Value(item, "colStronaWn");
                 double stronaMa = BLL.Tools.Get_Value(item, "colStronaMa");
 
-                if (zyskStrataNetto != stronaWn - stronaMa)
+                double stronaWn_Ma = BLL.Tools.Get_Value(item, "colStronaWn-StronaMa");
+
+                if (stronaWn_Ma != stronaWn - stronaMa)
                 {
-                    Add_Comment(item, string.Format("Zysk-Strata Netto ({0}) nie równa się różnicy między strona Winien i strona Ma ({1})", zyskStrataNetto.ToString(), (stronaWn - stronaMa).ToString()));
+                    Add_Comment(item, string.Format(@"Kalkulacja StonaWn-StronaMa nieprawidłowa. Jest ({0}), powinno być ({1})", stronaWn_Ma.ToString(), (stronaWn - stronaMa).ToString()));
+                    //popraw roboczo
+                    stronaWn_Ma = stronaWn - stronaMa;
+                    BLL.Tools.Set_Value(item, "colStronaWn-StronaMa", stronaWn_Ma);
+
+                    foundError = true;
+                }
+
+                if (zyskStrataNetto != stronaWn_Ma)
+                {
+                    Add_Comment(item, string.Format(@"Zysk-Strata Netto ({0}) nie równa się Strona Winien-Strona Ma ({1})", zyskStrataNetto.ToString(), stronaWn_Ma.ToString()));
                     foundError = true;
                 }
 
@@ -2487,16 +2537,69 @@ namespace Workflows.tabZadaniaWF
                     Set_ValidationFlag(item, true);
                     result = false;
                 }
-
-                return result;
             }
 
-            return false;
+            return result;
         }
 
         private bool isValidated_PDW(SPListItem item)
         {
-            throw new NotImplementedException();
+            int klientId = BLL.Tools.Get_LookupId(item, "selKlient");
+
+            //wszystkie warunki dla PD powinny być spełnione dla PDW
+            bool result = isValidated_PD(item);
+            if (result)
+            {
+                bool foundError = false;
+                if (GetValue(item, "colWplaconaSZ") < 0)
+                {
+                    Add_Comment(item, "Pozycja 'Wpłacona składka zdrowotna' nie może być ujemna");
+                    foundError = true;
+                }
+                if (GetValue(item, "colWplaconeZaliczkiOdPoczatkuRoku") < 0)
+                {
+                    Add_Comment(item, "Pozycja 'Wpłacone zaliczki od początku roku' nie może być ujemna");
+                    foundError = true;
+                }
+
+                //wypełnij informacje o dochodzie/stracie
+
+                double przychod = 0;
+                string przychodWyszczegolnienie = string.Empty;
+
+                int okresId = BLL.Tools.Get_LookupId(item, "selOkres");
+                int wspolnikId = BLL.Tools.Get_LookupId(item, "selKlient");
+
+                BLL.tabDochodyWspolnikow.Get_PrzychodyWspolnika(item.Web, wspolnikId, okresId, out przychod, out przychodWyszczegolnienie);
+
+                if (przychod >= 0)
+                {
+                    BLL.Tools.Set_Text(item, "colPD_OcenaWyniku", "Dochód");
+                    BLL.Tools.Set_Value(item, "colPD_WartoscDochodu", przychod);
+                    BLL.Tools.Clear_Value(item, "colPD_WartoscStraty");
+                }
+                else
+                {
+                    BLL.Tools.Set_Text(item, "colPD_OcenaWyniku", "Strata");
+                    BLL.Tools.Set_Value(item, "colPD_WartoscStraty", -1 * przychod);
+                    BLL.Tools.Clear_Value(item, "colPD_WartoscDochodu");
+                }
+
+                BLL.Tools.Set_Text(item, "_Specyfikacja", przychodWyszczegolnienie);
+
+
+                // oblicz wysokość podatku
+
+
+                // report results
+                if (foundError)
+                {
+                    Set_ValidationFlag(item, true);
+                    result = false;
+                }
+            }
+
+            return result;
         }
 
         private bool Check_IsLowerValue(SPListItem item, SPListItem kk, string col)
@@ -2804,8 +2907,6 @@ namespace Workflows.tabZadaniaWF
         #endregion
 
         #region Error Handlers
-
-
         private void ErrorHandler_ExecuteCode(object sender, EventArgs e)
         {
             FaultHandlerActivity fa = ((Activity)sender).Parent as FaultHandlerActivity;
@@ -3046,7 +3147,7 @@ namespace Workflows.tabZadaniaWF
 
         private void isCommandExist(object sender, ConditionalEventArgs e)
         {
-            if (taskCMD != null) e.Result = true;
+            if (taskCMD != null & !taskCMD.Equals(TaskCommands.NotDefined)) e.Result = true;
         }
 
         private void Get_Command_ExecuteCode(object sender, EventArgs e)
@@ -3055,29 +3156,18 @@ namespace Workflows.tabZadaniaWF
             {
                 case ZATWIERDZ:
                     taskCMD = TaskCommands.Zatwiedz;
-                    Manage_CMD_Zatwierdz(item);
-                    //nie usówaj informacji z pola informacje dla klienta
-                    ResetCommand(item, false);
                     break;
                 case WYSLIJ_INFORMACJE_DO_KLIENTA:
                     taskCMD = TaskCommands.WyslijInfo;
-                    Manage_CMD_WyslijInfo(item);
-                    //wyczyść informacje dla klienta po wysyłce
-                    ResetCommand(item, true);
                     break;
                 case WYSLIJ_INFORMACJE_I_ZAKONCZ_ZADANIE:
                     taskCMD = TaskCommands.WyslijInfoIZakoncz;
-                    Manage_CMD_Zatwierdz_WyslijInfo_Zadanie(item);
-                    //wyczyść informacje dla klienta po wysyłce
-                    ResetCommand(item, false);
                     break;
                 case ANULUJ:
                     taskCMD = TaskCommands.Anuluj;
-                    Manage_CMD_Anuluj(item);
-                    //wyczyść informacje dla klienta po wysyłce
-                    ResetCommand(item, false);
                     break;
                 default:
+                    taskCMD = TaskCommands.NotDefined;
                     break;
             }
         }
@@ -3191,6 +3281,7 @@ namespace Workflows.tabZadaniaWF
         Zatwiedz,
         WyslijInfo,
         WyslijInfoIZakoncz,
-        Anuluj
+        Anuluj,
+        NotDefined
     }
 }
