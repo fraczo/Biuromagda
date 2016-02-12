@@ -23,6 +23,7 @@ namespace EventReceivers.admProcessRequestsER
             {
                 case ": Rozliczenie podatku dochodowego":
                 case ": Rozliczenie podatku dochodowego spółki":
+                case ": Rozliczenie podatku dochodowego wspólnika":
                 case ": Rozliczenie podatku VAT":
                 case ": Rozliczenie ZUS":
                     Array tasks = BLL.tabZadania.Get_GotoweZadaniaByProceduraId(web, procId);
@@ -35,7 +36,7 @@ namespace EventReceivers.admProcessRequestsER
                         {
                             //uruchom proces zatwierdzenia
                             Update_msg(msg, procName, task);
-                            BLL.Workflows.StartWorkflow(task, "Zatwierdzenie zadania");
+                            BLL.Workflows.StartWorkflow(task, "Zatwierdzenie zadania",Microsoft.SharePoint.Workflow.SPWorkflowRunOptions.Asynchronous);
                         }
                     }
 

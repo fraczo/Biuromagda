@@ -77,7 +77,6 @@ namespace Workflows.tabZadaniaWF
             this._Zatwierdz = new System.Workflow.Activities.IfElseBranchActivity();
             this.Set_Status_Obsluga4 = new System.Workflow.Activities.CodeActivity();
             this.Set_Status_Obsluga3 = new System.Workflow.Activities.CodeActivity();
-            this.Manage_POD3 = new System.Workflow.Activities.CodeActivity();
             this.Manage_POD2 = new System.Workflow.Activities.CodeActivity();
             this.Manage_POD = new System.Workflow.Activities.CodeActivity();
             this.Set_Status_Obsluga2 = new System.Workflow.Activities.CodeActivity();
@@ -303,11 +302,6 @@ namespace Workflows.tabZadaniaWF
             this.Set_Status_Obsluga3.Name = "Set_Status_Obsluga3";
             this.Set_Status_Obsluga3.ExecuteCode += new System.EventHandler(this.Set_Status_Obsluga_ExecuteCode);
             // 
-            // Manage_POD3
-            // 
-            this.Manage_POD3.Name = "Manage_POD3";
-            this.Manage_POD3.ExecuteCode += new System.EventHandler(this.Manage_POD_ExecuteCode);
-            // 
             // Manage_POD2
             // 
             this.Manage_POD2.Name = "Manage_POD2";
@@ -394,7 +388,6 @@ namespace Workflows.tabZadaniaWF
             // 
             // RozliczeniePodatkuDochodowegWspólnika
             // 
-            this.RozliczeniePodatkuDochodowegWspólnika.Activities.Add(this.Manage_POD3);
             codecondition10.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.ifRPDW);
             this.RozliczeniePodatkuDochodowegWspólnika.Condition = codecondition10;
             this.RozliczeniePodatkuDochodowegWspólnika.Name = "RozliczeniePodatkuDochodowegWspólnika";
@@ -812,8 +805,6 @@ namespace Workflows.tabZadaniaWF
 
         private CodeActivity Get_Command;
 
-        private CodeActivity Manage_POD3;
-
         private CodeActivity Manage_POD2;
 
         private CodeActivity Create_Message;
@@ -923,6 +914,7 @@ namespace Workflows.tabZadaniaWF
         private CancellationHandlerActivity cancellationHandlerActivity1;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
 
 
 

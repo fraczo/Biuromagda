@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Feature xmlns="http://schemas.microsoft.com/sharepoint/" Title="STAFix24_Biuromagda Custom Actions" Id="3dae126b-2220-4ec2-b4d1-5e6f451c2d31" Scope="Web">
+<Feature xmlns="http://schemas.microsoft.com/sharepoint/" Id="3dae126b-2220-4ec2-b4d1-5e6f451c2d31" Scope="Web" Title="STAFix24_Biuromagda Custom Actions">
   <ElementManifests>
     <ElementManifest Location="SiteMenuActions\Elements.xml" />
   </ElementManifests>

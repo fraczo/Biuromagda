@@ -30,6 +30,7 @@ namespace EventReceivers.tabDochodyWspolnikow
             SPListItem item = properties.ListItem;
 
             string key = BLL.tabDochodyWspolnikow.Define_KEY(
+                BLL.Tools.Get_LookupId(item, "selKlient_NazwaSkrocona"),
                 BLL.Tools.Get_LookupId(item, "selKlient"),
                 BLL.Tools.Get_LookupId(item, "selOkres"));
 

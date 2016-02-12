@@ -104,7 +104,7 @@
           <StartOnCreate>false</StartOnCreate>
           <StartOnChange>false</StartOnChange>
         </ProjectItemStore>
-        <ProjectItemStore Id="{a9d1ee1e-15d9-442b-bd18-8104a172bd1c}">
+        <ProjectItemStore Id="{c0786024-7789-43ab-aaea-83b7a2b89499}">
           <DisplayName>tabZadaniaWF</DisplayName>
           <HistoryList>Workflow History</HistoryList>
           <HistoryListGuid>{7f19a9a1-6997-47fb-9e20-70fea625b6a9}</HistoryListGuid>

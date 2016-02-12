@@ -168,21 +168,22 @@ namespace Workflows.ObslugaWiadomosci
                     switch (ct)
                     {
                         case "Rozliczenie z biurem rachunkowym":
-                            BLL.tabZadania.Update_RBR_DataWysylki(task, date);
-                            BLL.tabKartyKontrolne.Update_RBR_DataWysylki(task, date);
+                            BLL.Tools.DoWithRetry(() => BLL.tabZadania.Update_RBR_DataWysylki(task, date));
+                            BLL.Tools.DoWithRetry(() => BLL.tabKartyKontrolne.Update_RBR_DataWysylki(task, date));
                             break;
                         case "Rozliczenie podatku dochodowego":
                         case "Rozliczenie podatku dochodowego spółki":
-                            BLL.tabZadania.Update_PD_DataWysylki(task, date);
-                            BLL.tabKartyKontrolne.Update_PD_DataWysylki(task, date);
+                        case "Rozliczenie podatku dochodowego wspólnika":
+                            BLL.Tools.DoWithRetry(() => BLL.tabZadania.Update_PD_DataWysylki(task, date));
+                            BLL.Tools.DoWithRetry(() => BLL.tabKartyKontrolne.Update_PD_DataWysylki(task, date));
                             break;
                         case "Rozliczenie podatku VAT":
-                            BLL.tabZadania.Update_VAT_DataWysylki(task, date);
-                            BLL.tabKartyKontrolne.Update_VAT_DataWysylki(task, date);
+                            BLL.Tools.DoWithRetry(() => BLL.tabZadania.Update_VAT_DataWysylki(task, date));
+                            BLL.Tools.DoWithRetry(() => BLL.tabKartyKontrolne.Update_VAT_DataWysylki(task, date));
                             break;
                         case "Rozliczenie ZUS":
-                            BLL.tabZadania.Update_ZUS_DataWysylki(task, date);
-                            BLL.tabKartyKontrolne.Update_ZUS_DataWysylki(task, date);
+                            BLL.Tools.DoWithRetry(() => BLL.tabZadania.Update_ZUS_DataWysylki(task, date));
+                            BLL.Tools.DoWithRetry(() => BLL.tabKartyKontrolne.Update_ZUS_DataWysylki(task, date));
                             break;
                         default:
                             break;

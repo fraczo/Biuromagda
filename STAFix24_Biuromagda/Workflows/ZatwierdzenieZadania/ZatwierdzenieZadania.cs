@@ -76,7 +76,8 @@ namespace Workflows.ZatwierdzenieZadania
                     if (item.ContentType.Name == "Rozliczenie ZUS"
                         || item.ContentType.Name == "Rozliczenie podatku VAT"
                         || item.ContentType.Name == "Rozliczenie podatku dochodowego"
-                        || item.ContentType.Name == "Rozliczenie podatku dochodowego spółki")
+                        || item.ContentType.Name == "Rozliczenie podatku dochodowego spółki"
+                        || item.ContentType.Name == "Rozliczenie podatku dochodowego wspólnika")
                         Zatwierdz_Zadanie(item);
                     break;
                 default:
@@ -86,18 +87,14 @@ namespace Workflows.ZatwierdzenieZadania
 
         private void UpdateItem_ExecuteCode(object sender, EventArgs e)
         {
-            BLL.Tools.DoWithRetry(() => item.Update());
+            BLL.Tools.DoWithRetry(() => item.SystemUpdate());
         }
 
         private void InitWorkflow_ExecuteCode(object sender, EventArgs e)
         {
-            BLL.Workflows.StartWorkflow(item, "tabZadaniaWF", SPWorkflowRunOptions.SynchronousAllowPostpone);
+            //BLL.Workflows.StartWorkflow(item, "tabZadaniaWF", SPWorkflowRunOptions.SynchronousAllowPostpone);
         }
 
-        private void Reporting_ExecuteCode(object sender, EventArgs e)
-        {
-            Debug.WriteLine(new TimeSpan(DateTime.Now.Ticks - startTime.Ticks).ToString());
-        }
 
         #region Helpers
         private void Zatwierdz_Zadanie(SPListItem item)
@@ -107,7 +104,7 @@ namespace Workflows.ZatwierdzenieZadania
             {
                 item["cmdFormatka"] = "Zatwierdź";
             }
-        } 
+        }
         #endregion
     }
 }

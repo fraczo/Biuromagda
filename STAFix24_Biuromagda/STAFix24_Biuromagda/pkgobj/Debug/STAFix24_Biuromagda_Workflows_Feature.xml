@@ -7,8 +7,8 @@
     <ElementManifest Location="ZatwierdzenieZadania\Elements.xml" />
     <ElementManifest Location="wfGFRK\Elements.xml" />
     <ElementManifest Location="wfGFR\Elements.xml" />
-    <ElementManifest Location="tabZadaniaWF\Elements.xml" />
     <ElementManifest Location="admProcessRequestsWF\Elements.xml" />
     <ElementManifest Location="GeneratorZadanWF\Elements.xml" />
+    <ElementManifest Location="tabZadaniaWF\Elements.xml" />
   </ElementManifests>
 </Feature>

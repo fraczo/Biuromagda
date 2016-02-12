@@ -34,14 +34,12 @@ namespace Workflows.ZatwierdzenieZadania
             this.ErrorHandler = new System.Workflow.Activities.CodeActivity();
             this.faultHandlerActivity1 = new System.Workflow.ComponentModel.FaultHandlerActivity();
             this.faultHandlersActivity1 = new System.Workflow.ComponentModel.FaultHandlersActivity();
-            this.Reporting = new System.Workflow.Activities.CodeActivity();
             this.logToHistoryListActivity3 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.InitWorkflow = new System.Workflow.Activities.CodeActivity();
             this.logToHistoryListActivity4 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.UpdateItem = new System.Workflow.Activities.CodeActivity();
             this.logToHistoryListActivity2 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Main = new System.Workflow.Activities.CodeActivity();
-            this.logToHistoryListActivity1 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.onWorkflowActivated1 = new Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated();
             // 
             // logErrorMessage
@@ -72,11 +70,6 @@ namespace Workflows.ZatwierdzenieZadania
             // 
             this.faultHandlersActivity1.Activities.Add(this.faultHandlerActivity1);
             this.faultHandlersActivity1.Name = "faultHandlersActivity1";
-            // 
-            // Reporting
-            // 
-            this.Reporting.Name = "Reporting";
-            this.Reporting.ExecuteCode += new System.EventHandler(this.Reporting_ExecuteCode);
             // 
             // logToHistoryListActivity3
             // 
@@ -122,16 +115,6 @@ namespace Workflows.ZatwierdzenieZadania
             // 
             this.Main.Name = "Main";
             this.Main.ExecuteCode += new System.EventHandler(this.Main_ExecuteCode);
-            // 
-            // logToHistoryListActivity1
-            // 
-            this.logToHistoryListActivity1.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
-            this.logToHistoryListActivity1.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
-            this.logToHistoryListActivity1.HistoryDescription = "START";
-            this.logToHistoryListActivity1.HistoryOutcome = "";
-            this.logToHistoryListActivity1.Name = "logToHistoryListActivity1";
-            this.logToHistoryListActivity1.OtherData = "";
-            this.logToHistoryListActivity1.UserId = -1;
             activitybind3.Name = "ZatwierdzenieZadania";
             activitybind3.Path = "workflowId";
             // 
@@ -151,14 +134,12 @@ namespace Workflows.ZatwierdzenieZadania
             // ZatwierdzenieZadania
             // 
             this.Activities.Add(this.onWorkflowActivated1);
-            this.Activities.Add(this.logToHistoryListActivity1);
             this.Activities.Add(this.Main);
             this.Activities.Add(this.logToHistoryListActivity2);
             this.Activities.Add(this.UpdateItem);
             this.Activities.Add(this.logToHistoryListActivity4);
             this.Activities.Add(this.InitWorkflow);
             this.Activities.Add(this.logToHistoryListActivity3);
-            this.Activities.Add(this.Reporting);
             this.Activities.Add(this.faultHandlersActivity1);
             this.Name = "ZatwierdzenieZadania";
             this.CanModifyActivities = false;
@@ -166,8 +147,6 @@ namespace Workflows.ZatwierdzenieZadania
         }
 
         #endregion
-
-        private CodeActivity Reporting;
 
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity3;
 
@@ -187,11 +166,11 @@ namespace Workflows.ZatwierdzenieZadania
 
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity2;
 
-        private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity1;
-
         private CodeActivity Main;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
+
 
 
 
