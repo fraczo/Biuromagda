@@ -49,6 +49,7 @@ namespace Workflows.wfGFRK
             this.logFirma = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.logToHistoryListActivity14 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Manage_PDW = new System.Workflow.Activities.CodeActivity();
+            this.Manage_PD1 = new System.Workflow.Activities.CodeActivity();
             this.logToHistoryListActivity4 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Manage_ZUS3 = new System.Workflow.Activities.CodeActivity();
             this.logOsobaFizyczna = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
@@ -166,6 +167,11 @@ namespace Workflows.wfGFRK
             // 
             this.Manage_PDW.Name = "Manage_PDW";
             this.Manage_PDW.ExecuteCode += new System.EventHandler(this.Manage_PDW_ExecuteCode);
+            // 
+            // Manage_PD1
+            // 
+            this.Manage_PD1.Name = "Manage_PD1";
+            this.Manage_PD1.ExecuteCode += new System.EventHandler(this.Manage_PD_ExecuteCode);
             // 
             // logToHistoryListActivity4
             // 
@@ -389,6 +395,7 @@ namespace Workflows.wfGFRK
             this.CT_OsobaFizyczna.Activities.Add(this.logOsobaFizyczna);
             this.CT_OsobaFizyczna.Activities.Add(this.Manage_ZUS3);
             this.CT_OsobaFizyczna.Activities.Add(this.logToHistoryListActivity4);
+            this.CT_OsobaFizyczna.Activities.Add(this.Manage_PD1);
             this.CT_OsobaFizyczna.Activities.Add(this.Manage_PDW);
             this.CT_OsobaFizyczna.Activities.Add(this.logToHistoryListActivity14);
             codecondition3.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isOsobaFizyczna);
@@ -628,6 +635,8 @@ namespace Workflows.wfGFRK
 
         #endregion
 
+        private CodeActivity Manage_PD1;
+
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity12;
 
         private CodeActivity Status_Anulowany;
@@ -747,6 +756,7 @@ namespace Workflows.wfGFRK
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity1;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
 
 
 

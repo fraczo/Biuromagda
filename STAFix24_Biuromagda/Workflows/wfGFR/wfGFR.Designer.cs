@@ -64,6 +64,7 @@ namespace Workflows.wfGFR
             this.Manage_PD4 = new System.Workflow.Activities.CodeActivity();
             this.logFirma = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Manage_PDW = new System.Workflow.Activities.CodeActivity();
+            this.Manage_PD1 = new System.Workflow.Activities.CodeActivity();
             this.Manage_ZUS3 = new System.Workflow.Activities.CodeActivity();
             this.logOsobaFizyczna = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Manage_Reminders2 = new System.Workflow.Activities.CodeActivity();
@@ -185,6 +186,11 @@ namespace Workflows.wfGFR
             this.Manage_PDW.Name = "Manage_PDW";
             this.Manage_PDW.ExecuteCode += new System.EventHandler(this.Manage_PDW_ExecuteCode);
             // 
+            // Manage_PD1
+            // 
+            this.Manage_PD1.Name = "Manage_PD1";
+            this.Manage_PD1.ExecuteCode += new System.EventHandler(this.Manage_PD_ExecuteCode);
+            // 
             // Manage_ZUS3
             // 
             this.Manage_ZUS3.Name = "Manage_ZUS3";
@@ -300,6 +306,7 @@ namespace Workflows.wfGFR
             // 
             this.CT_OsobaFizyczna.Activities.Add(this.logOsobaFizyczna);
             this.CT_OsobaFizyczna.Activities.Add(this.Manage_ZUS3);
+            this.CT_OsobaFizyczna.Activities.Add(this.Manage_PD1);
             this.CT_OsobaFizyczna.Activities.Add(this.Manage_PDW);
             codecondition4.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isOsobaFizyczna);
             this.CT_OsobaFizyczna.Condition = codecondition4;
@@ -741,6 +748,8 @@ namespace Workflows.wfGFR
 
         #endregion
 
+        private CodeActivity Manage_PD1;
+
         private CodeActivity UpdateItem3;
 
         private CodeActivity Set_Status_Obsluga;
@@ -886,6 +895,7 @@ namespace Workflows.wfGFR
         private CodeActivity Select_Klienci;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
 
 
 
