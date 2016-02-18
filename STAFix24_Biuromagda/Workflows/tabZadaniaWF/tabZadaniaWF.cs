@@ -928,13 +928,13 @@ namespace Workflows.tabZadaniaWF
                             Update_GBW(item.Web, item, ct);
 
                             Manage_CMD_WyslijWynik_PD(item, OpcjaWysylkiPD.PD);
-                            BLL.Tools.DoWithRetry(() => Update_KartaKlienta_PD(item));
+                            Update_KartaKlienta_PD(item);
                             Set_StatusZadania(item, StatusZadania.Wysyłka);
                         }
                         else
                         {
                             //jeżeli status gotowe to aktualizuj kartę kontrolną
-                            BLL.Tools.DoWithRetry(() => Update_KartaKlienta_PD(item));
+                            Update_KartaKlienta_PD(item);
                             Set_StatusZadania(item, StatusZadania.Gotowe);
                         }
                     }
@@ -945,13 +945,16 @@ namespace Workflows.tabZadaniaWF
                         if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
                         {
                             Update_GBW(item.Web, item, ct);
-                            
-                            Update_DochodyWspolnikow(item);
+
+                            if (!BLL.Tools.Get_Flag(item, "_IsSpolkaZoo"))
+                            {
+                                Update_DochodyWspolnikow(item);
+                            }
 
                             // chyba wyników nie trzeba wysyłać?
                             Manage_CMD_WyslijWynik_PDS(item);
 
-                            BLL.Tools.DoWithRetry(() => Update_KartaKlienta_PDS(item));
+                            Update_KartaKlienta_PDS(item);
                             Set_StatusZadania(item, StatusZadania.Wysyłka);
                         }
                         else
@@ -959,7 +962,7 @@ namespace Workflows.tabZadaniaWF
                             Update_DochodyWspolnikow(item);
 
                             //jeżeli status gotowe to aktualizuj kartę kontrolną
-                            BLL.Tools.DoWithRetry(() => Update_KartaKlienta_PDS(item));
+                            Update_KartaKlienta_PDS(item);
                             Set_StatusZadania(item, StatusZadania.Gotowe);
                         }
                     }
@@ -995,13 +998,13 @@ namespace Workflows.tabZadaniaWF
                             Update_GBW(item.Web, item, ct);
 
                             Manage_CMD_WyslijWynik_VAT(item);
-                            BLL.Tools.DoWithRetry(() => Update_KartaKlienta_VAT(item));
+                            Update_KartaKlienta_VAT(item);
                             Set_StatusZadania(item, StatusZadania.Wysyłka);
                         }
                         else
                         {
                             //jeżeli status gotowe to aktualizuj kartę kontrolną
-                            BLL.Tools.DoWithRetry(() => Update_KartaKlienta_VAT(item));
+                            Update_KartaKlienta_VAT(item);
                             Set_StatusZadania(item, StatusZadania.Gotowe);
                         }
                     }
@@ -1057,31 +1060,31 @@ namespace Workflows.tabZadaniaWF
         #region Aktualizacja KartyKlienta
         private void Update_KartaKlienta_ZUS(SPListItem item)
         {
-            BLL.tabKartyKontrolne.Update_ZUS_Data(item);
+            BLL.Tools.DoWithRetry(() => BLL.tabKartyKontrolne.Update_ZUS_Data(item));
         }
 
         private void Update_KartaKlienta_PD(SPListItem item)
         {
-            BLL.tabKartyKontrolne.Update_PD_Data(item);
+            BLL.Tools.DoWithRetry(() => BLL.tabKartyKontrolne.Update_PD_Data(item));
         }
 
         private void Update_KartaKlienta_PDS(SPListItem item)
         {
-            BLL.tabKartyKontrolne.Update_PDS_Data(item);
+            BLL.Tools.DoWithRetry(() => BLL.tabKartyKontrolne.Update_PDS_Data(item));
         }
 
         private void Update_KartaKlienta_PDW(SPListItem item)
         {
-            BLL.tabKartyKontrolne.Update_PDW_Data(item);
+            BLL.Tools.DoWithRetry(() => BLL.tabKartyKontrolne.Update_PDW_Data(item));
         }
 
         private void Update_KartaKlienta_VAT(SPListItem item)
         {
-            BLL.tabKartyKontrolne.Update_VAT_Data(item);
+            BLL.Tools.DoWithRetry(() => BLL.tabKartyKontrolne.Update_VAT_Data(item));
         }
         private void Update_KartaKlienta_RBR(SPListItem item)
         {
-            BLL.tabKartyKontrolne.Update_RBR_Data(item);
+            BLL.Tools.DoWithRetry(() => BLL.tabKartyKontrolne.Update_RBR_Data(item));
         }
         #endregion
 
@@ -2440,6 +2443,38 @@ namespace Workflows.tabZadaniaWF
                                         foundError = true;
                                     }
                                 }
+
+                                // Wpłacona składka zdrowotna
+                                if (Check_IsLowerValue(item, kk, "colWplaconaSZ"))
+                                {
+                                    Add_Comment(item, "Wartość w pozycji 'Wpłacona składka zdrowotna' mniejsza niż w poprzednim okresie");
+                                    foundError = true;
+                                }
+                                // Wpłacone zaliczki od początku roku
+                                if (Check_IsLowerValue(item, kk, "colWplaconeZaliczkiOdPoczatkuRok"))
+                                {
+                                    Add_Comment(item, "Wartość w pozycji 'Wpłacone zaliczki od początku roku' mniejsza niż w poprzednim okresie");
+                                    foundError = true;
+                                }
+                                // Strata do odliczenia
+                                if (Check_IsNotEqual(item, kk, "colStrataDoOdliczenia"))
+                                {
+                                    Add_Comment(item, "Wartość w pozycji 'Strata do odliczenia' niezgodna z wartością z poprzedniego okresu");
+                                    foundError = true;
+                                }
+                                // Strona Winien
+                                //if (Check_IsLowerValue(item, kk, "colStronaWn"))
+                                //{
+                                //    Add_Comment(item, "Wartość w pozycji 'Strona Wn' mniejsza niż w poprzednim okresie");
+                                //    foundError = true;
+                                //}
+                                // Strona Ma
+                                //if (Check_IsLowerValue(item, kk, "colStronaMa"))
+                                //{
+                                //    Add_Comment(item, "Wartość w pozycji 'Strona Ma' mniejsza niż w poprzednim okresie");
+                                //    foundError = true;
+                                //}
+
                             }
                         }
                     }
@@ -2452,59 +2487,72 @@ namespace Workflows.tabZadaniaWF
 
                 if (sumaDoOdliczenia != sumaDoOdliczeniaZRejestru)
                 {
-                    Add_Comment(item, "Suma do odliczenia (" + sumaDoOdliczenia.ToString() + ") nie zgadza się z rejestrem (" + sumaDoOdliczeniaZRejestru.ToString() + ")");
+                    Add_Comment(item, "Strata do odliczenia (" + sumaDoOdliczenia.ToString() + ") nie zgadza się z rejestrem (" + sumaDoOdliczeniaZRejestru.ToString() + ")");
                     foundError = true;
                 }
 
-                //oblicz "podstawa do opodatkowania
+                //oblicz "podstawa do opodatkowania (kalkulacja na formularzu).
 
-                double sumNKUP = BLL.Tools.Get_Value(item, "colKosztyNKUP_WynWyl")
-                    + BLL.Tools.Get_Value(item, "colKosztyNKUP_ZUSPlatWyl")
-                    + BLL.Tools.Get_Value(item, "colKosztyNKUP_FakWyl")
-                    + BLL.Tools.Get_Value(item, "colKosztyNKUP_PozostaleKoszty");
+                //double sumNKUP = BLL.Tools.Get_Value(item, "colKosztyNKUP_WynWyl")
+                //    + BLL.Tools.Get_Value(item, "colKosztyNKUP_ZUSPlatWyl")
+                //    + BLL.Tools.Get_Value(item, "colKosztyNKUP_FakWyl")
+                //    + BLL.Tools.Get_Value(item, "colKosztyNKUP_PozostaleKoszty");
 
-                double sumWS = BLL.Tools.Get_Value(item, "colKosztyWS_WynWlaczone")
-                    + BLL.Tools.Get_Value(item, "colKosztyWS_ZUSPlatWlaczone")
-                    + BLL.Tools.Get_Value(item, "colKosztyWS_FakWlaczone");
+                //double sumWS = BLL.Tools.Get_Value(item, "colKosztyWS_WynWlaczone")
+                //    + BLL.Tools.Get_Value(item, "colKosztyWS_ZUSPlatWlaczone")
+                //    + BLL.Tools.Get_Value(item, "colKosztyWS_FakWlaczone");
 
-                double sumPN = BLL.Tools.Get_Value(item, "colPrzychodyNP_DywidendySpO")
-                    + BLL.Tools.Get_Value(item, "colPrzychodyNP_Inne");
+                //double sumPN = BLL.Tools.Get_Value(item, "colPrzychodyNP_DywidendySpO")
+                //    + BLL.Tools.Get_Value(item, "colPrzychodyNP_Inne");
 
-                double colDochodStrataZInnychSp = BLL.Tools.Get_Value(item, "colDochodStrataZInnychSp");
+                //double colDochodStrataZInnychSp = BLL.Tools.Get_Value(item, "colDochodStrataZInnychSp");
 
-                double colPrzychodyZwolnione = BLL.Tools.Get_Value(item, "colPrzychodyZwolnione"); //czy to do czegoś jest potrzebne?
+                //double colPrzychodyZwolnione = BLL.Tools.Get_Value(item, "colPrzychodyZwolnione"); //czy to do czegoś jest potrzebne?
 
-                double zsn = 0;
-                if (BLL.Tools.Get_Text(item, "colPD_OcenaWyniku").Equals("Dochód")) zsn = zsn + BLL.Tools.Get_Value(item, "colPD_WartoscDochodu");
-                if (BLL.Tools.Get_Text(item, "colPD_OcenaWyniku").Equals("Strata")) zsn = zsn - 1 * BLL.Tools.Get_Value(item, "colPD_WartoscStraty");
+                //double zsn = 0;
+                //if (BLL.Tools.Get_Text(item, "colPD_OcenaWyniku").Equals("Dochód")) zsn = zsn + BLL.Tools.Get_Value(item, "colPD_WartoscDochodu");
+                //if (BLL.Tools.Get_Text(item, "colPD_OcenaWyniku").Equals("Strata")) zsn = zsn - 1 * BLL.Tools.Get_Value(item, "colPD_WartoscStraty");
 
-                double zyskStrataNetto = zsn - sumNKUP + sumWS + sumPN - colDochodStrataZInnychSp;
+                //double zyskStrataNetto = zsn - sumNKUP + sumWS + sumPN - colDochodStrataZInnychSp;
 
-                if (!BLL.Tools.Get_Value(item, "colZyskStrataNetto").Equals(zyskStrataNetto))
-                {
-                    Add_Comment(item, string.Format(@"Nieprawidłowo obliczona wartość ZyskStrata Netto. Powinno być {0}, jest {1}",
-                                        zyskStrataNetto.ToString(),
-                                        BLL.Tools.Get_Value(item, "colZyskStrataNetto").ToString()));
-                    foundError = true;
+                //if (!BLL.Tools.Get_Value(item, "colZyskStrataNetto").Equals(zyskStrataNetto))
+                //{
+                //    Add_Comment(item, string.Format(@"Nieprawidłowo obliczona wartość ZyskStrata Netto. Powinno być {0}, jest {1}",
+                //                        zyskStrataNetto.ToString(),
+                //                        BLL.Tools.Get_Value(item, "colZyskStrataNetto").ToString()));
+                //    foundError = true;
 
-                    //ustaw prawidłową wartość - roboczo
-                    BLL.Tools.Set_Value(item, "colZyskStrataNetto", zyskStrataNetto);
-                }
+                //    //ustaw prawidłową wartość - roboczo
+                //    BLL.Tools.Set_Value(item, "colZyskStrataNetto", zyskStrataNetto);
+                //}
 
                 //sprawdź udziały wspólników
                 double sumaUdzialow = BLL.tabDochodyWspolnikow.Sum_UdzalyWspolnikow(item.Web, klientId, okresId) * 100;
 
-                if (sumaUdzialow==0)
+                if (!BLL.Tools.Get_Flag(item, "_IsSpolkaZoo")) //jeżeli spółka osobowa wtedy sprawdź sumę udziałów wspólników
                 {
-                    // ta spółka nie ma wspólników - zignoruj walidację.
+                    if (sumaUdzialow == 0)
+                    {
+                        // ta spółka nie ma zdefiniowanych wspólników 
+                        Add_Comment(item, "Spółka osobowa nie ma zdefiniowanych wspólników (suma udziałów wspólników = 0)");
+                        foundError = true;
+                    }
+                    else
+                    {
+                        // ta spółka ma wspólników - weryfikuj
+                        if (sumaUdzialow != 100)
+                        {
+                            Add_Comment(item, "Suma udziałów wspólników (" + sumaUdzialow.ToString() + "%) nie jest równa 100%");
+                            foundError = true;
+                        }
+                    }
                 }
                 else
                 {
-                    // ta spółka ma wspólników - weryfikuj
-                    if (sumaUdzialow != 100)
+                    if (sumaUdzialow>0)
                     {
-                        Add_Comment(item, "Suma udziałów wspólników (" + sumaUdzialow.ToString() + "%) nie jest równa 100%");
-                        foundError = true;
+                            Add_Comment(item, "Spółka kapitałowa nie powinna mieć zdefiniowanych wspólników (suma udziałów = " + sumaUdzialow.ToString() + "%)");
+                            foundError = true;
                     }
                 }
 
@@ -2526,9 +2574,11 @@ namespace Workflows.tabZadaniaWF
                     foundError = true;
                 }
 
-                if (zyskStrataNetto != stronaWn_Ma)
+
+
+                if (!BLL.Tools.Get_Value(item, "colZyskStrataNetto").Equals(stronaWn_Ma))
                 {
-                    Add_Comment(item, string.Format(@"Zysk-Strata Netto ({0}) nie równa się Strona Winien-Strona Ma ({1})", zyskStrataNetto.ToString(), stronaWn_Ma.ToString()));
+                    Add_Comment(item, string.Format(@"Zysk-Strata Netto ({0}) nie równa się Strona Winien-Strona Ma ({1})", BLL.Tools.Get_Value(item, "colZyskStrataNetto").ToString(), stronaWn_Ma.ToString()));
                     foundError = true;
                 }
 
@@ -2588,8 +2638,66 @@ namespace Workflows.tabZadaniaWF
                 BLL.Tools.Set_Text(item, "_Specyfikacja", przychodWyszczegolnienie);
 
 
-                // oblicz wysokość podatku
+                //jeżeli bieżący miesiąc > styczeń to kopuj dane z poprzedniej karty odpowiednio w/g trybu (miesięcznie/kwartalnie)
 
+                SPListItem okres = BLL.tabOkresy.Get_OkresById(item.Web, okresId);
+                DateTime dataRozpoczecia = BLL.Tools.Get_Date(okres, "colDataRozpoczecia");
+                if (dataRozpoczecia.Month > 1)
+                {
+                    //wyszukaj źródłową kartę kontrolną
+
+                    bool trybKwartalny = false;
+                    if (BLL.Tools.Get_Text(item, "enumRozliczeniePD").Equals("Kwartalnie")) trybKwartalny = true;
+
+                    DateTime targetStartDate = BLL.Tools.Get_TargetStartDate(trybKwartalny, dataRozpoczecia);
+
+                    if (!targetStartDate.Equals(new DateTime()))
+                    {
+                        SPListItem targetOkres = BLL.tabOkresy.Get_OkresByStartDate(item.Web, targetStartDate);
+
+                        int targetOkresId = 0;
+
+                        if (targetOkres != null) targetOkresId = targetOkres.ID;
+
+                        if (!targetOkresId.Equals(0))
+                        {
+                            //znajdź kartę kontrolną
+
+                            SPListItem kk = BLL.tabKartyKontrolne.Get_KartaKontrolna(item.Web, klientId, targetOkresId);
+
+                            if (kk == null) { }//dane niedostępne
+                            else
+                            {
+                                // znalazł dane do porównania na karcie kk
+
+                                // Nieuwzględniona w skosztach składka społeczna
+                                if (Check_IsLowerValue(item, kk, "colNieuwzglednionaSkladkaSpolecz"))
+                                {
+                                    Add_Comment(item, "Wartość w pozycji 'Nieuwzględniona w kosztach składka społeczna' mniejsza niż w poprzednim okresie");
+                                    foundError = true;
+                                }
+                                // Wpłacona składka zdrowotna
+                                if (Check_IsLowerValue(item, kk, "colWplaconaSZ"))
+                                {
+                                    Add_Comment(item, "Wartość w pozycji 'Wpłacona składka zdrowotna' mniejsza niż w poprzednim okresie");
+                                    foundError = true;
+                                }
+                                // Wpłacone zaliczki od początku roku
+                                if (Check_IsLowerValue(item, kk, "colWplaconeZaliczkiOdPoczatkuRok"))
+                                {
+                                    Add_Comment(item, "Wartość w pozycji 'Wpłacone zaliczki od początku roku' mniejsza niż w poprzednim okresie");
+                                    foundError = true;
+                                }
+                                // Strata do odliczenia
+                                if (Check_IsNotEqual(item, kk, "colStrataDoOdliczenia"))
+                                {
+                                    Add_Comment(item, "Wartość w pozycji 'Strata do odliczenia' niezgodna z wartością z poprzedniego okresu");
+                                    foundError = true;
+                                }
+                            }
+                        }
+                    }
+                }
 
                 // report results
                 if (foundError)
@@ -2610,6 +2718,19 @@ namespace Workflows.tabZadaniaWF
                 double v0 = BLL.Tools.Get_Value(kk, col);
 
                 if (v1 < v0) return true;
+            }
+
+            return false;
+        }
+
+        private bool Check_IsNotEqual(SPListItem item, SPListItem kk, string col)
+        {
+            if (item[col] != null && kk[col] != null)
+            {
+                double v1 = BLL.Tools.Get_Value(item, col);
+                double v0 = BLL.Tools.Get_Value(kk, col);
+
+                if (v1 != v0) return true;
             }
 
             return false;

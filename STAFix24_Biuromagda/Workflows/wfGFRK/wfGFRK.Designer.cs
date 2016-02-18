@@ -49,6 +49,7 @@ namespace Workflows.wfGFRK
             this.logFirma = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.logToHistoryListActivity14 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Manage_PDW = new System.Workflow.Activities.CodeActivity();
+            this.logToHistoryListActivity13 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Manage_PD1 = new System.Workflow.Activities.CodeActivity();
             this.logToHistoryListActivity4 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Manage_ZUS3 = new System.Workflow.Activities.CodeActivity();
@@ -167,6 +168,16 @@ namespace Workflows.wfGFRK
             // 
             this.Manage_PDW.Name = "Manage_PDW";
             this.Manage_PDW.ExecuteCode += new System.EventHandler(this.Manage_PDW_ExecuteCode);
+            // 
+            // logToHistoryListActivity13
+            // 
+            this.logToHistoryListActivity13.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
+            this.logToHistoryListActivity13.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
+            this.logToHistoryListActivity13.HistoryDescription = "PD";
+            this.logToHistoryListActivity13.HistoryOutcome = "";
+            this.logToHistoryListActivity13.Name = "logToHistoryListActivity13";
+            this.logToHistoryListActivity13.OtherData = "";
+            this.logToHistoryListActivity13.UserId = -1;
             // 
             // Manage_PD1
             // 
@@ -396,6 +407,7 @@ namespace Workflows.wfGFRK
             this.CT_OsobaFizyczna.Activities.Add(this.Manage_ZUS3);
             this.CT_OsobaFizyczna.Activities.Add(this.logToHistoryListActivity4);
             this.CT_OsobaFizyczna.Activities.Add(this.Manage_PD1);
+            this.CT_OsobaFizyczna.Activities.Add(this.logToHistoryListActivity13);
             this.CT_OsobaFizyczna.Activities.Add(this.Manage_PDW);
             this.CT_OsobaFizyczna.Activities.Add(this.logToHistoryListActivity14);
             codecondition3.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isOsobaFizyczna);
@@ -635,6 +647,8 @@ namespace Workflows.wfGFRK
 
         #endregion
 
+        private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity13;
+
         private CodeActivity Manage_PD1;
 
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity12;
@@ -756,6 +770,7 @@ namespace Workflows.wfGFRK
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity1;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
 
 
 

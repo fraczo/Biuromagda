@@ -74,15 +74,20 @@ namespace BLL
             Copy_Field(item, form, "colPrzychodyNP_DywidendySpO");
             Copy_Field(item, form, "colPrzychodyNP_Inne");
             Copy_Field(item, form, "colPrzychodyZwolnione");
+            Copy_Field(item, form, "colStrataDoOdliczenia");
+
+            Copy_Field(item, form, "colDochodStrataZInnychSp");
+            Copy_Field(item, form, "colPodatekCIT19");
             Copy_Field(item, form, "colWplaconaSZ");
+            Copy_Field(item, form, "colWplaconeZaliczkiOdPoczatkuRoku");
+            //Copy_Field(item, form, "colPD_WartoscDoZaplaty"); - uwzglęnione w PD
+
             Copy_Field(item, form, "colZyskStrataNetto");
 
-            Copy_Field(item, form, "colStrataDoOdliczenia");
             Copy_Field(item, form, "colStronaWn");
             Copy_Field(item, form, "colStronaMa");
             Copy_Field(item, form, "colStronaWn-StronaMa");
-            Copy_Field(item, form, "colWplaconeZaliczkiOdPoczatkuRoku");
-            Copy_Field(item, form, "colIleDoDoplaty");
+            
 
             BLL.Models.Klient k = new Models.Klient(item.Web, Get_LookupId(item, "selKlient"));
             form["enumFormaPrawna"] = k.FormaPrawna;
@@ -401,7 +406,27 @@ namespace BLL
 
         public static void Update_PDW_Data(SPListItem item)
         {
-            throw new NotImplementedException();
+            string KEY = Create_KEY(item);
+            int formId = Get_KartaKontrolnaId(item, KEY);
+
+            SPListItem form = Get_KartaKontrolnaById(item.Web, formId);
+            Copy_PDFields(item, form);
+            Copy_Field(item, form, "colStrataDoOdliczenia");
+            //Copy_Field(item, form, "colDochodStrataZInnychSp"); inna nomenklatura na PDW
+
+            Copy_Field(item, form, "colNieuwzglednionaSkladkaSpolecz");
+            Copy_Field(item, form, "colPodatekNaliczony");
+            //Copy_Field(item, form, "colPodatekCIT19");inna nomenklatura na PDW
+
+            Copy_Field(item, form, "colWplaconaSZ");
+            Copy_Field(item, form, "colWplaconeZaliczkiOdPoczatkuRoku");
+            //Copy_Field(item, form, "colPD_WartoscDoZaplaty"); - uwzglęnione w PD
+
+
+            //BLL.Models.Klient k = new Models.Klient(item.Web, Get_LookupId(item, "selKlient"));
+            //form["enumFormaPrawna"] = k.FormaPrawna;
+
+            form.SystemUpdate();
         }
     }
 }

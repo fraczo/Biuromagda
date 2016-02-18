@@ -63,6 +63,7 @@ namespace BLL.Models
                         this.PelnaNazwaFirmy = item.Title;
                         break;
                     case "KSH":
+                        this.FormaPrawna = item["enumFormaPrawna"] != null ? item["enumFormaPrawna"].ToString() : string.Empty;
                         this.PelnaNazwaFirmy = item.Title;
                         this.FormaPrawna = item["enumFormaPrawna"] != null ? item["enumFormaPrawna"].ToString() : string.Empty;
                         break;
@@ -75,7 +76,7 @@ namespace BLL.Models
                             item["colNazwisko"] != null ? item["colNazwisko"].ToString() : string.Empty,
                             item["colPESEL"] != null ? "pesel: " + item["colPESEL"].ToString() : string.Empty).Trim();
                         break;
-                    case "Firma":
+                    case "Firma zewnętrzna":
                         this.PelnaNazwaFirmy = item["colNazwa"] != null ? item["colNazwa"].ToString() : string.Empty;
                         break;
                     default:
@@ -291,5 +292,12 @@ namespace BLL.Models
         public bool DrukWplatyWymagany { get; set; }
 
         public bool PrzypomnienieOTerminiePlatnosciWymagane { get; set; }
+
+        public bool IsSpolkaKapitalowa { 
+            get{
+                if (!this.FormaPrawna.Equals("Spółka osobowa")) return true;
+                else return false;
+            }
+        }
     }
 }

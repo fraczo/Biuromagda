@@ -154,6 +154,9 @@ namespace EventReceivers.admProcessRequestsER
                     bool trybKwartalny = true;
                     Copy_DaneRozszerzone(web, klientId, okresId, trybKwartalny, ref formatka); //tryp kwartalny
 
+                    //zainicjowanie danych z kartoteki klienta
+                    Copy_DaneZKartoteki(web, klientId, okresId, ref formatka);
+
                     //zainicjowanie sumy strat z lat ubiegłych
                     Copy_SumyStratZLatUbieglych(web, klientId, okresId, ref formatka);
 
@@ -202,8 +205,11 @@ namespace EventReceivers.admProcessRequestsER
                     SPListItem formatka = null; 
 
                     //zainicjowanie danych NKUP, WS NP
-                    bool trybKwartalny = false;
-                    Copy_DaneRozszerzone(web, klientId, okresId, trybKwartalny, ref formatka); //tryp kwartalny
+                    bool trybKwartalny = false; //tryp miesięczny
+                    Copy_DaneRozszerzone(web, klientId, okresId, trybKwartalny, ref formatka); 
+
+                    //zainicjowanie danych z kartoteki klienta
+                    Copy_DaneZKartoteki(web, klientId, okresId, ref formatka);
 
                     //zainicjowanie sumy strat z lat ubiegłych
                     Copy_SumyStratZLatUbieglych(web, klientId, okresId, ref formatka);
@@ -213,6 +219,7 @@ namespace EventReceivers.admProcessRequestsER
 
                     //zainicjowanie kart w tabeli dochody wspólników
                     Create_DochodyWspolnikow(web, klientId, okresId);
+
                 }
             }
             catch (Exception ex)
@@ -222,12 +229,23 @@ namespace EventReceivers.admProcessRequestsER
             }
         }
 
+        private static void Copy_DaneZKartoteki(SPWeb web, int klientId, int okresId, ref SPListItem formatka)
+        {
+            // upewnij się że docelowa formatka została zainicjowana
+            Ensure_CurrentPDS(web, klientId, okresId, ref formatka);
+
+            // dane uzupełniające
+            BLL.Models.Klient iok = new BLL.Models.Klient(web, klientId);
+            formatka["_IsSpolkaZoo"] = iok.IsSpolkaKapitalowa;
+        }
+
         /// <summary>
         /// Kopiuje na bieżącą kartę informacje z poprzedzającego okresu (odpowiednio miesięcznie / kwartalnie)
         /// z uwzględnieniem zerowania od początku roku kalendarzowego.
         /// </summary>
         private static void Copy_DaneRozszerzone(SPWeb web, int klientId, int okresId, bool trybKwartalny, ref SPListItem formatka)
         {
+
             //jeżeli bieżący miesiąc > styczeń to kopuj dane z poprzedniej karty odpowiednio w/g trybu (miesięcznie/kwartalnie)
 
             SPListItem okres = BLL.tabOkresy.Get_OkresById(web, okresId);
@@ -296,7 +314,17 @@ namespace EventReceivers.admProcessRequestsER
                         | Copy(kk, formatka, "colStronaWn")
                         | Copy(kk, formatka, "colStronaMa");
 
+            // przychody zwolnione
 
+            Copy(kk, formatka, "colPrzychodyZwolnione");
+            
+            // wpłacona składka zdrowotna
+
+            Copy(kk, formatka, "colWplaconaSZ");
+
+            // wpłacone zeliczki od początku roku
+
+            Copy(kk, formatka, "colWplaconeZaliczkiOdPoczatkuRok");
 
         }
 

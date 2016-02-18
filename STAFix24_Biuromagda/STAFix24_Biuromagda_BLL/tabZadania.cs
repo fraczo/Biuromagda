@@ -300,7 +300,6 @@ namespace BLL
                 Set_KontoOperatora(item, operatorId);
             }
 
-
             item.SystemUpdate();
 
         }
