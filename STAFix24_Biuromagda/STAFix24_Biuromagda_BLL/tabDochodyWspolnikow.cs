@@ -79,8 +79,10 @@ namespace BLL
             return s;
         }
 
-        public static double Update_OcenaWyniku(SPWeb web, int klientId, int okresId, double colZyskStrataNetto)
+        public static double Update_DochodyWspolnikow(SPWeb web, int klientId, int okresId, double colZyskStrataNetto, out string validationMessage)
         {
+            validationMessage = string.Empty;
+
             Debug.WriteLine("Update_OcenaWyniku");
 
             double sumZysk = 0;
@@ -125,6 +127,16 @@ namespace BLL
                     }
 
                     item.SystemUpdate();
+
+
+                    // zaktualizuj zadanie rozliczenia wspólnika jeżeli istnieje
+                    string comments;
+                    Execute_UpdateRequest(web, BLL.Tools.Get_LookupId(item, "selKlient"), okresId, out comments);
+
+                    if (!string.IsNullOrEmpty(comments))
+                    {
+                        validationMessage = validationMessage + string.Format("<li>{0}</li>", comments);
+                    }
                 }
 
             }
@@ -140,7 +152,7 @@ namespace BLL
 
         }
 
-        public static void Get_PrzychodyWspolnika(SPWeb web, int wspolnikId, int okresId, out double przychod, out string comments)
+        public static void Get_PrzychodyWspolnika(SPWeb web, int wspolnikId, int okresId, out double przychod, out string specyfikacja)
         {
             double sumD = 0;
             double sumS = 0;
@@ -154,29 +166,29 @@ namespace BLL
                 .Where(i => BLL.Tools.Get_LookupId(i, "selOkres").Equals(okresId))
                 .ToArray();
 
-            if (results !=null & results.Length>0)
+            if (results != null & results.Length > 0)
             {
                 foreach (SPListItem item in results)
                 {
                     StringBuilder row = new StringBuilder(TABLEROW_TEMPLATE);
                     row.Replace("[[Firma]]", BLL.Tools.Get_LookupValue(item, "selKlient_NazwaSkrocona"));
-                    
-                    string ow = BLL.Tools.Get_Text(item, "colPD_OcenaWyniku");
-                    row.Replace("[[OcenaWyniku]]", ow );
 
-                    if (ow.Equals("Dochód")) 
+                    string ow = BLL.Tools.Get_Text(item, "colPD_OcenaWyniku");
+                    row.Replace("[[OcenaWyniku]]", ow);
+
+                    if (ow.Equals("Dochód"))
                     {
                         double dochod = BLL.Tools.Get_Value(item, "colPD_WartoscDochodu");
                         row.Replace("[[Dochod]]", BLL.Tools.Format_Currency(dochod));
                         row.Replace("[[Strata]]", string.Empty);
-                        sumD = sumD+dochod;
+                        sumD = sumD + dochod;
                     }
                     if (ow.Equals("Strata"))
                     {
                         double strata = BLL.Tools.Get_Value(item, "colPD_WartoscStraty");
                         row.Replace("[[Strata]]", BLL.Tools.Format_Currency(strata));
                         row.Replace("[[Dochod]]", string.Empty);
-                        sumS = sumS+strata;
+                        sumS = sumS + strata;
                     }
 
                     sb.Append(row);
@@ -187,7 +199,50 @@ namespace BLL
 
             StringBuilder sb0 = new StringBuilder(TABLE_TEMPLATE);
             sb0.Replace("[[TableRow]]", sb.ToString());
-            comments = sb0.ToString();
+            specyfikacja = sb0.ToString();
+        }
+
+        /// <summary>
+        /// Sprawdza czy dla danego wspólnika w danym okresie jest zdefiniowana karta rozliczeniowa PDS lub PDW
+        /// Jeżeli jest to inicjuje procedurę aktualizacji karty
+        /// Jeżeli nie to zwraca komunikat że karta rozliczeniowa nie zostałą zainicjowana
+        /// </summary>
+        public static void Execute_UpdateRequest(SPWeb web, int wspolnikId, int okresId, out string comments)
+        {
+            comments = string.Empty;
+
+            int zadanieId = 0;
+            //sprawdź czy istnieje zadanie typu PDS
+
+            zadanieId = BLL.tabZadania.Get_ZadanieByKEY(web,
+                 BLL.tabZadania.Define_KEY("Rozliczenie podatku dochodowego spółki", wspolnikId, okresId));
+
+            if (zadanieId <= 0)
+            {
+                //sprawdź czy istnieje zadanie typu PDW
+
+                zadanieId = BLL.tabZadania.Get_ZadanieByKEY(web,
+                    BLL.tabZadania.Define_KEY("Rozliczenie podatku dochodowego wspólnika", wspolnikId, okresId));
+            }
+
+            if (zadanieId > 0)
+            {
+                // zainicjuj procedurę rozliczenia
+                BLL.tabZadania.Execute_Update_DochodyZInnychSpolek(web, wspolnikId, okresId, zadanieId, ref comments);
+            }
+            else
+            {
+                BLL.Models.Klient iok = new Models.Klient(web, wspolnikId);
+                SPListItem okres = BLL.tabOkresy.Get_OkresById(web, okresId);
+                
+                // karta rozliczeniowa PDS/PDW nie została znaleziona >>> wyślij komunikat
+                StringBuilder sb = new StringBuilder(comments);
+                sb.AppendFormat("Zadanie rozliczenia podatku dochodowego spółki / wspólnika nie zostało znalezione dla klienta {0} w okresie {1}",
+                    iok.NazwaFirmy, okres.Title);
+
+                comments = sb.ToString();
+            }
+
         }
     }
 }

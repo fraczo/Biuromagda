@@ -31,6 +31,11 @@ namespace Workflows.tabZadaniaWF
             System.Workflow.ComponentModel.ActivityBind activitybind2 = new System.Workflow.ComponentModel.ActivityBind();
             System.Workflow.ComponentModel.ActivityBind activitybind3 = new System.Workflow.ComponentModel.ActivityBind();
             System.Workflow.ComponentModel.ActivityBind activitybind4 = new System.Workflow.ComponentModel.ActivityBind();
+            System.Workflow.ComponentModel.ActivityBind activitybind5 = new System.Workflow.ComponentModel.ActivityBind();
+            System.Workflow.Runtime.CorrelationToken correlationtoken2 = new System.Workflow.Runtime.CorrelationToken();
+            System.Workflow.ComponentModel.ActivityBind activitybind6 = new System.Workflow.ComponentModel.ActivityBind();
+            System.Workflow.ComponentModel.ActivityBind activitybind7 = new System.Workflow.ComponentModel.ActivityBind();
+            System.Workflow.ComponentModel.ActivityBind activitybind8 = new System.Workflow.ComponentModel.ActivityBind();
             System.Workflow.Activities.CodeCondition codecondition1 = new System.Workflow.Activities.CodeCondition();
             System.Workflow.Activities.CodeCondition codecondition2 = new System.Workflow.Activities.CodeCondition();
             System.Workflow.Activities.CodeCondition codecondition3 = new System.Workflow.Activities.CodeCondition();
@@ -53,21 +58,28 @@ namespace Workflows.tabZadaniaWF
             System.Workflow.Activities.CodeCondition codecondition20 = new System.Workflow.Activities.CodeCondition();
             System.Workflow.Activities.CodeCondition codecondition21 = new System.Workflow.Activities.CodeCondition();
             System.Workflow.Activities.CodeCondition codecondition22 = new System.Workflow.Activities.CodeCondition();
-            System.Workflow.ComponentModel.ActivityBind activitybind5 = new System.Workflow.ComponentModel.ActivityBind();
             System.Workflow.Activities.CodeCondition codecondition23 = new System.Workflow.Activities.CodeCondition();
-            System.Workflow.ComponentModel.ActivityBind activitybind7 = new System.Workflow.ComponentModel.ActivityBind();
-            System.Workflow.ComponentModel.ActivityBind activitybind6 = new System.Workflow.ComponentModel.ActivityBind();
+            System.Workflow.ComponentModel.ActivityBind activitybind9 = new System.Workflow.ComponentModel.ActivityBind();
+            System.Workflow.Activities.CodeCondition codecondition24 = new System.Workflow.Activities.CodeCondition();
+            System.Workflow.ComponentModel.ActivityBind activitybind11 = new System.Workflow.ComponentModel.ActivityBind();
+            System.Workflow.ComponentModel.ActivityBind activitybind10 = new System.Workflow.ComponentModel.ActivityBind();
+            this.logUpdateIssueMessageSent = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
+            this.sendUpdateIssueResults = new Microsoft.SharePoint.WorkflowActions.SendEmail();
+            this.Setup_UpdateIssueMessage = new System.Workflow.Activities.CodeActivity();
             this.LogValidationMessageSent = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.sendValidationResults = new Microsoft.SharePoint.WorkflowActions.SendEmail();
             this.Setup_ValidationMessage = new System.Workflow.Activities.CodeActivity();
-            this.ifValidationMessageExist = new System.Workflow.Activities.IfElseBranchActivity();
+            this.ifVM1MessageExist = new System.Workflow.Activities.IfElseBranchActivity();
+            this.ifVMMessageExist = new System.Workflow.Activities.IfElseBranchActivity();
             this.Manage_Cmd_Anuluj1 = new System.Workflow.Activities.CodeActivity();
             this.logCase4 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Manage_Cmd_WyslijInfoIZakoncz = new System.Workflow.Activities.CodeActivity();
             this.logCase3 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Mange_Cmd_WyslijInfo1 = new System.Workflow.Activities.CodeActivity();
             this.logCase2 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
+            this.ifElseActivity3 = new System.Workflow.Activities.IfElseActivity();
             this.ReportValidationResults = new System.Workflow.Activities.IfElseActivity();
+            this.Preset_Message = new System.Workflow.Activities.CodeActivity();
             this.Manage_Cmd_Zatwierdz1 = new System.Workflow.Activities.CodeActivity();
             this.Reset_ValidationMessage = new System.Workflow.Activities.CodeActivity();
             this.logCase = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
@@ -140,6 +152,44 @@ namespace Workflows.tabZadaniaWF
             this.Get_Status = new System.Workflow.Activities.CodeActivity();
             this.onWorkflowActivated1 = new Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated();
             // 
+            // logUpdateIssueMessageSent
+            // 
+            this.logUpdateIssueMessageSent.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
+            this.logUpdateIssueMessageSent.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
+            this.logUpdateIssueMessageSent.HistoryDescription = "Update Issue Message";
+            this.logUpdateIssueMessageSent.HistoryOutcome = "Wysłana";
+            this.logUpdateIssueMessageSent.Name = "logUpdateIssueMessageSent";
+            this.logUpdateIssueMessageSent.OtherData = "";
+            this.logUpdateIssueMessageSent.UserId = -1;
+            // 
+            // sendUpdateIssueResults
+            // 
+            this.sendUpdateIssueResults.BCC = null;
+            activitybind1.Name = "tabZadaniaWF";
+            activitybind1.Path = "msgBody1";
+            this.sendUpdateIssueResults.CC = null;
+            correlationtoken1.Name = "workflowToken";
+            correlationtoken1.OwnerActivityName = "tabZadaniaWF";
+            this.sendUpdateIssueResults.CorrelationToken = correlationtoken1;
+            this.sendUpdateIssueResults.From = null;
+            activitybind2.Name = "tabZadaniaWF";
+            activitybind2.Path = "msgHeaders";
+            this.sendUpdateIssueResults.IncludeStatus = false;
+            this.sendUpdateIssueResults.Name = "sendUpdateIssueResults";
+            activitybind3.Name = "tabZadaniaWF";
+            activitybind3.Path = "msgSubject1";
+            activitybind4.Name = "tabZadaniaWF";
+            activitybind4.Path = "msgTo";
+            this.sendUpdateIssueResults.SetBinding(Microsoft.SharePoint.WorkflowActions.SendEmail.HeadersProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind2)));
+            this.sendUpdateIssueResults.SetBinding(Microsoft.SharePoint.WorkflowActions.SendEmail.SubjectProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind3)));
+            this.sendUpdateIssueResults.SetBinding(Microsoft.SharePoint.WorkflowActions.SendEmail.ToProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind4)));
+            this.sendUpdateIssueResults.SetBinding(Microsoft.SharePoint.WorkflowActions.SendEmail.BodyProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind1)));
+            // 
+            // Setup_UpdateIssueMessage
+            // 
+            this.Setup_UpdateIssueMessage.Name = "Setup_UpdateIssueMessage";
+            this.Setup_UpdateIssueMessage.ExecuteCode += new System.EventHandler(this.Setup_UpdateIssueMessage_ExecuteCode);
+            // 
             // LogValidationMessageSent
             // 
             this.LogValidationMessageSent.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
@@ -153,40 +203,48 @@ namespace Workflows.tabZadaniaWF
             // sendValidationResults
             // 
             this.sendValidationResults.BCC = null;
-            activitybind1.Name = "tabZadaniaWF";
-            activitybind1.Path = "msgBody";
+            activitybind5.Name = "tabZadaniaWF";
+            activitybind5.Path = "msgBody";
             this.sendValidationResults.CC = null;
-            correlationtoken1.Name = "workflowToken";
-            correlationtoken1.OwnerActivityName = "tabZadaniaWF";
-            this.sendValidationResults.CorrelationToken = correlationtoken1;
+            correlationtoken2.Name = "workflowToken";
+            correlationtoken2.OwnerActivityName = "tabZadaniaWF";
+            this.sendValidationResults.CorrelationToken = correlationtoken2;
             this.sendValidationResults.From = null;
-            activitybind2.Name = "tabZadaniaWF";
-            activitybind2.Path = "msgHeaders";
+            activitybind6.Name = "tabZadaniaWF";
+            activitybind6.Path = "msgHeaders";
             this.sendValidationResults.IncludeStatus = false;
             this.sendValidationResults.Name = "sendValidationResults";
-            activitybind3.Name = "tabZadaniaWF";
-            activitybind3.Path = "msgSubject";
-            activitybind4.Name = "tabZadaniaWF";
-            activitybind4.Path = "msgTo";
-            this.sendValidationResults.MethodInvoking += new System.EventHandler(this.sendValidationResults_MethodInvoking);
-            this.sendValidationResults.SetBinding(Microsoft.SharePoint.WorkflowActions.SendEmail.SubjectProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind3)));
-            this.sendValidationResults.SetBinding(Microsoft.SharePoint.WorkflowActions.SendEmail.ToProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind4)));
-            this.sendValidationResults.SetBinding(Microsoft.SharePoint.WorkflowActions.SendEmail.BodyProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind1)));
-            this.sendValidationResults.SetBinding(Microsoft.SharePoint.WorkflowActions.SendEmail.HeadersProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind2)));
+            activitybind7.Name = "tabZadaniaWF";
+            activitybind7.Path = "msgSubject";
+            activitybind8.Name = "tabZadaniaWF";
+            activitybind8.Path = "msgTo";
+            this.sendValidationResults.SetBinding(Microsoft.SharePoint.WorkflowActions.SendEmail.SubjectProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind7)));
+            this.sendValidationResults.SetBinding(Microsoft.SharePoint.WorkflowActions.SendEmail.ToProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind8)));
+            this.sendValidationResults.SetBinding(Microsoft.SharePoint.WorkflowActions.SendEmail.BodyProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind5)));
+            this.sendValidationResults.SetBinding(Microsoft.SharePoint.WorkflowActions.SendEmail.HeadersProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind6)));
             // 
             // Setup_ValidationMessage
             // 
             this.Setup_ValidationMessage.Name = "Setup_ValidationMessage";
             this.Setup_ValidationMessage.ExecuteCode += new System.EventHandler(this.Setup_ValidationMessage_ExecuteCode);
             // 
-            // ifValidationMessageExist
+            // ifVM1MessageExist
             // 
-            this.ifValidationMessageExist.Activities.Add(this.Setup_ValidationMessage);
-            this.ifValidationMessageExist.Activities.Add(this.sendValidationResults);
-            this.ifValidationMessageExist.Activities.Add(this.LogValidationMessageSent);
-            codecondition1.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isValidationMessageExist);
-            this.ifValidationMessageExist.Condition = codecondition1;
-            this.ifValidationMessageExist.Name = "ifValidationMessageExist";
+            this.ifVM1MessageExist.Activities.Add(this.Setup_UpdateIssueMessage);
+            this.ifVM1MessageExist.Activities.Add(this.sendUpdateIssueResults);
+            this.ifVM1MessageExist.Activities.Add(this.logUpdateIssueMessageSent);
+            codecondition1.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isUpdateIssueMessageExist);
+            this.ifVM1MessageExist.Condition = codecondition1;
+            this.ifVM1MessageExist.Name = "ifVM1MessageExist";
+            // 
+            // ifVMMessageExist
+            // 
+            this.ifVMMessageExist.Activities.Add(this.Setup_ValidationMessage);
+            this.ifVMMessageExist.Activities.Add(this.sendValidationResults);
+            this.ifVMMessageExist.Activities.Add(this.LogValidationMessageSent);
+            codecondition2.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isValidationMessageExist);
+            this.ifVMMessageExist.Condition = codecondition2;
+            this.ifVMMessageExist.Name = "ifVMMessageExist";
             // 
             // Manage_Cmd_Anuluj1
             // 
@@ -233,10 +291,20 @@ namespace Workflows.tabZadaniaWF
             this.logCase2.OtherData = "";
             this.logCase2.UserId = -1;
             // 
+            // ifElseActivity3
+            // 
+            this.ifElseActivity3.Activities.Add(this.ifVM1MessageExist);
+            this.ifElseActivity3.Name = "ifElseActivity3";
+            // 
             // ReportValidationResults
             // 
-            this.ReportValidationResults.Activities.Add(this.ifValidationMessageExist);
+            this.ReportValidationResults.Activities.Add(this.ifVMMessageExist);
             this.ReportValidationResults.Name = "ReportValidationResults";
+            // 
+            // Preset_Message
+            // 
+            this.Preset_Message.Name = "Preset_Message";
+            this.Preset_Message.ExecuteCode += new System.EventHandler(this.Preset_Message_ExecuteCode);
             // 
             // Manage_Cmd_Zatwierdz1
             // 
@@ -262,24 +330,24 @@ namespace Workflows.tabZadaniaWF
             // 
             this._Anuluj.Activities.Add(this.logCase4);
             this._Anuluj.Activities.Add(this.Manage_Cmd_Anuluj1);
-            codecondition2.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isCmd_Anuluj);
-            this._Anuluj.Condition = codecondition2;
+            codecondition3.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isCmd_Anuluj);
+            this._Anuluj.Condition = codecondition3;
             this._Anuluj.Name = "_Anuluj";
             // 
             // _WyślijInfoIZakoncz
             // 
             this._WyślijInfoIZakoncz.Activities.Add(this.logCase3);
             this._WyślijInfoIZakoncz.Activities.Add(this.Manage_Cmd_WyslijInfoIZakoncz);
-            codecondition3.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isCmd_WyslijInfoIZakoncz);
-            this._WyślijInfoIZakoncz.Condition = codecondition3;
+            codecondition4.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isCmd_WyslijInfoIZakoncz);
+            this._WyślijInfoIZakoncz.Condition = codecondition4;
             this._WyślijInfoIZakoncz.Name = "_WyślijInfoIZakoncz";
             // 
             // _WyslijInfo
             // 
             this._WyslijInfo.Activities.Add(this.logCase2);
             this._WyslijInfo.Activities.Add(this.Mange_Cmd_WyslijInfo1);
-            codecondition4.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isCmd_WyslijInfo);
-            this._WyslijInfo.Condition = codecondition4;
+            codecondition5.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isCmd_WyslijInfo);
+            this._WyslijInfo.Condition = codecondition5;
             this._WyslijInfo.Name = "_WyslijInfo";
             // 
             // _Zatwierdz
@@ -287,9 +355,11 @@ namespace Workflows.tabZadaniaWF
             this._Zatwierdz.Activities.Add(this.logCase);
             this._Zatwierdz.Activities.Add(this.Reset_ValidationMessage);
             this._Zatwierdz.Activities.Add(this.Manage_Cmd_Zatwierdz1);
+            this._Zatwierdz.Activities.Add(this.Preset_Message);
             this._Zatwierdz.Activities.Add(this.ReportValidationResults);
-            codecondition5.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isCmd_Zatwierdz);
-            this._Zatwierdz.Condition = codecondition5;
+            this._Zatwierdz.Activities.Add(this.ifElseActivity3);
+            codecondition6.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isCmd_Zatwierdz);
+            this._Zatwierdz.Condition = codecondition6;
             this._Zatwierdz.Name = "_Zatwierdz";
             // 
             // Set_Status_Obsluga4
@@ -363,79 +433,79 @@ namespace Workflows.tabZadaniaWF
             // ifStatusNowe4
             // 
             this.ifStatusNowe4.Activities.Add(this.Set_Status_Obsluga4);
-            codecondition6.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isStatus_Nowe);
-            this.ifStatusNowe4.Condition = codecondition6;
+            codecondition7.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isStatus_Nowe);
+            this.ifStatusNowe4.Condition = codecondition7;
             this.ifStatusNowe4.Name = "ifStatusNowe4";
             // 
             // ifStatusNowe3
             // 
             this.ifStatusNowe3.Activities.Add(this.Set_Status_Obsluga3);
-            codecondition7.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isStatus_Nowe);
-            this.ifStatusNowe3.Condition = codecondition7;
+            codecondition8.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isStatus_Nowe);
+            this.ifStatusNowe3.Condition = codecondition8;
             this.ifStatusNowe3.Name = "ifStatusNowe3";
             // 
             // RozliczenieZBiuremRachunkowym
             // 
-            codecondition8.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.ifRZBR);
-            this.RozliczenieZBiuremRachunkowym.Condition = codecondition8;
+            codecondition9.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.ifRZBR);
+            this.RozliczenieZBiuremRachunkowym.Condition = codecondition9;
             this.RozliczenieZBiuremRachunkowym.Name = "RozliczenieZBiuremRachunkowym";
             // 
             // RozliczeniePodatkuVAT
             // 
-            codecondition9.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.ifRPV);
-            this.RozliczeniePodatkuVAT.Condition = codecondition9;
+            codecondition10.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.ifRPV);
+            this.RozliczeniePodatkuVAT.Condition = codecondition10;
             this.RozliczeniePodatkuVAT.Name = "RozliczeniePodatkuVAT";
             // 
             // RozliczeniePodatkuDochodowegWspólnika
             // 
-            codecondition10.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.ifRPDW);
-            this.RozliczeniePodatkuDochodowegWspólnika.Condition = codecondition10;
+            codecondition11.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.ifRPDW);
+            this.RozliczeniePodatkuDochodowegWspólnika.Condition = codecondition11;
             this.RozliczeniePodatkuDochodowegWspólnika.Name = "RozliczeniePodatkuDochodowegWspólnika";
             // 
             // RozliczeniePodatkuDochodowegoSpółki
             // 
             this.RozliczeniePodatkuDochodowegoSpółki.Activities.Add(this.Manage_POD2);
-            codecondition11.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.ifRPDS);
-            this.RozliczeniePodatkuDochodowegoSpółki.Condition = codecondition11;
+            codecondition12.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.ifRPDS);
+            this.RozliczeniePodatkuDochodowegoSpółki.Condition = codecondition12;
             this.RozliczeniePodatkuDochodowegoSpółki.Name = "RozliczeniePodatkuDochodowegoSpółki";
             // 
             // RozliczeniePodatkuDochodowego
             // 
             this.RozliczeniePodatkuDochodowego.Activities.Add(this.Manage_POD);
-            codecondition12.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.ifRPD);
-            this.RozliczeniePodatkuDochodowego.Condition = codecondition12;
+            codecondition13.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.ifRPD);
+            this.RozliczeniePodatkuDochodowego.Condition = codecondition13;
             this.RozliczeniePodatkuDochodowego.Name = "RozliczeniePodatkuDochodowego";
             // 
             // RozliczenieZUS
             // 
-            codecondition13.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.ifRZ);
-            this.RozliczenieZUS.Condition = codecondition13;
+            codecondition14.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.ifRZ);
+            this.RozliczenieZUS.Condition = codecondition14;
             this.RozliczenieZUS.Name = "RozliczenieZUS";
             // 
             // ifStatusNowe2
             // 
             this.ifStatusNowe2.Activities.Add(this.Set_Operator2);
             this.ifStatusNowe2.Activities.Add(this.Set_Status_Obsluga2);
-            codecondition14.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isStatus_Nowe);
-            this.ifStatusNowe2.Condition = codecondition14;
+            codecondition15.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isStatus_Nowe);
+            this.ifStatusNowe2.Condition = codecondition15;
             this.ifStatusNowe2.Name = "ifStatusNowe2";
             // 
             // ProśbaOPrzedslanieWyciaguBankowego
             // 
-            this.ProśbaOPrzedslanieWyciaguBankowego.Condition = codecondition15;
+            this.ProśbaOPrzedslanieWyciaguBankowego.Condition = codecondition16;
             this.ProśbaOPrzedslanieWyciaguBankowego.Name = "ProśbaOPrzedslanieWyciaguBankowego";
             // 
             // ProśbaODokumenty
             // 
-            this.ProśbaODokumenty.Condition = codecondition16;
+            this.ProśbaODokumenty.Condition = codecondition17;
             this.ProśbaODokumenty.Name = "ProśbaODokumenty";
             // 
             // ifStatusNowe
             // 
             this.ifStatusNowe.Activities.Add(this.Set_Operator);
             this.ifStatusNowe.Activities.Add(this.Set_Status_Obsluga);
-            codecondition17.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isStatus_Nowe);
-            this.ifStatusNowe.Condition = codecondition17;
+            codecondition18.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isStatus_Nowe);
+            this.ifStatusNowe.Condition = codecondition18;
             this.ifStatusNowe.Name = "ifStatusNowe";
             // 
             // Else
@@ -447,8 +517,8 @@ namespace Workflows.tabZadaniaWF
             // 
             this.ifCommandExist.Activities.Add(this.logCommandActive);
             this.ifCommandExist.Activities.Add(this.SelectCommand);
-            codecondition18.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isCommandExist);
-            this.ifCommandExist.Condition = codecondition18;
+            codecondition19.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isCommandExist);
+            this.ifCommandExist.Condition = codecondition19;
             this.ifCommandExist.Name = "ifCommandExist";
             // 
             // Create_Message
@@ -564,8 +634,8 @@ namespace Workflows.tabZadaniaWF
             this.Wiadomości.Activities.Add(this.logWiadomość);
             this.Wiadomości.Activities.Add(this.ifStatus_Nowe4);
             this.Wiadomości.Activities.Add(this.Create_Message);
-            codecondition19.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.ifWiadomosci);
-            this.Wiadomości.Condition = codecondition19;
+            codecondition20.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.ifWiadomosci);
+            this.Wiadomości.Condition = codecondition20;
             this.Wiadomości.Name = "Wiadomości";
             // 
             // Formatki
@@ -574,8 +644,8 @@ namespace Workflows.tabZadaniaWF
             this.Formatki.Activities.Add(this.Set_KEY2);
             this.Formatki.Activities.Add(this.ifElseActivity1);
             this.Formatki.Activities.Add(this.ifStatus_Nowe3);
-            codecondition20.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.ifFormatki);
-            this.Formatki.Condition = codecondition20;
+            codecondition21.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.ifFormatki);
+            this.Formatki.Condition = codecondition21;
             this.Formatki.Name = "Formatki";
             // 
             // Komunikaty
@@ -584,8 +654,8 @@ namespace Workflows.tabZadaniaWF
             this.Komunikaty.Activities.Add(this.Set_KEY1);
             this.Komunikaty.Activities.Add(this.ifElseActivity2);
             this.Komunikaty.Activities.Add(this.ifStatus_Nowe2);
-            codecondition21.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.ifKomunikat);
-            this.Komunikaty.Condition = codecondition21;
+            codecondition22.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.ifKomunikat);
+            this.Komunikaty.Condition = codecondition22;
             this.Komunikaty.Name = "Komunikaty";
             // 
             // Zadanie
@@ -593,21 +663,21 @@ namespace Workflows.tabZadaniaWF
             this.Zadanie.Activities.Add(this.logZadanie);
             this.Zadanie.Activities.Add(this.Set_Zadanie1);
             this.Zadanie.Activities.Add(this.ifStatus_Nowe);
-            codecondition22.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.ifZ);
-            this.Zadanie.Condition = codecondition22;
+            codecondition23.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.ifZ);
+            this.Zadanie.Condition = codecondition23;
             this.Zadanie.Name = "Zadanie";
             // 
             // logErrorMessage
             // 
             this.logErrorMessage.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
             this.logErrorMessage.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
-            activitybind5.Name = "tabZadaniaWF";
-            activitybind5.Path = "logErrorMessage_HistoryDescription";
+            activitybind9.Name = "tabZadaniaWF";
+            activitybind9.Path = "logErrorMessage_HistoryDescription";
             this.logErrorMessage.HistoryOutcome = "";
             this.logErrorMessage.Name = "logErrorMessage";
             this.logErrorMessage.OtherData = "";
             this.logErrorMessage.UserId = -1;
-            this.logErrorMessage.SetBinding(Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity.HistoryDescriptionProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind5)));
+            this.logErrorMessage.SetBinding(Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity.HistoryDescriptionProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind9)));
             // 
             // ErrorHandler
             // 
@@ -671,8 +741,8 @@ namespace Workflows.tabZadaniaWF
             this.Active.Activities.Add(this.Get_CT);
             this.Active.Activities.Add(this.SelectCTGroup);
             this.Active.Activities.Add(this.ManageCommand);
-            codecondition23.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isActive);
-            this.Active.Condition = codecondition23;
+            codecondition24.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isActive);
+            this.Active.Condition = codecondition24;
             this.Active.Name = "Active";
             // 
             // faultHandlersActivity1
@@ -719,19 +789,19 @@ namespace Workflows.tabZadaniaWF
             // 
             this.Get_Status.Name = "Get_Status";
             this.Get_Status.ExecuteCode += new System.EventHandler(this.Get_Status_ExecuteCode);
-            activitybind7.Name = "tabZadaniaWF";
-            activitybind7.Path = "workflowId";
+            activitybind11.Name = "tabZadaniaWF";
+            activitybind11.Path = "workflowId";
             // 
             // onWorkflowActivated1
             // 
-            this.onWorkflowActivated1.CorrelationToken = correlationtoken1;
+            this.onWorkflowActivated1.CorrelationToken = correlationtoken2;
             this.onWorkflowActivated1.EventName = "OnWorkflowActivated";
             this.onWorkflowActivated1.Name = "onWorkflowActivated1";
-            activitybind6.Name = "tabZadaniaWF";
-            activitybind6.Path = "workflowProperties";
+            activitybind10.Name = "tabZadaniaWF";
+            activitybind10.Path = "workflowProperties";
             this.onWorkflowActivated1.Invoked += new System.EventHandler<System.Workflow.Activities.ExternalDataEventArgs>(this.onWorkflowActivated1_Invoked);
-            this.onWorkflowActivated1.SetBinding(Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated.WorkflowIdProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind7)));
-            this.onWorkflowActivated1.SetBinding(Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated.WorkflowPropertiesProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind6)));
+            this.onWorkflowActivated1.SetBinding(Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated.WorkflowIdProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind11)));
+            this.onWorkflowActivated1.SetBinding(Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated.WorkflowPropertiesProperty, ((System.Workflow.ComponentModel.ActivityBind)(activitybind10)));
             // 
             // tabZadaniaWF
             // 
@@ -751,6 +821,18 @@ namespace Workflows.tabZadaniaWF
 
         #endregion
 
+        private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logUpdateIssueMessageSent;
+
+        private Microsoft.SharePoint.WorkflowActions.SendEmail sendUpdateIssueResults;
+
+        private CodeActivity Setup_UpdateIssueMessage;
+
+        private IfElseBranchActivity ifVM1MessageExist;
+
+        private IfElseActivity ifElseActivity3;
+
+        private CodeActivity Preset_Message;
+
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity LogValidationMessageSent;
 
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logEND;
@@ -759,7 +841,7 @@ namespace Workflows.tabZadaniaWF
 
         private CodeActivity Setup_ValidationMessage;
 
-        private IfElseBranchActivity ifValidationMessageExist;
+        private IfElseBranchActivity ifVMMessageExist;
 
         private IfElseActivity ReportValidationResults;
 
@@ -914,6 +996,19 @@ namespace Workflows.tabZadaniaWF
         private CancellationHandlerActivity cancellationHandlerActivity1;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

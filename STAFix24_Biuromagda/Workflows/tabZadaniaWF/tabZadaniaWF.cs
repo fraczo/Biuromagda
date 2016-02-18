@@ -52,7 +52,8 @@ namespace Workflows.tabZadaniaWF
 
         DateTime startTime;
         private StatusZadania status;
-        private StringBuilder vm; // validation message
+        private StringBuilder vm; // validation message - from validator
+        private StringBuilder vm1; // validation message - from zadania wspólników updat procedure (problemy z aktualizacją)
 
         private void onWorkflowActivated1_Invoked(object sender, ExternalDataEventArgs e)
         {
@@ -1032,11 +1033,24 @@ namespace Workflows.tabZadaniaWF
             int klientId = BLL.Tools.Get_LookupId(item, "selKlient");
             int okresId = BLL.Tools.Get_LookupId(item, "selOkres");
 
-            double colZyskStrataNetto = BLL.Tools.Get_Value(item, "colZyskStrataNetto");
+            //double colZyskStrataNetto = BLL.Tools.Get_Value(item, "colZyskStrataNetto"); << ta wartość jest zaokrąglana
 
-            //rozpisz na wspólników
+            double zsn = 0;
+            string colPD_OcenaWyniku = BLL.Tools.Get_Text(item, "colPD_OcenaWyniku");
+            if (colPD_OcenaWyniku.Equals("Dochód")) zsn = BLL.Tools.Get_Value(item, "colPD_WartoscDochodu");
+            else if (colPD_OcenaWyniku.Equals("Strata")) zsn = BLL.Tools.Get_Value(item, "colPD_WartoscStraty");
 
-            double variance = BLL.tabDochodyWspolnikow.Update_OcenaWyniku(item.Web, klientId, okresId, colZyskStrataNetto);
+            // kalkulacja do podziału nie uwzględnia straty ponieważ strata powinna być 0 i jest ona rozliczana na wspólniku
+            double colZyskStrataDoPodzialu = zsn - BLL.Tools.Get_Value(item, "colPrzychodyZwolnione");
+
+            //rozpisz na wspólników i zainicjuj aktulizację wyników wspólników
+            string validationMessage = string.Empty;
+            double variance = BLL.tabDochodyWspolnikow.Update_DochodyWspolnikow(item.Web, klientId, okresId, colZyskStrataDoPodzialu, out validationMessage);
+
+            if (!string.IsNullOrEmpty(validationMessage))
+            {
+                vm1.Append(validationMessage);
+            }
         }
 
 
@@ -2459,8 +2473,18 @@ namespace Workflows.tabZadaniaWF
                                 // Strata do odliczenia
                                 if (Check_IsNotEqual(item, kk, "colStrataDoOdliczenia"))
                                 {
-                                    Add_Comment(item, "Wartość w pozycji 'Strata do odliczenia' niezgodna z wartością z poprzedniego okresu");
-                                    foundError = true;
+                                    if (!BLL.Tools.Get_Flag(item, "_IsSpolkaZoo"))
+                                    {
+                                        // dla spółek osobowych strata powinna być 0
+                                        Add_Comment(item, "Wartość w pozycji 'Strata do odliczenia' dla spółek osobowych powinna być 0 (jest "
+                                            + BLL.Tools.Get_Value(item, "colStrataDoOdliczenia") + ")");
+                                        foundError = true;
+                                    }
+                                    else
+                                    {
+                                        Add_Comment(item, "Wartość w pozycji 'Strata do odliczenia' niezgodna z wartością z poprzedniego okresu");
+                                        foundError = true;
+                                    }
                                 }
                                 // Strona Winien
                                 //if (Check_IsLowerValue(item, kk, "colStronaWn"))
@@ -2474,7 +2498,6 @@ namespace Workflows.tabZadaniaWF
                                 //    Add_Comment(item, "Wartość w pozycji 'Strona Ma' mniejsza niż w poprzednim okresie");
                                 //    foundError = true;
                                 //}
-
                             }
                         }
                     }
@@ -2534,7 +2557,7 @@ namespace Workflows.tabZadaniaWF
                     if (sumaUdzialow == 0)
                     {
                         // ta spółka nie ma zdefiniowanych wspólników 
-                        Add_Comment(item, "Spółka osobowa nie ma zdefiniowanych wspólników (suma udziałów wspólników = 0)");
+                        Add_Comment(item, "Spółka osobowa nie ma zdefiniowanych wspólników (suma udziałów wspólników = 0%)");
                         foundError = true;
                     }
                     else
@@ -2549,10 +2572,10 @@ namespace Workflows.tabZadaniaWF
                 }
                 else
                 {
-                    if (sumaUdzialow>0)
+                    if (sumaUdzialow > 0)
                     {
-                            Add_Comment(item, "Spółka kapitałowa nie powinna mieć zdefiniowanych wspólników (suma udziałów = " + sumaUdzialow.ToString() + "%)");
-                            foundError = true;
+                        Add_Comment(item, "Spółka kapitałowa nie powinna mieć zdefiniowanych wspólników (suma udziałów = " + sumaUdzialow.ToString() + "%)");
+                        foundError = true;
                     }
                 }
 
@@ -3344,6 +3367,7 @@ namespace Workflows.tabZadaniaWF
         private void Reset_ValidationMessage_ExecuteCode(object sender, EventArgs e)
         {
             vm = new StringBuilder();
+            vm1 = new StringBuilder();
         }
 
         private void isValidationMessageExist(object sender, ConditionalEventArgs e)
@@ -3358,8 +3382,6 @@ namespace Workflows.tabZadaniaWF
 
         private void Setup_ValidationMessage_ExecuteCode(object sender, EventArgs e)
         {
-            BLL.Models.Klient iok = new Klient(item.Web, BLL.Tools.Get_LookupId(item, "selKlient"));
-
             StringBuilder vmt = new StringBuilder(_VALIDATION_MESSAGE_TEMPLATE);
             vmt.Replace("[[NazwaKlienta]]", iok.NazwaFirmy);
             vmt.Replace("[[NumerZadania]]", item.ID.ToString());
@@ -3370,11 +3392,30 @@ namespace Workflows.tabZadaniaWF
             msgSubject = string.Format(@"Wynik weryfikacji zadania {0} negatywny", item.ID.ToString());
         }
 
-        private void sendValidationResults_MethodInvoking(object sender, EventArgs e)
+
+        private void isUpdateIssueMessageExist(object sender, ConditionalEventArgs e)
         {
+            if (vm1.Length > 0) e.Result = true;
+        }
+
+        public StringDictionary msgHeaders = new System.Collections.Specialized.StringDictionary();
+
+        private Klient iok;
+
+        private void Setup_UpdateIssueMessage_ExecuteCode(object sender, EventArgs e)
+        {
+            msgBody1 = vm1.ToString();
+            msgSubject1 = string.Format(@"Aktulizacja zadań wspólników spółki {0} wymaga ręcznej obsługi", iok.NazwaFirmy);
+        }
+
+        StringDictionary headers;
+
+        private void Preset_Message_ExecuteCode(object sender, EventArgs e)
+        {
+            iok = new Klient(item.Web, BLL.Tools.Get_LookupId(item, "selKlient"));
             msgTo = workflowProperties.OriginatorEmail;
 
-            StringDictionary headers = new StringDictionary();
+            headers = new StringDictionary();
             headers.Add("o:tag", "Validation Results");
             headers.Add("Importance", "high");
             headers.Add("X-Priority", "1");
@@ -3387,13 +3428,12 @@ namespace Workflows.tabZadaniaWF
             headers.Add("Reply-By", DateTime.Now.ToString("ddd, dd MMM yyyy HH:mm:ss +0100", ci));
             //headers.Add("Reply-By", "Wed, 10 Feb 2016 15:00:00 +0000");
 
-
-
             msgHeaders = headers;
         }
 
-        public StringDictionary msgHeaders = new System.Collections.Specialized.StringDictionary();
 
+        public String msgBody1 = default(System.String);
+        public String msgSubject1 = default(System.String);
 
     }
 

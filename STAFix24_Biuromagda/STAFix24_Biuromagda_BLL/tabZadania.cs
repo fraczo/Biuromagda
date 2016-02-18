@@ -659,7 +659,7 @@ namespace BLL
             }
         }
 
-        private static int Get_ZadanieByKEY(SPWeb web, string KEY)
+        public static int Get_ZadanieByKEY(SPWeb web, string KEY)
         {
             SPList list = web.Lists.TryGetList(targetList);
             SPListItem item = list.Items.Cast<SPListItem>()
@@ -860,6 +860,60 @@ namespace BLL
         public static SPList Get_List(SPWeb web)
         {
             return web.Lists.TryGetList(targetList);
+        }
+
+        /// <summary>
+        /// Dla zadanego wspólnika i okresu wyszukuje wszystkie zapisy o dochodach z różnych spółek w któych dany wspólnik ma udziały.
+        /// Na podstawie zebranych w ten sposób informacji aktualizuje zadanie wskazane w procedurze.
+        /// </summary>
+        internal static void Execute_Update_DochodyZInnychSpolek(SPWeb web, int wspolnikId, int okresId, int zadanieId, ref string comments)
+        {
+            // wyszukaj wszystie rekordy z dochodami / stratami wraz ze specyfikacją
+
+            double przychod;
+            string specyfikacja;
+            BLL.tabDochodyWspolnikow.Get_PrzychodyWspolnika(web, wspolnikId, okresId, out przychod, out specyfikacja);
+
+            // aktualizuj zadanie
+
+            SPListItem zadanie = BLL.tabZadania.Get_ZadanieById(web, zadanieId);
+            if (zadanie!=null)
+            {
+                //sprawdź status zadania
+                string status = BLL.Tools.Get_Text(zadanie, "enumStatusZadania");
+                switch (status)
+                {
+                    case "Nowe":
+                    case "Obsługa":
+                    case "Gotowe":
+                        // aktualizuje zawartość
+                        Set_PrzychodZInnychSpolek(zadanie, przychod, specyfikacja);
+                        break;
+                    default:
+                        // wyślij powiadomienie o braku możliwości aktualizacji zadania.
+
+                        Models.Klient iok = new Klient(web, wspolnikId);
+                        SPListItem okres = tabOkresy.Get_OkresById(web, okresId);
+
+                        StringBuilder sb = new StringBuilder(comments);
+                        sb.AppendFormat("<p>Zadanie #{0} dla wspólnika {1} w okresie {2} nie może być zaktualizowane ze względu na status zadania ({3})</p>",
+                            zadanie.ID.ToString(), iok.NazwaFirmy, okres.Title, status);
+                        sb.AppendFormat("<p>Wartość dochodu / straty: {0}</p>", przychod.ToString());
+                        sb.AppendFormat("<div>{0}</div>", specyfikacja);
+
+                        comments = comments + string.Format("<div>{0}</div>", sb.ToString());
+
+                        break;
+                }
+
+                zadanie.SystemUpdate();
+            }
+        }
+
+        private static void Set_PrzychodZInnychSpolek(SPListItem zadanie, double przychod, string specyfikacja)
+        {
+            BLL.Tools.Set_Value(zadanie, "_DochodStrata_Internal", przychod);
+            BLL.Tools.Set_Text(zadanie, "_Specyfikacja", specyfikacja);
         }
     }
 }
