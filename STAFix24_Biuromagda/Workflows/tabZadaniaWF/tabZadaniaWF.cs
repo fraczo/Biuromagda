@@ -1514,69 +1514,104 @@ namespace Workflows.tabZadaniaWF
                 string tresc = string.Empty;
                 string trescHTML = string.Empty;
 
-                switch (Get_String(item, "colPD_OcenaWyniku"))
-                {
-                    case "Dochód":
-                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_DOCHOD_TEMPLATE.Include", out temat, out trescHTML, nadawca);
-                        //jeżeli wartość do zapłaty = 0 wtdy zastąp tekst formułką i ukryj tabelkę z płatnościami
-                        if (GetValue(item, "colPD_WartoscDoZaplaty") == 0)
-                            trescHTML = trescHTML.Replace("___NOTIFICATION___", BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_DOCHOD_0_NOTIFICATION", false));
-                        else
-                            trescHTML = trescHTML.Replace("___NOTIFICATION___", "WARTOŚĆ DO ZAPŁATY");
-                        break;
-                    case "Strata":
-                        BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_STRATA_TEMPLATE.Include", out temat, out trescHTML, nadawca);
-                        break;
-                    default:
-                        break;
-                }
-
-                string lt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_LEADING_TEXT", false);
+                BLL.Models.Klient iok = new Klient(item.Web, klientId);
                 string firma = BLL.tabKlienci.Get_NazwaFirmyById(item.Web, klientId);
 
-                BLL.Models.Klient iok = new Klient(item.Web, klientId);
-                if (iok.TypKlienta == "Osoba fizyczna")
-                {
-                    firma = "wspólnika " + firma;
-                }
-                else
-                {
-                    firma = "firmy " + firma;
-                }
-
-                lt = lt.Replace("___FIRMA___", firma);
-
-                //opis okresu rozliczeniowego
                 string okresTemat;
                 string okres = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupValue : string.Empty;
+                okresTemat = okres;
 
-                if (Get_String(item, "enumRozliczeniePD") == "Kwartalnie")
+                if (iok.TypKlienta.Equals("Firma zewnętrzna"))
                 {
-                    okresTemat = BLL.Tools.Get_KwartalDisplayName(okres);
-                    okres = "kwartał " + okresTemat;
+
+                    //podstawowa obsługa szablonu
+
+                    switch (Get_String(item, "colPD_OcenaWyniku"))
+                    {
+                        case "Dochód":
+                            BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_DOCHOD_TEMPLATE.Include", out temat, out trescHTML, nadawca);
+                            //jeżeli wartość do zapłaty = 0 wtdy zastąp tekst formułką i ukryj tabelkę z płatnościami
+                            if (GetValue(item, "colPD_WartoscDoZaplaty") == 0)
+                                trescHTML = trescHTML.Replace("___NOTIFICATION___", BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_DOCHOD_0_NOTIFICATION", false));
+                            else
+                                trescHTML = trescHTML.Replace("___NOTIFICATION___", "WARTOŚĆ DO ZAPŁATY");
+                            break;
+                        case "Strata":
+                            BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_STRATA_TEMPLATE.Include", out temat, out trescHTML, nadawca);
+                            break;
+                        default:
+                            break;
+                    }
+
+                    string lt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_LEADING_TEXT", false);
+
+                    if (iok.TypKlienta == "Osoba fizyczna")
+                    {
+                        firma = "wspólnika " + firma;
+                    }
+                    else
+                    {
+                        firma = "firmy " + firma;
+                    }
+
+                    lt = lt.Replace("___FIRMA___", firma);
+
+                    //opis okresu rozliczeniowego
+
+                    okres = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupValue : string.Empty;
+
+                    if (Get_String(item, "enumRozliczeniePD") == "Kwartalnie")
+                    {
+                        okresTemat = BLL.Tools.Get_KwartalDisplayName(okres);
+                        okres = "kwartał " + okresTemat;
+                    }
+                    else
+                    {
+                        okresTemat = okres;
+                        okres = "miesiąc " + okresTemat;
+                    }
+                    lt = lt.Replace("___OKRES___", okres);
+                    trescHTML = trescHTML.Replace("___PD_LEADING_TEXT___", lt);
+
+                    //VAT alert
+                    string va = string.Empty;
+                    int okresId = Get_LookupId(item, "selOkres");
+                    int vatZadanieId = BLL.tabZadania.Get_NumerZadaniaVAT(item.Web, klientId, okresId);
+                    if (vatZadanieId > 0)
+                    {
+                        va = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_VAT_ALERT_TEXT", false);
+                    }
+                    trescHTML = trescHTML.Replace("___PD_VAT_ALERT_TEXT___", va);
+
+                    //uzupełnia temat kodem klienta i okresu
+                    temat = AddSpecyfikacja(item, temat, okresTemat);
+
                 }
                 else
                 {
-                    okresTemat = okres;
+                    // obsługa szablonu w przypadku firmy zewnętrznej
+
+                    switch (Get_String(item, "colPD_OcenaWyniku"))
+                    {
+                        case "Dochód":
+                            BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_DOCHOD_FZ_TEMPLATE.Include", out temat, out trescHTML, nadawca);
+                            break;
+                        case "Strata":
+                            BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_STRATA_FZ_TEMPLATE.Include", out temat, out trescHTML, nadawca);
+                            break;
+                    }
+
+                    string lt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_LEADING_TEXT_FZ", false);
+
+                    //opis okresu rozliczeniowego
                     okres = "miesiąc " + okresTemat;
+
+                    lt = lt.Replace("___OKRES___", okres);
+                    trescHTML = trescHTML.Replace("___PD_LEADING_TEXT___", lt);
+
+                    //uzupełnia temat kodem klienta i okresu
+                    temat = AddSpecyfikacja(item, temat, okresTemat);
                 }
-                lt = lt.Replace("___OKRES___", okres);
-                trescHTML = trescHTML.Replace("___PD_LEADING_TEXT___", lt);
-
-                //VAT alert
-                string va = string.Empty;
-                int okresId = Get_LookupId(item, "selOkres");
-                int vatZadanieId = BLL.tabZadania.Get_NumerZadaniaVAT(item.Web, klientId, okresId);
-                if (vatZadanieId > 0)
-                {
-                    va = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_VAT_ALERT_TEXT", false);
-                }
-                trescHTML = trescHTML.Replace("___PD_VAT_ALERT_TEXT___", va);
-
-
-                //uzupełnia temat kodem klienta i okresu
-                temat = AddSpecyfikacja(item, temat, okresTemat);
-
 
                 //uzupełnia dane w formatce PD_TEMPLATE
                 StringBuilder sb = new StringBuilder(trescHTML);
@@ -1654,46 +1689,50 @@ namespace Workflows.tabZadaniaWF
                     {
                         if (GetValue(item, "colPD_WartoscDoZaplaty") > 0)
                         {
-                            //ustaw reminder
-                            nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
-                            BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_DOCHOD_REMINDER_TEMPLATE.Include", out temat, out trescHTML, nadawca);
-                            temat = Update_Data(temat, terminPlatnosci);
-                            temat = BLL.Tools.AddCompanyName(temat, item);
-
-                            //leading reminder text
-                            string lrt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_LEADING_REMINDER_TEXT", false);
-                            if (item.ContentType.Name == "Osoba fizyczna")
+                            if (!iok.TypKlienta.Equals("Firma zewnętrzna"))
                             {
-                                firma = "wspólnika " + firma;
-                            }
-                            else
-                            {
-                                firma = "firmy " + firma;
-                            }
-                            lrt = lrt.Replace("___FIRMA___", firma);
-                            lrt = lrt.Replace("___OKRES___", okres);
-                            trescHTML = trescHTML.Replace("___PD_LEADING_REMINDER_TEXT___", lrt);
+                                //ustaw reminder jeżeli nie jest to firma zewnętrzna
 
-                            //trailing reminder text
-                            string trt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_TRAILING_REMINDER_TEXT", false);
-                            trt = trt.Replace("___DATA___", DateTime.Now.ToShortDateString()); //zakłada że wysyłka oryginalnej wiadomości wyjdzie w dniu zlecenia
-                            trescHTML = trescHTML.Replace("___PD_TRAILING_REMINDER_TEXT___", trt);
+                                nadawca = BLL.admSetup.GetValue(item.Web, "EMAIL_BIURA");
+                                BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_DOCHOD_REMINDER_TEMPLATE.Include", out temat, out trescHTML, nadawca);
+                                temat = Update_Data(temat, terminPlatnosci);
+                                temat = BLL.Tools.AddCompanyName(temat, item);
 
-                            //aktualizacja danych z tabelki
-                            sb = new StringBuilder(trescHTML);
-                            sb.Replace("___colFormaOpodatkowaniaPD___", Get_String(item, "colFormaOpodatkowaniaPD"));
-                            sb.Replace("___colPD_WartoscDoZaplaty___", Format_Currency(item, "colPD_WartoscDoZaplaty"));
-                            sb.Replace("___colPD_Konto___", Get_String(item, "colPD_Konto"));
-                            sb.Replace("___colPD_TerminPlatnosciPodatku___", Format_Date(item, "colPD_TerminPlatnosciPodatku"));
+                                //leading reminder text
+                                string lrt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_LEADING_REMINDER_TEXT", false);
+                                if (item.ContentType.Name == "Osoba fizyczna")
+                                {
+                                    firma = "wspólnika " + firma;
+                                }
+                                else
+                                {
+                                    firma = "firmy " + firma;
+                                }
+                                lrt = lrt.Replace("___FIRMA___", firma);
+                                lrt = lrt.Replace("___OKRES___", okres);
+                                trescHTML = trescHTML.Replace("___PD_LEADING_REMINDER_TEXT___", lrt);
 
-                            trescHTML = sb.ToString();
+                                //trailing reminder text
+                                string trt = BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_TRAILING_REMINDER_TEXT", false);
+                                trt = trt.Replace("___DATA___", DateTime.Now.ToShortDateString()); //zakłada że wysyłka oryginalnej wiadomości wyjdzie w dniu zlecenia
+                                trescHTML = trescHTML.Replace("___PD_TRAILING_REMINDER_TEXT___", trt);
 
-                            planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
+                                //aktualizacja danych z tabelki
+                                sb = new StringBuilder(trescHTML);
+                                sb.Replace("___colFormaOpodatkowaniaPD___", Get_String(item, "colFormaOpodatkowaniaPD"));
+                                sb.Replace("___colPD_WartoscDoZaplaty___", Format_Currency(item, "colPD_WartoscDoZaplaty"));
+                                sb.Replace("___colPD_Konto___", Get_String(item, "colPD_Konto"));
+                                sb.Replace("___colPD_TerminPlatnosciPodatku___", Format_Date(item, "colPD_TerminPlatnosciPodatku"));
 
-                            //nie wysyłaj przypomnienia jeżeli krócej niż 3 dni do terminu
-                            if (planowanaDataNadania.CompareTo(DateTime.Now.AddDays(3)) > 0)
-                            {
-                                BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId, Marker.Ignore);
+                                trescHTML = sb.ToString();
+
+                                planowanaDataNadania = Calc_ReminderTime(item, terminPlatnosci);
+
+                                //nie wysyłaj przypomnienia jeżeli krócej niż 3 dni do terminu
+                                if (planowanaDataNadania.CompareTo(DateTime.Now.AddDays(3)) > 0)
+                                {
+                                    BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId, Marker.Ignore);
+                                } 
                             }
                         }
                     }
