@@ -52,6 +52,7 @@ namespace BLL
             if (ct == "Rozliczenie ZUS"
                 | ct == "Rozliczenie podatku dochodowego"
                 | ct == "Rozliczenie podatku dochodowego spółki"
+                | ct == "Rozliczenie podatku dochodowego wspólnika"
                 | ct == "Rozliczenie podatku VAT"
                 | ct == "Rozliczenie z biurem rachunkowym"
                 | ct == "Prośba o dokumenty"
@@ -866,9 +867,11 @@ namespace BLL
         /// Dla zadanego wspólnika i okresu wyszukuje wszystkie zapisy o dochodach z różnych spółek w któych dany wspólnik ma udziały.
         /// Na podstawie zebranych w ten sposób informacji aktualizuje zadanie wskazane w procedurze.
         /// </summary>
-        internal static void Execute_Update_DochodyZInnychSpolek(SPWeb web, int wspolnikId, int okresId, int zadanieId, ref string comments)
+        internal static void Execute_Update_DochodyZInnychSpolek(SPWeb web, int wspolnikId, int okresId, int zadanieId, out string comments)
         {
             // wyszukaj wszystie rekordy z dochodami / stratami wraz ze specyfikacją
+
+            comments = string.Empty;
 
             double przychod;
             string specyfikacja;
@@ -877,7 +880,7 @@ namespace BLL
             // aktualizuj zadanie
 
             SPListItem zadanie = BLL.tabZadania.Get_ZadanieById(web, zadanieId);
-            if (zadanie!=null)
+            if (zadanie != null)
             {
                 //sprawdź status zadania
                 string status = BLL.Tools.Get_Text(zadanie, "enumStatusZadania");
@@ -897,17 +900,30 @@ namespace BLL
 
                         StringBuilder sb = new StringBuilder(comments);
                         sb.AppendFormat("<p>Zadanie #{0} dla wspólnika {1} w okresie {2} nie może być zaktualizowane ze względu na status zadania ({3})</p>",
-                            zadanie.ID.ToString(), iok.NazwaFirmy, okres.Title, status);
+                            zadanie.ID.ToString(), iok.PelnaNazwaFirmy, okres.Title, status);
                         sb.AppendFormat("<p>Wartość dochodu / straty: {0}</p>", przychod.ToString());
                         sb.AppendFormat("<div>{0}</div>", specyfikacja);
 
-                        comments = comments + string.Format("<div>{0}</div>", sb.ToString());
-
+                        comments = string.Format("<div>{0}</div>", sb.ToString());
                         break;
                 }
 
                 zadanie.SystemUpdate();
             }
+            else
+            {
+                // jeżeli zadanie nie zostało utworzone
+
+                Models.Klient iok = new Klient(web, wspolnikId);
+                SPListItem okres = tabOkresy.Get_OkresById(web, okresId);
+
+                StringBuilder sb = new StringBuilder(comments);
+                sb.AppendFormat("<p>Brak zadania rozliczenia podatku dochodowego (PDS|PDW) dla wspólnika {0} w okresie {1}</p>",
+                    iok.PelnaNazwaFirmy,
+                    okres.Title);
+                comments = string.Format("<div>{0}</div>", sb.ToString());
+            }
+            
         }
 
         private static void Set_PrzychodZInnychSpolek(SPListItem zadanie, double przychod, string specyfikacja)

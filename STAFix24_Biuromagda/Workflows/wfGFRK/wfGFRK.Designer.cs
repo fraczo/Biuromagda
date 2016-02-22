@@ -41,6 +41,8 @@ namespace Workflows.wfGFRK
             System.Workflow.ComponentModel.ActivityBind activitybind7 = new System.Workflow.ComponentModel.ActivityBind();
             System.Workflow.Runtime.CorrelationToken correlationtoken1 = new System.Workflow.Runtime.CorrelationToken();
             System.Workflow.ComponentModel.ActivityBind activitybind6 = new System.Workflow.ComponentModel.ActivityBind();
+            this.logToHistoryListActivity19 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
+            this.Manage_PDW1 = new System.Workflow.Activities.CodeActivity();
             this.logToHistoryListActivity9 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Manage_PD5 = new System.Workflow.Activities.CodeActivity();
             this.logFirmaZewnetrzna = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
@@ -103,6 +105,21 @@ namespace Workflows.wfGFRK
             this.cmdInitMsg = new System.Workflow.Activities.CodeActivity();
             this.logToHistoryListActivity1 = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.onWorkflowActivated1 = new Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated();
+            // 
+            // logToHistoryListActivity19
+            // 
+            this.logToHistoryListActivity19.Duration = System.TimeSpan.Parse("-10675199.02:48:05.4775808");
+            this.logToHistoryListActivity19.EventId = Microsoft.SharePoint.Workflow.SPWorkflowHistoryEventType.WorkflowComment;
+            this.logToHistoryListActivity19.HistoryDescription = "PDW";
+            this.logToHistoryListActivity19.HistoryOutcome = "";
+            this.logToHistoryListActivity19.Name = "logToHistoryListActivity19";
+            this.logToHistoryListActivity19.OtherData = "";
+            this.logToHistoryListActivity19.UserId = -1;
+            // 
+            // Manage_PDW1
+            // 
+            this.Manage_PDW1.Name = "Manage_PDW1";
+            this.Manage_PDW1.ExecuteCode += new System.EventHandler(this.Manage_PDW_ExecuteCode);
             // 
             // logToHistoryListActivity9
             // 
@@ -388,6 +405,8 @@ namespace Workflows.wfGFRK
             this.CT_FirmaZewnetrzna.Activities.Add(this.logFirmaZewnetrzna);
             this.CT_FirmaZewnetrzna.Activities.Add(this.Manage_PD5);
             this.CT_FirmaZewnetrzna.Activities.Add(this.logToHistoryListActivity9);
+            this.CT_FirmaZewnetrzna.Activities.Add(this.Manage_PDW1);
+            this.CT_FirmaZewnetrzna.Activities.Add(this.logToHistoryListActivity19);
             codecondition1.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isFirmaZewnetrzna);
             this.CT_FirmaZewnetrzna.Condition = codecondition1;
             this.CT_FirmaZewnetrzna.Name = "CT_FirmaZewnetrzna";
@@ -399,6 +418,7 @@ namespace Workflows.wfGFRK
             this.CT_Firma.Activities.Add(this.logToHistoryListActivity8);
             codecondition2.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isFirma);
             this.CT_Firma.Condition = codecondition2;
+            this.CT_Firma.Enabled = false;
             this.CT_Firma.Name = "CT_Firma";
             // 
             // CT_OsobaFizyczna
@@ -647,6 +667,10 @@ namespace Workflows.wfGFRK
 
         #endregion
 
+        private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity19;
+
+        private CodeActivity Manage_PDW1;
+
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity13;
 
         private CodeActivity Manage_PD1;
@@ -770,6 +794,7 @@ namespace Workflows.wfGFRK
         private Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity logToHistoryListActivity1;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
 
 
 

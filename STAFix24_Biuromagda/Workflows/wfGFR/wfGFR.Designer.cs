@@ -59,6 +59,7 @@ namespace Workflows.wfGFR
             System.Workflow.ComponentModel.ActivityBind activitybind18 = new System.Workflow.ComponentModel.ActivityBind();
             this.logManagedForms = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.UpdateMessage = new System.Workflow.Activities.CodeActivity();
+            this.Manage_PDW1 = new System.Workflow.Activities.CodeActivity();
             this.Manage_PD5 = new System.Workflow.Activities.CodeActivity();
             this.logFirmaZewnetrzna = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.Manage_PD4 = new System.Workflow.Activities.CodeActivity();
@@ -150,6 +151,11 @@ namespace Workflows.wfGFR
             // 
             this.UpdateMessage.Name = "UpdateMessage";
             this.UpdateMessage.ExecuteCode += new System.EventHandler(this.UpdateMessage_ExecuteCode);
+            // 
+            // Manage_PDW1
+            // 
+            this.Manage_PDW1.Name = "Manage_PDW1";
+            this.Manage_PDW1.ExecuteCode += new System.EventHandler(this.Manage_PDW_ExecuteCode);
             // 
             // Manage_PD5
             // 
@@ -290,6 +296,7 @@ namespace Workflows.wfGFR
             // 
             this.CT_FirmaZewnetrzna.Activities.Add(this.logFirmaZewnetrzna);
             this.CT_FirmaZewnetrzna.Activities.Add(this.Manage_PD5);
+            this.CT_FirmaZewnetrzna.Activities.Add(this.Manage_PDW1);
             codecondition2.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isFirmaZewnetrzna);
             this.CT_FirmaZewnetrzna.Condition = codecondition2;
             this.CT_FirmaZewnetrzna.Name = "CT_FirmaZewnetrzna";
@@ -300,6 +307,7 @@ namespace Workflows.wfGFR
             this.CT_Firma.Activities.Add(this.Manage_PD4);
             codecondition3.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isFirma);
             this.CT_Firma.Condition = codecondition3;
+            this.CT_Firma.Enabled = false;
             this.CT_Firma.Name = "CT_Firma";
             // 
             // CT_OsobaFizyczna
@@ -748,6 +756,8 @@ namespace Workflows.wfGFR
 
         #endregion
 
+        private CodeActivity Manage_PDW1;
+
         private CodeActivity Manage_PD1;
 
         private CodeActivity UpdateItem3;
@@ -895,6 +905,7 @@ namespace Workflows.wfGFR
         private CodeActivity Select_Klienci;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
 
 
 

@@ -2,4 +2,6 @@ C:\_GitHub\Biuromagda\STAFix24_Biuromagda\EventReceivers\bin\Release\BRMagda.Eve
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\EventReceivers\bin\Release\BRMagda.EventReceivers.pdb
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\EventReceivers\obj\Release\BRMagda.EventReceivers.dll
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\EventReceivers\obj\Release\BRMagda.EventReceivers.pdb
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\EventReceivers\obj\Release\EventReceivers.csprojResolveAssemblyReference.cache
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\EventReceivers\bin\Release\BRMagda.BLL.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\EventReceivers\bin\Release\BRMagda.GeneratorDrukow.dll
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\EventReceivers\bin\Release\BRMagda.PdfSharp.dll

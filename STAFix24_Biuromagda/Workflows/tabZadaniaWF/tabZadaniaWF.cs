@@ -949,11 +949,14 @@ namespace Workflows.tabZadaniaWF
 
                             if (!BLL.Tools.Get_Flag(item, "_IsSpolkaZoo"))
                             {
+                                //spółka osobowa 
                                 Update_DochodyWspolnikow(item);
                             }
-
-                            // chyba wyników nie trzeba wysyłać?
-                            Manage_CMD_WyslijWynik_PDS(item);
+                            else
+                            {
+                                // wyślij wyniki tylko do spólek kapitałowych
+                                Manage_CMD_WyslijWynik_PDS(item);
+                            }
 
                             Update_KartaKlienta_PDS(item);
                             Set_StatusZadania(item, StatusZadania.Wysyłka);
@@ -1589,6 +1592,10 @@ namespace Workflows.tabZadaniaWF
                 string info2 = string.Empty;
                 string info = item["colInformacjaDlaKlienta"] != null ? item["colInformacjaDlaKlienta"].ToString() : string.Empty;
                 //dodaj informację o z załącznikach w/g ustawionych flag
+
+                //dodaj specyfikację dochodów z innych spółek
+                string sinfo = BLL.Tools.Get_Text(item, "_Specyfikacja");
+                if (!string.IsNullOrEmpty(sinfo)) info = "<b>Powyższa informacja uwzględnia rozliczenie spółek:</b><br>" + sinfo + "<br>";
 
                 if (Get_String(item, "colPD_OcenaWyniku") == "Dochód"
                 && (item["colDrukWplaty"] != null ? (bool)item["colDrukWplaty"] : false))

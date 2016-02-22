@@ -158,8 +158,8 @@ namespace BLL
             double sumS = 0;
             StringBuilder sb = new StringBuilder();
 
-            string TABLE_TEMPLATE = @"<table cellpadding=""3"" cellspacing=""0""><tr><td>Firma</td><td>Ocena wyniku</td><td>Dochód</td><td>Strata</td></tr>[[TableRow]]</table>";
-            string TABLEROW_TEMPLATE = @"<tr><td>[[Firma]]</td> <td>[[OcenaWyniku]]</td> <td>[[Dochod]]</td> <td>[[Strata]]</td></tr>";
+            string TABLE_TEMPLATE = @"<h5 style=""FONT-FAMILY: Arial, Helvetica, sans-serif; COLOR: #808080; TEXT-ALIGN: center"">Dchody z poszczególnych spółek zostały ujęte w powyższej kalkulacji</h5><table cellPadding=""5"" cellSpacing=""2"" style=""BORDER-TOP: #808080 1px solid; BORDER-RIGHT: #808080 1px solid; WIDTH: 100%; BORDER-BOTTOM: #808080 1px solid; BORDER-LEFT: #808080 1px solid""><tr><th style=""FONT-SIZE: x-small; FONT-FAMILY: Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #e4e4e4; height: 28px;"">Firma</th><th style=""FONT-SIZE: x-small; FONT-FAMILY: Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #e4e4e4; height: 28px;"">Ocena wyniku</th><th style=""FONT-SIZE: x-small; FONT-FAMILY: Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #e4e4e4; height: 28px;""><span style=""font-weight: normal"">Dochód</span></th><th style=""FONT-SIZE: x-small; FONT-FAMILY: Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #e4e4e4; height: 28px;"">Strata</th></tr>[[TableRow]] </table>";
+            string TABLEROW_TEMPLATE = @"<tr><th style=""FONT-SIZE: x-small; HEIGHT: 16px; FONT-FAMILY: Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #e4e4e4"">[[Firma]]</th> <td style=""FONT-SIZE: x-small; HEIGHT: 16px; FONT-FAMILY: Arial, Helvetica, sans-serif; WHITE-SPACE: nowrap; TEXT-ALIGN: center"">[[OcenaWyniku]]</td> <td style=""FONT-SIZE: x-small; HEIGHT: 16px; FONT-FAMILY: Arial, Helvetica, sans-serif; WHITE-SPACE: nowrap; TEXT-ALIGN: center"">[[Dochod]]</td> <td style=""FONT-SIZE: x-small; HEIGHT: 16px; FONT-FAMILY: Arial, Helvetica, sans-serif; WHITE-SPACE: nowrap; TEXT-ALIGN: center"">[[Strata]]</td> </tr>";
 
             Array results = web.Lists.TryGetList(targetList).Items.Cast<SPListItem>()
                 .Where(i => BLL.Tools.Get_LookupId(i, "selKlient").Equals(wspolnikId))
@@ -228,7 +228,7 @@ namespace BLL
             if (zadanieId > 0)
             {
                 // zainicjuj procedurę rozliczenia
-                BLL.tabZadania.Execute_Update_DochodyZInnychSpolek(web, wspolnikId, okresId, zadanieId, ref comments);
+                BLL.tabZadania.Execute_Update_DochodyZInnychSpolek(web, wspolnikId, okresId, zadanieId, out comments);
             }
             else
             {
@@ -237,8 +237,8 @@ namespace BLL
                 
                 // karta rozliczeniowa PDS/PDW nie została znaleziona >>> wyślij komunikat
                 StringBuilder sb = new StringBuilder(comments);
-                sb.AppendFormat("Zadanie rozliczenia podatku dochodowego spółki / wspólnika nie zostało znalezione dla klienta {0} w okresie {1}",
-                    iok.NazwaFirmy, okres.Title);
+                sb.AppendFormat("<div>Brak zadania rozliczenia podatku dochodowego wspólnika (PDS|PDW) dla klienta {0} w okresie {1}</div>",
+                    iok.PelnaNazwaFirmy, okres.Title);
 
                 comments = sb.ToString();
             }

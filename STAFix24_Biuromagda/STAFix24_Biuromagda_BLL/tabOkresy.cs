@@ -212,7 +212,7 @@ namespace BLL
                         break;
 
                     case "KSH":
-                    case "Firma":
+                    case "Firma zewnętrzna":
 
                         terminPlatnosci = DateTime.Parse(item["colCIT_TerminPlatnosciPodatku"].ToString());
                         ofset = int.Parse(item["colCIT_TerminPrzekazaniaWynikow_"].ToString());
