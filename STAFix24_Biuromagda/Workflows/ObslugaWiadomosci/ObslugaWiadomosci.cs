@@ -145,7 +145,7 @@ namespace Workflows.ObslugaWiadomosci
                 }
                 else
                 {
-                    var r = ElasticEmail.EmailGenerator.SendMail(string.Format(@"!!! Message#{0} not sent", item.ID.ToString()), string.Empty);
+                    var r = ElasticEmail.EmailGenerator.SendMail(string.Format(@":: MSG not sent :: ID#{0} {1}", item.ID.ToString(), item.Web.Url.ToString()), string.Empty);
                 }
             }
         }

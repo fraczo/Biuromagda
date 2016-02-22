@@ -77,6 +77,7 @@ namespace BLL
             if (ct == "Rozliczenie ZUS"
                 | ct == "Rozliczenie podatku dochodowego"
                 | ct == "Rozliczenie podatku dochodowego spółki"
+                | ct == "Rozliczenie podatku dochodowego wspólnika"
                 | ct == "Rozliczenie podatku VAT"
                 | ct == "Rozliczenie z biurem rachunkowym"
                 | ct == "Prośba o dokumenty"

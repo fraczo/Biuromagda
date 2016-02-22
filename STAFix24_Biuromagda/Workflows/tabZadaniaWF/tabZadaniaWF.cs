@@ -951,15 +951,18 @@ namespace Workflows.tabZadaniaWF
                             {
                                 //spółka osobowa 
                                 Update_DochodyWspolnikow(item);
+
+                                Set_StatusZadania(item, StatusZadania.Zakończone);
+                                Update_KartaKlienta_PDS(item);
                             }
                             else
                             {
                                 // wyślij wyniki tylko do spólek kapitałowych
                                 Manage_CMD_WyslijWynik_PDS(item);
-                            }
 
-                            Update_KartaKlienta_PDS(item);
-                            Set_StatusZadania(item, StatusZadania.Wysyłka);
+                                Update_KartaKlienta_PDS(item);
+                                Set_StatusZadania(item, StatusZadania.Wysyłka);
+                            }
                         }
                         else
                         {
@@ -1521,7 +1524,7 @@ namespace Workflows.tabZadaniaWF
                 string okres = item["selOkres"] != null ? new SPFieldLookupValue(item["selOkres"].ToString()).LookupValue : string.Empty;
                 okresTemat = okres;
 
-                if (iok.TypKlienta.Equals("Firma zewnętrzna"))
+                if (!iok.TypKlienta.Equals("Firma zewnętrzna"))
                 {
 
                     //podstawowa obsługa szablonu
@@ -1732,7 +1735,7 @@ namespace Workflows.tabZadaniaWF
                                 if (planowanaDataNadania.CompareTo(DateTime.Now.AddDays(3)) > 0)
                                 {
                                     BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, planowanaDataNadania, item.ID, klientId, Marker.Ignore);
-                                } 
+                                }
                             }
                         }
                     }
@@ -2303,12 +2306,25 @@ namespace Workflows.tabZadaniaWF
 
                     if (GetValue(item, "colPD_WartoscDoZaplaty") >= 0
                         && GetValue(item, "colPD_WartoscDochodu") >= 0)
-                        if (!string.IsNullOrEmpty(Get_String(item, "colPD_Konto"))) return true;
+                    {
+                        if (iok == null)
+                        {
+                            iok = new Klient(item.Web, BLL.Tools.Get_LookupId(item, "selKlient"));
+                        }
+                        if (!iok.TypKlienta.Equals("Firma zewnętrzna"))
+                        {
+                            if (!string.IsNullOrEmpty(Get_String(item, "colPD_Konto"))) return true;
+                            else
+                            {
+                                Add_Comment(item, "brak numeru konta");
+                                Set_ValidationFlag(item, true);
+                            }
+                        }
                         else
                         {
-                            Add_Comment(item, "brak numeru konta");
-                            Set_ValidationFlag(item, true);
+                            return true;
                         }
+                    }
                     break;
                 case "Strata":
                     BLL.Tools.Clear_Value(item, "colPD_WartoscDochodu");
@@ -2551,10 +2567,10 @@ namespace Workflows.tabZadaniaWF
 
                 //sprawdzenie czy zgadza się suma odliczeń z lat poprzenidnich
 
-                double sumaDoOdliczeniaZRejestru = BLL.tabStratyZLatUbieglych.Get_SumaDoOdliczenia(item.Web, klientId, okresId);
-                double sumaDoOdliczenia = BLL.Tools.Get_Value(item, "colStrataDoOdliczenia");
+                double sumaDoOdliczeniaZRejestru = Math.Round(BLL.tabStratyZLatUbieglych.Get_SumaDoOdliczenia(item.Web, klientId, okresId),2);
+                double sumaDoOdliczenia = Math.Round(BLL.Tools.Get_Value(item, "colStrataDoOdliczenia"),2);
 
-                if (sumaDoOdliczenia != sumaDoOdliczeniaZRejestru)
+                if (!sumaDoOdliczenia.Equals(sumaDoOdliczeniaZRejestru))
                 {
                     Add_Comment(item, "Strata do odliczenia (" + sumaDoOdliczenia.ToString() + ") nie zgadza się z rejestrem (" + sumaDoOdliczeniaZRejestru.ToString() + ")");
                     foundError = true;
@@ -2630,12 +2646,13 @@ namespace Workflows.tabZadaniaWF
 
                 double stronaWn = BLL.Tools.Get_Value(item, "colStronaWn");
                 double stronaMa = BLL.Tools.Get_Value(item, "colStronaMa");
+                double wnma = Math.Round(stronaWn - stronaMa, 2);
 
-                double stronaWn_Ma = BLL.Tools.Get_Value(item, "colStronaWn-StronaMa");
+                double stronaWn_Ma = Math.Round(BLL.Tools.Get_Value(item, "colStronaWn-StronaMa"),2);
 
-                if (stronaWn_Ma != stronaWn - stronaMa)
+                if (!stronaWn_Ma.Equals(wnma))
                 {
-                    Add_Comment(item, string.Format(@"Kalkulacja StonaWn-StronaMa nieprawidłowa. Jest ({0}), powinno być ({1})", stronaWn_Ma.ToString(), (stronaWn - stronaMa).ToString()));
+                    Add_Comment(item, string.Format(@"Kalkulacja StonaWn-StronaMa nieprawidłowa. Jest ({0}), powinno być ({1})", stronaWn_Ma.ToString(), wnma.ToString()));
                     //popraw roboczo
                     stronaWn_Ma = stronaWn - stronaMa;
                     BLL.Tools.Set_Value(item, "colStronaWn-StronaMa", stronaWn_Ma);
@@ -2647,7 +2664,6 @@ namespace Workflows.tabZadaniaWF
                 // sprawdź czy zysk/strata netto = strna wn - ma
 
                 double zsn = Math.Round(BLL.Tools.Get_Value(item, "colZyskStrataNetto"), 2);
-                double wnma = Math.Round(stronaWn_Ma, 2);
 
                 if (!zsn.Equals(wnma))
                 {
@@ -3433,7 +3449,7 @@ namespace Workflows.tabZadaniaWF
         private void Setup_ValidationMessage_ExecuteCode(object sender, EventArgs e)
         {
             StringBuilder vmt = new StringBuilder(_VALIDATION_MESSAGE_TEMPLATE);
-            vmt.Replace("[[NazwaKlienta]]", iok.NazwaFirmy);
+            vmt.Replace("[[NazwaKlienta]]", iok.PelnaNazwaFirmy);
             vmt.Replace("[[NumerZadania]]", item.ID.ToString());
             vmt.Replace("[[Url]]", SPUtility.ConcatUrls(workflowProperties.Site.Protocol + "//" + workflowProperties.Site.HostName,
                 item.ParentList.DefaultEditFormUrl + "?ID=" + item.ID.ToString()));

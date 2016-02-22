@@ -121,7 +121,7 @@ namespace BLL
         {
             SPList list = web.Lists.TryGetList(targetList);
             SPListItem item = list.Items.Cast<SPListItem>()
-                .Where(i => i.Title == kod)
+                .Where(i => i.Title.Equals(kod))
                 .FirstOrDefault();
 
             temat = item["colTematWiadomosci"] != null ? item["colTematWiadomosci"].ToString() : string.Empty;
