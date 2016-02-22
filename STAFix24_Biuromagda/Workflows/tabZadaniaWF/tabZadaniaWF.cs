@@ -2605,10 +2605,14 @@ namespace Workflows.tabZadaniaWF
                 }
 
 
+                // sprawdź czy zysk/strata netto = strna wn - ma
 
-                if (!BLL.Tools.Get_Value(item, "colZyskStrataNetto").Equals(stronaWn_Ma))
+                double zsn = Math.Round(BLL.Tools.Get_Value(item, "colZyskStrataNetto"), 2);
+                double wnma = Math.Round(stronaWn_Ma, 2);
+
+                if (!zsn.Equals(wnma))
                 {
-                    Add_Comment(item, string.Format(@"Zysk-Strata Netto ({0}) nie równa się Strona Winien-Strona Ma ({1})", BLL.Tools.Get_Value(item, "colZyskStrataNetto").ToString(), stronaWn_Ma.ToString()));
+                    Add_Comment(item, string.Format(@"Zysk-Strata Netto ({0}) nie równa się Strona Winien-Strona Ma ({1})", zsn.ToString(), wnma.ToString()));
                     foundError = true;
                 }
 
@@ -3392,7 +3396,8 @@ namespace Workflows.tabZadaniaWF
             StringBuilder vmt = new StringBuilder(_VALIDATION_MESSAGE_TEMPLATE);
             vmt.Replace("[[NazwaKlienta]]", iok.NazwaFirmy);
             vmt.Replace("[[NumerZadania]]", item.ID.ToString());
-            vmt.Replace("[[Url]]", SPUtility.ConcatUrls(workflowProperties.Site.Protocol + "//" + workflowProperties.Site.HostName, item.ParentList.DefaultEditFormUrl + "?ID=" + item.ID.ToString()));
+            vmt.Replace("[[Url]]", SPUtility.ConcatUrls(workflowProperties.Site.Protocol + "//" + workflowProperties.Site.HostName,
+                item.ParentList.DefaultEditFormUrl + "?ID=" + item.ID.ToString()));
             vmt.Replace("[[ListItems]]", vm.ToString());
 
             msgBody = vmt.ToString();

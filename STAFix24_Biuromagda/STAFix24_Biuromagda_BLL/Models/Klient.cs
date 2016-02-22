@@ -65,7 +65,6 @@ namespace BLL.Models
                     case "KSH":
                         this.FormaPrawna = item["enumFormaPrawna"] != null ? item["enumFormaPrawna"].ToString() : string.Empty;
                         this.PelnaNazwaFirmy = item.Title;
-                        this.FormaPrawna = item["enumFormaPrawna"] != null ? item["enumFormaPrawna"].ToString() : string.Empty;
                         break;
                     case "Osoba fizyczna":
                         this.ImieNazwisko = string.Format("{0} {1}",

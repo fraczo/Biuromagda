@@ -6,6 +6,7 @@ using Microsoft.SharePoint;
 using BLL.Models;
 using System.IO;
 using System.Diagnostics;
+using Microsoft.SharePoint.Utilities;
 
 namespace BLL
 {
@@ -898,9 +899,14 @@ namespace BLL
                         Models.Klient iok = new Klient(web, wspolnikId);
                         SPListItem okres = tabOkresy.Get_OkresById(web, okresId);
 
+                        StringBuilder sbLink = new StringBuilder(@"<a href=""[[Url]]"">[[NumerZadania]]</a>");
+                        sbLink.Replace("[[NumerZadania]]", zadanie.ID.ToString());
+                        sbLink.Replace("[[Url]]", SPUtility.ConcatUrls(web.Site.Protocol + "//" + web.Site.HostName,
+                            web.Lists.TryGetList(targetList).DefaultEditFormUrl + "?ID=" + zadanie.ID.ToString()));
+
                         StringBuilder sb = new StringBuilder(comments);
                         sb.AppendFormat("<p>Zadanie #{0} dla wspólnika {1} w okresie {2} nie może być zaktualizowane ze względu na status zadania ({3})</p>",
-                            zadanie.ID.ToString(), iok.PelnaNazwaFirmy, okres.Title, status);
+                            sbLink.ToString(), iok.PelnaNazwaFirmy, okres.Title, status);
                         sb.AppendFormat("<p>Wartość dochodu / straty: {0}</p>", przychod.ToString());
                         sb.AppendFormat("<div>{0}</div>", specyfikacja);
 
@@ -923,7 +929,7 @@ namespace BLL
                     okres.Title);
                 comments = string.Format("<div>{0}</div>", sb.ToString());
             }
-            
+
         }
 
         private static void Set_PrzychodZInnychSpolek(SPListItem zadanie, double przychod, string specyfikacja)
