@@ -103,42 +103,43 @@ namespace BLL
 
                     Debug.WriteLine("Udział w zysku: " + colPD_UdzialWZysku.ToString());
 
-                    if (colZyskStrataNetto >= 0 && colPD_UdzialWZysku > 0)
+                    if (colPD_UdzialWZysku > 0)
                     {
-                        BLL.Tools.Set_Text(item, "colPD_OcenaWyniku", "Dochód");
+                        if (colZyskStrataNetto >= 0)
+                        {
+                            BLL.Tools.Set_Text(item, "colPD_OcenaWyniku", "Dochód");
 
-                        //zaokrąglij wynik
-                        double colPD_WartoscDochodu = colZyskStrataNetto * colPD_UdzialWZysku;
-                        sumZysk = sumZysk + colPD_WartoscDochodu;
-                        BLL.Tools.Set_Value(item, "colPD_WartoscDochodu", colPD_WartoscDochodu);
+                            //zaokrąglij wynik
+                            double colPD_WartoscDochodu = colZyskStrataNetto * colPD_UdzialWZysku;
+                            sumZysk = sumZysk + colPD_WartoscDochodu;
+                            BLL.Tools.Set_Value(item, "colPD_WartoscDochodu", colPD_WartoscDochodu);
 
-                        BLL.Tools.Clear_Value(item, "colPD_WartoscStraty");
-                    }
-                    else
-                    {
-                        BLL.Tools.Set_Text(item, "colPD_OcenaWyniku", "Dochód");
+                            BLL.Tools.Clear_Value(item, "colPD_WartoscStraty");
+                        }
+                        else
+                        {
+                            BLL.Tools.Set_Text(item, "colPD_OcenaWyniku", "Strata");
 
-                        BLL.Tools.Clear_Value(item, "colPD_WartoscDochodu");
+                            BLL.Tools.Clear_Value(item, "colPD_WartoscDochodu");
 
-                        //zaokrąglij wynik
-                        double colPD_WartoscStraty = -1 * colZyskStrataNetto * colPD_UdzialWZysku;
-                        sumStrata = sumStrata + colPD_WartoscStraty;
-                        BLL.Tools.Set_Value(item, "colPD_WartoscStraty", colPD_WartoscStraty);
-                    }
+                            //zaokrąglij wynik
+                            double colPD_WartoscStraty = -1 * colZyskStrataNetto * colPD_UdzialWZysku;
+                            sumStrata = sumStrata + colPD_WartoscStraty;
+                            BLL.Tools.Set_Value(item, "colPD_WartoscStraty", colPD_WartoscStraty);
+                        }
 
-                    item.SystemUpdate();
+                        item.SystemUpdate();
 
+                        // zaktualizuj zadanie rozliczenia wspólnika jeżeli istnieje
+                        string comments;
+                        Execute_UpdateRequest(web, BLL.Tools.Get_LookupId(item, "selKlient"), okresId, out comments);
 
-                    // zaktualizuj zadanie rozliczenia wspólnika jeżeli istnieje
-                    string comments;
-                    Execute_UpdateRequest(web, BLL.Tools.Get_LookupId(item, "selKlient"), okresId, out comments);
-
-                    if (!string.IsNullOrEmpty(comments))
-                    {
-                        validationMessage = validationMessage + string.Format("<li>{0}</li>", comments);
+                        if (!string.IsNullOrEmpty(comments))
+                        {
+                            validationMessage = validationMessage + string.Format("<li>{0}</li>", comments);
+                        }
                     }
                 }
-
             }
 
             double variance = (sumZysk - sumStrata) - colZyskStrataNetto;

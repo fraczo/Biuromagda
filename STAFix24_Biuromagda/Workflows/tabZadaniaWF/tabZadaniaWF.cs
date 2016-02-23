@@ -1029,8 +1029,6 @@ namespace Workflows.tabZadaniaWF
                         Set_StatusZadania(item, StatusZadania.Wysyłka);
                     }
                     break;
-                default:
-                    break;
             }
         }
 
@@ -1044,7 +1042,7 @@ namespace Workflows.tabZadaniaWF
             double zsn = 0;
             string colPD_OcenaWyniku = BLL.Tools.Get_Text(item, "colPD_OcenaWyniku");
             if (colPD_OcenaWyniku.Equals("Dochód")) zsn = BLL.Tools.Get_Value(item, "colPD_WartoscDochodu");
-            else if (colPD_OcenaWyniku.Equals("Strata")) zsn = BLL.Tools.Get_Value(item, "colPD_WartoscStraty");
+            else if (colPD_OcenaWyniku.Equals("Strata")) zsn = -1 * BLL.Tools.Get_Value(item, "colPD_WartoscStraty");
 
             // kalkulacja do podziału nie uwzględnia straty ponieważ strata powinna być 0 i jest ona rozliczana na wspólniku
             double colZyskStrataDoPodzialu = zsn - BLL.Tools.Get_Value(item, "colPrzychodyZwolnione");
@@ -1541,8 +1539,6 @@ namespace Workflows.tabZadaniaWF
                             break;
                         case "Strata":
                             BLL.dicSzablonyKomunikacji.Get_TemplateByKod(item, "PD_STRATA_TEMPLATE.Include", out temat, out trescHTML, nadawca);
-                            break;
-                        default:
                             break;
                     }
 
