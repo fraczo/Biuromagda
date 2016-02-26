@@ -980,17 +980,16 @@ namespace Workflows.tabZadaniaWF
                     {
                         if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
                         {
-                            //ToDo: dla wspólników jako dochód bierzemy wartość colPD_WartoscDoZaplaty
-                            //Update_GBW(item.Web, item, ct); 
+                            Update_GBW(item.Web, item, ct); 
 
                             Manage_CMD_WyslijWynik_PDW(item);
-                            //ToDo: BLL.Tools.DoWithRetry(() => Update_KartaKlienta_PDW(item));
+                            BLL.Tools.DoWithRetry(() => Update_KartaKlienta_PDW(item));
                             Set_StatusZadania(item, StatusZadania.Wysyłka);
                         }
                         else
                         {
                             //jeżeli status gotowe to aktualizuj kartę kontrolną
-                            //BLL.Tools.DoWithRetry(() => Update_KartaKlienta_PDW(item));
+                            BLL.Tools.DoWithRetry(() => Update_KartaKlienta_PDW(item));
                             Set_StatusZadania(item, StatusZadania.Gotowe);
                         }
                     }
