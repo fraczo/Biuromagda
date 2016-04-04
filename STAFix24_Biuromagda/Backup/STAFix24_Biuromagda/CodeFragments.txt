@@ -1,0 +1,45 @@
+﻿Error Handler:
+
+            FaultHandlerActivity fa = ((Activity)sender).Parent as FaultHandlerActivity;
+            if (fa != null)
+            {
+                Debug.WriteLine(fa.Fault.Source);
+                Debug.WriteLine(fa.Fault.Message);
+                Debug.WriteLine(fa.Fault.StackTrace);
+
+                logErrorMessage_HistoryDescription = string.Format("{0}::{1}",
+                    fa.Fault.Message,
+                    fa.Fault.StackTrace);
+
+
+                ElasticEmail.EmailGenerator.ReportErrorFromWorkflow(workflowProperties, fa.Fault.Message, fa.Fault.StackTrace);   
+            }
+
+
+Workflow Init:
+            Debug.WriteLine("ZatwierdzenieZadaniaWF:{" + workflowProperties.WorkflowId + "} initiated");
+            item = workflowProperties.Item;
+
+
+Czas obsługi procesu:
+	Debug.WriteLine("Workflow processing time: " + new TimeSpan(DateTime.Now.Ticks - startTime.Ticks).ToString());
+		
+
+Przechwicenie błędu:
+            catch (Exception ex)
+            {
+                BLL.Logger.LogEvent(properties.WebUrl, ex.ToString());
+                var result = ElasticEmail.EmailGenerator.ReportError(ex, properties.WebUrl.ToString());
+                BLL.Tools.Set_Text(properties.ListItem, "enumStatusZlecenia", _ANULOWANY);
+                properties.ListItem.Update();
+            }
+
+
+Inne przydatne:
+
+            list.Items.Cast<SPListItem>()
+                .ToList()
+                .ForEach(oItem =>
+                {
+                    Import_Faktura(oItem, okresId);
+                });
