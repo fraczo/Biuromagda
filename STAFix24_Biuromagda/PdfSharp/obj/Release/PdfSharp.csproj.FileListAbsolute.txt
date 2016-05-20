@@ -1,4 +1,3 @@
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\bin\Release\BRMagda.PdfSharp.xml
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\bin\Release\BRMagda.PdfSharp.dll
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\bin\Release\BRMagda.PdfSharp.pdb
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\bin\Release\de\BRMagda.PdfSharp.resources.dll
@@ -10,3 +9,4 @@ C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\obj\Release\PdfSharp.csproj.G
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\obj\Release\de\BRMagda.PdfSharp.resources.dll
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\obj\Release\BRMagda.PdfSharp.dll
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\obj\Release\BRMagda.PdfSharp.pdb
+C:\_GitHub\Biuromagda\STAFix24_Biuromagda\PdfSharp\bin\Release\BRMagda.PdfSharp.xml

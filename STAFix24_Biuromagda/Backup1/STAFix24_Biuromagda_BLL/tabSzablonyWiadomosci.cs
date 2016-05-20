@@ -1,0 +1,57 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Microsoft.SharePoint;
+
+namespace BLL
+{
+    public class tabSzablonyWiadomosci
+    {
+        const string targetList = "Szablony wiadomości"; //"tabSzablonyWiadomosci";
+
+        public static int GetSzablonId(Microsoft.SharePoint.SPWeb web, string nazwaSzablonu)
+        {
+            SPList list = web.Lists.TryGetList(targetList);
+            //if (list != null)
+            //{
+            SPListItem item = list.Items.Cast<SPListItem>()
+                .Where(i => i.Title == nazwaSzablonu)
+                .FirstOrDefault();
+
+            if (item != null)
+            {
+                return item.ID;
+            }
+            //}
+
+            return 0;
+        }
+
+        internal static void GetSzablonId(SPWeb web, int szablonId, out string subject, ref string bodyHTML)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            SPList list = web.Lists.TryGetList(targetList);
+
+            SPListItem item = list.GetItemById(szablonId);
+
+            if (item != null)
+            {
+
+                subject = BLL.Tools.Get_Text(item, "colTematWiadomosci");
+
+                sb = new StringBuilder(BLL.Tools.Get_Text(item, "colTrescHTML"));
+
+                sb.Append(bodyHTML);
+            }
+            else
+            {
+                subject = string.Empty;
+                sb.Append(bodyHTML);
+            }
+
+            bodyHTML = sb.ToString();
+        }
+    }
+}
