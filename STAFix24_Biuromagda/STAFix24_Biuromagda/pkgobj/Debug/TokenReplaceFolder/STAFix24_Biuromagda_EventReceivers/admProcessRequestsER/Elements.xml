@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Elements xmlns="http://schemas.microsoft.com/sharepoint/">
+  <Receivers  ListUrl="Lists/admProcessRequests">
+    <Receiver>
+      <Name>admProcessRequestsERItemAdded</Name>
+      <Type>ItemAdded</Type>
+      <Assembly>BRMagda.EventReceivers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d98099de718d7615</Assembly>
+      <Class>EventReceivers.EventReceiver1</Class>
+      <SequenceNumber>1000</SequenceNumber>
+    </Receiver>
+</Receivers>
+</Elements>

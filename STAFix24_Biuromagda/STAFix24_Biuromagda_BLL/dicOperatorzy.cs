@@ -14,7 +14,15 @@ namespace BLL
         internal static SPListItem GetItemById(Microsoft.SharePoint.SPWeb web, int operatorId)
         {
             SPList list = web.Lists.TryGetList(targetList);
-            return list.Items.GetItemById(operatorId);
+            SPListItem result = null;
+            try
+            {
+                result = list.Items.GetItemById(operatorId);
+            }
+            catch (Exception)
+            {}
+
+            return result;
         }
 
         internal static int Get_IdByName(SPWeb web, string name)
@@ -46,13 +54,27 @@ namespace BLL
         public static int Get_UserIdById(SPWeb web, int operatorId)
         {
             SPListItem item = Get_OperatorById(web, operatorId);
-            return item["colKontoOperatora"] != null ? new SPFieldUserValue(item.Web, item["colKontoOperatora"].ToString()).User.ID : 0;
+            if (item!=null)
+            {
+                return item["colKontoOperatora"] != null ? new SPFieldUserValue(item.Web, item["colKontoOperatora"].ToString()).User.ID : 0;
+            }
+            return 0;
         }
 
         private static SPListItem Get_OperatorById(SPWeb web, int operatorId)
         {
             SPList list = web.Lists.TryGetList(targetList);
-            return list.GetItemById(operatorId);
+
+            SPListItem result = null;
+
+            try 
+	        {	        
+		        result = list.GetItemById(operatorId);
+	        }
+	        catch (Exception)
+	        {}
+
+            return result;
         }
 
         public static int Get_OperatorIdByLoginName(SPWeb web, string loginName)

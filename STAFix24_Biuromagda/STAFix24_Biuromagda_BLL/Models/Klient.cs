@@ -112,8 +112,16 @@ namespace BLL.Models
 
                 //operatorzy
                 this.OperatorId_Audyt = item["selDedykowanyOperator_Audyt"] != null ? new SPFieldLookupValue(item["selDedykowanyOperator_Audyt"].ToString()).LookupId : 0;
+                SPListItem opItem = BLL.dicOperatorzy.GetItemById(item.Web, this.OperatorId_Audyt);
+                if (opItem == null) this.OperatorId_Audyt = 0;
+                
                 this.OperatorId_Podatki = item["selDedykowanyOperator_Podatki"] != null ? new SPFieldLookupValue(item["selDedykowanyOperator_Podatki"].ToString()).LookupId : 0;
+                opItem = BLL.dicOperatorzy.GetItemById(item.Web, this.OperatorId_Podatki);
+                if (opItem == null) this.OperatorId_Podatki = 0;
+                
                 this.OperatorId_Kadry = item["selDedykowanyOperator_Kadry"] != null ? new SPFieldLookupValue(item["selDedykowanyOperator_Kadry"].ToString()).LookupId : 0;
+                opItem = BLL.dicOperatorzy.GetItemById(item.Web, this.OperatorId_Kadry);
+                if (opItem == null) this.OperatorId_Kadry = 0;
 
                 //Daty
                 this.DataRozpoczeciaDzialalnosci = BLL.Tools.Get_Date(item,"colDataRozpoczeciaDzialalnosci");

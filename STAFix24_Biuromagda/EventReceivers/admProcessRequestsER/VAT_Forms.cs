@@ -132,7 +132,6 @@ namespace EventReceivers.admProcessRequestsER
         //formatka rozliczenia miesięcznego VAT
         private static void Create_VAT_M_Form(SPWeb web, int klientId, int okresId)
         {
-
             try
             {
                 string key = tabZadania.Define_KEY(ctVAT, klientId, okresId);
