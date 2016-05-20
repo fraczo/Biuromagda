@@ -16,7 +16,7 @@
     <SandboxedSolution>False</SandboxedSolution>
     <ActiveDeploymentConfiguration>Default</ActiveDeploymentConfiguration>
     <FileUpgradeFlags>40</FileUpgradeFlags>
-    <UpgradeBackupLocation>C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Backup3\</UpgradeBackupLocation>
+    <UpgradeBackupLocation>C:\_GitHub\Biuromagda\STAFix24_Biuromagda\Backup\</UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>

@@ -310,9 +310,10 @@ namespace EventReceivers.admProcessRequestsER
                         | Copy(kk, formatka, "colWplaconaSZ")
                         | Copy(kk, formatka, "colWplaconeZaliczkiOdPoczatkuRoku")
                         | Copy(kk, formatka, "colPD_WartoscDoZaplaty")
-                        | Copy(kk, formatka, "colZyskStrataNetto")
-                        | Copy(kk, formatka, "colStronaWn")
-                        | Copy(kk, formatka, "colStronaMa");
+                        | Copy(kk, formatka, "colZyskStrataNetto");
+
+                        //| Copy(kk, formatka, "colStronaWn")
+                        //| Copy(kk, formatka, "colStronaMa");
 
             // przychody zwolnione
 
