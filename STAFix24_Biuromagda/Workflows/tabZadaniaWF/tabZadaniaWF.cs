@@ -2639,32 +2639,33 @@ namespace Workflows.tabZadaniaWF
 
                 // sprawdź czy zysk-strata netto = strona winien - strona ma >> podać różnice
 
-                double stronaWn = BLL.Tools.Get_Value(item, "colStronaWn");
-                double stronaMa = BLL.Tools.Get_Value(item, "colStronaMa");
-                double wnma = Math.Round(stronaWn - stronaMa, 2);
+                #region Wyłączone na prośbę klienta
+                //double stronaWn = BLL.Tools.Get_Value(item, "colStronaWn");
+                //double stronaMa = BLL.Tools.Get_Value(item, "colStronaMa");
+                //double wnma = Math.Round(stronaWn - stronaMa, 2);
 
-                double stronaWn_Ma = Math.Round(BLL.Tools.Get_Value(item, "colStronaWn-StronaMa"),2);
+                //double stronaWn_Ma = Math.Round(BLL.Tools.Get_Value(item, "colStronaWn-StronaMa"), 2);
 
-                if (!stronaWn_Ma.Equals(wnma))
-                {
-                    Add_Comment(item, string.Format(@"Kalkulacja StonaWn-StronaMa nieprawidłowa. Jest ({0}), powinno być ({1})", stronaWn_Ma.ToString(), wnma.ToString()));
-                    //popraw roboczo
-                    stronaWn_Ma = stronaWn - stronaMa;
-                    BLL.Tools.Set_Value(item, "colStronaWn-StronaMa", stronaWn_Ma);
+                //if (!stronaWn_Ma.Equals(wnma))
+                //{
+                //    Add_Comment(item, string.Format(@"Kalkulacja StonaWn-StronaMa nieprawidłowa. Jest ({0}), powinno być ({1})", stronaWn_Ma.ToString(), wnma.ToString()));
+                //    //popraw roboczo
+                //    stronaWn_Ma = stronaWn - stronaMa;
+                //    BLL.Tools.Set_Value(item, "colStronaWn-StronaMa", stronaWn_Ma);
 
-                    foundError = true;
-                }
+                //    foundError = true;
+                //} 
 
+                //// sprawdź czy zysk/strata netto = strna wn - ma
 
-                // sprawdź czy zysk/strata netto = strna wn - ma
+                //double zsn = Math.Round(BLL.Tools.Get_Value(item, "colZyskStrataNetto"), 2);
 
-                double zsn = Math.Round(BLL.Tools.Get_Value(item, "colZyskStrataNetto"), 2);
-
-                if (!zsn.Equals(wnma))
-                {
-                    Add_Comment(item, string.Format(@"Zysk-Strata Netto ({0}) nie równa się Strona Winien-Strona Ma ({1})", zsn.ToString(), wnma.ToString()));
-                    foundError = true;
-                }
+                //if (!zsn.Equals(wnma))
+                //{
+                //    Add_Comment(item, string.Format(@"Zysk-Strata Netto ({0}) nie równa się Strona Winien-Strona Ma ({1})", zsn.ToString(), wnma.ToString()));
+                //    foundError = true;
+                //}
+                #endregion
 
                 if (foundError)
                 {
