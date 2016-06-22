@@ -1451,7 +1451,7 @@ namespace Workflows.tabZadaniaWF
 
                         //aktualizacja danych z tabelki
                         sb = new StringBuilder(trescHTML);
-                        sb.Replace("___colPIT_Konto___", k.NumerRachunkuPD);
+                        sb.Replace("___colPIT_Konto___", k.NumerRachunkuPIT_PD); //poprawiłem numer rachunku w przypominajce
                         sb.Replace("___colZUS_PIT-4R___", Format_Currency(item, "colZUS_PIT-4R"));
                         sb.Replace("___colZUS_PIT-8AR___", Format_Currency(item, "colZUS_PIT-8AR"));
                         sb.Replace("___colZUS_TerminPlatnosciPodatku___", terminPlatnosciPodatku.ToShortDateString());
@@ -2607,7 +2607,7 @@ namespace Workflows.tabZadaniaWF
                 //}
 
                 //sprawdź udziały wspólników
-                double sumaUdzialow = BLL.tabDochodyWspolnikow.Sum_UdzalyWspolnikow(item.Web, klientId, okresId) * 100;
+                double sumaUdzialow = Math.Round(BLL.tabDochodyWspolnikow.Sum_UdzalyWspolnikow(item.Web, klientId, okresId) * 100);
 
                 if (!BLL.Tools.Get_Flag(item, "_IsSpolkaZoo")) //jeżeli spółka osobowa wtedy sprawdź sumę udziałów wspólników
                 {
