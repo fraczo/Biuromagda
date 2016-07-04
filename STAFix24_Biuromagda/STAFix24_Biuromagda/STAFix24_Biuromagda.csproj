@@ -95,6 +95,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="CustomActions\SiteMenuActions\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{0d6c4967-4d43-4054-a5b0-ce9020fbf21e}</SharePointProjectItemId>
     </None>

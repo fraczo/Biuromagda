@@ -32,9 +32,12 @@ namespace BLL.Models
         public string FakturaPDF_Url { get; set; }
         public bool FakturaPDF_Exist()
         {
-            SPFile file = Web.GetFile(this.FakturaPDF_Url);
-            if (file.Exists) return true;
-            else return false;
+            if (this.FakturaPDF_Url != null)
+            {
+                SPFile file = Web.GetFile(this.FakturaPDF_Url);
+                if (file.Exists) return true;
+            }
+            return false;
         }
 
         public int KlientId { get; set; }
