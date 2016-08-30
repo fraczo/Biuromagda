@@ -103,6 +103,7 @@
   <ItemGroup>
     <None Include="admProcessRequestsER\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{4c1049d2-a8dc-40ca-b2f5-b261c223be23}</SharePointProjectItemId>
+      <SubType>Designer</SubType>
     </None>
     <None Include="dicUrzedySkarboweER\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{95c6a07b-c9ed-4adb-bd85-f16c5275766b}</SharePointProjectItemId>

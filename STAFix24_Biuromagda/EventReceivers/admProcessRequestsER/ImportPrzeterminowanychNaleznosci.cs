@@ -120,7 +120,11 @@ namespace EventReceivers.admProcessRequestsER
 
                         trescHTML = sb0.ToString();
 
-                        BLL.tabWiadomosci.AddNew(web, null, nadawca, odbiorca, kopiaDla, false, true, temat, string.Empty, trescHTML, new DateTime(), 0, klientId, BLL.Models.Marker.NoAttachements);
+                        // aby nie wysyłać pustych wiadomości sprawdź 
+                        if (value1total + value2total > 0)
+                        {
+                            BLL.tabWiadomosci.AddNew(web, null, nadawca, odbiorca, kopiaDla, false, true, temat, string.Empty, trescHTML, new DateTime(), 0, klientId, BLL.Models.Marker.NoAttachements);
+                        }
 
                         foreach (SPListItem oItem in items)
                         {
