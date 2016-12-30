@@ -382,7 +382,7 @@ namespace BLL
                 {}
 
 
-            } while (oId > 0 && (mNumber == 3 || mNumber == 6 || mNumber == 9 || mNumber == 12));
+            } while (oId > 0 && (mNumber != 3 && mNumber != 6 && mNumber != 9 && mNumber != 12));
 
             return oId;
         }
