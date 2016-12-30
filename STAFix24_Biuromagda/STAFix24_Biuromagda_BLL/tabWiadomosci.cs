@@ -427,7 +427,7 @@ namespace BLL
                                                                 odbiorca,
                                                                 biuroRachunkowe.Konto,
                                                                 faktura.WartoscDoZaplaty,
-                                                                faktura.NazwaKlienta,
+                                                                faktura.NazwaKlienta + " " + faktura.AdresNadawcy,
                                                                 tytulem))
                 {
                     Debug.WriteLine("DW załączony");

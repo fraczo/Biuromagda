@@ -17,6 +17,7 @@ namespace BLL.Models
             this.PrzypomnienieOTerminiePlatnosciWymagane = iok.PrzypomnienieOTerminiePlatnosciWymagane;
             this.EmailOdbiorcy = iok.Email;
             this.NazwaKlienta = iok.PelnaNazwaFirmy;
+            this.AdresNadawcy = string.Format("{0} {1} {2}",iok.Adres, iok.KodPocztowy, iok.Miejscowosc).Trim();
             this.Wyslana = false;
             this.KK_Zaktualizowana = false;
             this.KK_Id = 0;
@@ -63,5 +64,7 @@ namespace BLL.Models
         public int IOF_Id { get; set; }
 
         public int KK_Id { get; set; }
+
+        public string AdresNadawcy { get; set; }
     }
 }
