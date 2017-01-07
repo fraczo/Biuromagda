@@ -558,6 +558,10 @@ namespace Workflows.ImportFakturSWF
             else
             {
                 Debug.WriteLine("!!! Nie znaleziono karty kontrolnej");
+
+                faktura.KK_Id = tabKartyKontrolne.Create_KartaKontrolna(workflowProperties.Web, faktura.KlientId, okresId, null);
+
+                Debug.WriteLine("Karta kontrolna utworzona");
             }
 
 

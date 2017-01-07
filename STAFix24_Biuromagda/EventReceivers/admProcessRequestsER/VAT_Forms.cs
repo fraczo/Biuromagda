@@ -40,12 +40,12 @@ namespace EventReceivers.admProcessRequestsER
                         case @"VAT-M":
                             if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
 
-                            Create_VAT_M_Form(web, item.ID, okresId);
+                            Create_VAT_M_Form(web, item.ID, okresId,null);
                             break;
                         case @"VAT-KW":
                             if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
 
-                            Create_VAT_KW_Form(web, item.ID, okresId);
+                            Create_VAT_KW_Form(web, item.ID, okresId,null);
                             break;
                         default:
                             break;
@@ -82,12 +82,12 @@ namespace EventReceivers.admProcessRequestsER
                         case @"VAT-M":
                             if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
 
-                            Create_VAT_M_Form(web, item.ID, okresId);
+                            Create_VAT_M_Form(web, item.ID, okresId, null);
                             break;
                         case @"VAT-KW":
                             if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
 
-                            Create_VAT_KW_Form(web, item.ID, okresId);
+                            Create_VAT_KW_Form(web, item.ID, okresId, null);
                             break;
                         default:
                             break;
@@ -102,11 +102,24 @@ namespace EventReceivers.admProcessRequestsER
         /// <param name="web"></param>
         /// <param name="klientId"></param>
         /// <param name="okresId"></param>
-        private static void Create_VAT_KW_Form(SPWeb web, int klientId, int okresId)
+        private static void Create_VAT_KW_Form(SPWeb web, int klientId, int okresId, Array zadania)
         {
             try
             {
                 string key = tabZadania.Define_KEY(ctVAT, klientId, okresId);
+
+                bool taskFound = false;
+                foreach (SPListItem z in zadania)
+                {
+                    if (z["KEY"].Equals(key))
+                    {
+                        taskFound = true;
+                        break;
+                    }
+                }
+
+                if (taskFound) return;
+
                 if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
                 {
                     DateTime terminPlatnosci;
@@ -130,11 +143,24 @@ namespace EventReceivers.admProcessRequestsER
         }
 
         //formatka rozliczenia miesięcznego VAT
-        private static void Create_VAT_M_Form(SPWeb web, int klientId, int okresId)
+        private static void Create_VAT_M_Form(SPWeb web, int klientId, int okresId, Array zadania)
         {
             try
             {
                 string key = tabZadania.Define_KEY(ctVAT, klientId, okresId);
+
+                bool taskFound = false;
+                foreach (SPListItem z in zadania)
+                {
+                    if (z["KEY"].Equals(key))
+                    {
+                        taskFound = true;
+                        break;
+                    }
+                }
+
+                if (taskFound) return;
+
                 if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
                 {
                     DateTime terminPlatnosci;
@@ -159,7 +185,7 @@ namespace EventReceivers.admProcessRequestsER
 
 
 
-        public static void CreateNew(SPWeb web, SPListItem item, int okresId)
+        public static void CreateNew(SPWeb web, SPListItem item, int okresId, Array zadania)
         {
             Debug.WriteLine("Create VAT Form");
 
@@ -174,10 +200,10 @@ namespace EventReceivers.admProcessRequestsER
                     switch (kod.LookupValue)
                     {
                         case @"VAT-M":
-                            Create_VAT_M_Form(web, item.ID, okresId);
+                            Create_VAT_M_Form(web, item.ID, okresId, zadania);
                             break;
                         case @"VAT-KW":
-                            Create_VAT_KW_Form(web, item.ID, okresId);
+                            Create_VAT_KW_Form(web, item.ID, okresId, zadania);
                             break;
                         default:
                             break;

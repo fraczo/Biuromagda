@@ -16521,6 +16521,11 @@
             -h: Both GDI+ and WPF (hybrid).
             </summary>
         </member>
+        <member name="F:PdfSharp.ProductVersionInfo.BuildNumber">
+            <summary>
+            The calculated build number.
+            </summary>
+        </member>
         <member name="T:PdfSharp.Pdf.PdfIntegerObject">
             <summary>
             Represents an indirect integer value. This type is not used by PDFsharp. If it is imported from

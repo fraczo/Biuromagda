@@ -938,5 +938,12 @@ namespace BLL
             BLL.Tools.Set_Value(zadanie, "_DochodStrata_Internal", przychod);
             BLL.Tools.Set_Text(zadanie, "_Specyfikacja", specyfikacja);
         }
+
+        public static Array Get_ZadaniaByOkresId(SPWeb web, int okresId)
+        {
+            return web.Lists.TryGetList(targetList).Items.Cast<SPListItem>()
+                .Where(i => BLL.Tools.Get_LookupId(i, "selOkres").Equals(okresId))
+                .ToArray();
+        }
     }
 }

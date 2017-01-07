@@ -145,7 +145,7 @@ namespace EventReceivers.admProcessRequestsER
         #endregion
 
 
-        public static void CreateNew(SPWeb web, SPListItem item, int okresId)
+        public static void CreateNew(SPWeb web, SPListItem item, int okresId, Array zadania)
         {
             Debug.WriteLine("Create ZUS Form");
 
@@ -208,6 +208,22 @@ namespace EventReceivers.admProcessRequestsER
 
                 if (found)
                 {
+                    bool taskFound = false;
+                    if (zadania!=null)
+                    {
+                        string KEY = BLL.tabZadania.Define_KEY(ctZUS, item.ID, okresId);
+                        foreach (SPListItem z in zadania)
+                        {
+                            if(z["KEY"].Equals(KEY))
+                            {
+                                taskFound = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (taskFound) return;
+
                     Create_ZUS_Form(web, item.ID, okresId, isTylkoZdrowotna, isChorobowa, isPracownicy, skladkaSP, skladkaZD, skladkaFP, terminPlatnosci, terminPrzekazania);
                     break;
                 }

@@ -3,9 +3,3 @@ C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\bin\Release\BR
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\obj\Release\BLL.csprojResolveAssemblyReference.cache
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\obj\Release\BRMagda.BLL.dll
 C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\obj\Release\BRMagda.BLL.pdb
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\bin\Release\BRMagda.GeneratorDrukow.dll
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\bin\Release\BRMagda.PdfSharp.dll
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\bin\Release\BRMagda.GeneratorDrukow.pdb
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\bin\Release\BRMagda.PdfSharp.pdb
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\bin\Release\BRMagda.PdfSharp.xml
-C:\_GitHub\Biuromagda\STAFix24_Biuromagda\STAFix24_Biuromagda_BLL\bin\Release\de\BRMagda.PdfSharp.resources.dll

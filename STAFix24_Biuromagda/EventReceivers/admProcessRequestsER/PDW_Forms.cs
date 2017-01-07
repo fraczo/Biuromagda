@@ -13,7 +13,7 @@ namespace EventReceivers.admProcessRequestsER
 
         const string _CT_NAME_PDW = @"Rozliczenie podatku dochodowego wspólnika";
 
-        public static void CreateNew(SPWeb web, SPListItem item, int okresId)
+        public static void CreateNew(SPWeb web, SPListItem item, int okresId, Array zadania)
         {
             if (item != null)
             {
@@ -26,10 +26,10 @@ namespace EventReceivers.admProcessRequestsER
                     switch (kod.LookupValue)
                     {
                         case @"PDW-M":
-                            Create_PDW_M_Form(web, item.ID, okresId);
+                            Create_PDW_M_Form(web, item.ID, okresId, zadania);
                             break;
                         case @"PDW-KW":
-                            Create_PDW_KW_Form(web, item.ID, okresId);
+                            Create_PDW_KW_Form(web, item.ID, okresId, zadania);
                             break;
                         default:
                             break;
@@ -38,11 +38,26 @@ namespace EventReceivers.admProcessRequestsER
             }
         }
 
-        private static void Create_PDW_KW_Form(SPWeb web, int klientId, int okresId)
+        private static void Create_PDW_KW_Form(SPWeb web, int klientId, int okresId, Array zadania)
         {
             try
             {
                 string key = tabZadania.Define_KEY(_CT_NAME_PDW, klientId, okresId);
+
+
+                bool taskFound = false;
+                foreach (SPListItem z in zadania)
+                {
+                    if (z["KEY"].Equals(key))
+                    {
+                        taskFound = true;
+                        break;
+                    }
+                }
+
+                if (taskFound) return;
+
+
                 if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
                 {
                     Debug.WriteLine("PDW_KW klient:" + klientId.ToString());
@@ -145,11 +160,25 @@ namespace EventReceivers.admProcessRequestsER
             return result;
         }
 
-        private static void Create_PDW_M_Form(SPWeb web, int klientId, int okresId)
+        private static void Create_PDW_M_Form(SPWeb web, int klientId, int okresId, Array zadania)
         {
             try
             {
                 string key = tabZadania.Define_KEY(_CT_NAME_PDW, klientId, okresId);
+
+                bool taskFound = false;
+                foreach (SPListItem z in zadania)
+                {
+                    if (z["KEY"].Equals(key))
+                    {
+                        taskFound = true;
+                        break;
+                    }
+                }
+
+                if (taskFound) return;
+
+
                 if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
                 {
                     Debug.WriteLine("PDW_M klient:" + klientId.ToString());

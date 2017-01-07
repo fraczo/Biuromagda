@@ -203,8 +203,12 @@ namespace BLL
                         if (BLL.Tools.Is_ValidEmail(odbiorca))
                         {
                             BLL.tabWiadomosci.AddNew(item.Web, item, nadawca, odbiorca, kopiaDla, KopiaDoNadawcy, KopiaDoBiura, temat, tresc, trescHTML, BLL.Tools.Get_Date(item, "colPlanowanaDataNadania"), item.ID, klientId, BLL.Models.Marker.WithAttachements);
-                            BLL.Tools.Set_Text(item, "enumStatusZadania", "Wysyłka");
-                            item.SystemUpdate();
+                            string status = "Generowanie wiadomości";
+                            if (!BLL.Tools.Get_Text(item, "enumStatusZadania").Equals(status))
+                            {
+                                BLL.Tools.Set_Text(item, "enumStatusZadania", status);
+                                item.SystemUpdate();
+                            }
                         }
                         break;
                     case "Wyślij wiadomość testową":
@@ -273,10 +277,16 @@ namespace BLL
                     klientListItems = Remove_DuplicatedEmails(klientListItems);
                 }
 
+                item["Notatka"] = klientListItems != null ? klientListItems.Length.ToString() : "0";
+                item.SystemUpdate();
+
                 foreach (SPListItem klientItem in klientListItems)
                 {
                     CreateMailMessage_WiadomoscZReki(item, klientItem.ID);
                 }
+
+                item["enumStatusZadania"] = "Zakończone";
+                item.SystemUpdate();
             }
         }
 
@@ -302,6 +312,10 @@ namespace BLL
                     klientListItems = Remove_DuplicatedEmails(klientListItems);
                 }
 
+                item["Notatka"] = klientListItems != null ? klientListItems.Length.ToString() : "0";
+                item.SystemUpdate();
+
+
                 foreach (SPListItem klientItem in klientListItems)
                 {
                     int klientId = BLL.Tools.Get_LookupId(item, "selKlient");
@@ -309,6 +323,9 @@ namespace BLL
                     CreateMailMessage_WiadomoscZSzablonu(item, klientItem.ID);
 
                 }
+
+                item["enumStatusZadania"] = "Zakończone";
+                item.SystemUpdate();
             }
         }
 

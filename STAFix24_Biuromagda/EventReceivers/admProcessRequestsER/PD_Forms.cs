@@ -39,12 +39,12 @@ namespace EventReceivers.admProcessRequestsER
                         case @"PD-M":
                             if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
 
-                            Create_PD_M_Form(web, item.ID, okresId);
+                            Create_PD_M_Form(web, item.ID, okresId, null);
                             break;
                         case @"PD-KW":
                             if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
 
-                            Create_PD_KW_Form(web, item.ID, okresId);
+                            Create_PD_KW_Form(web, item.ID, okresId, null);
                             break;
                         default:
                             break;
@@ -81,12 +81,12 @@ namespace EventReceivers.admProcessRequestsER
                         case @"PD-M":
                             if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
 
-                            Create_PD_M_Form(web, item.ID, okresId);
+                            Create_PD_M_Form(web, item.ID, okresId, null);
                             break;
                         case @"PD-KW":
                             if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
 
-                            Create_PD_KW_Form(web, item.ID, okresId);
+                            Create_PD_KW_Form(web, item.ID, okresId, null);
                             break;
                         default:
                             break;
@@ -101,11 +101,24 @@ namespace EventReceivers.admProcessRequestsER
         /// <param name="web"></param>
         /// <param name="klientId"></param>
         /// <param name="okresId"></param>
-        private static void Create_PD_KW_Form(SPWeb web, int klientId, int okresId)
+        private static void Create_PD_KW_Form(SPWeb web, int klientId, int okresId, Array zadania)
         {
             try
             {
                 string key = tabZadania.Define_KEY(ctPD, klientId, okresId);
+
+                bool taskFound = false;
+                foreach (SPListItem z in zadania)
+                {
+                    if (z["KEY"].Equals(key))
+                    {
+                        taskFound = true;
+                        break;
+                    }
+                }
+
+                if (taskFound) return;
+
                 if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
                 {
                     DateTime terminPlatnosci;
@@ -129,11 +142,24 @@ namespace EventReceivers.admProcessRequestsER
         }
 
         //formatka rozliczenia miesięcznego VAT
-        private static void Create_PD_M_Form(SPWeb web, int klientId, int okresId)
+        private static void Create_PD_M_Form(SPWeb web, int klientId, int okresId, Array zadania)
         {
             try
             {
                 string key = tabZadania.Define_KEY(ctPD, klientId, okresId);
+
+                bool taskFound = false;
+                foreach (SPListItem z in zadania)
+                {
+                    if (z["KEY"].Equals(key))
+                    {
+                        taskFound = true;
+                        break;
+                    }
+                }
+
+                if (taskFound) return;
+
                 if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
                 {
                     DateTime terminPlatnosci;
@@ -156,7 +182,7 @@ namespace EventReceivers.admProcessRequestsER
             }
         }
 
-        public static void CreateNew(SPWeb web, SPListItem item, int okresId)
+        public static void CreateNew(SPWeb web, SPListItem item, int okresId, Array zadania)
         {
             Debug.WriteLine("Create PD Form");
 
@@ -166,16 +192,18 @@ namespace EventReceivers.admProcessRequestsER
 
                 kody = new SPFieldLookupValueCollection(item["selSewisy"].ToString());
 
+                // sprawdź czy karta nie istnieje
+
 
                 foreach (SPFieldLookupValue kod in kody)
                 {
                     switch (kod.LookupValue)
                     {
                         case @"PD-M":
-                            Create_PD_M_Form(web, item.ID, okresId);
+                            Create_PD_M_Form(web, item.ID, okresId, zadania);
                             break;
                         case @"PD-KW":
-                            Create_PD_KW_Form(web, item.ID, okresId);
+                            Create_PD_KW_Form(web, item.ID, okresId, zadania);
                             break;
                         default:
                             break;

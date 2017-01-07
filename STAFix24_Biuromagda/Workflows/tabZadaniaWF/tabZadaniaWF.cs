@@ -205,6 +205,7 @@ namespace Workflows.tabZadaniaWF
                         break;
                     case "Rozliczenie podatku dochodowego":
                     case "Rozliczenie podatku dochodowego spółki":
+                    case "Rozliczenie podatku dochodowego wspólnika": // dodana opcja
                         result = ObslugaGBW_RozliczeniePodatkuDochodowego(web, item, result, targetFileNameLeading, klient, okres, klientId);
                         break;
                     case "Rozliczenie ZUS":
@@ -980,7 +981,7 @@ namespace Workflows.tabZadaniaWF
                     {
                         if (!isAuditRequest(item) || Get_StatusZadania(item) == StatusZadania.Gotowe.ToString()) //zatwiedzenie gotowego zadania powoduje jego zwolnienie
                         {
-                            Update_GBW(item.Web, item, ct); 
+                            Update_GBW(item.Web, item, ct);
 
                             Manage_CMD_WyslijWynik_PDW(item);
                             BLL.Tools.DoWithRetry(() => Update_KartaKlienta_PDW(item));
@@ -2562,8 +2563,8 @@ namespace Workflows.tabZadaniaWF
 
                 //sprawdzenie czy zgadza się suma odliczeń z lat poprzenidnich
 
-                double sumaDoOdliczeniaZRejestru = Math.Round(BLL.tabStratyZLatUbieglych.Get_SumaDoOdliczenia(item.Web, klientId, okresId),2);
-                double sumaDoOdliczenia = Math.Round(BLL.Tools.Get_Value(item, "colStrataDoOdliczenia"),2);
+                double sumaDoOdliczeniaZRejestru = Math.Round(BLL.tabStratyZLatUbieglych.Get_SumaDoOdliczenia(item.Web, klientId, okresId), 2);
+                double sumaDoOdliczenia = Math.Round(BLL.Tools.Get_Value(item, "colStrataDoOdliczenia"), 2);
 
                 if (!sumaDoOdliczenia.Equals(sumaDoOdliczeniaZRejestru))
                 {
@@ -3497,6 +3498,8 @@ namespace Workflows.tabZadaniaWF
 
         public String msgBody1 = default(System.String);
         public String msgSubject1 = default(System.String);
+        public String logToHistory_HistoryDescription = default(System.String);
+        public String logToHistory_HistoryOutcome = default(System.String);
 
     }
 

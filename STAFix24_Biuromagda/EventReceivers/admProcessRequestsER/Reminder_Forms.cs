@@ -24,11 +24,11 @@ namespace EventReceivers.admProcessRequestsER
                 {
                     if (kod.LookupValue == "POW-Dok")
                     {
-                        Create_POW_DOK_Form(web, item.ID, okresId);
+                        Create_POW_DOK_Form(web, item.ID, okresId, null);
                     }
                     if (kod.LookupValue == "POW-WBank")
                     {
-                        Create_POW_WBANK_Form(web, item.ID, okresId);
+                        Create_POW_WBANK_Form(web, item.ID, okresId, null);
                     }
                 }
             }
@@ -47,21 +47,34 @@ namespace EventReceivers.admProcessRequestsER
                 {
                     if (kod.LookupValue == "POW-Dok")
                     {
-                        Create_POW_DOK_Form(web, item.ID, okresId);
+                        Create_POW_DOK_Form(web, item.ID, okresId, null);
                     }
                     if (kod.LookupValue == "POW-WBank")
                     {
-                        Create_POW_WBANK_Form(web, item.ID, okresId);
+                        Create_POW_WBANK_Form(web, item.ID, okresId, null);
                     }
                 }
             }
         }
 
-        private static void Create_POW_DOK_Form(SPWeb web, int klientId, int okresId)
+        private static void Create_POW_DOK_Form(SPWeb web, int klientId, int okresId, Array zadania)
         {
             try
             {
                 string key = tabZadania.Define_KEY(ctPOW_DOK, klientId, okresId);
+
+                bool taskFound = false;
+                foreach (SPListItem z in zadania)
+                {
+                    if (z["KEY"].Equals(key))
+                    {
+                        taskFound = true;
+                        break;
+                    }
+                }
+
+                if (taskFound) return;
+
                 if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
                 {
                     //To do..
@@ -81,11 +94,24 @@ namespace EventReceivers.admProcessRequestsER
             }
         }
 
-        private static void Create_POW_WBANK_Form(SPWeb web, int klientId, int okresId)
+        private static void Create_POW_WBANK_Form(SPWeb web, int klientId, int okresId, Array zadania)
         {
             try
             {
                 string key = tabZadania.Define_KEY(ctPOW_WBANK, klientId, okresId);
+
+                bool taskFound = false;
+                foreach (SPListItem z in zadania)
+                {
+                    if (z["KEY"].Equals(key))
+                    {
+                        taskFound = true;
+                        break;
+                    }
+                }
+
+                if (taskFound) return;
+
                 if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
                 {
                     //To do..
@@ -107,7 +133,7 @@ namespace EventReceivers.admProcessRequestsER
 
 
 
-        public static void CreateNew(SPWeb web, SPListItem item, int okresId)
+        public static void CreateNew(SPWeb web, SPListItem item, int okresId, Array zadania)
         {
             Debug.WriteLine("Create Reminder Forms");
 
@@ -118,11 +144,11 @@ namespace EventReceivers.admProcessRequestsER
                 {
                     if (kod.LookupValue == "POW-Dok")
                     {
-                        Create_POW_DOK_Form(web, item.ID, okresId);
+                        Create_POW_DOK_Form(web, item.ID, okresId, zadania);
                     }
                     if (kod.LookupValue == "POW-WBank")
                     {
-                        Create_POW_WBANK_Form(web, item.ID, okresId);
+                        Create_POW_WBANK_Form(web, item.ID, okresId, zadania);
                     }
                 }
             }

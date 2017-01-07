@@ -117,19 +117,19 @@ namespace Workflows.wfGFRK
 
         private void Manage_ZUS_ExecuteCode(object sender, EventArgs e)
         {
-            ZUS_Forms.CreateNew(item.Web, klient, okresId);
+            ZUS_Forms.CreateNew(item.Web, klient, okresId, null);
 
         }
 
         private void Manage_PD_ExecuteCode(object sender, EventArgs e)
         {
-            PD_Forms.CreateNew(item.Web, klient, okresId);
+            PD_Forms.CreateNew(item.Web, klient, okresId,null);
 
         }
 
         private void Manage_VAT_ExecuteCode(object sender, EventArgs e)
         {
-            VAT_Forms.CreateNew(item.Web, klient, okresId);
+            VAT_Forms.CreateNew(item.Web, klient, okresId, null);
 
         }
 
@@ -141,7 +141,7 @@ namespace Workflows.wfGFRK
 
         private void Manage_Reminders_ExecuteCode(object sender, EventArgs e)
         {
-            Reminder_Forms.CreateNew(item.Web, klient, okresId);
+            Reminder_Forms.CreateNew(item.Web, klient, okresId, null);
         }
 
         public String logKlientId_HistoryOutcome = default(System.String);
@@ -176,12 +176,12 @@ namespace Workflows.wfGFRK
 
         private void Manage_PDS_ExecuteCode(object sender, EventArgs e)
         {
-            PDS_Forms.CreateNew(item.Web, klient, okresId);
+            PDS_Forms.CreateNew(item.Web, klient, okresId, null);
         }
 
         private void Manage_PDW_ExecuteCode(object sender, EventArgs e)
         {
-            PDW_Forms.CreateNew(item.Web, klient, okresId);
+            PDW_Forms.CreateNew(item.Web, klient, okresId,null);
         }
 
         private void hasPDSerwis(object sender, ConditionalEventArgs e)
@@ -225,7 +225,7 @@ namespace Workflows.wfGFRK
 
         private void Manage_KK_ExecuteCode(object sender, EventArgs e)
         {
-            BLL.tabKartyKontrolne.Create_KartaKontrolna(klient.Web, klient.ID, okresId);
+            BLL.tabKartyKontrolne.Create_KartaKontrolna(klient.Web, klient.ID, okresId, null);
         }
 
         private void Status_Anulowany_ExecuteCode(object sender, EventArgs e)

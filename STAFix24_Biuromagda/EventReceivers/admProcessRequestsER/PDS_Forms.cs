@@ -40,12 +40,12 @@ namespace EventReceivers.admProcessRequestsER
                         case @"PDS-M":
                             if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
 
-                            Create_PDS_M_Form(web, item.ID, okresId);
+                            Create_PDS_M_Form(web, item.ID, okresId, null);
                             break;
                         case @"PDS-KW":
                             if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
 
-                            Create_PDS_KW_Form(web, item.ID, okresId);
+                            Create_PDS_KW_Form(web, item.ID, okresId, null);
                             break;
                         default:
                             break;
@@ -84,12 +84,12 @@ namespace EventReceivers.admProcessRequestsER
                         case @"PDS-M":
                             if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
 
-                            Create_PDS_M_Form(web, item.ID, okresId);
+                            Create_PDS_M_Form(web, item.ID, okresId, null);
                             break;
                         case @"PDS-KW":
                             if (createKK) BLL.tabKartyKontrolne.Create_KartaKontrolna(web, item.ID, okresId);
 
-                            Create_PDS_KW_Form(web, item.ID, okresId);
+                            Create_PDS_KW_Form(web, item.ID, okresId, null);
                             break;
                         default:
                             break;
@@ -101,7 +101,7 @@ namespace EventReceivers.admProcessRequestsER
         /// <summary>
         /// Wywołuje procedurę generowania kart kontrolnych PDS dla pojedyńczego klienta
         /// </summary>
-        public static void CreateNew(SPWeb web, SPListItem item, int okresId)
+        public static void CreateNew(SPWeb web, SPListItem item, int okresId, Array zadania)
         {
             if (item != null)
             {
@@ -114,10 +114,10 @@ namespace EventReceivers.admProcessRequestsER
                     switch (kod.LookupValue)
                     {
                         case @"PDS-M":
-                            Create_PDS_M_Form(web, item.ID, okresId);
+                            Create_PDS_M_Form(web, item.ID, okresId, zadania);
                             break;
                         case @"PDS-KW":
-                            Create_PDS_KW_Form(web, item.ID, okresId);
+                            Create_PDS_KW_Form(web, item.ID, okresId, zadania);
                             break;
                         default:
                             break;
@@ -129,11 +129,24 @@ namespace EventReceivers.admProcessRequestsER
         /// <summary>
         /// Zlecenia generowania rozliczenia kwartalnego PDS
         /// </summary>
-        private static void Create_PDS_KW_Form(SPWeb web, int klientId, int okresId)
+        private static void Create_PDS_KW_Form(SPWeb web, int klientId, int okresId, Array zadania)
         {
             try
             {
                 string key = tabZadania.Define_KEY(_CT_NAME_PDS, klientId, okresId);
+
+                bool taskFound = false;
+                foreach (SPListItem z in zadania)
+                {
+                    if (z["KEY"].Equals(key))
+                    {
+                        taskFound = true;
+                        break;
+                    }
+                }
+
+                if (taskFound) return;
+
                 if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
                 {
                     Debug.WriteLine("PDS_KW klient:" + klientId.ToString());
@@ -184,11 +197,24 @@ namespace EventReceivers.admProcessRequestsER
         /// <summary>
         /// Zlecenia generowania rozliczenia miesięcznego PDS
         /// </summary>
-        private static void Create_PDS_M_Form(SPWeb web, int klientId, int okresId)
+        private static void Create_PDS_M_Form(SPWeb web, int klientId, int okresId, Array zadania)
         {
             try
             {
                 string key = tabZadania.Define_KEY(_CT_NAME_PDS, klientId, okresId);
+
+                bool taskFound = false;
+                foreach (SPListItem z in zadania)
+                {
+                    if (z["KEY"].Equals(key))
+                    {
+                        taskFound = true;
+                        break;
+                    }
+                }
+
+                if (taskFound) return;
+
                 if (tabZadania.Check_KEY_IsAllowed(key, web, 0))
                 {
                     Debug.WriteLine("PDS_M klient:" + klientId.ToString());

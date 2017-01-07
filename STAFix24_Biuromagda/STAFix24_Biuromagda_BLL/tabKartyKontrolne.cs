@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.SharePoint;
+using System.Collections;
 
 namespace BLL
 {
@@ -11,10 +12,28 @@ namespace BLL
         const string targetList = "Karty kontrolne";
         const string colPOTWIERDZENIE_ODBIORU_DOKUMENTOW = "colPotwierdzenieOdbioruDokumento";
 
-        public static void Create_KartaKontrolna(SPWeb web, int klientId, int okresId)
+        public static int Create_KartaKontrolna(SPWeb web, int klientId, int okresId, Array kartyKontrolne=null)
         {
             string KEY = Create_KEY(klientId, okresId);
-            int formId = Get_KartaKontrolnaId(web, klientId, okresId, KEY);
+            int formId = 0;
+
+            bool found = false;
+            if (kartyKontrolne!=null)
+            {
+                foreach (SPListItem item in kartyKontrolne)
+                {
+                    if (item["KEY"].Equals(KEY))
+                    {
+                        found = true;
+                        formId = item.ID;
+                        break;
+                    }
+                }
+            }
+
+            if (!found) formId = Get_KartaKontrolnaId(web, klientId, okresId, KEY);
+
+            return formId;
         }
 
         public static void Update_PD_Data(Microsoft.SharePoint.SPListItem item)
@@ -427,6 +446,15 @@ namespace BLL
             //form["enumFormaPrawna"] = k.FormaPrawna;
 
             form.SystemUpdate();
+        }
+
+
+        public static Array Get_KartyKontrolneByOkresId(SPWeb web, int okresId)
+        {
+            SPList list = web.Lists.TryGetList(targetList);
+            return list.Items.Cast<SPListItem>()
+                .Where(i => BLL.Tools.Get_LookupId(i, "selOkres").Equals(okresId))
+                .ToArray();
         }
     }
 }

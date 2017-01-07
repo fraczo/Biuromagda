@@ -182,10 +182,14 @@ namespace Workflows.wfGFR
         public String logKlientCounter_HistoryOutcome = default(System.String);
         private IEnumerator myEnum;
         private int klientId;
+        private Array kartyKontrolne;
+        private Array zadania;
 
 
         private void Prepare_List_ExecuteCode(object sender, EventArgs e)
         {
+            Debug.WriteLine("Liczba wybranych klientów klientów:" + klienci.Length.ToString());
+
             myEnum = klienci.GetEnumerator();
         }
 
@@ -229,14 +233,14 @@ namespace Workflows.wfGFR
                 {
                     if (BLL.Tools.Has_Service(klient, "ZUS-*", "selSewisy"))
                     {
-                        ZUS_Forms.CreateNew(item.Web, klient, okresId);
+                        ZUS_Forms.CreateNew(item.Web, klient, okresId,zadania);
                         sbForms.AppendFormat("<li>{0}</li>", "ZUS");
                     }
                 }
             }
             else
             {
-                ZUS_Forms.CreateNew(item.Web, klient, okresId);
+                ZUS_Forms.CreateNew(item.Web, klient, okresId,zadania);
                 sbForms.AppendFormat("<li>{0}</li>", "ZUS");
             }
 
@@ -251,14 +255,14 @@ namespace Workflows.wfGFR
                 {
                     if (BLL.Tools.Has_Service(klient, "PD-*", "selSewisy"))
                     {
-                        PD_Forms.CreateNew(item.Web, klient, okresId);
+                        PD_Forms.CreateNew(item.Web, klient, okresId, zadania);
                         sbForms.AppendFormat("<li>{0}</li>", "PD");
                     }
                 }
             }
             else
             {
-                PD_Forms.CreateNew(item.Web, klient, okresId);
+                PD_Forms.CreateNew(item.Web, klient, okresId, zadania);
                 sbForms.AppendFormat("<li>{0}</li>", "PD");
             }
 
@@ -275,14 +279,14 @@ namespace Workflows.wfGFR
                 {
                     if (BLL.Tools.Has_Service(klient, "PDS-*", "selSewisy"))
                     {
-                        PDS_Forms.CreateNew(item.Web, klient, okresId);
+                        PDS_Forms.CreateNew(item.Web, klient, okresId, zadania);
                         sbForms.AppendFormat("<li>{0}</li>", "PDS");
                     }
                 }
             }
             else
             {
-                PDS_Forms.CreateNew(item.Web, klient, okresId);
+                PDS_Forms.CreateNew(item.Web, klient, okresId, zadania);
                 sbForms.AppendFormat("<li>{0}</li>", "PDS");
             }
 
@@ -298,14 +302,14 @@ namespace Workflows.wfGFR
                 {
                     if (BLL.Tools.Has_Service(klient, "PDW-*", "selSewisy"))
                     {
-                        PDW_Forms.CreateNew(item.Web, klient, okresId);
+                        PDW_Forms.CreateNew(item.Web, klient, okresId, zadania);
                         sbForms.AppendFormat("<li>{0}</li>", "PDW");
                     }
                 }
             }
             else
             {
-                PDW_Forms.CreateNew(item.Web, klient, okresId);
+                PDW_Forms.CreateNew(item.Web, klient, okresId, zadania);
                 sbForms.AppendFormat("<li>{0}</li>", "PDW");
             }
 
@@ -320,14 +324,14 @@ namespace Workflows.wfGFR
                 {
                     if (BLL.Tools.Has_Service(klient, "VAT-*", "selSewisy"))
                     {
-                        VAT_Forms.CreateNew(item.Web, klient, okresId);
+                        VAT_Forms.CreateNew(item.Web, klient, okresId, zadania);
                         sbForms.AppendFormat("<li>{0}</li>", "VAT");
                     }
                 }
             }
             else
             {
-                VAT_Forms.CreateNew(item.Web, klient, okresId);
+                VAT_Forms.CreateNew(item.Web, klient, okresId, zadania);
                 sbForms.AppendFormat("<li>{0}</li>", "VAT");
             }
 
@@ -365,14 +369,14 @@ namespace Workflows.wfGFR
                 {
                     if (BLL.Tools.Has_Service(klient, "POW-*", "selSewisy"))
                     {
-                        Reminder_Forms.CreateNew(item.Web, klient, okresId);
+                        Reminder_Forms.CreateNew(item.Web, klient, okresId, zadania);
                         sbForms.AppendFormat("<li>{0}</li>", "POW");
                     }
                 }
             }
             else
             {
-                Reminder_Forms.CreateNew(item.Web, klient, okresId);
+                Reminder_Forms.CreateNew(item.Web, klient, okresId, zadania);
                 sbForms.AppendFormat("<li>{0}</li>", "POW");
             }
 
@@ -384,7 +388,7 @@ namespace Workflows.wfGFR
             klientId = klient.ID;
 
             //zainicjuj kartę kontrolną
-            BLL.tabKartyKontrolne.Create_KartaKontrolna(klient.Web, klient.ID, okresId);
+            BLL.tabKartyKontrolne.Create_KartaKontrolna(klient.Web, klient.ID, okresId, kartyKontrolne);
 
             sbForms = new StringBuilder();
 
@@ -489,6 +493,16 @@ namespace Workflows.wfGFR
         private void Set_Status_Obsluga_ExecuteCode(object sender, EventArgs e)
         {
             BLL.Tools.Set_Text(item, "enumStatusZlecenia", _OBSLUGA);
+        }
+
+        private void Preload_KartyKontrolne(object sender, EventArgs e)
+        {
+            kartyKontrolne = BLL.tabKartyKontrolne.Get_KartyKontrolneByOkresId(workflowProperties.Web, okresId);
+        }
+
+        private void Preload_Zadania_ExecuteCode(object sender, EventArgs e)
+        {
+            zadania = BLL.tabZadania.Get_ZadaniaByOkresId(workflowProperties.Web, okresId);
         }
 
 

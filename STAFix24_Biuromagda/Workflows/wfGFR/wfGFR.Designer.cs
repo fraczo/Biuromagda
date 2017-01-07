@@ -117,6 +117,8 @@ namespace Workflows.wfGFR
             this.logErrorMessage = new Microsoft.SharePoint.WorkflowActions.LogToHistoryListActivity();
             this.ErrorHandler = new System.Workflow.Activities.CodeActivity();
             this.whileKlient = new System.Workflow.Activities.WhileActivity();
+            this.Preload_Zadania = new System.Workflow.Activities.CodeActivity();
+            this.ProloadKartyKontrolne = new System.Workflow.Activities.CodeActivity();
             this.Prepare_List = new System.Workflow.Activities.CodeActivity();
             this.Case = new System.Workflow.Activities.IfElseActivity();
             this.Preset_ot = new System.Workflow.Activities.CodeActivity();
@@ -609,6 +611,16 @@ namespace Workflows.wfGFR
             this.whileKlient.Condition = codecondition10;
             this.whileKlient.Name = "whileKlient";
             // 
+            // Preload_Zadania
+            // 
+            this.Preload_Zadania.Name = "Preload_Zadania";
+            this.Preload_Zadania.ExecuteCode += new System.EventHandler(this.Preload_Zadania_ExecuteCode);
+            // 
+            // ProloadKartyKontrolne
+            // 
+            this.ProloadKartyKontrolne.Name = "ProloadKartyKontrolne";
+            this.ProloadKartyKontrolne.ExecuteCode += new System.EventHandler(this.Preload_KartyKontrolne);
+            // 
             // Prepare_List
             // 
             this.Prepare_List.Name = "Prepare_List";
@@ -642,6 +654,8 @@ namespace Workflows.wfGFR
             this.ifValidRequest.Activities.Add(this.Preset_ot);
             this.ifValidRequest.Activities.Add(this.Case);
             this.ifValidRequest.Activities.Add(this.Prepare_List);
+            this.ifValidRequest.Activities.Add(this.ProloadKartyKontrolne);
+            this.ifValidRequest.Activities.Add(this.Preload_Zadania);
             this.ifValidRequest.Activities.Add(this.whileKlient);
             codecondition11.Condition += new System.EventHandler<System.Workflow.Activities.ConditionalEventArgs>(this.isValidRequest);
             this.ifValidRequest.Condition = codecondition11;
@@ -755,6 +769,10 @@ namespace Workflows.wfGFR
         }
 
         #endregion
+
+        private CodeActivity Preload_Zadania;
+
+        private CodeActivity ProloadKartyKontrolne;
 
         private CodeActivity Manage_PDW1;
 
@@ -905,6 +923,10 @@ namespace Workflows.wfGFR
         private CodeActivity Select_Klienci;
 
         private Microsoft.SharePoint.WorkflowActions.OnWorkflowActivated onWorkflowActivated1;
+
+
+
+
 
 
 
